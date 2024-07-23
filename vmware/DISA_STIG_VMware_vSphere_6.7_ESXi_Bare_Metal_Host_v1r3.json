@@ -1,0 +1,265 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "ESXI-67-000009 - The ESXi host SSH daemon must be configured with the DoD logon banner - DoD login banner.",
+        "info": "The warning message reinforces policy awareness during the logon process and facilitates possible legal action against attackers. Alternatively, systems whose ownership should not be obvious should ensure usage of a banner that does not provide easy attribution.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nBanner /etc/issue",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-239266r674727_rule,STIG-ID|ESXI-67-000009,TBA-FIISB|45.2.4,Vuln-ID|V-239266",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Banner[\\\\s]+",
+        "expect": "^[\\\\s]*Banner[\\\\s]+/etc/issue[\\\\s]*$"
+    },
+    "custom_item_3": {
+        "description": "ESXI-67-000010 - The ESXi host SSH daemon must use DoD-approved encryption to protect the confidentiality of remote access sessions.",
+        "info": "Approved algorithms should impart some level of confidence in their implementation. Limit the ciphers to algorithms that are FIPS approved. Counter (CTR) mode is also preferred over cipher-block chaining (CBC) mode.",
+        "solution": "Limit the ciphers to FIPS-approved algorithms.\n\nFrom an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nFipsMode yes\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.security.fips140.ssh.set.CreateArgs()\n$arguments.enable = $true\n$esxcli.system.security.fips140.ssh.set.Invoke($arguments)",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-239267r674730_rule,STIG-ID|ESXI-67-000010,SWIFT-CSCv1|2.6,Vuln-ID|V-239267",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*FipsMode[\\\\s]+",
+        "expect": "^[\\\\s]*FipsMode[\\\\s]+yes[\\\\s]*$"
+    },
+    "custom_item_4": {
+        "description": "ESXI-67-000012 - The ESXi host SSH daemon must ignore .rhosts files.",
+        "info": "SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts. SSH can emulate the behavior of the obsolete rsh command in allowing users to enable insecure access to their accounts via '.rhosts' files.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nAdd or correct the following line in '/etc/ssh/sshd_config':\n\nIgnoreRhosts yes",
+        "reference": "800-171|3.5.3,800-53|IA-2(3),800-53r5|IA-2(1),CAT|II,CCI|CCI-000767,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(3),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-239268r674733_rule,STIG-ID|ESXI-67-000012,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-239268",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*IgnoreRhosts[\\\\s]+",
+        "expect": "^[\\\\s]*IgnoreRhosts[\\\\s]+yes[\\\\s]*$"
+    },
+    "custom_item_5": {
+        "description": "ESXI-67-000013 - The ESXi host SSH daemon must not allow host-based authentication.",
+        "info": "SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts. SSH's cryptographic host-based authentication is more secure than '.rhosts' authentication, since hosts are cryptographically authenticated. However, it is not recommended that hosts unilaterally trust one another, even within an organization.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nAdd or correct the following line in '/etc/ssh/sshd_config':\n\nHostbasedAuthentication no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239269r674736_rule,STIG-ID|ESXI-67-000013,SWIFT-CSCv1|2.3,Vuln-ID|V-239269",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*HostbasedAuthentication[\\\\s]+",
+        "expect": "^[\\\\s]*HostbasedAuthentication[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_6": {
+        "description": "ESXI-67-000014 - The ESXi host SSH daemon must not permit root logins.",
+        "info": "Permitting direct root login reduces auditable information about who ran privileged commands on the system and also allows direct attack attempts on root's password.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nAdd or correct the following line in '/etc/ssh/sshd_config':\n\nPermitRootLogin no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239270r674739_rule,STIG-ID|ESXI-67-000014,SWIFT-CSCv1|2.3,Vuln-ID|V-239270",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitRootLogin[\\\\s]+",
+        "expect": "^[\\\\s]*PermitRootLogin[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "description": "ESXI-67-000015 - The ESXi host SSH daemon must not allow authentication using an empty password.",
+        "info": "Configuring this setting for the SSH daemon provides additional assurance that remote logon via SSH will require a password, even in the event of misconfiguration elsewhere.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nPermitEmptyPasswords no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239271r674742_rule,STIG-ID|ESXI-67-000015,SWIFT-CSCv1|2.3,Vuln-ID|V-239271",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitEmptyPasswords[\\\\s]+",
+        "expect": "^[\\\\s]*PermitEmptyPasswords[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "description": "ESXI-67-000016 - The ESXi host SSH daemon must not permit user environment settings.",
+        "info": "SSH environment options potentially allow users to bypass access restriction in some configurations. Users must not be able to present environment options to the SSH daemon.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nPermitUserEnvironment no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239272r674745_rule,STIG-ID|ESXI-67-000016,SWIFT-CSCv1|2.3,Vuln-ID|V-239272",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitUserEnvironment[\\\\s]+",
+        "expect": "^[\\\\s]*PermitUserEnvironment[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_9": {
+        "description": "ESXI-67-000018 - The ESXi host SSH daemon must not permit GSSAPI authentication.",
+        "info": "GSSAPI authentication is used to provide additional authentication mechanisms to applications. Allowing GSSAPI authentication through SSH exposes the system's GSSAPI to remote hosts, increasing the attack surface of the system.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nGSSAPIAuthentication no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239273r674748_rule,STIG-ID|ESXI-67-000018,SWIFT-CSCv1|2.3,Vuln-ID|V-239273",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*GSSAPIAuthentication[\\\\s]+",
+        "expect": "^[\\\\s]*GSSAPIAuthentication[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_10": {
+        "description": "ESXI-67-000019 - The ESXi host SSH daemon must not permit Kerberos authentication.",
+        "info": "Kerberos authentication for SSH is often implemented using GSSAPI. If Kerberos is enabled through SSH, the SSH daemon provides a means of access to the system's Kerberos implementation. Vulnerabilities in the system's Kerberos implementation may then be subject to exploitation. To reduce the attack surface of the system, the Kerberos authentication mechanism within SSH must be disabled for systems.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nKerberosAuthentication no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239274r674751_rule,STIG-ID|ESXI-67-000019,SWIFT-CSCv1|2.3,Vuln-ID|V-239274",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*KerberosAuthentication[\\\\s]+",
+        "expect": "^[\\\\s]*KerberosAuthentication[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "description": "ESXI-67-000020 - The ESXi host SSH daemon must perform strict mode checking of home directory configuration files.",
+        "info": "If other users have access to modify user-specific SSH configuration files, they may be able to log on to the system as another user.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nStrictModes yes",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239275r674754_rule,STIG-ID|ESXI-67-000020,SWIFT-CSCv1|2.3,Vuln-ID|V-239275",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*StrictModes[\\\\s]+",
+        "expect": "^[\\\\s]*StrictModes[\\\\s]+yes[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "description": "ESXI-67-000021 - The ESXi host SSH daemon must not allow compression or must only allow compression after successful authentication.",
+        "info": "If compression is allowed in an SSH connection prior to authentication, vulnerabilities in the compression software could result in compromise of the system from an unauthenticated connection, potentially with root privileges.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nCompression no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239276r674757_rule,STIG-ID|ESXI-67-000021,SWIFT-CSCv1|2.3,Vuln-ID|V-239276",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Compression[\\\\s]+",
+        "expect": "^[\\\\s]*Compression[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_13": {
+        "description": "ESXI-67-000022 - The ESXi host SSH daemon must be configured to not allow gateway ports.",
+        "info": "SSH TCP connection forwarding provides a mechanism to establish TCP connections proxied by the SSH server. This function can provide similar convenience to a Virtual Private Network (VPN) with the similar risk of providing a path to circumvent firewalls and network Access Control Lists (ACLs). Gateway ports allow remote forwarded ports to bind to non-loopback addresses on the server.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nGatewayPorts no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239277r674760_rule,STIG-ID|ESXI-67-000022,SWIFT-CSCv1|2.3,Vuln-ID|V-239277",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*GatewayPorts[\\\\s]+",
+        "expect": "^[\\\\s]*GatewayPorts[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_14": {
+        "description": "ESXI-67-000023 - The ESXi host SSH daemon must be configured to not allow X11 forwarding.",
+        "info": "X11 forwarding over SSH allows for the secure remote execution of X11-based applications. This feature can increase the attack surface of an SSH connection.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nX11Forwarding no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239278r674763_rule,STIG-ID|ESXI-67-000023,SWIFT-CSCv1|2.3,Vuln-ID|V-239278",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*X11Forwarding[\\\\s]+",
+        "expect": "^[\\\\s]*X11Forwarding[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "description": "ESXI-67-000024 - The ESXi host SSH daemon must not accept environment variables from the client.",
+        "info": "Environment variables can be used to change the behavior of remote sessions and should be limited. Locale environment variables specify the language, character set, and other features modifying the operation of software to match the user's preferences.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nAcceptEnv",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239279r674766_rule,STIG-ID|ESXI-67-000024,SWIFT-CSCv1|2.3,Vuln-ID|V-239279",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*AcceptEnv[\\\\s]*",
+        "expect": "^[\\\\s]*AcceptEnv[\\\\s]*"
+    },
+    "custom_item_16": {
+        "description": "ESXI-67-000025 - The ESXi host SSH daemon must not permit tunnels.",
+        "info": "OpenSSH has the ability to create network tunnels (layer 2 and layer 3) over an SSH connection. This function can provide similar convenience to a Virtual Private Network (VPN) with the similar risk of providing a path to circumvent firewalls and network Access Control Lists (ACLs).",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nPermitTunnel no",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239280r674769_rule,STIG-ID|ESXI-67-000025,SWIFT-CSCv1|2.3,Vuln-ID|V-239280",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitTunnel[\\\\s]+",
+        "expect": "^[\\\\s]*PermitTunnel[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "description": "ESXI-67-000026 - The ESXi host SSH daemon must set a timeout count on idle sessions.",
+        "info": "Setting a timeout ensures that a user login will be terminated as soon as the 'ClientAliveCountMax' is reached.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nClientAliveCountMax 3",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239281r674772_rule,STIG-ID|ESXI-67-000026,SWIFT-CSCv1|2.3,Vuln-ID|V-239281",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*ClientAliveCountMax[\\\\s]+",
+        "expect": "^[\\\\s]*ClientAliveCountMax[\\\\s]+3[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "description": "ESXI-67-000027 - The ESXi host SSH daemon must set a timeout interval on idle sessions.",
+        "info": "Automatically logging out idle users guards against compromises via hijacked administrative sessions.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nClientAliveInterval 200",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239282r674775_rule,STIG-ID|ESXI-67-000027,SWIFT-CSCv1|2.3,Vuln-ID|V-239282",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*ClientAliveInterval[\\\\s]+",
+        "expect": "^[\\\\s]*ClientAliveInterval[\\\\s]+200[\\\\s]*$"
+    },
+    "custom_item_19": {
+        "description": "ESXI-67-000028 - The ESXi host SSH daemon must limit connections to a single session.",
+        "info": "The SSH protocol has the ability to provide multiple sessions over a single connection without reauthentication. A compromised client could use this feature to establish additional sessions to a system without consent or knowledge of the user.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':\n\nMaxSessions 1",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239283r674778_rule,STIG-ID|ESXI-67-000028,SWIFT-CSCv1|2.3,Vuln-ID|V-239283",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*MaxSessions[\\\\s]+",
+        "expect": "^[\\\\s]*MaxSessions[\\\\s]+1[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "description": "Check for existence of authorized_keys",
+        "file": "/etc/ssh/keys-root/authorized_keys"
+    },
+    "custom_item_21": {
+        "description": "ESXI-67-000029 - The ESXi host must remove keys from the SSH authorized_keys file.",
+        "info": "ESXi hosts come with SSH, which can be enabled to allow remote access without requiring user authentication. To enable password-free access, copy the remote user's public key into the '/etc/ssh/keys-root/authorized_keys' file on the ESXi host.\n\nThe presence of the remote user's public key in the 'authorized_keys' file identifies the user as trusted, meaning the user is granted access to the host without providing a password.\n\nIf using Lockdown Mode and SSH is disabled, then logon with authorized keys will have the same restrictions as username/password.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, zero out or remove the /etc/ssh/keys-root/authorized_keys file:\n\n# >/etc/ssh/keys-root/authorized_keys\n\nor\n\n# rm /etc/ssh/keys-root/authorized_keys",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239284r674781_rule,STIG-ID|ESXI-67-000029,SWIFT-CSCv1|2.3,Vuln-ID|V-239284",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "cat /etc/ssh/keys-root/authorized_keys | wc -l",
+        "expect": "^0$"
+    },
+    "custom_item_22": {
+        "description": "ESXI-67-000033 - The password hashes stored on the ESXi host must have been generated using a FIPS 140-2 approved cryptographic hashing algorithm.",
+        "info": "Systems must employ cryptographic hashes for passwords using the SHA-2 family of algorithms or FIPS 140-2 approved successors. The use of unapproved algorithms may result in weak password hashes more vulnerable to compromise.",
+        "solution": "From an SSH session connected to the ESXi host, or from the ESXi shell, add or correct the following line in '/etc/pam.d/passwd':\n\npassword sufficient /lib/security/$ISA/pam_unix.so use_authtok nullok shadow sha512 remember=5",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239288r674793_rule,STIG-ID|ESXI-67-000033,SWIFT-CSCv1|2.3,Vuln-ID|V-239288",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/pam.d/passwd",
+        "regex": "^[\\\\s]*password[\\\\s]+sufficient[\\\\s]+",
+        "expect": "sha512"
+    },
+    "custom_item_23": {
+        "description": "ESXI-67-000044 - The ESXi host must enable kernel core dumps.",
+        "info": "In the event of a system failure, the system must preserve any information necessary to determine cause of failure and any information necessary to return to operations with least disruption to mission processes.",
+        "solution": "From the vSphere Client, select the ESXi host and right-click. Select the 'Add Diagnostic Partition' option to configure a core dump diagnostic partition.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run at least one of the following sets of commands:\n\nTo configure a core dump partition:\n\n$esxcli = Get-EsxCli -v2\n#View available partitions to configure\n$esxcli.system.coredump.partition.list.Invoke()\n$arguments = $esxcli.system.coredump.partition.set.CreateArgs()\n$arguments.partition = ''\n$esxcli.system.coredump.partition.set.Invoke($arguments)\n#You can't set the partition and enable it at the same time so now we can enable it\n$arguments = $esxcli.system.coredump.partition.set.CreateArgs()\n$arguments.enable = $true\n$esxcli.system.coredump.partition.set.Invoke($arguments)\n\nTo configure a core dump collector:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.coredump.network.set.CreateArgs()\n$arguments.interfacename = ''\n$arguments.serverip = ''\n$arguments.serverport = ''\n$arguments = $esxcli.system.coredump.network.set.Invoke($arguments)\n$arguments = $esxcli.system.coredump.network.set.CreateArgs()\n$arguments.enable = $true\n$arguments = $esxcli.system.coredump.network.set.Invoke($arguments)",
+        "reference": "800-53|SC-24,800-53r5|SC-24,CAT|III,CCI|CCI-001665,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-24,ITSG-33|SC-24a.,QCSC-v1|5.2.1,Rule-ID|SV-239299r816576_rule,STIG-ID|ESXI-67-000044,Vuln-ID|V-239299",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "esxcli system coredump network get",
+        "expect": "^[\\\\s]*Enabled[\\\\s]*:[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_24": {
+        "description": "ESXI-67-000047 - The ESXi Image Profile and vSphere Installation Bundle (VIB) Acceptance Levels must be verified.",
+        "info": "Verify the ESXi Image Profile to only allow signed VIBs. An unsigned VIB represents untested code installed on an ESXi host. The ESXi Image profile supports four acceptance levels:\n\n1. VMwareCertified - VIBs created, tested, and signed by VMware\n2. VMwareAccepted - VIBs created by a VMware partner but tested and signed by VMware\n3. PartnerSupported - VIBs created, tested, and signed by a certified VMware partner\n4. CommunitySupported - VIBs that have not been tested by VMware or a VMware partner\n\nCommunitySupported VIBs are not supported and do not have a digital signature. To protect the security and integrity of ESXi hosts, do not allow unsigned (CommunitySupported) VIBs to be installed on hosts.\n\nSatisfies: SRG-OS-000366-VMM-001430, SRG-OS-000370-VMM-001460, SRG-OS-000404-VMM-001650",
+        "solution": "From the vSphere Client, select the ESXi host and go to Configure >> System >> Security Profile.\n\nUnder 'Host Image Profile Acceptance Level', click 'Edit'.\n\nUsing the pull-down selection, set the acceptance level to be 'VMwareCertified', 'VMwareAccepted', or 'PartnerSupported'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.software.acceptance.set.CreateArgs()\n$arguments.level = 'PartnerSupported'\n$esxcli.software.acceptance.set.Invoke($arguments)\n\nNote: 'VMwareCertified' or 'VMwareAccepted' may be substituted for 'PartnerSupported', depending on local requirements. These are also case sensitive.",
+        "reference": "800-171|3.4.5,800-171|3.4.8,800-171|3.13.16,800-53|CM-5(3),800-53|CM-7(5)(b),800-53|SC-28(1),800-53r5|CM-7(5)(b),800-53r5|CM-14,800-53r5|SC-28(1),CAT|I,CCI|CCI-001749,CCI|CCI-001774,CCI|CCI-002475,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-5(3),ITSG-33|CM-7,ITSG-33|SC-28(1),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|7.2,Rule-ID|SV-239302r878138_rule,STIG-ID|ESXI-67-000047,SWIFT-CSCv1|2.3,TBA-FIISB|28.1,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-239302",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "esxcli software acceptance get",
+        "expect": "^[\\\\s]*(PartnerSupported|VMwareCertified|VMwareAccepted)[\\\\s]*$"
+    },
+    "custom_item_25": {
+        "description": "ESXI-67-000056 - The ESXi host must configure the firewall to restrict access to services running on the host.",
+        "info": "Unrestricted access to services running on an ESXi host can expose a host to outside attacks and unauthorized access. Reduce the risk by configuring the ESXi firewall to only allow access from authorized networks.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "From the vSphere Client, select the ESXi host and go to Configure >> System >> Firewall.\n\nUnder the 'Firewall' section, click 'Edit'.\n\nFor each enabled service, uncheck the check box to 'Allow connections from any IP address' and input the site-specific network(s) required.\n\nConfigure this for incoming and outgoing connections.\n\nThe following example formats are acceptable:\n\n192.168.0.0/24\n192.168.1.2, 2001::1/64\nfd3e:29a6:0a81:e478::/64\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\n$esxcli = Get-EsxCli -v2\n#This disables the allow all rule for the target service. We are targeting the sshServer service in this example.\n$arguments = $esxcli.network.firewall.ruleset.set.CreateArgs()\n$arguments.rulesetid = 'sshServer'\n$arguments.allowedall = $false\n$esxcli.network.firewall.ruleset.set.Invoke($arguments)\n\n#Next add the allowed IPs for the service. Note doing the 'vSphere Web Client' service this way may disable access but may be done through vCenter or through the console.\n$arguments = $esxcli.network.firewall.ruleset.allowedip.add.CreateArgs()\n$arguments.rulesetid = 'sshServer'\n$arguments.ipaddress = '10.0.0.0/8'\n$esxcli.network.firewall.ruleset.allowedip.add.Invoke($arguments)\n\nThis must be done for each enabled service.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239310r674859_rule,STIG-ID|ESXI-67-000056,SWIFT-CSCv1|2.3,Vuln-ID|V-239310",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "esxcli network firewall ruleset list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_26": {
+        "description": "ESXI-67-000076 - The ESXi host must enable Secure Boot.",
+        "info": "Secure Boot is a protocol of UEFI firmware that ensures the integrity of the boot process from hardware up through to the OS. Secure Boot for ESXi requires support from the firmware and requires that all ESXi kernel modules, drivers, and vSphere Installation Bundles (VIBs) be signed by VMware or a partner subordinate.",
+        "solution": "Temporarily enable SSH, connect to the ESXi host, and run the following command:\n\n/usr/lib/vmware/secureboot/bin/secureBoot.py -c\n\nIf the output indicates that Secure Boot cannot be enabled, correct the discrepancies and try again. If the discrepancies cannot be rectified, this finding is downgraded to a CAT III.\n\nConsult vendor documentation and boot the host into BIOS setup mode. Enable UEFI boot mode and Secure Boot. Restart the host.\n\nTemporarily enable SSH, connect to the ESXi host, and run the following command to verify that Secure Boot is enabled:\n\n/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239327r674910_rule,STIG-ID|ESXI-67-000076,SWIFT-CSCv1|2.3,Vuln-ID|V-239327",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/lib/vmware/secureboot/bin/secureBoot.py -s",
+        "expect": "^Enabled$"
+    },
+    "custom_item_27": {
+        "description": "ESXI-67-000078 - The ESXi host must use DoD-approved certificates.",
+        "info": "The default self-signed, VMware Certificate Authority-issued host certificate must be replaced with a DoD-approved certificate when the host will be accessed directly, such as during a VM console connection.\n\nThe use of a DoD certificate on the host assures clients that the service they are connecting to is legitimate and properly secured.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Obtain a DoD-issued certificate and private key for the host following the requirements below:\n\nKey size: 2048 bits or more (PEM encoded)\n\nKey format: PEM; VMware supports PKCS8 and PKCS1 (RSA keys)\nx509 version 3\n\nSubjectAltName must contain DNS Name=CRT (Base-64) format\n\nContains the following Key Usages: Digital Signature, Non Repudiation, Key Encipherment\n\nStart time of one day before the current time.\n\nCN (and SubjectAltName) set to the host name (or IP address) that the ESXi host has in the vCenter Server inventory.\n\nPut the host into maintenance mode.\n\nTemporarily enable SSH on the host. SCP the new certificate and key to /tmp. SSH to the host. Back up the existing certificate and key:\n\nmv /etc/vmware/ssl/rui.crt /etc/vmware/ssl/rui.crt.bak\nmv /etc/vmware/ssl/rui.key /etc/vmware/ssl/rui.key.bak\n\nCopy the new certificate and key to /etc/vmware/ssl/ and rename them to rui.crt and rui.key respectively. Restart management agents to implement the new certificate:\n\nservices.sh restart\n\nFrom the vSphere Web Client, select the vCenter Server and click Configure >> System >> Advanced Settings.\n\nFind the 'vpxd.certmgmt value' and set it to 'custom'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-239328r674913_rule,STIG-ID|ESXI-67-000078,SWIFT-CSCv1|2.3,Vuln-ID|V-239328",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "openssl x509 -in /etc/vmware/ssl/rui.crt -text | grep Issuer",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_28": {
+        "description": "ESXI-67-100010 - The ESXi host SSH daemon must be configured to only use FIPS 140-2 approved ciphers.",
+        "info": "Approved algorithms should impart some level of confidence in their implementation. These are also required for compliance.",
+        "solution": "Limit the ciphers to algorithms that are FIPS approved. Counter (CTR) mode is also preferred over cipher-block chaining (CBC) mode.\n\nAdd or correct the following line in '/etc/ssh/sshd_config':\n\nCiphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|VMW_vSphere_6-7_ESXi_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-239331r878146_rule,STIG-ID|ESXI-67-100010,Vuln-ID|V-239331",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Ciphers[\\\\s]+",
+        "expect": "^[\\\\s]*Ciphers[\\\\s]+aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr[\\\\s]*$"
+    }
+}

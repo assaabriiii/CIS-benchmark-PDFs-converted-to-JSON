@@ -1,0 +1,193 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "1.1 Install the latest fix packs",
+        "info": "Periodically, IBM releases fix packs to enhance features and resolve defects, including security defects. It is recommended that the DB2 instance remain current with all fix packs.\n\nInstalling the latest DB2 fix pack will help protect the database from known vulnerabilities as well as reduce downtime that may otherwise result from functional defects.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Apply the latest fix pack as offered from IBM.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|2S,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2level",
+        "expect": "ManualReviewRequired"
+    },
+    "custom_item_3": {
+        "description": "3.1.2 Encrypt user data across the network",
+        "info": "DB2 supports a number of authentication mechanisms. It is recommended that the DATA_ENCRYPT authentication mechanism be used.\n\nThe DATA_ENCRYPT authentication mechanism employs cryptographic algorithms to protect the confidentiality of authentication credentials and user data as they traverse the network between the DB2 client and server.",
+        "solution": "The suggested value is DATA_ENCRYPT so that authentication occurs at the server. To set this:\n1. Attach to the DB2 instance:\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using authentication data_encrypt\nDefault Value:\nThe default value for AUTHENTICATION is SERVER.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2S,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | grep 'AUTHENTICATION'",
+        "expect": "AUTHENTICATION.*=[\\\\s]*DATA_ENCRYPT[\\\\s]*$"
+    },
+    "custom_item_4": {
+        "description": "3.1.6 Secure permissions for default database file path",
+        "info": "The dftdbpath parameter contains the default file path used to create DB2 databases. It is recommended that the permissions for this directory be set to full access for DB2 administrators and read and execute access only for all other accounts. It is also recommended that this directory be owned by the DB2 Administrator.\n\nRestricting access to the directory used as the default file path through permissions will help ensure that the confidentiality, integrity, and availability of the files there are protected.",
+        "solution": "For Windows and Linux:\n1. Attach to the DB2 instance.\n2. Run the following command from the DB2 command window to change the default file path, if necessary:\n\nAdditional steps for Windows:\n1. Connect to the DB2 host\n2. Right-click over the directory used as the default file path\n3. Choose Properties\n4. Select the Security tab\n5. Assign ownership of the directory to the DB2 Administrator\n6. Grant all DB administrator accounts the Full Control authority\n7. Grant only read and execute privileges to all other users (revoke all other privileges)\n\n\nAdditional steps for Linux:\n1. Connect to the DB2 host\n2. Change to the directory used as the default file path\n3. Assign the DB2 Administrator to be the owner of the directory using the chown command\n4. Change the permissions for the directory\nOS => chmod -R 755\nDefault Value:\nThe default value for this directory is read and write access for non-administrator accounts.",
+        "reference": "800-171|3.3.8,800-171|3.3.9,800-53|AU-9(4),800-53r5|AU-9(4),CN-L3|8.1.4.3(d),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2S,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@INSTANCE_HOME@/sqllib/bin/db2 'get database manager configuration' | grep 'DFTDBPATH' | awk '{ print $NF }' | xargs ls -ld | awk '{ print $1,$3,$NF }'",
+        "expect": "^drwx.[^w]..[^w]. @DB2_OWNER@ @INSTANCE_HOME@$"
+    },
+    "custom_item_5": {
+        "description": "Determine if DIAGPATH is not configured",
+        "cmd": "@DB2_BIN_PATH@/db2 get database manager configuration | /bin/egrep 'DIAGPATH' | awk '{ print $NF }'",
+        "expect": "="
+    },
+    "custom_item_6": {
+        "description": "3.1.8 Secure all diagnostic logs",
+        "info": "The diagpath parameter specifies the location of the diagnostic files for the DB2 instance. The directory at this location should be secured so that users have read and execute privileges only (no write privileges). All DB2 administrators should have full access to the directory.\n\nSecuring the directory will ensure that the confidentiality, integrity, and availability of the diagnostic files contained in the directory are preserved.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "For Windows and Linux, to change the directory for the diagnostic logs:\n1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using diagpath\n\nAdditional steps for Windows:\n1. Connect to the DB2 host\n2. Right-click over the diagnostic log directory\n3. Choose Properties\n4. Select the Security tab\n5. Grant the Full Control authority to all DB2 administrator accounts\n6. Grant only read and execute privileges to all other accounts (revoke any other privileges)\n\nAdditional steps for Linux:\n1. Connect to the DB2 host\n2. Change to the diagnostic log directory\n3. Change the permissions of the directory\nOS => chmod -R 755\nDefault Value:\nThe default value for diagpath is NULL.",
+        "reference": "800-171|3.3.8,800-171|3.3.9,800-53|AU-9(4),800-53r5|AU-9(4),CN-L3|8.1.4.3(d),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2S,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 get database manager configuration | /bin/egrep '\\\\(DIAGPATH\\\\)\\\\s*='",
+        "expect": "\\\\(DIAGPATH\\\\)\\\\s*=\\\\s*$"
+    },
+    "custom_item_7": {
+        "description": "3.1.8 Secure all diagnostic logs",
+        "info": "The diagpath parameter specifies the location of the diagnostic files for the DB2 instance. The directory at this location should be secured so that users have read and execute privileges only (no write privileges). All DB2 administrators should have full access to the directory.\n\nSecuring the directory will ensure that the confidentiality, integrity, and availability of the diagnostic files contained in the directory are preserved.",
+        "solution": "For Windows and Linux, to change the directory for the diagnostic logs:\n1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using diagpath\n\nAdditional steps for Windows:\n1. Connect to the DB2 host\n2. Right-click over the diagnostic log directory\n3. Choose Properties\n4. Select the Security tab\n5. Grant the Full Control authority to all DB2 administrator accounts\n6. Grant only read and execute privileges to all other accounts (revoke any other privileges)\n\nAdditional steps for Linux:\n1. Connect to the DB2 host\n2. Change to the diagnostic log directory\n3. Change the permissions of the directory\nOS => chmod -R 755\nDefault Value:\nThe default value for diagpath is NULL.",
+        "reference": "800-171|3.3.8,800-171|3.3.9,800-53|AU-9(4),800-53r5|AU-9(4),CN-L3|8.1.4.3(d),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2S,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 get database manager configuration | /bin/egrep '\\\\(DIAGPATH\\\\)\\\\s*=' | awk '{ print $NF }' | xargs ls -ald",
+        "expect": "^dr[-w]x[-r]-[-x][-r]-[-x]"
+    },
+    "custom_item_8": {
+        "description": "Check if SVCENAME is numeric",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SVCENAME\\\\)\\\\s*=' | awk '{ print $NF }'",
+        "expect": "^[0-9]+$"
+    },
+    "custom_item_9": {
+        "description": "3.1.17 Reserve the desired port number or name for incoming connection requests",
+        "info": "The svcename parameter reserves the port number (or name, on Linux hosts) for listening to incoming communications from a Data Server Runtime Client. Both the database server port number or name and the TCP/IP service name must be defined on the database client.\n\nWhen the database server is started, a port number or name is required to listen for incoming connection requests.\nOn Linux systems, the services file is found at: /etc/services",
+        "solution": "Run the following command to set the svcename parameter value.\ndb2 => update dbm cfg using svcenameimmediate or deferred",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SVCENAME\\\\)\\\\s*=' | awk '{ if ($NF != 50000) result = \" not\"; print $NF\" -\"result\" default\" }'",
+        "expect": "- not default$"
+    },
+    "custom_item_10": {
+        "description": "3.1.17 Reserve the desired port number or name for incoming connection requests",
+        "info": "The svcename parameter reserves the port number (or name, on Linux hosts) for listening to incoming communications from a Data Server Runtime Client. Both the database server port number or name and the TCP/IP service name must be defined on the database client.\n\nWhen the database server is started, a port number or name is required to listen for incoming connection requests.\nOn Linux systems, the services file is found at: /etc/services",
+        "solution": "Run the following command to set the svcename parameter value.\ndb2 => update dbm cfg using svcenameimmediate or deferred",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SVCENAME\\\\)\\\\s*=' | awk '{ print $NF }' | xargs -n1 -I{} egrep -Ei '^{}\\\\s' /etc/services | awk '{ p=$2; gsub(/[^0-9]/, \"\", p) } END { if (!p) { s = \"port unknown\" } else if (p == 50000) { s = \"default\" } else { s = \"not default\" } print p\" - \"s }'",
+        "expect": "- not default$"
+    },
+    "custom_item_11": {
+        "description": "Check if SSL_SVCENAME is numeric",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SSL_SVCENAME\\\\)\\\\s*=' | awk '{ print $NF }'",
+        "expect": "^[0-9]+$"
+    },
+    "custom_item_12": {
+        "description": "3.1.18 Reserve the desired port number or name for incoming SSL connections",
+        "info": "The ssl_svcename configuration parameter defines the name or number of the port the database server listens for incoming communications from remote client nodes using the SSL protocol. The ssl_svcename and svcename port numbers cannot be the same.\nOn Linux operating systems, the ssl_svcename file is located in: /etc/services\n\nConsider using a non-default port to help protect the database from attacks directed to a default port.",
+        "solution": "Run the following command to set the ssl_svcename parameter value.\ndb2 => update dbm cfg using ssl_svcenameimmediate or deferred\nDefault Value:\nNull",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SSL_SVCENAME\\\\)\\\\s*=' | awk '{ if ($NF != 50000) result = \" not\"; print $NF\" -\"result\" default\" }'",
+        "expect": "- not default$"
+    },
+    "custom_item_13": {
+        "description": "3.1.18 Reserve the desired port number or name for incoming SSL connections",
+        "info": "The ssl_svcename configuration parameter defines the name or number of the port the database server listens for incoming communications from remote client nodes using the SSL protocol. The ssl_svcename and svcename port numbers cannot be the same.\nOn Linux operating systems, the ssl_svcename file is located in: /etc/services\n\nConsider using a non-default port to help protect the database from attacks directed to a default port.",
+        "solution": "Run the following command to set the ssl_svcename parameter value.\ndb2 => update dbm cfg using ssl_svcenameimmediate or deferred\nDefault Value:\nNull",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep '\\\\(SSL_SVCENAME\\\\)\\\\s*=' | awk '{ print $NF }' | xargs -n1 -I{} egrep -Ei '^{}\\\\s' /etc/services | awk '{ p=$2; gsub(/[^0-9]/, \"\", p) } END { if (!p) { s = \"port unknown\" } else if (p == 50000) { s = \"default\" } else { s = \"not default\" } print p\" - \"s }'",
+        "expect": "- not default$"
+    },
+    "custom_item_14": {
+        "description": "3.3.2 Set a generic system name",
+        "info": "The db2system parameter specifies the DB2 system name that is used by users and database administrators to identify the DB2 server. It is recommended that this parameter be set to a value that does not represent sensitive aspects of the system.\n\nExposing OS or DB revision information may provide malicious users with enough information to identify vulnerabilities that may be present in the platforms.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n3. Run the following command from the DB2 command window:\ndb2 => update database configuration using db2systemDefault Value:\nThe default value for DB2SYSTEM is the hostname.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(db2system\\\\)'",
+        "expect": "^[^: ]+:"
+    },
+    "custom_item_15": {
+        "description": "3.3.3 Disable DAS discoverability",
+        "info": "The discover parameter specifies the discovery mode for the DB2 Administration Server. It is recommended that this parameter be set to DISABLE.\n\nThe DB2 Administration Server should not handle any type of discovery request. This will prevent a malicious user from discovering all DB2 servers on the network.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update admin configuration using discover disable\nDefault Value:\nThe default value for DISCOVER is SEARCH.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(discover\\\\)' | awk '{ print $NF }'",
+        "expect": "^[Dd][Ii][Ss][Aa][Bb][Ll][Ee]$"
+    },
+    "custom_item_16": {
+        "description": "3.3.4 Prevent execution of expired tasks",
+        "info": "The exec_exp_task parameter controls whether the DB2 Scheduler will initialize past tasks that were scheduled but not yet executed. It is recommended that this parameter be set to NO.\n\nThis will help ensure sequestered jobs are not invoked by accident, which may have malicious scripts associated with the job. Ensure to review all expired jobs before restarting them.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using exec_exp_task no\nDefault Value:\nThe default value for exec_exp_task is NO.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(exec_exp_task\\\\)' | awk '{ print $NF }'",
+        "expect": "^[Nn][Oo]$"
+    },
+    "custom_item_17": {
+        "description": "3.3.5 Secure the JDK 32-bit runtime library",
+        "info": "The jdk_path parameter specifies the 32-bit Software Developer's Kit (SDK) for Java directory for the DB2 Administration Server. It is recommended that the location pointed to by this parameter contain a current version of the JDK and be secured.\n\nMaintaining JDK currency will ensure known exploitable conditions are mitigated. Ensuring that the location of the JDK is secure will help prevent attackers from compromising the integrity of Java runtime and therefore the administrative facilities of the DB server.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using jdk_pathDefault Value:\nThe default value for jdk_path is the default java install path.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSCv6|2.2,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|2S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(jdk_path\\\\)' | awk '{ print $NF }' | xargs ls -l 2>&1",
+        "expect": "^[dl][r-][w-][x-]"
+    },
+    "custom_item_18": {
+        "description": "3.3.6 Secure the JDK 64-bit runtime library",
+        "info": "The jdk_64_path parameter specifies the 64-bit Software Developer's Kit (SDK) for Java directory for the DB2 Administration Server. It is recommended that the location pointed to by this parameter contain a current version of the JDK and be secured.\n\nMaintaining JDK currency will ensure known exploitable conditions are mitigated. Ensuring that the location of the JDK is secure will help prevent malicious entities from compromising the integrity of Java runtime and therefore the administrative facilities of the DB server.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using jdk_64_pathDefault Value:\nThe default value for jdk_64_path is the default install java path.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSCv6|2.2,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|2S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(jdk_path\\\\)' | awk '{ print $NF }' | xargs ls -l 2>&1",
+        "expect": "^[dl][r-][w-][x-]"
+    },
+    "custom_item_19": {
+        "description": "3.3.7 Disable unused task scheduler",
+        "info": "The sched_enable parameter specifies whether the DB2 Task Center utility is allowed to schedule and execute tasks at the administration server. It is recommended that this parameter be set to OFF when the Task Scheduler is not in use.\n\nEnable this feature only when scheduling and executing tasks from the DB2 Task Center utility is necessary. This will ensure that malicious tasks are not executed unknowingly by the DB2 server.",
+        "solution": "1. Attach to the DB2 instance.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update admin configuration using sched_enable off\nDefault Value:\nThe default value for SCHED_ENABLE is OFF.\n4 Label-Based Access Controls (LBAC)\nThis section provides guidance on a new feature in DB2 V9.1 that can control the read and write access of a user at the table column and row level. This feature is a separately licensed component of DB2; therefore, apply these settings where appropriate.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get admin configuration' | egrep -i '\\\\(sched_enable\\\\)' | awk '{ print $NF }'",
+        "expect": "^[Oo][Ff][Ff]$"
+    },
+    "custom_item_20": {
+        "description": "7.1 Establish an administrator group",
+        "info": "The sysadm_group parameter defines the system administrator group with SYSADM authority for the DB2 instance. Accounts with this authority possess the highest level of authority within the database manager (i.e., stopping/starting services, backup/recovery, and maintenance) and control all database objects (i.e., data, system objects, and privileges). It is recommended that the sysadm_group group contains authorized users only.\n\nIf an account that possesses this authority is compromised or used in a malicious manner, the confidentiality, integrity, and availability of data in the DB2 instance will be at increased risk.",
+        "solution": "Define a valid group name for the SYSADM group.\n1. Attach to the DB2 database.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using sysadm_groupDefault Value:\nThe default value for SYSADM_GROUP is NULL.",
+        "reference": "800-171|3.1.5,800-53|AC-6(5),800-53r5|AC-6(5),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(5),LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM32,NIAv2|AM33,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep -i '\\\\(sysadm_group\\\\)' | awk '{ print $NF }' | xargs -IVAL awk -F: -v group=VAL 'tolower($1) == tolower(group) { print; f=1 } END { if (f != 1) { print \"No group found: \"group } }' /etc/group",
+        "expect": "^[^: ]+:"
+    },
+    "custom_item_21": {
+        "description": "7.2 Establish a system control group",
+        "info": "The sysctrl_group parameter defines the system administrator group with system control (SYSCTRL) authority. It is recommended that the sysctrl_group group contains authorized users only.\n\nIf an account that possesses this authority is compromised or used in a malicious manner, the confidentiality, integrity, and availability of data in the DB2 instance will be at increased risk.",
+        "solution": "Define a valid group name for the SYSCTRL group. Note: This parameter does not apply to Windows platforms.\n1. Attach to the DB2 database.\ndb2 => attach to $DB2INSTANCE\n2. Run the following command from the DB2 command window:\ndb2 => update database manager configuration using sysctrl_groupDefault Value:\nThe default value for SYSCTRL_GROUP is NULL.",
+        "reference": "800-171|3.1.5,800-53|AC-6(5),800-53r5|AC-6(5),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(5),LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM32,NIAv2|AM33,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'get database manager configuration' | egrep -i '\\\\(sysctrl_group\\\\)' | awk '{ print $NF }' | xargs -IVAL awk -F: -v group=VAL 'tolower($1) == tolower(group) { print; f=1 } END { if (f != 1) { print \"No group found: \"group } }' /etc/group",
+        "expect": "^[^: ]+:"
+    },
+    "custom_item_22": {
+        "description": "8.2 Restrict access to starting and stopping the DB2 administration server",
+        "info": "The DB2 administration server responds to remote requests from administration tools and client utilities. It is recommended that only administrators are allowed to start and stop the DB2 administration server.\n\nAllowing only privileged users to start and stop the DB2 administration server will help ensure that the DB2 administration server is controlled by authorized administrators.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the host\n2. Review users and groups that have access to start and stop the DB2 instance\n3. Revoke access from any unnecessary users.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|3.1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2NS,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "awk -F: 'BEGIN { gid = \"@DB2_GROUP@\" } FILENAME == \"/etc/group\" && $1 == \"@DB2_GROUP@\" { gid=$3; gsub(/,/, \"\\\\n\", $4); print $4 } FILENAME == \"/etc/passwd\" && $4 == gid { print $1 } END { if (gid == \"@DB2_GROUP@\") { print \"No group @DB2_GROUP@ exists\" } }' /etc/group /etc/passwd | sort",
+        "expect": "ManualReviewRequired"
+    },
+    "custom_item_23": {
+        "description": "8.5 Remove default databases",
+        "info": "A DB2 Instance may come installed with default databases. It is recommended that the SAMPLE database be removed.\n\nRemoving unused, well-known databases will reduce the attack surface of the system.",
+        "solution": "To drop sample databases:\n1. Connect to the DB2 database.\n2. Run the following command from the DB2 command window:\ndb2 => drop database sample",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1654",
+        "cmd": "@DB2_BIN_PATH@/db2 'list database directory' | /bin/egrep 'Database name.*SAMPLE' | /bin/awk -F'= ' '{ print $2 } END { if (NR == 0) { print \"No default databases found\" } }'",
+        "expect": "No default databases found"
+    }
+}

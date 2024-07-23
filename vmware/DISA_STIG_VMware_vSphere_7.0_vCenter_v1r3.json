@@ -1,0 +1,42 @@
+{
+    "custom_item_1": {
+        "description": "VCSA-70-000034 - The vCenter Server must produce audit records containing information to establish what type of events occurred.",
+        "info": "Without establishing what types of events occurred, it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.",
+        "solution": "From the vSphere Client, go to Host and Clusters.\n\nSelect a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'config.log.level' setting to 'info'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server, run the following command:\n\nGet-AdvancedSetting -Entity-Name config.log.level | Set-AdvancedSetting -Value info",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256321r885574_rule,STIG-ID|VCSA-70-000034,SWIFT-CSCv1|6.4,Vuln-ID|V-256321",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.log.level : ",
+        "expect": "config.log.level : info"
+    },
+    "custom_item_2": {
+        "description": "VCSA-70-000248 - The vCenter Server must disable the Customer Experience Improvement Program (CEIP).",
+        "info": "The VMware CEIP sends VMware anonymized system information that is used to improve the quality, reliability, and functionality of VMware products and services. For confidentiality purposes this feature must be disabled.",
+        "solution": "From the vSphere Client, go to Administration >> Deployment >> Customer Experience Improvement Program.\n\nClick 'Leave Program'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256343r885640_rule,STIG-ID|VCSA-70-000248,SWIFT-CSCv1|2.3,Vuln-ID|V-256343",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.HostClientCEIPOptIn : ",
+        "expect": "UserVars.HostClientCEIPOptIn : 2"
+    },
+    "custom_item_3": {
+        "description": "VCSA-70-000275 - The vCenter Server must configure the 'vpxuser' auto-password to be changed every 30 days.",
+        "info": "By default, vCenter will change the 'vpxuser' password automatically every 30 days. Ensure this setting meets site policies. If it does not, configure it to meet password aging policies.\n\nNote: It is very important the password aging policy is not shorter than the default interval that is set to automatically change the 'vpxuser' password to preclude the possibility that vCenter might be locked out of an ESXi host.",
+        "solution": "From the vSphere Client, go to Host and Clusters.\n\nSelect a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'VirtualCenter.VimPasswordExpirationInDays' value to '30', or if the value does not exist, create it by entering the values in the 'Key' and 'Value' fields and clicking 'Add'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server, run the following command:\n\nIf the setting already exists:\n\nGet-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays | Set-AdvancedSetting -Value 30\n\nIf the setting does not exist:\n\nNew-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays -Value 30",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256355r885676_rule,STIG-ID|VCSA-70-000275,SWIFT-CSCv1|2.3,Vuln-ID|V-256355",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "VirtualCenter.VimPasswordExpirationInDays : ",
+        "expect": "VirtualCenter.VimPasswordExpirationInDays : 30$"
+    },
+    "custom_item_4": {
+        "description": "VCSA-70-000276 - The vCenter Server must configure the 'vpxuser' password to meet length policy.",
+        "info": "The 'vpxuser' password default length is 32 characters. Ensure this setting meets site policies; if not, configure to meet password length policies.\n\nLonger passwords make brute-force password attacks more difficult. The 'vpxuser' password is added by vCenter, meaning no manual intervention is normally required. The 'vpxuser' password length must never be modified to less than the default length of 32 characters.",
+        "solution": "From the vSphere Client, go to Host and Clusters.\n\nSelect a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'config.vpxd.hostPasswordLength' value to '32'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server, run the following command:\n\nGet-AdvancedSetting -Entity-Name config.vpxd.hostPasswordLength | Set-AdvancedSetting -Value 32",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256356r885679_rule,STIG-ID|VCSA-70-000276,SWIFT-CSCv1|2.3,Vuln-ID|V-256356",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.vpxd.hostPasswordLength : ",
+        "expect": "config.vpxd.hostPasswordLength : 32"
+    }
+}

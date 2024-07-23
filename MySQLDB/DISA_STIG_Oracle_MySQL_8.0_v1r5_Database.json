@@ -1,0 +1,1067 @@
+{
+    "custom_item_1": {
+        "description": "MySQL 8.0 is installed",
+        "sql_request": "show variables like 'version' ;",
+        "sql_expect": "version"
+    },
+    "custom_item_2": {
+        "description": "MySQL 8.0 Enterprise Edition is installed",
+        "sql_request": "show variables like 'license' ;",
+        "sql_expect": "license"
+    },
+    "custom_item_3": {
+        "description": "MYS8-00-000100 - MySQL Database Server 8.0 must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+        "info": "Enterprise environments make account management for applications and databases challenging and complex. A manual process for account management functions adds the risk of a potential oversight or other error. Managing accounts for the same person in multiple places is inefficient and prone to problems with consistency and synchronization.\n\nA comprehensive application account management process that includes automation helps to ensure accounts designated as requiring attention are consistently and promptly addressed.\n\nExamples include, but are not limited to, using automation to take action on multiple accounts designated as inactive, suspended, or terminated, or by disabling accounts located in non-centralized account stores, such as multiple servers.  Account management functions can also include: assignment of group or role membership; identifying account type; specifying user access authorizations (i.e., privileges); account removal, update, or termination; and administrative alerts. The use of automated mechanisms can include, for example: using email or text messaging to notify account managers when users are terminated or transferred; using the information system to monitor account usage; and using automated telephone notification to report atypical system account usage.\n\nThe DBMS must be configured to automatically utilize organization-level account management functions, and these functions must immediately enforce the organization's current account policy.\n\nAutomation may be comprised of differing technologies that when placed together contain an overall mechanism supporting an organization's automated account management requirements.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Integrate MySQL database server 8.0 security with an organization-level authentication/access mechanism using MySQL external authentication for Microsoft AD or LDAP, or Linux PAMs thus providing account management for all users, groups, roles, and any other principals.\n\nIf native mysql users are required, document the need and justification; describe the measures taken to ensure the use of MySQL Server authentication is kept to a minimum; describe the measures taken to safeguard passwords; list or describe the MySQL logins used.\n\nFor each MySQL database server 8.0 managed account that is not documented and approved, either transfer it to management by the external mechanism, or document the need for it and obtain approval, as appropriate.\n\nInstall appropriate external authentication plugin, for example to install LDAP.\nINSTALL PLUGIN authentication_ldap_sasl\n  SONAME 'authentication_ldap_sasl.so';\nINSTALL PLUGIN authentication_ldap_simple\n  SONAME 'authentication_ldap_simple.so';\n\nConfigure the plugin, for example:\nSET PERSIST authentication_ldap_sasl_server_host='127.0.0.1';\nSET PERSIST authentication_ldap_sasl_bind_base_dn='dc=example,dc=com';\nSET PERSIST authentication_ldap_simple_server_host='127.0.0.1';\nSET PERSIST authentication_ldap_simple_bind_base_dn='dc=example,dc=com';\n\nCreate users with proper organizational mapping, for example:\nCREATE USER 'betsy'@'localhost'\n  IDENTIFIED WITH authentication_ldap_simple\n  BY 'uid=betsy_ldap,ou=People,dc=example,dc=com';\n\nAssign appropriate permissions via grants on objects or to roles, etc. See  https://dev.mysql.com/doc/refman/8.0/en/grant.html.\nFor example:\nGRANT ALL ON db1.* TO 'betsy'@'localhost';\nGRANT 'role1', 'role2' TO 'user1'@'localhost', 'user2'@'localhost';\nGRANT SELECT ON world.* TO 'role3';\n\nFor accounts not required in the MySQL Server:\nDROP USER;",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CAT|I,CCI|CCI-000015,CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-235095r879522_rule,STIG-ID|MYS8-00-000100,Vuln-ID|V-235095",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE '%ldap%' OR PLUGIN_NAME LIKE '%pam%' OR PLUGIN_NAME LIKE '%authentication_windows %';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_4": {
+        "description": "max_user_connections",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE 'max_user_connections' ;",
+        "sql_expect": "max_user_connections"
+    },
+    "custom_item_5": {
+        "description": "session settings",
+        "sql_request": "SELECT user, host, max_user_connections FROM mysql.user WHERE user not like 'mysql.%' and user not like 'root';",
+        "sql_expect": ".+"
+    },
+    "custom_item_6": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit_log' ;",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_7": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE 'audit_log_encryption' ;",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_8": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, plugin_status FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit_log' ;",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_9": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE 'audit_log_encryption' ;",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_10": {
+        "description": "MYS8-00-001700 - The MySQL Database Server 8.0 must allow only the Information System Security Manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+        "info": "Without the capability to restrict which roles and individuals can select which events are audited, unauthorized personnel may be able to prevent or interfere with the auditing of critical events.\n\nSuppression of auditing could permit an adversary to evade detection.\n\nMisconfigured audits can degrade the system's performance by overwhelming the audit log. Misconfigured audits may also make it more difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAUDIT_ADMIN enables audit log configuration. This privilege is defined by the audit_log plugin when it is installed.\nSUPER is a powerful and far-reaching privilege and should not be granted lightly.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the MySQL Database Server 8.0 settings to allow designated personnel to select which auditable events are audited.\n\nGrant permissions to users who need rights to create auditing rules.\n\nGRANT AUDIT_ADMIN\nON *.* TO ''@'';\n\nFor example:\nGRANT AUDIT_ADMIN\nON *.* TO 'auditusername'@'%';",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12b.,800-53r5|AU-12b.,CAT|II,CCI|CCI-000171,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12b.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-235104r879560_rule,STIG-ID|MYS8-00-001700,SWIFT-CSCv1|6.4,Vuln-ID|V-235104",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT * FROM INFORMATION_SCHEMA.USER_PRIVILEGES where PRIVILEGE_TYPE in ('AUDIT_ADMIN', 'SUPER');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_11": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_12": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_13": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_14": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_16": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_17": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_18": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_19": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_20": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_21": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_22": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_23": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_24": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_25": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_26": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_27": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_28": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_29": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_30": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_31": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_32": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_33": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_34": {
+        "description": "proxies_priv",
+        "sql_request": "select * from mysql.proxies_priv;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_35": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_36": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_37": {
+        "description": "filters",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_38": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_39": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_40": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_41": {
+        "description": "filters",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_42": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_43": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_44": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_45": {
+        "description": "filter",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_46": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_47": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_48": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_49": {
+        "description": "filter",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_50": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_51": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_52": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_53": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_54": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_55": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_56": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_57": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_58": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_59": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_60": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_61": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_62": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_63": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_64": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_65": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_66": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_67": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_68": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_69": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_70": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_71": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_72": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_73": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_74": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_75": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_76": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_77": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_78": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_79": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_80": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_81": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_82": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_83": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_84": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_85": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_86": {
+        "description": "filters",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_87": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_88": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_89": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_90": {
+        "description": "filters",
+        "sql_request": "select * from mysql.audit_log_filter;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_91": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_92": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_93": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_94": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_95": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_96": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_97": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_98": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_99": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_100": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_101": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_102": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_103": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_104": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_105": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_106": {
+        "description": "MYS8-00-004700 - The MySQL Database Server 8.0, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates.\n\nA certificate's certification path is the path from the end entity certificate to a trusted root certification authority (CA). Certification path validation is necessary for a relying party to make an informed decision regarding acceptance of an end entity certificate. Certification path validation includes checks such as certificate issuer trust, time validity, and revocation status for each certificate in the certification path. Revocation status information for CA and subject certificates in a certification path is commonly provided via certificate revocation lists (CRLs) or online certificate status protocol (OCSP) responses.\n\nDatabase Management Systems that do not validate certificates by performing RFC 5280-compliant certification path validation are in danger of accepting certificates that are invalid and/or counterfeit. This could allow unauthorized access to the database.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the DBMS to validate certificates by constructing a certification path with status information to an accepted trust anchor.\n\nConfigure the database server to support Transport Layer Security (TLS) protocols.\nmysql> set persist require_secure_transport=ON;\n\nSet system variables on the server side specify DoD approved certificate and key files the server uses when permitting clients to establish encrypted connections:\n\nssl_ca: The path name of the Certificate Authority (CA) certificate file. (ssl_capath is similar but specifies the path name of a directory of CA certificate files.)\n\nssl_cert: The path name of the server public key certificate file. This certificate can be sent to the client and authenticated against the CA certificate that it has.\n\nssl_key: The path name of the server private key file.\n\nFor example, to enable the server for encrypted connections with certificates, start it with these lines in the my.cnf file, changing the file names as necessary:\n\n[mysqld]\nssl_ca=ca.pem\nssl_cert=server-cert.pem\nssl_key=server-key.pem\nAlter users to require X509 certificates\n\nBelow is an example to add X509 as a requirement.\n\nFor a new user\nCREATE USER 'jeffrey'@'localhost' REQUIRE X509;\nAND SUBJECT '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Johan Smith'\n  AND ISSUER '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Some CA';\n\nOr to add to an existing user\nALTER USER 'johansmith'@'%'\nREQUIRE X509\n  AND SUBJECT '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Johan Smith'\n  AND ISSUER '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Some CA';",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235134r879612_rule,STIG-ID|MYS8-00-004700,Vuln-ID|V-235134",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@ssl_ca, @@ssl_capath, @@ssl_cert, @@ssl_cipher, @@ssl_crl, @@ssl_crlpath, @@ssl_fips_mode, @@ssl_key;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_107": {
+        "description": "MYS8-00-004800 - The MySQL Database Server 8.0 must enforce authorized access to all PKI private keys stored/utilized by the MySQL Database Server 8.0.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates. PKI certificate-based authentication is performed by requiring the certificate holder to cryptographically prove possession of the corresponding private key.\n\nIf the private key is stolen, an attacker can use it to impersonate the certificate holder. In cases where the Database Management System (DBMS)-stored private keys are used to authenticate the DBMS to the system's clients, loss of the corresponding private keys would allow an attacker to successfully perform undetected man-in-the-middle attacks against the DBMS system and its clients.\n\nBoth the holder of a digital certificate, and the issuing authority, must take careful measures to protect the corresponding private key. Private keys must always be generated and protected in FIPS 140-2 or 140-3 validated cryptographic modules.\n\nAll access to the private key(s) of the DBMS must be restricted to authorized and authenticated users. If unauthorized users have access to one or more of the DBMS's private keys, an attacker could gain access to the key(s) and use them to impersonate the database on the network or otherwise perform unauthorized actions.",
+        "solution": "Implement strong access and authentication controls to protect the database's private key.\n\nConfigure the database to support Transport Layer Security (TLS) protocols and the put in place file systems permissions on authentication and signing credentials, including private keys.\n\nPut keys in place in the datadir, or define their locations using ssl_capath and ssl_crlpath.\n\nEnsure proper permissions are set to protect the private keys and certificates.\n\nChange directory ssl_capath, ssl_crlpath, or the default datadir path.\n\nTo determine the file paths:\nselect @@ssl_capath, @@ssl_crlpath, @@ssl_key, @@datadir;\n\nEnsure OS account mysql owns all the pem and key files.\n$ chown mysql *.pem\n$ chgrp mysql *.key\n$ chmod 600 *.key'\n$ chmod 600 *.pem\n\nOptionally, allow access to public keys.\n$ chmod 644 client-cert.pem client-key.pem\n$chmod 644 public_key.pem server-cert.pem\n\nIf the server-key.pem has a password, provide this password when prompted during a console startup. The server will not start without this password if the server key is password protected.\n\nEdit the mysql configuration file.\n\n[mysqld]\nssl-fips-mode=ON\n\nIf the OpenSSL FIPS Object Module is not available, ssl_fips_mode to ON or STRICT at startup causes the server to produce an error message and exit.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|I,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235135r879613_rule,STIG-ID|MYS8-00-004800,Vuln-ID|V-235135",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@ssl_fips_mode;",
+        "sql_expect": "^(ON|STRICT)"
+    },
+    "custom_item_108": {
+        "description": "MYS8-00-004900 - The MySQL Database Server 8.0 must map the PKI-authenticated identity to an associated user account.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates. Once a PKI certificate has been validated, it must be mapped to a Database Management System (DBMS) user account for the authenticated identity to be meaningful to the DBMS and useful for authorization decisions.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the MySQL Database Server 8.0 to map the authenticated identity directly to the MySQL Database Server 8.0 user account.\n\nAlter users to require X509 certificates.\n\nBelow is an example to add X509 as a requirement.\n\nFor a new user:\nCREATE USER 'jeffrey'@'localhost' REQUIRE X509;\nAND SUBJECT '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Johan Smith'\n  AND ISSUER '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Some CA';\n\nOr to add to an existing user:\nALTER USER 'johansmith'@'%'\nREQUIRE X509\n  AND SUBJECT '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Johan Smith'\n  AND ISSUER '/C=US/ST=Texas/L=Houston/O=SomeCompany/CN=Some CA';",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(c),800-53r5|IA-5(2)(c),CAT|II,CCI|CCI-000187,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(c),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235136r879614_rule,STIG-ID|MYS8-00-004900,Vuln-ID|V-235136",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT `user`.`Host`, `user`.`User`, `user`.`ssl_type`, CAST(`user`.`x509_issuer` as CHAR) as Issuer, CAST(`user`.`x509_subject` as CHAR) as Subject FROM `mysql`.`user`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_109": {
+        "description": "Check authentication methods",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE '%ldap%' OR PLUGIN_NAME LIKE '%ldap%' OR PLUGIN_NAME LIKE '%pam%' OR PLUGIN_NAME like '%password';",
+        "sql_expect": "(mysql_native_password|sha256_password|caching_sha2_password)"
+    },
+    "custom_item_110": {
+        "description": "MYS8-00-005100 - If passwords are used for authentication, the MySQL Database Server 8.0 must store only hashed, salted representations of passwords.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates.\n\nAuthentication based on User ID and Password may be used only when it is not possible to employ a PKI certificate, and requires Authorizing Official (AO) approval.\n\nIn such cases, database passwords stored in clear text, using reversible encryption, or using unsalted hashes would be vulnerable to unauthorized disclosure. Database passwords must always be in the form of one-way, salted hashes when stored internally or externally to the Database Management System (DBMS).\n\nTo prevent the compromise of authentication information, such as passwords and PINs, during the authentication process, the feedback from the information system must not provide any information that would allow an unauthorized user to compromise the authentication mechanism.\n\nObfuscation of user-provided information when typed into the system is a method used in addressing this risk.\n\nFor example, displaying asterisks when a user types in a password or PIN, is an example of obscuring feedback of authentication information.\n\nThe password requirement is applicable when caching_sha2_password, sha2_password, native_mysql, or LDAP user/password authentication is enabled. When this is the case, password-authenticated accounts can be created in, and authenticated by, the MySQL Server. Other STIG requirements prohibit the use of password-based authentication except when justified and approved. This deals with the exceptions.\n\nThe mysql, mysqlsh, and other command-line tools are part of most MySQL installations. These tools can accept a plain-text password, but do offer alternative techniques. Since the typical user of these tools is a Database Administrator (DBA), the consequences of password compromise are particularly serious. Therefore, the use of plain-text passwords must be prohibited as a matter of practice and procedure.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Develop, document, and maintain a list of DBMS database objects, database configuration files, associated scripts, and applications defined within or external to the DBMS that access the database, and DBMS/user environment files/settings in the System Security Plan.\n\nRecord whether they do or do not contain DBMS passwords. If passwords are present, ensure they are encoded or encrypted and protected by host system security.\n\nWhere possible, alter the authentication mode to X509 or LDAP SASL/Kerberos:\nJust X509 certificate - for example\nALTER USER 'jeffrey'@'localhost' REQUIRE X509;\n\nSpecific X509 - for example\nALTER USER 'jeffrey'@'localhost'\n  REQUIRE SUBJECT '/C=SE/ST=Stockholm/L=Stockholm/\n    O=MySQL demo client certificate/\n    CN=client/emailAddress=client@example.com'\n  AND ISSUER '/C=SE/ST=Stockholm/L=Stockholm/\n    O=MySQL/CN=CA/emailAddress=ca@example.com'\nAND CIPHER 'EDH-RSA-DES-CBC3-SHA';\n\nLDAP SASL Example\nCREATE USER 'boris'@'localhost'\n  IDENTIFIED WITH authentication_ldap_sasl\n  AS 'uid=boris_ldap,ou=People,dc=example,dc=com';\n\nIf password authentication is necessary, then for mysql and mysqlsh command lines which cannot be configured not to accept a plain-text password when mixed-mode authentication is enabled, and any other essential tool with the same limitation:\n1) Document the need for it, who uses it, any relevant mitigations, and obtain AO approval.\n2) Train all users of the tool in the importance of not using the plain-text password option and in how to keep the password hidden.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000196,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235138r879608_rule,STIG-ID|MYS8-00-005100,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-235138",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT user, host, `user`.`plugin` FROM `mysql`.`user` where (user.plugin like '%password') AND NOT (user like 'mysql.%' or user ='root');",
+        "sql_expect": ".+"
+    },
+    "custom_item_111": {
+        "description": "MYS8-00-005200 - If passwords are used for authentication, the MySQL Database Server 8.0 must transmit only encrypted representations of passwords.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates.\n\nAuthentication based on User ID and Password may be used only when it is not possible to employ a PKI certificate, and requires Authorizing Official (AO) approval.\n\nIn such cases, passwords need to be protected at all times, and encryption is the standard method for protecting passwords during transmission.\n\nDatabase Management System (DBMS) passwords sent in clear text format across the network are vulnerable to discovery by unauthorized users. Disclosure of passwords may easily lead to unauthorized access to the database.",
+        "solution": "Configure encryption for transmission of passwords across the network. If the database does not provide encryption for logon events natively, employ encryption at the OS or network level.\n\nEnsure passwords remain encrypted from source to destination.\n\nconnect to MySQL as admin (root)\nmysql> set persist require_secure_transport=ON;\n\nSet system variables on the server side specify  DoD approved certificate and key files the server uses when permitting clients to establish encrypted connections:\n\nssl_ca: The path name of the Certificate Authority (CA) certificate file. (ssl_capath is similar but specifies the path name of a directory of CA certificate files.)\n\nssl_cert: The path name of the server public key certificate file. This certificate can be sent to the client and authenticated against the CA certificate that it has.\n\nssl_key: The path name of the server private key file.\n\nFor example, to enable the server for encrypted connections with certificates, start it with these lines in the my.cnf file, changing the file names as necessary:\n\n[mysqld]\nssl_ca=ca.pem\nssl_cert=server-cert.pem\nssl_key=server-key.pem",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|I,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235139r879609_rule,STIG-ID|MYS8-00-005200,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-235139",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT user, host, `user`.`plugin` FROM `mysql`.`user` where (user.plugin like '%password') AND NOT (user like 'mysql.%' or user ='root');",
+        "sql_expect": ".+"
+    },
+    "custom_item_112": {
+        "description": "MYS8-00-005600 - Default demonstration and sample databases, database objects, and applications must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives. Examples include, but are not limited to, installing advertising software, demonstrations, or browser plugins not related to requirements or providing a wide array of functionality, not required for every mission, that cannot be disabled.\n\nDatabase Management Systems (DBMSs) must adhere to the principles of least functionality by providing only essential capabilities.\n\nDemonstration and sample database objects and applications present publicly known attack points for malicious users. These demonstration and sample objects are meant to provide simple examples of coding specific functions and are not developed to prevent vulnerabilities from being introduced to the DBMS and host system.",
+        "solution": "MySQL 8.0 contains no demo databases by default. If demo schemas (aka databases) were added, remove them by executing:\n\nmysql -u root -p --execute='DROP DATABASE 'schema_name''",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-235143r879587_rule,STIG-ID|MYS8-00-005600,SWIFT-CSCv1|2.3,Vuln-ID|V-235143",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT schema_name FROM information_schema.SCHEMATA where SCHEMA_NAME not in ('mysql','information_schema', 'sys', 'performance_schema');"
+    },
+    "custom_item_113": {
+        "description": "plugins",
+        "sql_request": "SELECT * FROM information_schema.PLUGINS where plugin_library is NOT NULL;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_114": {
+        "description": "components",
+        "sql_request": "SELECT * FROM mysql.component;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_115": {
+        "description": "plugins",
+        "sql_request": "SELECT * FROM information_schema.PLUGINS where plugin_library is NOT NULL;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_116": {
+        "description": "components",
+        "sql_request": "SELECT * FROM information_schema.PLUGINS where plugin_library is NOT NULL;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_117": {
+        "description": "ports",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME in ('port', 'mysqlx_port', 'admin_port');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_118": {
+        "description": "local socket/pipe",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where VARIABLE_NAME like '%pipe%' or VARIABLE_NAME = 'socket' or VARIABLE_NAME = 'mysqlx_socket';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_119": {
+        "description": "external authentication plugins",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE '%ldap%' OR PLUGIN_NAME LIKE '%ldap%' OR PLUGIN_NAME LIKE '%pam%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_120": {
+        "description": "external authentication configuration",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE 'auth%' ;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_121": {
+        "description": "user authentication_string",
+        "sql_request": "SELECT `user`.`Host`, `user`.`user`, `user`.`plugin`, `user`.`authentication_string` from mysql.user where plugin like 'auth%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_122": {
+        "description": "MYS8-00-006200 - The MySQL Database Server 8.0 must use NIST FIPS 140-2 or 140-3 validated cryptographic modules for cryptographic operations.",
+        "info": "Use of weak or not validated cryptographic algorithms undermines the purposes of utilizing encryption and digital signatures to protect data. Weak algorithms can be easily broken and not validated cryptographic modules may not implement algorithms correctly. Unapproved cryptographic modules or algorithms should not be relied on for authentication, confidentiality, or integrity. Weak cryptography could allow an attacker to gain access to and modify data stored in the database as well as the administration settings of the Database Management System (DBMS).\n\nApplications, including DBMSs, utilizing cryptography are required to use approved NIST FIPS 140-2 or 140-3 validated cryptographic modules that meet the requirements of applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nNSA Type-X (where X=1, 2, 3, 4) products are NSA-certified, hardware-based encryption modules.\n\nThe standard for validating cryptographic modules will transition to the NIST FIPS 140-3 publication.\n\nFIPS 140-2 modules can remain active for up to five years after validation or until September 21, 2026, when the FIPS 140-2 validations will be moved to the historical list. Even on the historical list, CMVP supports the purchase and use of these modules for existing systems. While Federal Agencies decide when they move to FIPS 140-3 only modules, purchasers are reminded that for several years there may be a limited selection of FIPS 140-3 modules from which to choose. CMVP recommends purchasers consider all modules that appear on the Validated Modules Search Page:\nhttps://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules\n\nMore information on the FIPS 140-3 transition can be found here:\nhttps://csrc.nist.gov/Projects/fips-140-3-transition-effort/",
+        "solution": "Utilize NIST FIPS validated cryptographic modules for all cryptographic operations.\nSee Use MySQL Server OpenSSL FIPS mode. See https://dev.mysql.com/doc/refman/8.0/en/fips-mode.html\n\nTurn on MySQL FIPS mode and restart mysqld\nEdit my.cnf\n[mysqld]\nssl_fips_mode=ON\n\nor\n[mysqld]\nssl_fips_mode=STRICT\n\nON: Enable FIPS mode.\nSTRICT: Enable 'strict' FIPS mode.",
+        "reference": "800-53|IA-7,800-53r5|IA-7,CAT|I,CCI|CCI-000803,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),ITSG-33|IA-7,ITSG-33|IA-7a.,NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T7.4.1,QCSC-v1|13.2,Rule-ID|SV-235148r879616_rule,STIG-ID|MYS8-00-006200,Vuln-ID|V-235148",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'ssl_fips_mode';",
+        "sql_expect": "ssl_fips_mode"
+    },
+    "custom_item_123": {
+        "description": "MYS8-00-006300 - The MySQL Database Server 8.0 must uniquely identify and authenticate non-organizational users (or processes acting on behalf of non-organizational users).",
+        "info": "Non-organizational users include all information system users other than organizational users, which include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors, guest researchers, individuals from allied nations).\n\nNon-organizational users will be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.\n\nAccordingly, a risk assessment is used in determining the authentication needs of the organization.\n\nScalability, practicality, and security are simultaneously considered in balancing the need to ensure ease of use for access to federal information and information systems with the need to protect and adequately mitigate risk to organizational operations, organizational assets, individuals, other organizations, and the Nation.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure MySQL Database Server 8.0 settings to uniquely identify and authenticate all non-organizational users who log on to the system.\n\nEnsure all logins are uniquely identifiable and authenticate all non-organizational users who log on to the system. This likely would be done by ensuring mapping of MySQL accounts to individual accounts. Verify server documentation to ensure accounts are documented and unique.",
+        "reference": "800-53|IA-8,800-53r5|IA-8,CAT|II,CCI|CCI-000804,CSF|PR.AC-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-8,ITSG-33|IA-8a.,NESA|T4.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-235149r879617_rule,STIG-ID|MYS8-00-006300,SWIFT-CSCv1|2.8,Vuln-ID|V-235149",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select host, user FROM mysql.user WHERE user not in ('mysql.infoschema', 'mysql.session', 'mysql.sys');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_124": {
+        "description": "MYS8-00-006400 - The MySQL Database Server 8.0 must separate user functionality (including user interface services) from database management functionality.",
+        "info": "Information system management functionality includes functions necessary to administer databases, network components, workstations, or servers, and typically requires privileged user access.\n\nThe separation of user functionality from information system management functionality is either physical or logical and is accomplished by using different computers, different central processing units, different instances of the operating system, different network addresses, combinations of these methods, or other methods, as appropriate.\n\nAn example of this type of separation is observed in web administrative interfaces that use separate authentication methods for users of any other information system resources.\n\nThis may include isolating the administrative interface on a different domain and with additional access controls.\n\nIf administrative functionality or information regarding DBMS management is presented on an interface available for users, information on DBMS settings may be inadvertently made available to the user.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure MySQL Database Server 8.0 to separate database administration and general user functionality.\n\nRevoke or remove users with admin and user mixed permissions.\n\nReview MySQL documentation related to access controls for users and admins: https://dev.mysql.com/doc/refman/8.0/en/access-control.html.",
+        "reference": "800-171|3.13.3,800-53|SC-2,800-53r5|SC-2,CAT|II,CCI|CCI-001082,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-2,ITSG-33|SC-2a.,NESA|T3.4.1,NIAv2|SS15b,Rule-ID|SV-235150r879631_rule,STIG-ID|MYS8-00-006400,Vuln-ID|V-235150",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT user,host, 'Global Priv', Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Drop_priv, Reload_priv, Shutdown_priv, Process_priv, File_priv, Grant_priv, References_priv, Index_priv, Alter_priv, Show_db_priv, Super_priv, Create_tmp_table_priv, Lock_tables_priv, Execute_priv, Repl_slave_priv, Repl_client_priv, Create_view_priv, Show_view_priv, Create_routine_priv, Alter_routine_priv, Create_user_priv, Event_priv, Trigger_priv, Create_tablespace_priv, Create_role_priv, Drop_role_priv FROM mysql.user WHERE 'Y' IN (Select_priv, Insert_priv, Update_priv, Delete_priv, Create_priv, Drop_priv, Reload_priv, Shutdown_priv, Process_priv, File_priv, Grant_priv, References_priv, Index_priv, Alter_priv, Show_db_priv, Super_priv, Create_tmp_table_priv, Lock_tables_priv, Execute_priv, Repl_slave_priv, Repl_client_priv, Create_view_priv, Show_view_priv, Create_routine_priv, Alter_routine_priv, Create_user_priv, Event_priv, Trigger_priv, Create_tablespace_priv, Create_role_priv, Drop_role_priv) AND user not in ('mysql.infoschema', 'mysql.session');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_125": {
+        "description": "MYS8-00-006500 - The MySQL Database Server 8.0 must isolate security functions from non-security functions.",
+        "info": "An isolation boundary provides access control and protects the integrity of the hardware, software, and firmware that perform security functions.\n\nSecurity functions are the hardware, software, and/or firmware of the information system responsible for enforcing the system security policy and supporting the isolation of code and data on which the protection is based.\n\nDevelopers and implementers can increase the assurance in security functions by employing well-defined security policy models; structured, disciplined, and rigorous hardware and software development techniques; and sound system/security engineering principles.\n\nDatabase Management Systems typically separate security functionality from non-security functionality via separate databases or schemas. Database objects or code implementing security functionality should not be commingled with objects or code implementing application logic. When security and non-security functionality are commingled, users who have access to non-security functionality may be able to access security functionality.\n\nThe mysql database is the system database. It contains tables that store information required by the MySQL server as it runs.\n\nThe INFORMATION_SCHEMA provides access to database metadata, information about the MySQL server such as the name of a database or table, the data type of a column, or access privileges. Other terms sometimes used for this information are data dictionary and system catalog.\n\nThe MySQL Performance Schema is a feature for monitoring MySQL Server execution at a low level. The Performance Schema has these characteristics: The Performance Schema provides a way to inspect internal execution of the server at runtime. It is implemented using the PERFORMANCE_SCHEMA storage engine and the performance_schema database. The PERFORMANCE_SCHEMA storage engine collects event data using 'instrumentation points' in server source code. Tables in the Performance Schema are in-memory tables that use no persistent on-disk storage.\n\nMySQL 8.0 includes the sys schema, a set of objects that helps DBAs and developers interpret data collected by the Performance Schema. The sys schema objects can be used for typical tuning and diagnosis use cases.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Check the server documentation, locate security-related database objects and code in a separate database, schema, table, or other separate security domain from database objects and code implementing application logic.\n\nSchemas, also referred to as databases, are analogous to separate namespaces or containers used to store database objects. Security permissions apply to schemas, making them an important tool for separating and protecting database objects based on access rights. Schemas reduce the work required, and improve the flexibility, for security-related administration of a database. A MySQL schema is a named container for database objects, which allows objects to be grouped into separate namespaces.\n\nWhere possible, locate security-related database objects and code in a separate database, schema, or other separate security domain from database objects and code implementing application logic. In all cases, use GRANT, REVOKE, ... , DROP ROLE statements to add and remove permissions on administrative/server-level and schema/database-level, or database object security-related objects to provide effective isolation.",
+        "reference": "800-53|SC-3,800-53r5|SC-3,CAT|II,CCI|CCI-001084,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-3,ITSG-33|SC-3a.,NESA|T3.4.1,NESA|T4.3.1,NESA|T4.3.2,Rule-ID|SV-235151r879643_rule,STIG-ID|MYS8-00-006500,Vuln-ID|V-235151",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT `SCHEMATA`.`SCHEMA_NAME` FROM `information_schema`.`SCHEMATA` where `SCHEMA_NAME` not in ('mysql', 'information_schema', 'performance_schema','sys');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_126": {
+        "description": "MYS8-00-006800 - Access to database files must be limited to relevant processes and to authorized, administrative users.",
+        "info": "Applications, including DBMSs, must prevent unauthorized and unintended information transfer via shared system resources. Permitting only DBMS processes and authorized, administrative users to have access to the files where the database resides helps ensure that those files are not shared inappropriately and are not open to backdoor access and manipulation.\n\nAs a general rule, distributed files and resources should follow the principal of least privilege, which requires that users, processes, programs, and other system components only have access to information and resources required for their legitimate purpose.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the permissions granted by the operating system/file system on the database files, database log files, and database backup files so that only relevant system accounts and authorized system administrators and database administrators with a need to know are permitted to read/view these files. Remove any unauthorized permission grants from MySQL data, audit, certificate, key, or other directories.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CAT|II,CCI|CCI-001090,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,Rule-ID|SV-235153r879649_rule,STIG-ID|MYS8-00-006800,Vuln-ID|V-235153",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE '%dir' or VARIABLE_NAME LIKE '%file' order by VARIABLE_NAME;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_127": {
+        "description": "require_secure_transport",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME like 'require_secure_transport';",
+        "sql_expect": "require_secure_transport"
+    },
+    "custom_item_128": {
+        "description": "ssl_fips_mode",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME = 'ssl_fips_mode';",
+        "sql_expect": "ssl_fips_mode"
+    },
+    "custom_item_129": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'audit_log_encryption';",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_130": {
+        "description": "binlog_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'binlog_encryption';",
+        "sql_expect": "binlog_encryption"
+    },
+    "custom_item_131": {
+        "description": "innodb_redo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_redo_log_encrypt';",
+        "sql_expect": "innodb_redo_log_encrypt"
+    },
+    "custom_item_132": {
+        "description": "innodb_undo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_undo_log_encrypt';",
+        "sql_expect": "innodb_undo_log_encrypt"
+    },
+    "custom_item_133": {
+        "description": "general_log",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME like 'general_log';",
+        "sql_expect": "general_log"
+    },
+    "custom_item_134": {
+        "description": "INNODB_TABLESPACES encryption",
+        "sql_request": "SELECT `INNODB_TABLESPACES`.`NAME`, `INNODB_TABLESPACES`.`ENCRYPTION` FROM `information_schema`.`INNODB_TABLESPACES` where `INNODB_TABLESPACES`.`NAME` NOT IN ('innodb_temporary');",
+        "sql_expect": ".+"
+    },
+    "custom_item_135": {
+        "description": "table_encryption_privilege_check",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'table_encryption_privilege_check';",
+        "sql_expect": "table_encryption_privilege_check"
+    },
+    "custom_item_136": {
+        "description": "mysql_firewall_mode",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'mysql_firewall_mode';",
+        "sql_expect": "mysql_firewall_mode"
+    },
+    "custom_item_137": {
+        "description": "user and mode",
+        "sql_request": "SELECT * FROM INFORMATION_SCHEMA.MYSQL_FIREWALL_USERS;",
+        "sql_expect": ".+"
+    },
+    "custom_item_138": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_139": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_140": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_141": {
+        "description": "MYS8-00-008000 - The MySQL Database Server 8.0 must protect its audit features from unauthorized access.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data.\n\nDepending upon the log format and application, system and application log tools may provide the only means to manipulate and manage application and system log data. It is, therefore, imperative that access to audit tools be controlled and protected from unauthorized access.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys to make access decisions regarding the access to audit tools.\n\nAudit tools include, but are not limited to, OS-provided audit tools, vendor-provided audit tools, and open source audit tools needed to successfully view and manipulate audit information system activity and records.\n\nIf an attacker were to gain access to audit tools, he could analyze audit logs for system weaknesses or weaknesses in the auditing itself. An attacker could also manipulate logs to hide evidence of malicious activity.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove audit-related permissions from individuals and roles not authorized to have them.\n\nREVOKE AUDIT_ADMIN on *.* FROM;",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001493,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-235160r879579_rule,STIG-ID|MYS8-00-008000,Vuln-ID|V-235160",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select * from information_schema.user_privileges where privilege_type = 'AUDIT_ADMIN';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_142": {
+        "description": "AUDIT_ADMIN",
+        "sql_request": "select * from information_schema.user_privileges where privilege_type = 'AUDIT_ADMIN';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_143": {
+        "description": "keyring",
+        "sql_request": "SELECT * FROM information_schema.PLUGINS where plugin_name like 'keyring%'",
+        "sql_expect": "keyring.+"
+    },
+    "custom_item_144": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'audit_log_encryption';",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_145": {
+        "description": "MYS8-00-008200 - The MySQL Database Server 8.0 must protect its audit features from unauthorized removal.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data. Therefore, protecting audit tools is necessary to prevent unauthorized operation on audit data.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order make access decisions regarding the deletion of audit tools.\n\nAudit tools include, but are not limited to, vendor-provided and open source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "This requirement is a permanent finding and cannot be fixed. An appropriate mitigation for the system must be implemented, but this finding cannot be considered fixed.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001495,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-235162r879581_rule,STIG-ID|MYS8-00-008200,Vuln-ID|V-235162",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select * from information_schema.user_privileges where privilege_type = 'AUDIT_ADMIN';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_146": {
+        "description": "table specific privileges",
+        "sql_request": "SELECT * FROM information_schema.TABLE_PRIVILEGES where (table_schema='mysql' and table_name=`plugin`) or (table_schema='mysql' and table_name='component');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_147": {
+        "description": "global privileges",
+        "sql_request": "select * from information_schema.user_privileges where privilege_type='INSERT' or privilege_type='DELETE';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_148": {
+        "description": "directory variables",
+        "sql_request": "show variables where variable_name like '%dir%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_149": {
+        "description": "configuration file storage",
+        "sql_request": "SELECT t1.*, VARIABLE_VALUE FROM performance_schema.variables_info t1 JOIN performance_schema.global_variables t2 ON t2.VARIABLE_NAME=t1.VARIABLE_NAME where length(t1.variable_path) > 0;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_150": {
+        "description": "SCHEMA_PRIVILEGES",
+        "sql_request": "SELECT * FROM `information_schema`.`SCHEMA_PRIVILEGES`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_151": {
+        "description": "TABLE_PRIVILEGES",
+        "sql_request": "SELECT * FROM `information_schema`.`TABLE_PRIVILEGES`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_152": {
+        "description": "COLUMN_PRIVILEGES",
+        "sql_request": "SELECT * FROM `information_schema`.`COLUMN_PRIVILEGES`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_153": {
+        "description": "USER_PRIVILEGES",
+        "sql_request": "SELECT * FROM `information_schema`.`USER_PRIVILEGES`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_154": {
+        "description": "ROLE_COLUMN_GRANTS",
+        "sql_request": "SELECT * FROM `information_schema`.`ROLE_COLUMN_GRANTS`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_155": {
+        "description": "ROLE_TABLE_GRANTS",
+        "sql_request": "SELECT * FROM `information_schema`.`ROLE_TABLE_GRANTS`;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_156": {
+        "description": "ports",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME in ('port', 'mysqlx_port', 'admin_port');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_157": {
+        "description": "local socket/pipe",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where VARIABLE_NAME like '%pipe%' or VARIABLE_NAME = 'socket' or VARIABLE_NAME = 'mysqlx_socket';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_158": {
+        "description": "port settings",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME LIKE '%port%' or VARIABLE_NAME LIKE '%port' order by VARIABLE_NAME;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_159": {
+        "description": "socket",
+        "sql_request": "select @@socket;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_160": {
+        "description": "server level permissions",
+        "sql_request": "SELECT `user`.`Host`, `user`.`User` FROM `mysql`.`user` where `Create_routine_priv`='Y' OR `Alter_routine_priv` = 'Y';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_161": {
+        "description": "database schema level permissions",
+        "sql_request": "SELECT `db`.`Host`, `db`.`User`, `db`.`Db` FROM `mysql`.`db` where `db`.`Create_routine_priv`='Y' OR `db`.`Alter_routine_priv` = 'Y';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_162": {
+        "description": "audit_log",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'audit%';",
+        "sql_expect": "audit_log"
+    },
+    "custom_item_163": {
+        "description": "audit_log_filter",
+        "sql_request": "SELECT `audit_log_filter`.`NAME`, `audit_log_filter`.`FILTER` FROM `mysql`.`audit_log_filter`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_164": {
+        "description": "audit_log_user",
+        "sql_request": "SELECT `audit_log_user`.`USER`, `audit_log_user`.`HOST`, `audit_log_user`.`FILTERNAME` FROM `mysql`.`audit_log_user`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_165": {
+        "description": "MYS8-00-009600 - The MySQL Database Server 8.0 must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+        "info": "To ensure sufficient storage capacity for the audit logs, the Database Management System (DBMS) must be able to allocate audit record storage capacity. Although another requirement (SRG-APP-000515-DB-000318) mandates that audit data be off-loaded to a centralized log management system, it remains necessary to provide space on the database server to serve as a buffer against outages and capacity limits of the off-loading mechanism.\n\nThe task of allocating audit record storage capacity is usually performed during initial installation of the DBMS and is closely associated with the DBA and system administrator roles. The DBA or system administrator will usually coordinate the allocation of physical drive space with the application owner/installer and the application will prompt the installer to provide the capacity information, the physical location of the disk, or both.\n\nIn determining the capacity requirements, consider such factors as: total number of users; expected number of concurrent users during busy periods; number and type of events being monitored; types and amounts of data being captured; the frequency/speed with which audit records are off-loaded to the central log management system; and any limitations that exist on the DBMS's ability to reuse the space formerly occupied by off-loaded records.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review the MySQL Audit file location, ensure the destination has enough space available to accommodate the maximum total size of all files that could be written.\n\nUse a script or third-party tool to manage the maximum number of audit log files that are to be stored, staying within the number of logs the system was sized to support.\n\nUse compression and JSON format to reduce file growth.\n\nUpdate the location for audit_log_file in the MySQL configuration file, for example:\n[mysqld]\naudit-log-file=/var/log/mysql/audit.log\naudit-log-format=JSON\naudit-log-compression=GZIP",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-235173r879730_rule,STIG-ID|MYS8-00-009600,Vuln-ID|V-235173",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME = 'audit_log_file' OR VARIABLE_NAME= 'datadir' OR VARIABLE_NAME = 'audit_log_rotate_on_size';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_166": {
+        "description": "Instance Level",
+        "sql_request": "SELECT * FROM `mysql`.`user` WHERE (`mysql`.`user`.`user` not like 'mysql.%') AND (`user`.`Create_priv` = 'Y' OR `user`.`Drop_priv` = 'Y' OR `user`.`Grant_priv` = 'Y' OR `user`.`References_priv` = 'Y' OR `user`.`Index_priv` = 'Y' OR `user`.`Alter_priv` = 'Y' OR `user`.`Super_priv` = 'Y' OR `user`.`Execute_priv` = 'Y' OR `user`.`Create_view_priv` = 'Y' OR `user`.`Create_routine_priv` = 'Y' OR `user`.`Alter_routine_priv` = 'Y' OR `user`.`Create_user_priv` = 'Y' OR  `user`.`Event_priv` = 'Y' OR `user`.`Trigger_priv` = 'Y' OR `user`.`Create_role_priv` = 'Y' OR `user`.`Drop_role_priv` = 'Y') ;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_167": {
+        "description": "DB/Schema Level",
+        "sql_request": "SELECT * FROM mysql.db where (`db`.`Grant_priv` = 'Y' OR `db`.`References_priv`= 'Y' OR `db`.`Index_priv`= 'Y' OR `db`.`Alter_priv`= 'Y' OR `db`.`Create_tmp_table_priv`= 'Y' OR `db`.`Lock_tables_priv`= 'Y' OR `db`.`Create_view_priv`= 'Y' OR `db`.`Show_view_priv`= 'Y' OR `db`.`Create_routine_priv`= 'Y' OR `db`.`Alter_routine_priv`= 'Y' OR `db`.`Execute_priv`= 'Y' OR `db`.`Event_priv`= 'Y' OR `db`.`Trigger_priv`) and user not like 'mysql.%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_168": {
+        "description": "grant permissions",
+        "sql_request": "SELECT `USER_PRIVILEGES`.`GRANTEE`, `USER_PRIVILEGES`.`TABLE_CATALOG`, `USER_PRIVILEGES`.`PRIVILEGE_TYPE`, `USER_PRIVILEGES`.`IS_GRANTABLE` FROM `information_schema`.`USER_PRIVILEGES` where `USER_PRIVILEGES`.`IS_GRANTABLE`='YES';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_169": {
+        "description": "procedure status",
+        "sql_request": "SHOW PROCEDURE STATUS where security_type <> 'INVOKER';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_170": {
+        "description": "function status",
+        "sql_request": "SHOW FUNCTION STATUS where security_type <> 'INVOKER';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_171": {
+        "description": "procedure status",
+        "sql_request": "SHOW PROCEDURE STATUS where security_type <> 'INVOKER';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_172": {
+        "description": "function status",
+        "sql_request": "SHOW FUNCTION STATUS where security_type <> 'INVOKER';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_173": {
+        "description": "MYS8-00-011300 - The MySQL Database Server 8.0 must maintain the confidentiality and integrity of information during preparation for transmission.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during preparation for transmission, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nUse of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen transmitting data, the DBMS, associated applications, and infrastructure must leverage transmission protection mechanisms.",
+        "solution": "Turn on require_secure_transport. In this mode the server permits only TCP/IP connections encrypted using TLS/SSL, or connections that use a socket file (on UNIX) or shared memory (on Windows).\n\nThe server rejects nonsecure connection attempts, which fail with an ER_SECURE_TRANSPORT_REQUIRED error.\n\nset persist require_secure_transport=ON;",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-235186r879812_rule,STIG-ID|MYS8-00-011300,SWIFT-CSCv1|2.1,Vuln-ID|V-235186",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@require_secure_transport;"
+    },
+    "custom_item_174": {
+        "description": "ssl_fips_mode",
+        "sql_request": "select @@ssl_fips_mode;",
+        "sql_expect": "(ON|STRICT)"
+    },
+    "custom_item_175": {
+        "description": "tls_version",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME = 'tls_version';",
+        "sql_expect": "tls_version"
+    },
+    "custom_item_176": {
+        "description": "Ssl_cipher_list TLSv1.2",
+        "sql_request": "select * from performance_schema.global_status where variable_name= 'Ssl_cipher_list';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_177": {
+        "description": "tls_ciphersuites TLSv1.3",
+        "sql_request": "select * from performance_schema.global_status where variable_name= 'tls_ciphersuites';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_178": {
+        "description": "MYS8-00-011600 - The MySQL Database Server 8.0 must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to provision digital signatures.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The application must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nFor detailed information, refer to NIST FIPS Publication 140-2 or Publication 140-3, Security Requirements For Cryptographic Modules.  Note that the product's cryptographic modules must be validated and certified by NIST as FIPS-compliant.",
+        "solution": "Implement NIST FIPS validated cryptographic modules to provision digital signatures.\n\nTurn on MySQL FIPS mode and restart mysqld\nEdit my.cnf\n[mysqld]\nssl_fips_mode=ON\n\nor\n[mysqld]\nssl_fips_mode=STRICT\n\nIn general, STRICT imposes more restrictions than ON, but MySQL itself has no FIPS-specific code other than to specify to OpenSSL the FIPS mode value. The exact behavior of FIPS mode for ON or STRICT depends on the OpenSSL version.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-235188r879885_rule,STIG-ID|MYS8-00-011600,Vuln-ID|V-235188",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@ssl_fips_mode;",
+        "sql_expect": "(ON|STRICT)"
+    },
+    "custom_item_179": {
+        "description": "MYS8-00-011700 - The MySQL Database Server 8.0 must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to generate and validate cryptographic hashes.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The application must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nFor detailed information, refer to NIST FIPS Publication 140-2 or Publication 140-3, Security Requirements For Cryptographic Modules. Note that the product's cryptographic modules must be validated and certified by NIST as FIPS-compliant.",
+        "solution": "Implement NIST FIPS validated cryptographic modules to provision digital signatures.\n\nTurn on MySQL FIPS mode and restart mysqld\nEdit my.cnf\n[mysqld]\nssl_fips_mode=ON\n\nor\n[mysqld]\nssl_fips_mode=STRICT\n\nIn general, STRICT imposes more restrictions than ON, but MySQL itself has no FIPS-specific code other than to specify to OpenSSL the FIPS mode value. The exact behavior of FIPS mode for ON or STRICT depends on the OpenSSL version.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|I,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-235189r879885_rule,STIG-ID|MYS8-00-011700,Vuln-ID|V-235189",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@ssl_fips_mode;",
+        "sql_expect": "(ON|STRICT)"
+    },
+    "custom_item_180": {
+        "description": "MYS8-00-011800 - The MySQL Database Server 8.0 must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the data owner's requirements.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The application must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nIt is the responsibility of the data owner to assess the cryptography requirements in light of applicable federal laws, Executive Orders, directives, policies, regulations, and standards.\n\nFor detailed information, refer to NIST FIPS Publication 140-2 or Publication 140-3, Security Requirements For Cryptographic Modules. Note that the product's cryptographic modules must be validated and certified by NIST as FIPS-compliant.",
+        "solution": "Implement NIST FIPS validated cryptographic modules to provision digital signatures.\n\nTurn on MySQL FIPS mode and restart mysqld\nEdit my.cnf\n[mysqld]\nssl_fips_mode=ON\n\nor\n[mysqld]\nssl_fips_mode=STRICT\n\nIn general, STRICT imposes more restrictions than ON, but MySQL itself has no FIPS-specific code other than to specify to OpenSSL the FIPS mode value. The exact behavior of FIPS mode for ON or STRICT depends on the OpenSSL version.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-235190r879885_rule,STIG-ID|MYS8-00-011800,Vuln-ID|V-235190",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@ssl_fips_mode;",
+        "sql_expect": "(ON|STRICT)"
+    },
+    "custom_item_181": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'audit_log_encryption';",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_182": {
+        "description": "binlog_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'binlog_encryption';",
+        "sql_expect": "binlog_encryption"
+    },
+    "custom_item_183": {
+        "description": "innodb_redo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_redo_log_encrypt';",
+        "sql_expect": "innodb_redo_log_encrypt"
+    },
+    "custom_item_184": {
+        "description": "innodb_undo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_undo_log_encrypt';",
+        "sql_expect": "innodb_undo_log_encrypt"
+    },
+    "custom_item_185": {
+        "description": "table_encryption_privilege_check",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'table_encryption_privilege_check';",
+        "sql_expect": "table_encryption_privilege_check"
+    },
+    "custom_item_186": {
+        "description": "INNODB_TABLESPACES encryption",
+        "sql_request": "SELECT `INNODB_TABLESPACES`.`NAME`, `INNODB_TABLESPACES`.`ENCRYPTION` FROM `information_schema`.`INNODB_TABLESPACES`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_187": {
+        "description": "audit_log_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'audit_log_encryption';",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_188": {
+        "description": "binlog_encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'binlog_encryption';",
+        "sql_expect": "binlog_encryption"
+    },
+    "custom_item_189": {
+        "description": "innodb_redo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_redo_log_encrypt';",
+        "sql_expect": "innodb_redo_log_encrypt"
+    },
+    "custom_item_190": {
+        "description": "innodb_undo_log_encrypt",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'innodb_undo_log_encrypt';",
+        "sql_expect": "innodb_undo_log_encrypt"
+    },
+    "custom_item_191": {
+        "description": "table_encryption_privilege_check",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables where variable_name = 'table_encryption_privilege_check';",
+        "sql_expect": "table_encryption_privilege_check"
+    },
+    "custom_item_192": {
+        "description": "INNODB_TABLESPACES encryption",
+        "sql_request": "SELECT `INNODB_TABLESPACES`.`NAME`, `INNODB_TABLESPACES`.`ENCRYPTION` FROM `information_schema`.`INNODB_TABLESPACES`;",
+        "sql_expect": ".+"
+    },
+    "custom_item_193": {
+        "description": "MYS8-00-012300 - Security-relevant software updates to the MySQL Database Server 8.0 must be installed within the time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
+        "info": "Security flaws with software applications, including database management systems, are discovered daily. Vendors are constantly updating and patching their products to address newly discovered security vulnerabilities. Organizations (including any contractor to the organization) are required to promptly install security-relevant software updates (e.g., patches, service packs, and hot fixes). Flaws discovered during security assessments, continuous monitoring, incident response activities, or information system error handling must also be addressed expeditiously.\n\nOrganization-defined time periods for updating security-relevant software may vary based on a variety of factors including, for example, the security category of the information system or the criticality of the update (i.e., severity of the vulnerability related to the discovered flaw).\n\nThis requirement will apply to software patch management solutions that are used to install patches across the enclave and also to applications themselves that are not part of that patch management solution. For example, many browsers today provide the capability to install their own patch software. Patch criticality, as well as system criticality, will vary. Therefore, the tactical situations regarding the patch management process will also vary. This means that the time period utilized must be a configurable parameter. Time frames for application of security-relevant software updates may be dependent upon the Information Assurance Vulnerability Management (IAVM) process.\n\nThe application will be configured to check for and install security-relevant software updates within an identified time period from the availability of the update. The specific time period will be defined by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
+        "solution": "Institute and adhere to policies and procedures to ensure that patches are consistently applied to MySQL within the time allowed.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|II,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-235194r879827_rule,STIG-ID|MYS8-00-012300,SWIFT-CSCv1|2.2,Vuln-ID|V-235194",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@version;",
+        "sql_expect": "8\\.0\\..+"
+    },
+    "custom_item_194": {
+        "description": "MYS8-00-012500 - When invalid inputs are received, the MySQL Database Server 8.0 must behave in a predictable and documented manner that reflects organizational and system objectives.",
+        "info": "A common vulnerability is unplanned behavior when invalid inputs are received. This requirement guards against adverse or unintended system behavior caused by invalid inputs, where information system responses to the invalid input may be disruptive or cause the system to fail into an unsafe state.\n\nThe behavior will be derived from the organizational and system requirements and includes, but is not limited to, notification of the appropriate personnel, creating an audit record, and rejecting invalid input.\n\nThis calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the database administrator (DBA) is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed, and must document what has been discovered.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the MySQL Server to behave in a predictable and documented manner that reflects organizational and system objectives when invalid inputs are received.\n\nTo validate data at the database table level modify tables by adding constraints CHECK constraint is a type of integrity constraint in SQL within the create or alter table statement.\n\n[CONSTRAINT [symbol]] CHECK (expr) [[NOT] ENFORCED]\nFor example\nCREATE TABLE checker (i tinyint, CONSTRAINT i_must_be_between_7_and_12 CHECK (i BETWEEN 7 AND 12 ) );\nAdding a constraint to an existing table\n\nALTER TABLEADD [CONSTRAINT [symbol]] CHECK (condition) [[NOT] ENFORCED]",
+        "reference": "800-53|SI-10(3),800-53r5|SI-10(3),CAT|II,CCI|CCI-002754,CN-L3|8.1.4.4(d),DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NIAv2|SS6e,Rule-ID|SV-235195r879818_rule,STIG-ID|MYS8-00-012500,Vuln-ID|V-235195",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_195": {
+        "description": "MYS8-00-012600 - MySQL database products must be a version supported by the vendor.",
+        "info": "Unsupported commercial and database systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.\n\nSystems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.\n\nWhen maintenance updates and patches are no longer available, the database software is no longer considered supported and should be upgraded or decommissioned.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove or decommission all unsupported software products.\n\nUpgrade unsupported DBMS or unsupported components to a supported version of the product.\n\nOracle supported platforms can be found here:\nhttps://www.mysql.com/support/supportedplatforms/database.html",
+        "reference": "800-53|SA-22a.,800-53r5|SA-22a.,CAT|I,CCI|CCI-003376,DISA_Benchmark|Oracle_MySQL_8.0_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),Rule-ID|SV-259798r947240_rule,STIG-ID|MYS8-00-012600,Vuln-ID|V-259798",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_MySQL_8-0_V1R5_STIG.zip",
+        "sql_request": "select @@version;",
+        "sql_expect": "^Manual Review Required$"
+    }
+}

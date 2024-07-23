@@ -1,0 +1,348 @@
+{
+    "custom_item_1": {
+        "description": "check if TACACS is defined",
+        "item": "tacacs-server"
+    },
+    "custom_item_2": {
+        "description": "check for correct TACACS+ server 1/2",
+        "item": "tacacs-server host @AAA_SERVER_1@"
+    },
+    "custom_item_3": {
+        "description": "check for correct TACACS+ server 2/2",
+        "item": "tacacs-server host @AAA_SERVER_2@"
+    },
+    "custom_item_4": {
+        "description": "check for defined TACACS+ group",
+        "regex": "aaa group server tacacs\\+ @AAA_GROUP@",
+        "item": "aaa group server tacacs\\+"
+    },
+    "custom_item_5": {
+        "description": "check for server 1 in group",
+        "context": "aaa group server tacacs\\+ @AAA_GROUP@",
+        "item": "server @AAA_SERVER_1@"
+    },
+    "custom_item_6": {
+        "description": "check for server 2 in group",
+        "context": "aaa group server tacacs\\+ @AAA_GROUP@",
+        "item": "server @AAA_SERVER_2@"
+    },
+    "custom_item_7": {
+        "description": "check if radius is defined",
+        "item": "radius-server"
+    },
+    "custom_item_8": {
+        "description": "check for correct radius server 1/2",
+        "item": "radius-server host @AAA_SERVER_1@"
+    },
+    "custom_item_9": {
+        "description": "check for correct radius server 2/2",
+        "item": "radius-server host @AAA_SERVER_2@"
+    },
+    "custom_item_10": {
+        "description": "check for defined radius group",
+        "regex": "aaa group server radius @AAA_GROUP@",
+        "item": "aaa group server radius"
+    },
+    "custom_item_11": {
+        "description": "check for server 1 in group",
+        "context": "aaa group server radius @AAA_GROUP@",
+        "item": "server @AAA_SERVER_1@"
+    },
+    "custom_item_12": {
+        "description": "check for server 2 in group",
+        "context": "aaa group server radius @AAA_GROUP@",
+        "item": "server @AAA_SERVER_2@"
+    },
+    "custom_item_13": {
+        "description": "check for vty-pool",
+        "item": "vty-pool default .+ line-template @LINE_TEMPLATE@"
+    },
+    "custom_item_14": {
+        "description": "check for line console authorization",
+        "cmd": "show running-config formal | include authorization",
+        "item": "line console authorization commands @LINE_TEMPLATE@"
+    },
+    "custom_item_15": {
+        "description": "check for line default authorization",
+        "cmd": "show running-config formal | include authorization",
+        "item": "line default authorization commands @LINE_TEMPLATE@"
+    },
+    "custom_item_16": {
+        "description": "check for aaa auth commands",
+        "item": "aaa authorization commands @AUTHORIZATION_LIST@ group @AAA_GROUP@"
+    },
+    "custom_item_17": {
+        "description": "check for taskgroup",
+        "item": "taskgroup @TASKGROUP@"
+    },
+    "custom_item_18": {
+        "description": "check for usergroup",
+        "item": "usergroup @USERGROUP@"
+    },
+    "custom_item_19": {
+        "description": "check that usergroups are in use",
+        "context": "username",
+        "item": "group"
+    },
+    "custom_item_20": {
+        "description": "Check to see if any snmp v3 groups are enabled",
+        "item": "snmp-server group .* v3"
+    },
+    "custom_item_21": {
+        "description": "1.5.7 Set 'priv' for each 'snmp-server group' using SNMPv3",
+        "info": "Specifies authentication of a packet with encryption when using SNMPv3\n\nSNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed.",
+        "solution": "For each SNMPv3 group created on your router add privacy options by issuing the following command...\n\nIOSXR(config)#snmp-server group {snmp_group_name} v3 priv IPv4 {snmp_access-list}\n\nImpact:\n\nOrganizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server group v3 priv' setting to encrypt messages in transit.",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv7|4.5,CSCv8|6.5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),LEVEL|2A,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "regex": "snmp-server group .* v3 priv .*?",
+        "item": "snmp-server group"
+    },
+    "custom_item_22": {
+        "description": "Check to see if any snmp v3 groups are enabled",
+        "item": "snmp-server group .* v3"
+    },
+    "custom_item_23": {
+        "description": "1.5.8 Require 'aes 128' as minimum for 'snmp-server user' when using SNMPv3",
+        "info": "Specify the use of a minimum of 128-bit AES algorithm for encryption when using SNMPv3.\n\nSNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed.",
+        "solution": "For each SNMPv3 user created on your router add privacy options by issuing the following command.\n\nhostname(config)#snmp-server user {snmp_user_name} {snmp_group_name} v3 auth sha {snmp_auth_password} priv aes 128 {snmp_priv_password} ipv4 {snmp_access-list}\n\nImpact:\n\nOrganizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server user' setting with appropriate authentication and privacy protocols to encrypt messages in transit.",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv7|4.5,CSCv8|6.5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),LEVEL|2A,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "regex": "snmp-server user .* priv aes 128 .*?",
+        "item": "snmp-server user"
+    },
+    "custom_item_24": {
+        "description": "aes password encryption enabled",
+        "item": "password6 encryption aes"
+    },
+    "custom_item_25": {
+        "description": "AES config state",
+        "cmd": "show type6 server",
+        "regex": "AES config State[\\s]+:[\\s]+Enabled$",
+        "item": "AES config State"
+    },
+    "custom_item_26": {
+        "description": "Masterkey config state",
+        "cmd": "show type6 server",
+        "regex": "Masterkey config State[\\s]+:[\\s]+Enabled$",
+        "item": "Masterkey config State"
+    },
+    "custom_item_27": {
+        "description": "Type6 feature state",
+        "cmd": "show type6 server",
+        "regex": "Type6 feature State[\\s]+:[\\s]+Enabled$",
+        "item": "Type6 feature State"
+    },
+    "custom_item_28": {
+        "description": "check to see if any passwords are in use",
+        "item": ".*password [0-7] .*"
+    },
+    "custom_item_29": {
+        "description": "password policy - min-length",
+        "context": "aaa password-policy",
+        "item": "min-length @PASSWD_MIN_LEN@"
+    },
+    "custom_item_30": {
+        "description": "password policy - max-length",
+        "context": "aaa password-policy",
+        "item": "max-length @PASSWD_MAX_LEN@"
+    },
+    "custom_item_31": {
+        "description": "password policy - lifetime",
+        "context": "aaa password-policy",
+        "item": "lifetime @PASSWD_LIFETIME@"
+    },
+    "custom_item_32": {
+        "description": "password policy - min-char-change",
+        "context": "aaa password-policy",
+        "item": "min-char-change @PASSWD_MIN_CHANGE@"
+    },
+    "custom_item_33": {
+        "description": "password policy - lockout-time",
+        "context": "aaa password-policy",
+        "item": "lockout-time @PASSWD_LOCKOUT_TIME@"
+    },
+    "custom_item_34": {
+        "description": "password policy - authen-max-attempts",
+        "context": "aaa password-policy",
+        "item": "authen-max-attempts @PASSWD_MAX_ATTEMPTS@"
+    },
+    "custom_item_35": {
+        "description": "check for inband control plane management",
+        "context": "control-plane",
+        "item": "inband"
+    },
+    "custom_item_36": {
+        "description": "check for out-of-band control plane management",
+        "context": "control-plane",
+        "item": "out-of-band"
+    },
+    "custom_item_37": {
+        "description": "check if eigrp is in use",
+        "item": "router eigrp"
+    },
+    "custom_item_38": {
+        "description": "eigrp - check that keychain exists",
+        "context": "key chain @KEY_CHAIN@",
+        "item": "key-string password"
+    },
+    "custom_item_39": {
+        "description": "eigrp - check that interface is defined",
+        "context": "router eigrp",
+        "item": "address-family ipv(4|6)"
+    },
+    "custom_item_40": {
+        "description": "eigrp - check for authentication using keychain",
+        "context": "router eigrp",
+        "item": "authentication keychain @KEY_CHAIN@"
+    },
+    "custom_item_41": {
+        "description": "check if ospf is in use",
+        "item": "router ospf"
+    },
+    "custom_item_42": {
+        "description": "ospf - check that keychain exists",
+        "context": "key chain @KEY_CHAIN@",
+        "item": "key-string password"
+    },
+    "custom_item_43": {
+        "description": "ospf - check that interface is defined",
+        "context": "router ospf",
+        "item": "address-family ipv4"
+    },
+    "custom_item_44": {
+        "description": "ospf - check for authentication using keychain",
+        "context": "router ospf",
+        "item": "authentication keychain @KEY_CHAIN@"
+    },
+    "custom_item_45": {
+        "description": "check if bgp is in use",
+        "item": "router bgp"
+    },
+    "custom_item_46": {
+        "description": "bgp - check that at least one neighbor is defined",
+        "context": "router bgp",
+        "item": "neighbor"
+    },
+    "custom_item_47": {
+        "description": "bgp - check for neighbor password",
+        "context": "router bgp",
+        "item": "password encrypted"
+    },
+    "custom_item_48": {
+        "description": "check if isis is in use",
+        "item": "router isis"
+    },
+    "custom_item_49": {
+        "description": "isis - check that keychain exists",
+        "context": "key chain @KEY_CHAIN@",
+        "item": "key-string password"
+    },
+    "custom_item_50": {
+        "description": "isis - check for lsp-password using keychain",
+        "context": "router isis",
+        "item": "lsp-password keychain @KEY_CHAIN@"
+    },
+    "custom_item_51": {
+        "description": "isis - check for hello-password using keychain",
+        "context": "router isis",
+        "item": "hello-password keychain @KEY_CHAIN@"
+    },
+    "custom_item_52": {
+        "description": "check if rip is in use",
+        "item": "router rip"
+    },
+    "custom_item_53": {
+        "description": "rip - check that keychain exists",
+        "context": "key chain @KEY_CHAIN@",
+        "item": "key-string password"
+    },
+    "custom_item_54": {
+        "description": "rip - check that interface is defined",
+        "context": "router rip",
+        "item": "interface"
+    },
+    "custom_item_55": {
+        "description": "rip - check for authentication using keychain",
+        "context": "router rip",
+        "item": "authentication keychain @KEY_CHAIN@ mode md5"
+    },
+    "custom_item_56": {
+        "description": "2.1.6 Key chains",
+        "info": "Keychain management is a common method of authentication to configure shared secrets on all entities that exchange secrets such as keys, before establishing trust with each other. Routing protocols and network management applications on Cisco IOS XR software often use authentication to enhance security while communicating with peers.\n\nThe keychain by itself has no relevance; therefore, it must be used by an application that needs to communicate by using the keys (for authentication) with its peers. The keychain provides a secure mechanism to handle the keys and rollover based on the lifetime. Border Gateway Protocol (BGP), Open Shortest Path First (OSPF), and Intermediate System-to-Intermediate System (IS-IS) use the keychain to implement a hitless key rollover for authentication. BGP uses TCP authentication, which enables the authentication option and sends the Message Authentication Code (MAC) based on the cryptographic algorithm configured for the keychain.",
+        "solution": "IOSXR(config)#key chain {key_chain_name}\nIOSXR(config-CHAIN)#key {key_id}\nIOSXR(config-CHAIN-1)#key-string {key_string}\n\nImpact:\n\nThis allows the configuration of routing protocol authentication to be made earier.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|12.5,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "item": "key chain @KEY_CHAIN@"
+    },
+    "custom_item_57": {
+        "description": "2.2.1.1 Set 'ntp authenticate'",
+        "info": "Enable NTP authentication.\n\nUsing authenticated NTP ensures the Cisco device only permits time updates from authorized NTP servers.",
+        "solution": "Configure NTP authentication:\n\nIOSXR(config)#ntp authenticate\n\nImpact:\n\nOrganizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp authenticate' command enforces authentication between NTP hosts.",
+        "reference": "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "ntp",
+        "item": "authenticate"
+    },
+    "custom_item_58": {
+        "description": "2.2.1.2 Set 'ntp authentication-key'",
+        "info": "Define an authentication key for Network Time Protocol (NTP).\n\nUsing an authentication key provides a higher degree of security as only authenticated NTP servers will be able to update time for the Cisco device.",
+        "solution": "Configure at the NTP key ring and encryption key using the following command\n\nIOSXR(config)#ntp authentication-key {ntp_key_id} md5 {ntp_key}\n\nImpact:\n\nOrganizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp authentication-key' command enforces encrypted authentication between NTP hosts.",
+        "reference": "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "ntp",
+        "item": "authentication-key .+ md5 encrypted .+$",
+        "min_occurrences": "1"
+    },
+    "custom_item_59": {
+        "description": "2.2.1.3 Set the 'ntp trusted-key'",
+        "info": "Ensure you authenticate the identity of a system to which Network Time Protocol (NTP) will synchronize\n\nThis authentication function provides protection against accidentally synchronizing the system to another system that is not trusted, because the other system must know the correct authentication key.",
+        "solution": "Configure the NTP trusted key using the following command\n\nIOSXR(config)#ntp trusted-key {ntp_key_id}\n\nImpact:\n\nOrganizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp trusted-key' command enforces encrypted authentication between NTP hosts.",
+        "reference": "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "ntp",
+        "item": "trusted-key"
+    },
+    "custom_item_60": {
+        "description": "check for key on primary ntp server'",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_1@ key"
+    },
+    "custom_item_61": {
+        "description": "check for key on secondary ntp server",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_2@ key"
+    },
+    "custom_item_62": {
+        "description": "check for key on tertiary ntp server",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_3@ key"
+    },
+    "custom_item_63": {
+        "description": "2.3.1 Authentication",
+        "info": "You can ensure that VRRP messages received from VRRP routers that comprise a virtual router are authenticated by configuring a simple text password.\n\nThis is part of the VRRP authentication setup",
+        "solution": "Configure VRRP with the appropriate password.\n\nIOSXR(config)#router vrrp\nIOSXR(config-vrrp)#interface {interface}\nIOSXR(config-vrrp-if)#address-family ipv4\nIOSXR(config-vrrp-address-family)#vrrp {virtual_router_id}\nIOSXR(config-vrrp-virtual-router)#text-authentication {password}\n\nImpact:\n\nAn important aspect of the VRRP redundancy scheme is VRRP router priority. Priority determines the role that each VRRP router plays and what happens if the master virtual router fails.\n\nIf a VRRP router owns the IP address of the virtual router and the IP address of the physical interface, this router functions as a master virtual router.\n\nPriority also determines if a VRRP router functions as a backup virtual router and determines the order of ascendancy to becoming a master virtual router if the master virtual router fails. You can configure the priority of each backup virtual router with a value of 1 through 254, using the vrrp priority command.\n\nFor example, if Router A, the master virtual router in a LAN topology, fails, an election process takes place to determine if backup virtual Routers B or C should take over. If Routers B and C are configured with the priorities of 101 and 100, respectively, Router B is elected to become master virtual router because it has the higher priority. If Routers B and C are both configured with the priority of 100, the backup virtual router with the higher IP address is elected to become the master virtual router.\n\nBy default, a preemptive scheme is enabled whereby a higher-priority backup virtual router that becomes available takes over for the backup virtual router that was elected to become master virtual router. You can disable this preemptive scheme using the no vrrp preempt command. If preemption is disabled, the backup virtual router that is elected to become master virtual router remains the master until the original master virtual router recovers and becomes master again.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "router vrrp",
+        "item": "text-authentication"
+    },
+    "custom_item_64": {
+        "description": "2.4.1 Authentication",
+        "info": "Enable authentication for HSRP packets and to specify the set of keys that can be used on an interface.\n\nThis is part of the HSRP authentication setup",
+        "solution": "Configure HSRP with the appropriate password.\n\nIOSXR(config)#router hsrp\nIOSXR(config-hsrp)#interface {interface}\nIOSXR(config-hsrp-if)#address-family ipv4 hsrp {hsrp_group_number} authentication {hsrp_password}\n\nImpact:\n\nThe Hot Standby Router Protocol (HSRP) is an IP routing redundancy protocol designed to allow for transparent failover at the first-hop IP router. HSRP provides high network availability, because it routes IP traffic from hosts on networks without relying on the availability of any single router. HSRP is used in a group of routers for selecting an active router and a standby router. (An active router is the router of choice for routing packets; a standby router is a router that takes over the routing duties when an active router fails, or when preset conditions are met.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "router hsrp",
+        "item": "authentication"
+    },
+    "custom_item_65": {
+        "description": "3.1 URPF",
+        "info": "Enable Unicast reverse path forwarding to prevent IP speeofing attacks.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the Interface with the RIPv2 key chain.\n\nIOSXR(config)#int {interface}\nIOSXR(config-if)#ipv4 verify unicast source reachable-via rx\n\nImpact:\n\nUnicast Reverse Path Forwarding (URPF) is a mechanism for validating the source IP address of packets received on a router. A router configured with URPF performs a reverse path lookup in the FIB table tovalidate the presence of the source IP address. If the source IP address is listed in the table, then it indicatesthat the source is reachable and valid. If source IP address cannot be located in the FIB table, the packet istreated as malicious by the router and discarded.",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10473",
+        "context": "interface",
+        "item": "ipv4 verify unicast source reachable-via rx",
+        "min_occurrences": "1"
+    }
+}

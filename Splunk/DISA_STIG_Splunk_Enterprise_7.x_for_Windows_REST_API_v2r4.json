@@ -1,0 +1,137 @@
+{
+    "custom_item_1": {
+        "description": "Splunk is installed and the correct version",
+        "request": "SplunkGetServerInfo",
+        "json_transform": ".generator.version",
+        "expect": "^@SPLUNK_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "SPLK-CL-000010 - Splunk Enterprise must be installed with FIPS mode enabled, to implement NIST FIPS 140-2 approved ciphers for all cryptographic functions.",
+        "info": "FIPS 140-2 precludes the use of unvalidated cryptography for the cryptographic protection of sensitive or valuable data within Federal systems. Unvalidated cryptography is viewed by NIST as providing no protection to the information or data. In effect, the data would be considered unprotected plaintext. If the agency specifies that the information or data be cryptographically protected, then FIPS 140-2 is applicable. In essence, if cryptography is required, it must be validated. Cryptographic modules that have been approved for classified use may be used in lieu of modules that have been validated against the FIPS 140-2 standard.",
+        "solution": "FIPS 140-2 mode MUST be enabled during installation. If not enabled, it requires a reinstall or upgrade of the application.\n\nThe installer must be executed from the command line so that it can be passed the LAUNCHSPLUNK=0 parameter.\n\nThis allows Splunk to install and not automatically start up after install.\n\nExample: msiexec /iLAUNCHSPLUNK=0\n\nUsing a text editor, edit $SPLUNK_HOME/etc/splunk-launch.conf file, add the line SPLUNK_FIPS=1 to it, restart the server, and then recheck this requirement.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|I,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-221600r879885_rule,STIG-ID|SPLK-CL-000010,STIG-Legacy|SV-111305,STIG-Legacy|V-102349,Vuln-ID|V-221600",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetServerInfo",
+        "json_transform": ".entry[].content.fips_mode",
+        "expect": "true"
+    },
+    "custom_item_3": {
+        "description": "SPLK-CL-000060 - Splunk Enterprise must use HTTPS/SSL for access to the user interface.",
+        "info": "A replay attack may enable an unauthorized user to gain access to the application. Authentication sessions between the authenticator and the application validating the user credentials must not be vulnerable to a replay attack.\n\nAnti-replay is a cryptographically based mechanism; thus, it must use FIPS-approved algorithms. An authentication process resists replay attacks if it is impractical to achieve a successful authentication by recording and replaying a previous authentication message. Note that the anti-replay service is implicit when data contains monotonically increasing sequence numbers and data integrity is assured. Use of DoD PKI is inherently compliant with this requirement for user and device access. Use of Transport Layer Security (TLS), including application protocols, such as HTTPS and DNSSEC, that use TLS/SSL as the underlying security protocol is also complaint.\n\nConfigure the information system to use the hash message authentication code (HMAC) algorithm for authentication services to Kerberos, SSH, web management tool, and any other access method.",
+        "solution": "This configuration is performed on the machine used as a search head, which may be a separate machine in a distributed environment.\n\nEdit the following file in the installation to configure Splunk to use SSL certificates:\n\n$SPLUNK_HOME/etc/system/local/web.conf\n\n(Note that these files may exist in one of the following folders or its subfolders:\n$SPLUNK_HOME/etc/apps/\n$SPLUNK_HOME/etc/slave-apps/)\n\n[settings]\nenableSplunkWebSSL = true\nprivKeyPath =serverCert =",
+        "reference": "800-171|3.5.4,800-53|IA-2(8),800-53r5|IA-2(8),CAT|II,CCI|CCI-001941,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(8),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM18,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221607r879597_rule,STIG-ID|SPLK-CL-000060,STIG-Legacy|SV-111315,STIG-Legacy|V-102363,SWIFT-CSCv1|4.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-221607",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetServerSettings",
+        "json_transform": ".entry[].content.enableSplunkWebSSL",
+        "expect": "true"
+    },
+    "custom_item_4": {
+        "description": "SPLK-CL-000170 - Splunk Enterprise must use TCP for data transmission.",
+        "info": "If the UDP protocol is used for communication, then data packets that do not reach the server are not detected as a data loss. The use of TCP to transport data improves delivery reliability, adds data integrity, and gives the option to encrypt the traffic.",
+        "solution": "Select Settings >> Data Inputs, and verify there are zero inputs configured under UDP. Remove any that exist and recreate using TCP.\n\nIt is recommended to set these settings before disabling the web UI of the instance in a distributed environment.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-221614r879887_rule,STIG-ID|SPLK-CL-000170,STIG-Legacy|SV-111325,STIG-Legacy|V-102375,SWIFT-CSCv1|2.3,Vuln-ID|V-221614",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetDataInputsUDP",
+        "json_transform": "if ((.entry | length) == 0) then \"pass\" else \"fail\" end",
+        "expect": "pass"
+    },
+    "custom_item_5": {
+        "description": "SPLK-CL-000180 - Splunk Enterprise idle session timeout must be set to not exceed 15 minutes.",
+        "info": "Without reauthentication, users may access resources or perform tasks for which they do not have authorization.\n\nWhen applications provide the capability to change security roles or escalate the functional capability of the application, it is critical the user reauthenticate.\n\nIn addition to the reauthentication requirements associated with session locks, organizations may require reauthentication of individuals and/or devices in other situations, including (but not limited to) the following circumstances:\n\n(i) When authenticators change;\n(ii) When roles change;\n(iii) When security categories of information systems change;\n(iv) When the execution of privileged functions occurs;\n(v) After a fixed period of time; or\n(vi) Periodically.\n\nWithin the DoD, the minimum circumstances requiring reauthentication are privilege escalation and role changes.",
+        "solution": "Select Settings >> Server Settings >> General Settings and set Session timeout to 15 minutes or less.",
+        "reference": "800-53|IA-11,800-53r5|IA-11,CAT|III,CCI|CCI-002038,CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),QCSC-v1|13.2,Rule-ID|SV-221937r879762_rule,STIG-ID|SPLK-CL-000180,STIG-Legacy|SV-111365,STIG-Legacy|V-102421,Vuln-ID|V-221937",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetServerSettings",
+        "json_transform": ".entry[].content.sessionTimeout",
+        "expect": "^([0-9]|1[0-5])m$"
+    },
+    "custom_item_6": {
+        "description": "SPLK-CL-000190 - Splunk Enterprise idle session timeout must be set to not exceed 15 minutes.",
+        "info": "Automatic session termination after a period of inactivity addresses the potential for a malicious actor to exploit the unattended session. Closing any unattended sessions reduces the attack surface to the application.",
+        "solution": "Select Settings >> Server Settings >> General Settings and set Session timeout to 15 minutes or less.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CAT|II,CCI|CCI-002361,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,NIAv2|NS49,Rule-ID|SV-221938r879673_rule,STIG-ID|SPLK-CL-000190,STIG-Legacy|SV-111367,STIG-Legacy|V-102423,Vuln-ID|V-221938",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetServerSettings",
+        "json_transform": ".entry | .[] | .content.sessionTimeout",
+        "expect": "^([0-9]|1[0-5])m$"
+    },
+    "custom_item_7": {
+        "description": "SPLK-CL-000250 - Splunk Enterprise must be configured to aggregate log records from organization-defined devices and hosts within its scope of coverage.",
+        "info": "If the application is not configured to collate records based on the time when the events occurred, the ability to perform forensic analysis and investigations across multiple components is significantly degraded. Centralized log aggregation must also include logs from databases and servers (e.g., Windows) that do not natively send logs using the syslog protocol.",
+        "solution": "Configure Splunk Enterprise to aggregate log records from organization-defined devices and hosts within its scope of coverage, as defined in the site security plan.",
+        "reference": "800-171|3.3.1,800-53|AU-12(1),800-53r5|AU-12(1),CAT|III,CCI|CCI-000174,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12(1),PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221621r879557_rule,STIG-ID|SPLK-CL-000250,STIG-Legacy|SV-111333,STIG-Legacy|V-102389,SWIFT-CSCv1|6.4,Vuln-ID|V-221621",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetDataInputsAll",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_8": {
+        "description": "SPLK-CL-000330 - Splunk Enterprise must enforce password complexity for the account of last resort by requiring that at least one upper-case character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password is, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set Uppercase to greater than 0.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|III,CCI|CCI-000192,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221629r879603_rule,STIG-ID|SPLK-CL-000330,STIG-Legacy|SV-111349,STIG-Legacy|V-102405,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-221629",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.minPasswordUppercase",
+        "not_expect": "^0$"
+    },
+    "custom_item_9": {
+        "description": "SPLK-CL-000340 - Splunk Enterprise must enforce password complexity for the account of last resort by requiring that at least one lower-case character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set Lowercase to greater than 0.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|III,CCI|CCI-000193,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221630r879604_rule,STIG-ID|SPLK-CL-000340,STIG-Legacy|SV-111351,STIG-Legacy|V-102407,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-221630",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.minPasswordLowercase",
+        "not_expect": "^0$"
+    },
+    "custom_item_10": {
+        "description": "SPLK-CL-000350 - Splunk Enterprise must enforce password complexity for the account of last resort by requiring that at least one numeric character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set Numeral to greater than 0.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|III,CCI|CCI-000194,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221631r879605_rule,STIG-ID|SPLK-CL-000350,STIG-Legacy|SV-111353,STIG-Legacy|V-102409,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-221631",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.minPasswordDigit",
+        "not_expect": "^0$"
+    },
+    "custom_item_11": {
+        "description": "SPLK-CL-000360 - Splunk Enterprise must enforce a minimum 15-character password length for the account of last resort.",
+        "info": "The shorter the password, the lower the number of possible combinations that need to be tested before the password is compromised.\n\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Password length is one factor of several that helps to determine strength and how long it takes to crack a password. The shorter the password, the lower the number of possible combinations that need to be tested before the password is compromised.\n\nUse of more characters in a password helps to exponentially increase the time and/or resources required to compromise the password.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >>Password Policy Management and set Minimum characters to 15 or more.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000205,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221632r879601_rule,STIG-ID|SPLK-CL-000360,STIG-Legacy|SV-111355,STIG-Legacy|V-102411,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-221632",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.minPasswordLength",
+        "expect": "^@MIN_PASSWORD_LENGTH@$"
+    },
+    "custom_item_12": {
+        "description": "SPLK-CL-000370 - Splunk Enterprise must enforce password complexity for the account of last resort by requiring that at least one special character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor in determining how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nSpecial characters are those characters that are not alphanumeric. Examples include: ~ ! @ # $ % ^ *.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set Special character to greater than 0.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|III,CCI|CCI-001619,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221633r879606_rule,STIG-ID|SPLK-CL-000370,STIG-Legacy|SV-111357,STIG-Legacy|V-102413,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-221633",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.minPasswordSpecial",
+        "not_expect": "^0$"
+    },
+    "custom_item_13": {
+        "description": "SPLK-CL-000380 - Splunk Enterprise must enforce a 60-day maximum password lifetime restriction for the account of last resort.",
+        "info": "Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed at specific intervals. If the application does not limit the lifetime of passwords and force users to change their passwords, there is the risk that the system and/or application passwords could be compromised.\n\nThis requirement does not include emergency administration accounts that are meant for access to the application in case of failure. These accounts are not required to have maximum password lifetime restrictions.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set Expiration to Enabled and Days until password expires to 60.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CAT|III,CCI|CCI-000199,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221634r879611_rule,STIG-ID|SPLK-CL-000380,STIG-Legacy|SV-111359,STIG-Legacy|V-102415,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2,Vuln-ID|V-221634",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.expireUserAccounts",
+        "expect": "^(60|[1-5]?[0-9])$"
+    },
+    "custom_item_14": {
+        "description": "SPLK-CL-000390 - Splunk Enterprise must prohibit password reuse for a minimum of five generations for the account of last resort.",
+        "info": "Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nTo meet password policy requirements, passwords need to be changed at specific policy-based intervals.\n\nIf the information system or application allows the user to consecutively reuse their password when that password has exceeded its defined lifetime, the end result is a password that is not changed as per policy requirements.\n\nIn most enterprise environments, this requirement is usually mitigated by a properly configured external authentication system, like LDAP. Splunk local authentication takes precedence over other forms of authentication, and cannot be disabled. The mitigation settings in this requirement apply in the event a local account gets created, for example, an emergency account of last resort for recovery.",
+        "solution": "Select Settings >> Access Controls >> Password Policy Management and set History to Enabled and Password history count to 5 or more.",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CAT|III,CCI|CCI-000200,CSF|PR.AC-1,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221635r879602_rule,STIG-ID|SPLK-CL-000390,STIG-Legacy|SV-111361,STIG-Legacy|V-102417,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3,Vuln-ID|V-221635",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V2R4_STIG.zip",
+        "request": "SplunkGetSplunkAuth",
+        "json_transform": ".entry | .[] | .content.enablePasswordHistory",
+        "expect": "^([5-9]|[1-9][0-9]+)$"
+    }
+}

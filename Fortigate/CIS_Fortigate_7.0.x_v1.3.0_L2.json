@@ -1,0 +1,215 @@
+{
+    "custom_item_1": {
+        "description": "2.1.11 Ensure CDN is enabled for improved GUI performance",
+        "info": "To improve GUI performance, an option is added to enable loading static GUI artifacts cached in CDN (content delivery network) servers closer to the user rather than from the FortiGate. On failure, the files can fall back to loading from the FortiGate.\n\nWhen accessing a remote FortiGate, GUI might experience some slowness due to geographical distance. For this case, loading static GUI artifacts cached in CDN servers will provide a better GUI / web management experience.",
+        "solution": "On CLI:\n\nconfig system global\n    set gui-cdn-usage enable\nend\n\nImpact:\n\nThis is not a security control recommendation. Hence, there is no impact if this is not enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "expect": "set[\\s]+gui-cdn-usage[\\s]+enable"
+    },
+    "custom_item_2": {
+        "description": "2.1.6 Ensure the latest firmware is installed",
+        "info": "Check against the Fortinet website to make sure that the latest stable firmware is installed.\n\nFortinet periodically updates the FortiGate firmware to include new features and resolve important issues. After you have registered your FortiGate unit, firmware updates can be downloaded from the Fortinet Customer Service & Support website.\n\nIt is important to constantly keep the firmware up to date to prevent any new well-known exploitation.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "First, determine the upgrade path recommended by Fortinet. If you have not upgraded the system for a long time, it is not recommended to upgrade straight to the latest version, as the configuration could be lost. Fortinet provides a tool to recommend an upgrade path for all of its products.\n\nGo to\n\nhttps://docs.fortinet.com/upgrade-tool\n\n. Choose your product from the \"Current Product\" drop-down menu, the \"current FortiOS version\", and the latest firmware version available for that model from \"Upgrade to FortiOS Version\". Click \"Go\". Write down the path and then click on \"Download\" to download all the necessary versions.\n\nThe second step is to download the required FortiOS firmware/s. Go to\n\nhttps://support.fortinet.com\n\nand login. Go to Support -> Firmware Download. Once there, select the product and click on \"Upgrade Path\". Choose the specific model of the hardware, the current firmware version and the latest firmware version available for that model. Click \"Go\". Write down the path and then click on \"Download\" to download all the necessary versions.\n\nThe last step is to install the new firmwares in the order provided by the \"Upgrade tool\". It is recommended to use GUI to perform this task as it would be much easier.\n\nIn the GUI\n\n1. Go to System > Fabric Management\n2. Right click on device that needs to be upgraded.\n3. Then click on \"Upgrade\". You might have to perform this step multiple times if you follow the upgrade path.",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-171|3.12.2,800-53|CA-5,800-53|RA-1,800-53|RA-5,800-53r5|CA-5,800-53r5|RA-1,800-53r5|RA-5,CSCv7|2.2,CSCv7|8.2,CSCv7|11.4,CSCv8|16.2,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.GV-1,CSF|ID.GV-3,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|CA-5,ITSG-33|RA-1,ITSG-33|RA-5,LEVEL|2A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.7.1,NIAv2|NS9,PCI-DSSv3.2.1|6.1,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "cmd": "get system status",
+        "regex": "^Version:[\\s]+.*$",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_3": {
+        "description": "auto-install-config",
+        "context": "config system auto-install",
+        "expect": "set[\\s]+auto-install-config[\\s]+disable"
+    },
+    "custom_item_4": {
+        "description": "auto-install-image",
+        "context": "config system auto-install",
+        "expect": "set[\\s]+auto-install-image[\\s]+disable"
+    },
+    "custom_item_5": {
+        "description": "2.1.8 Disable static keys for TLS",
+        "info": "Disable support for static keys on TLS sessions terminating on the FortiGate\n\nPrevent TLS sessions terminating on the FortiGate from using static SSL keys",
+        "solution": "CLI:\n\nconfig system global\nset ssl-static-key-ciphers disable\n\nend",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "expect": "set[\\s]+ssl-static-key-ciphers[\\s]+disable"
+    },
+    "custom_item_6": {
+        "description": "2.1.9 Enable Global Strong Encryption",
+        "info": "Enable FortiOS to only use strong encryption and allow only strong ciphers for communication",
+        "solution": "CLI:\n\nconfig system global\nset strong-crypto enable\n\nend",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),LEVEL|2A,NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.6",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "expect": "set[\\s]+strong-crypto[\\s]+enable"
+    },
+    "custom_item_7": {
+        "description": "Check if SNMP is enabled",
+        "context": "config system snmp sysinfo",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_8": {
+        "description": "snmpv3 user exist",
+        "context": "edit .*",
+        "expect": "set[\\s]+.*"
+    },
+    "custom_item_9": {
+        "description": "snmpv1/snmpv2c communities don't exist",
+        "context": "config system snmp community",
+        "not_expect": "set[\\s]+.*"
+    },
+    "custom_item_10": {
+        "description": "Check if SNMP is enabled",
+        "context": "config system snmp sysinfo",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_11": {
+        "description": "2.3.2 Allow only trusted hosts in SNMPv3",
+        "info": "Ensuring that only certain hosts are able to conduct SNMP GET or receive SNMP Trap.\n\nSNMP offers rich information that can be useful for reconnaissance activity. Hence, limiting this information to only relevant devices such as NMS (Network Monitoring System) or other SNMP servers is necessary.",
+        "solution": "To remove 0.0.0.0 from trusted hosts in CLI:\n\nFGT1 # config system snmp user\nFGT1 (user) # edit \"snmp_test\"\nFGT1 (snmp_test) # unselect notify-hosts 0.0.0.0\nFGT1 (snmp_test) # end\nFGT1 #\n\nFrom GUI:\n\n1. System > SNMP.\n2. On SNMPv3 section, double click on the configured SNMPv3 settings.\n3. Remove 0.0.0.0 from \"Hosts\" option.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.15,800-53|CM-6,800-53|CM-7,800-53|SC-23,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-23,CSCv7|11.1,CSCv7|12.2,CSCv8|12.3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|2A,NESA|T4.5.1,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .*",
+        "regex": "set[\\s]+notify-hosts[\\s]+",
+        "not_expect": "0.0.0.0"
+    },
+    "custom_item_12": {
+        "description": "2.5.1 Ensure High Availability configuration is enabled",
+        "info": "Ensure that FortiGate devices are configured for High Availability (HA).\n\nConfiguring High Availability (HA) increases system availability as well as decreases impact of routine maintenance (Firmware updates, cable moves, etc.) and the the impact of device failure.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "In GUI:\n\n1. Navigate to \"System\" and then \"HA\"\n2. Ensure \"Mode\" is set to proper setting \"Active-Active\" or \"Active-Passive\"\n3. Review Configuration settings:\n\t- \"Cluster Name\" must match on devices\n\t- \"Password\" Must match on devices\n\t- \"Heartbeat Interfaces\" need to be defined on devices\n4. Click \"OK\" to save changes and exit\n\nIn CLI:\n\nFGT1 # config system ha\nFGT1 (ha) # set mode a-p \t\t\t###(Active-Passive)\nFGT1 (ha) # set group-name \"FGT-HA\" \t ###(Set cluster name)\nFGT1 (ha) # set password *******\t \t###(Set password)\nFGT1 (ha) # set hbdev port10 50\t\t\t###(Set Heartbeat Interface and priority)\nFGT1 (ha) # end\n\nTo review configuration in CLI:\n\nFGT1 # config system ha\nFGT1 (ha) # show\nconfig system ha\n    set group-name \"FGT-HA\"\n    set mode a-p\n    set password ENC enrwD467hJmO6j6YW/l6FEOa1YNVYdo8Z5mCcTDEKUFpOVXcNYnPBmQDGX//ViXk6TkwNH0il5aJr/fZY25lq+husndQHZVWp2LIlXmCv/n81U43nkZUWaIKvqkellGFbhv0/IHoOLzQPCsVcBbyrsgoprYMvh6w7F06+nRriBtMNQxpOV5V+e388EcwsOOMsXBZOw==\n    set hbdev \"port10\" 50\n    set override disable\nend\n\nImpact:\n\nNot having High Availability (HA) configured correctly and synced properly impacts the availability of the FortiGate devices as well as any systems that require traversing the FortiGates. With properly configured HA in place outages can be minimized during firmware updates as well as if there are power outages or device failures.",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|11.1,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system ha[\\s]*$",
+        "regex": ".+",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_13": {
+        "description": "check for scan-botnet-connections",
+        "context": "edit .+",
+        "regex": "set scan-botnet-connections block",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_14": {
+        "description": "check for scan-botnet-connections",
+        "context": "edit .+",
+        "regex": "set ips-sensor",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "check for updates enabled",
+        "context": "config system autoupdate schedule",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_16": {
+        "description": "check for frequency automatic",
+        "context": "config system autoupdate schedule",
+        "expect": "set[\\s]+frequency[\\s]+automatic"
+    },
+    "custom_item_17": {
+        "description": "4.2.2 Apply Antivirus Security Profile to Policies",
+        "info": "Ensuring that traffic traversing between networks on the FortiGate has an Antivirus Security profile inspecting it.\n\nTraffic moving between \"interfaces\" on the FortiGate should have firewall policies applied with an antivirus security profile applied.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review firewall policies and apply an appropriate antivirus security profile to policies.",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|8.1,CSCv8|10.1,CSCv8|10.6,CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set av-profile",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_18": {
+        "description": "4.2.3 Enable Outbreak Prevention Database",
+        "info": "Ensure FortiGate AV inspection uses outbreak prevention database as an added layer of protection on top of antivirus' signature-based detection.\n\nAntivirus mainly uses signature for malware blocking. By enabling \"FortiGuard outbreak prevention database\", FortiGate can leverage on 3rd party malware hash signatures curated by the FortiGuard as an additional protection layer.\n\nThe hash signatures are obtained from FortiGuard's Global Threat Intelligence database. The antivirus database queries FortiGuard with the hash of a scanned file. If FortiGuard returns a match, the scanned file is deemed to be malicious.",
+        "solution": "Review Antivirus Security Profiles and validate that \"Use FortiGuard outbreak prevention database\" is enabled.",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|8.1,CSCv7|8.2,CSCv7|8.3,CSCv7|8.6,CSCv8|10.1,CSCv8|10.6,CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config (http|ftp|imap|pop3|smtp|nntp|cifs)",
+        "regex": "set outbreak-prevention",
+        "expect": "block"
+    },
+    "custom_item_19": {
+        "description": "4.2.4 Enable AI /heuristic based  malware detection",
+        "info": "AI /heuristic based detection should be enabled.\n\nThe AV Engine AI malware detection model integrates into regular AV scanning to help detect potentially malicious Windows Portable Executables (PEs) in order to mitigate zero-day attacks. It is an additional layer of protection on top of traditional antivirus protection.\n\nIn version 6.x, it is named \"Heuristic detection\". On version 7.x, Fortinet has renamed this to AI based detection.",
+        "solution": "On CLI:\n\nFGT1 # config antivirus settings\nFGT1 (settings) # set machine-learning-detection enable",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|8.1,CSCv7|8.2,CSCv7|8.3,CSCv8|10.7,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config antivirus settings",
+        "regex": "set machine-learning-detection",
+        "expect": "enable"
+    },
+    "custom_item_20": {
+        "description": "4.2.5 Enable grayware detection on antivirus",
+        "info": "Grayware detection should be enabled.\n\nUsage of grayware is generally not allowed in strict company policies and some graywares can be used for malicious intent. If the file passes the virus scan, it can be checked for grayware. Grayware signatures are kept up to date in the same manner as the antivirus definitions.",
+        "solution": "On CLI:\n\nFGT1 # config antivirus settings\nFGT1 (settings) # set grayware enable",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|8.1,CSCv7|8.2,CSCv8|10.1,CSCv8|10.6,CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config antivirus settings",
+        "regex": "set grayware",
+        "expect": "enable"
+    },
+    "custom_item_21": {
+        "description": "4.3.1 Enable Botnet C&C Domain Blocking DNS Filter",
+        "info": "Enable Botnet C&amp;C domain blocking to block botnet access at the DNS name resolving stage.\n\nBlocking botnet website access at the DNS resolution stage provides an additional layer of defense.",
+        "solution": "On GUI:\n\n1. Go to Security Profiles > DNS Filter.\n2. On the relevant security profile name, double click. Enable \"Redirect botnet C&amp;C requests to Block Portal\".\n2. Ensure that firewall policies that have DNS traffic have a DNS Filter security profile applied with that option enabled.",
+        "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|8.6,CSCv7|8.7,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|2A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config dnsfilter profile",
+        "regex": "set block-botnet",
+        "expect": "enable"
+    },
+    "custom_item_22": {
+        "description": "4.4.2 Block applications running on non-default ports",
+        "info": "Ensure FortiGate Application Control blocks applications running on non-default ports.\n\nRunning applications on non-default ports is not directly a threat, but can be an indication of something unexpected. For example, HTTPS runs on port 443. Potentially, if an attacker starts a rogue HTTPS server on port 10443, it could be used for data exfiltration.",
+        "solution": "GUI:\n\n1. Go to \"Security Profiles\" > \"Application Control\".\n2. Select relevant App Control profile.\n\nEnable \"Block applications detected on non-default ports\" option.\n\nOn CLI:\n\nFGT1 # config application list\n\nFGT1 (list) # editFGT1 () # set enforce-default-app-port enable",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set enforce-default-app-port",
+        "expect": "set enforce-default-app-port enable"
+    },
+    "custom_item_23": {
+        "description": "6.1.1 Apply a Trusted Signed Certificate for VPN Portal",
+        "info": "Apply a signed certificate from a trusted Certificate Authority (CA) to the SSL VPN portal to allow users to connect securely with confidence.\n\nHaving an unsigned or self signed certificate leaves connections open to man-in-the-middle attacks and could allow users to connect to untrusted servers.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Import a signed certificate from a trusted CA through the GUI:\n\n1. Go to System > Certificates > Import.\n2. Then assign the certificate to the SSL VPN portal by going to VPN > SSL-VPN Settings and selecting the proper certificate in the dropdown for \"Server Certificate\".",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|1.8,CSCv7|12.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config vpn ssl settings",
+        "regex": "set servercert",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_24": {
+        "description": "ssl-max-proto-ver == tls1-3",
+        "context": "config vpn ssl settings",
+        "expect": "set[\\s]+ssl-max-proto-ver[\\s]+tls1-3"
+    },
+    "custom_item_25": {
+        "description": "ssl-min-proto-ver == tls1-2",
+        "context": "config vpn ssl settings",
+        "expect": "set[\\s]+ssl-min-proto-ver[\\s]+tls1-2"
+    },
+    "custom_item_26": {
+        "description": "algorithm == high",
+        "context": "config vpn ssl settings",
+        "expect": "set[\\s]+algorithm[\\s]+high"
+    },
+    "custom_item_27": {
+        "description": "7.1.1 Enable Event Logging",
+        "info": "Enabling event logging to allow for log generation and review.\n\nEnabling event logging generates logs that can be stored for later review or auditing or can be ingested by another system (SIEM, Analyzer) for monitoring and response.",
+        "solution": "On GUI:\n\n1. Go to Log & Report > Log Settings.\n2. Enable \"All\" Event Logging.\n\nOn CLI:\n\nconfig log eventfilter\nset event enable\nend",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.5,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-6(3),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6(3),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv7|8.8,CSCv8|8.2,CSCv8|8.5,CSCv8|8.9,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6(3),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.2.5,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config log eventfilter",
+        "expect": "set[\\s]+event[\\s]+enable"
+    },
+    "custom_item_28": {
+        "description": "check for syslogd enabled",
+        "context": "config log syslogd setting",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_29": {
+        "description": "check for syslogd server",
+        "context": "config log syslogd setting",
+        "expect": "set[\\s]+server[\\s]+\"@SYSLOG_SERVER@\""
+    }
+}

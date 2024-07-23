@@ -1,0 +1,29 @@
+{
+    "custom_item_1": {
+        "description": "Solaris 11 is installed",
+        "file": "/etc/release",
+        "regex": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]",
+        "expect": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]+@PLATFORM_VERSION@"
+    },
+    "custom_item_2": {
+        "system": "SunOS",
+        "description": "10.1 SN.1 Restrict access to suspend feature",
+        "info": "Solaris 11 does not enable the suspend capability by default and now uses the poweradm command to suspend the system.\n\nBear in mind that users with physical access to a system can simply remove power from the machine if they are truly motivated to take the system off-line, and granting the  capability to use poweradm may be a more graceful way of allowing desktop users to shut down their own machines.",
+        "solution": "Perform the following to implement the recommended state:\n # poweradm set suspend-enable=false\n # poweradm update",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2NS,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/611",
+        "cmd": "/usr/sbin/poweradm list | /usr/bin/grep suspend",
+        "expect": "^[\\\\s]*suspend/suspend-enable[\\\\s].*smf[\\\\s]*=[\\\\s]*false"
+    },
+    "custom_item_3": {
+        "system": "SunOS",
+        "description": "10.2 SN.2 Remove Support for Internet Services (inetd)",
+        "info": "If the actions in this section result in disabling all inetd-based services, then there is no point in running inetd at boot time.\n\nIf inetd-based services are ever re-enabled in the future it will be necessary to re-enable the inetd daemon as well (\"svcadm enable svc:/network/inetd:default\").",
+        "solution": "Perform the following to implement the recommended state:\n # svcadm disable svc:/network/inetd",
+        "reference": "CSCv6|9.1,LEVEL|2NS",
+        "see_also": "https://workbench.cisecurity.org/files/611",
+        "service": "/network/inetd:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    }
+}

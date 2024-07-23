@@ -1,0 +1,20 @@
+{
+    "custom_item_1": {
+        "description": "VMkernel found",
+        "cmd": "uname -a",
+        "expect": "VMkernel"
+    },
+    "custom_item_2": {
+        "description": "Check for existence of authorized_keys",
+        "file": "/etc/ssh/keys-root/authorized_keys"
+    },
+    "custom_item_3": {
+        "description": "5.7 Ensure the SSH authorized_keys file is empty",
+        "info": "ESXi hosts come with Secure Shell (SSH), which can be configured to authenticate remote\n      users using public key authentication. For day-to-day operations, the ESXi host should be in\n      lockdown mode with the SSH service disabled. Lockdown mode does not prevent root\n      users from logging in using keys. The presence of a remote user's public key in the\n      /etc/ssh/keys-root/authorized_keys file on an ESXi host identifies the user as trusted,\n      meaning the user is granted access to the host without providing a password.\n\n    Disabling authorized_keys access may limit your ability to run unattended remote scripts.\n\n    *Rationale*\n\n    Keeping the authorized_keys file empty prevents users from circumventing the intended\n    restrictions of lockdown mode.",
+        "solution": "To remove all keys from the authorized_keys file, perform the following:\n\n    1. Logon to the ESXi shell as root or another admin user.\n    2. Edit the /etc/ssh/keys-root/authorized_keys file.\n    3. Remove all keys from the file and save the file.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "cat /etc/ssh/keys-root/authorized_keys | wc -l",
+        "expect": "^0$"
+    }
+}

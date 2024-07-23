@@ -1,0 +1,67 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "2.1.1 Ensure 'SECURE_CONTROL_' Is Set In 'listener.ora'",
+        "info": "The SECURE_CONTROL_setting determines the type of control connection the Oracle server requires for remote configuration of the listener.\n\nRationale:\n\nListener configuration changes via unencrypted remote connections can result in unauthorized users sniffing control configuration information from the network.",
+        "solution": "To remediate this recommendation:\n\nSet the SECURE_CONTROL_for each defined listener in the listener.ora file.",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv7|4.5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),LEVEL|1A,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Cc][Oo][Nn][Tt][Rr][Oo][Ll]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Cc][Oo][Nn][Tt][Rr][Oo][Ll]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[\\(]?(.*[Tt][Cc][Pp][Ss].*|.*[Ii][Pp][Cc].*)[\\)]?"
+    },
+    "custom_item_3": {
+        "description": "2.1.2 Ensure 'extproc' Is Not Present in 'listener.ora'",
+        "info": "extproc should be removed from the listener.ora to mitigate the risk that OS libraries can be invoked by the Oracle instance.\n\nRationale:\n\nextproc allows the database to run procedures from OS libraries. These library calls can, in turn, run any OS command.",
+        "solution": "To remediate this recommendation:\n\nRemove extproc from the listener.ora file.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "[Ee][Xx][Tt][Pp][Rr][Oo][Cc]",
+        "expect": "[Ee][Xx][Tt][Pp][Rr][Oo][Cc]"
+    },
+    "custom_item_4": {
+        "description": "2.1.3 Ensure 'ADMIN_RESTRICTIONS_' Is Set to 'ON'",
+        "info": "The admin_restrictions_setting in the listener.ora file can require that any attempted real-time alteration of the parameters in the listener via the set command file be refused unless the listener.ora file is manually altered, then restarted by a privileged user.\n\nRationale:\n\nBlocking unprivileged users from making alterations of the listener.ora file, where remote data/service settings are specified, will help protect data confidentiality.",
+        "solution": "To remediate this recommendation:\n\nUse a text editor such as vi to set the admin_restrictions_to the value ON.\n\nDefault Value:\n\nNot set.",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Aa][Dd][Mm][Ii][Nn]_[Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt][Ii][Oo][Nn][Ss]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Aa][Dd][Mm][Ii][Nn]_[Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt][Ii][Oo][Nn][Ss]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[Oo][Nn][\\\\s]*$"
+    },
+    "custom_item_5": {
+        "description": "2.1.4 Ensure 'SECURE_REGISTER_' Is Set to 'TCPS' or 'IPC'",
+        "info": "The SECURE_REGISTER_setting specifies the protocols used to connect to the TNS listener. Each setting should have a value of either TCPS or IPC based on the needs for its protocol.\n\nRationale:\n\nListener configuration changes via unencrypted remote connections can result in unauthorized users sniffing control configuration information from the network.",
+        "solution": "To remediate this recommendation:\n\nUse a text editor such as vi to set SECURE_REGISTER_to the required value for each listener found in $ORACLE_HOME/network/admin/listener.ora.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Rr][Ee][Gg][Ii][Ss][Tt][Ee][Rr]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Rr][Ee][Gg][Ii][Ss][Tt][Ee][Rr]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[\\(]?(.*[Tt][Cc][Pp][Ss].*|.*[Ii][Pp][Cc].*)[\\)]?"
+    },
+    "custom_item_6": {
+        "description": "2.3.1 Ensure 'ENCRYPTION_SERVER' Is Set to 'REQUIRED'",
+        "info": "The setting sqlnet.encryption_server=required requires that the connections to the database are encrypted through Oracle SQL*Net native encryption. The encryption setting implements data-in-transit encryption for the Oracle database connections. This setting is configured in the sqlnet.ora file on the database server.\n\nRationale:\n\nWithout this setting, malicious users could potentially eavesdrop on the database connections, compromising the confidentiality of the data.\n\nImpact:\n\nThe setting sqlnet.encryption_server=required could reject/deny connection requests from those database users who don't support the Oracle native network encryption.",
+        "solution": "To remediate this recommendation:\n\nUse a text editor such as vi to set the sqlnet.\n\n\n\nencryption_server = required\n\nAdditional Information:\n\nOracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*(?i)encryption_server(?-i)[\\\\s]*=",
+        "expect": "^[\\\\s]*(?i)encryption_server(?-i)[\\\\s]*=[\\\\s]*(?i)required(?-i)[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "description": "2.3.2 Ensure 'SQLNET.CRYPTO_CHECKSUM_SERVER' Is Set to 'REQUIRED'",
+        "info": "The setting sqlnet.crypto_checksum_server=required requires that the connections to the database are encrypted through Oracle SQL*Net native encryption. The encryption setting implements data-in-transit encryption for the Oracle database connections. This setting is configured in the sqlnet.ora file on the database server.\n\nRationale:\n\nWithout this setting, malicious users could potentially eavesdrop on the database connections, compromising the confidentiality of the data.\n\nImpact:\n\nThe setting sqlnet.encryption_server=required could reject/deny connection requests from those database users who don't support the Oracle native network encryption.",
+        "solution": "To remediate this recommendation:\n\nUse a text editor such as vi to set:\n\nsqlnet.crypto_checksum_server = required\n\nAdditional Information:\n\nOracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13413",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "(?i)crypto_checksum_server(?-i)[\\\\s]*=",
+        "expect": "(?i)crypto_checksum_server(?-i)[\\\\s]*=[\\s]*(?i)required(?-i)[\\\\s]*$"
+    }
+}

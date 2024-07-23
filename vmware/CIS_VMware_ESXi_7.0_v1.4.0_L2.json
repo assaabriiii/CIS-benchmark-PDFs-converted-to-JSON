@@ -1,0 +1,280 @@
+{
+    "custom_item_1": {
+        "description": "1.4 (L2) Ensure the default value of individual salt per vm is configured",
+        "info": "The concept of salting has been introduced to help address concerns system administrators may have over the security implications of Transparent Page Sharing otherwise known as TPS. As per the original TPS implementation, multiple virtual machines could share pages when the contents of the pages were same. With the new salting settings, the virtual machines can share pages only if the salt value and contents of the pages are identical. A new host config option Mem.ShareForceSalting is introduced to enable or disable salting.\n\nBy default, salting is enabled (Mem.ShareForceSalting=2) and each virtual machine has a different salt. This means page sharing does not occur across the virtual machines (inter-VM TPS) and only happens inside a virtual machine (intra VM).\n\nIntra-VM means that TPS will de-duplicate identical pages of memory within a virtual machine, but will not share the pages with any other virtual machines. Ensuring the default setting is in place so that page sharing only occurs inside a virtual machine is the best option here.",
+        "solution": "From the vSphere Web Client:\n\n - Select a host\n - Click Configure then expand System then select Advanced System settings\n - Click Edit then Filter for Mem.ShareForceSalting\n - Set the value to 2\n - Click OK\n\nAdditionally, the following PowerCLI command can be used:\n\nGet-VMHost | Get-AdvancedSetting -Name Mem.ShareForceSalting | Set-AdvancedSetting -Value 2\n\nImpact:\n\nThere is potential in a performance impact regarding this setting, each environment and the impact on it will vary.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "Mem\\.ShareForceSalting : ",
+        "expect": "Mem\\.ShareForceSalting : 2$"
+    },
+    "custom_item_2": {
+        "description": "5.6 (L2) Ensure Strict Lockdown mode is enabled",
+        "info": "Enabling lockdown mode disables direct local access to an ESXi host, requiring the host be managed remotely from vCenter Server.\n\nThere are some operations, such as backup and troubleshooting, that require direct access to the host. In these cases, lockdown mode can be disabled on a temporary basis for specific hosts as needed, and then re-enabled when the task is completed.\n\nNote: Lockdown mode does not apply to users who log in using authorized keys. Also, users in the DCUI.Access list for each host are allowed to override lockdown mode and log in to the DCUI. By default, the \"root\" user is the only user listed in the DCUI.Access list.\n\nLockdown mode limits ESXi host access to the vCenter server to ensure the roles and access controls implemented in vCenter are always enforced and users cannot bypass them by logging into a host directly. By forcing all interaction to occur through vCenter Server, the risk of someone inadvertently attaining elevated privileges or performing tasks that are not properly audited is greatly reduced. Additionally strict lockdown move will disabled DCUI - Disabling DCUI prevents all local activity, and thus forces actions to be performed in vCenter Server, where they can be centrally audited and monitored.",
+        "solution": "To enable lockdown mode, perform the following from the vSphere web client:\n\n - From the vSphere Web Client, select the host.\n - Select Configure then expand System and select Security Profile\n - Across from Lockdown Mode click on Edit\n - Click the radio button for Strict\n - Click OK\n\nAlternately, run the following PowerCLI command:\n\n# Enable lockdown mode for each host\nGet-VMHost | Foreach { $_.EnterLockdownMode() }\n\nImpact:\n\nWith lockdown mode enabled the host will only be accessible through vCenter preventing 'local' access. Disabling the DCUI can create a potential \"lockout\" situation, should the host become isolated from vCenter Server. Recovering from a \"lockout\" scenario requires reinstalling ESXi. Consider leaving DCUI enabled, and instead enable lockdown mode and limit the users allowed to access the DCUI using the DCUI.Access list.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "Lockdown Mode : ",
+        "expect": "Lockdown Mode : lockdownStrict$"
+    },
+    "custom_item_3": {
+        "description": "8.1.1 (L2) Ensure only one remote console connection is permitted to a VM at any time",
+        "info": "By default, remote console sessions can be connected to by more than one user at a time. Permit only one remote console connection to a VM at a time. Other attempts will be rejected until the first connection disconnects.\n\nWhen multiple sessions are activated, each terminal window gets a notification about the new session. If an administrator in the VM logs in using a VMware remote console during their session, a non-administrator in the VM can connect to the console and observe the administrator's actions. Also, this could result in an administrator losing console access to a VM. For example, if a jump box is being used for an open console session, and the admin loses a connection to that box, the console session remains open. Allowing two console sessions permits debugging via a shared session. For highest security, only one remote console session at a time should be allowed.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input RemoteDisplay.maxConnections with a value of 1\n - Click OK then OK again.\n\nAlternatively, run the following PowerCLI command for VMs that do not specify the setting:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"RemoteDisplay.maxConnections\" -value 1\n\nRun the following PowerCLI command for VMs that specify the setting but have the wrong value for it:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"RemoteDisplay.maxConnections\" -value 1 -Force",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|9.2,CSCv7|14.7,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "RemoteDisplay\\.maxConnections : ",
+        "expect": "RemoteDisplay\\.maxConnections : 1$"
+    },
+    "custom_item_4": {
+        "description": "8.2.2 (L2) Ensure unnecessary CD/DVD devices are disconnected",
+        "info": "Ensure that no CD/DVD device is connected to a virtual machine unless required. For a CD/DVD device to be disconnected, the ideX:Y.present parameter should either not be present or have a value of FALSE.\n\nRemoving unnecessary hardware devices can reduce the number of potential attack channels and help prevent attacks.",
+        "solution": "To disconnect all CD/DVD drives from VMs, run the following PowerCLI command:\n\n# Remove all CD/DVD Drives attached to VMs\nGet-VM | Get-CDDrive | Remove-CDDrive\n\nThe VM will need to be powered off for this change to take effect.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "Virtual CD/DVD :",
+        "expect": "Virtual CD/DVD : (False|NOT found)$"
+    },
+    "custom_item_5": {
+        "description": "8.4.10 (L2) Ensure Drag and Drop Version Set is disabled",
+        "info": "The Drag and Drop Version Set feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Drag and Drop Version Set feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.guestDnDVersionSet.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Drag and Drop Version Set feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.guestDnDVersionSet.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.guestDnDVersionSet\\.disable : ",
+        "expect": "isolation\\.tools\\.guestDnDVersionSet\\.disable : TRUE$"
+    },
+    "custom_item_6": {
+        "description": "8.4.11 (L2) Ensure Shell Action is disabled",
+        "info": "The Shell Action feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Shell Action feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.ghi.host.shellAction.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Shell Action feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.ghi.host.shellAction.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.ghi\\.host\\.shellAction\\.disable : ",
+        "expect": "isolation\\.ghi\\.host\\.shellAction\\.disable : TRUE$"
+    },
+    "custom_item_7": {
+        "description": "8.4.12 (L2) Ensure Request Disk Topology is disabled",
+        "info": "The Request Disk Topology feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Request Disk Topology feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.dispTopoRequest.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Request Disk Topology feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.dispTopoRequest.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.dispTopoRequest\\.disable : ",
+        "expect": "isolation\\.tools\\.dispTopoRequest\\.disable : TRUE$"
+    },
+    "custom_item_8": {
+        "description": "8.4.13 (L2) Ensure Trash Folder State is disabled",
+        "info": "The Trash Folder State feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Trash Folder State feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.trashFolderState.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Trash Folder State feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.trashFolderState.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.trashFolderState\\.disable : ",
+        "expect": "isolation\\.tools\\.trashFolderState\\.disable : TRUE$"
+    },
+    "custom_item_9": {
+        "description": "8.4.14 (L2) Ensure Guest Host Interaction Tray Icon is disabled",
+        "info": "The Guest Host Interaction Tray Icon feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Guest Host Interaction Tray Icon feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.ghi.trayicon.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Guest Host Interaction Tray Icon feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.ghi.trayicon.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.ghi\\.trayicon\\.disable : ",
+        "expect": "isolation\\.tools\\.ghi\\.trayicon\\.disable : TRUE$"
+    },
+    "custom_item_10": {
+        "description": "8.4.15 (L2) Ensure Unity is disabled",
+        "info": "The Unity feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unity.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unity.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unity\\.disable",
+        "expect": "isolation\\.tools\\.unity\\.disable : TRUE$"
+    },
+    "custom_item_11": {
+        "description": "8.4.16 (L2) Ensure Unity Interlock is disabled",
+        "info": "The Unity Interlock feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity Interlock feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unityInterlockOperation.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity Interlock feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unityInterlockOperation.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unityInterlockOperation\\.disable : ",
+        "expect": "isolation\\.tools\\.unityInterlockOperation\\.disable : TRUE$"
+    },
+    "custom_item_12": {
+        "description": "8.4.17 (L2) Ensure GetCreds is disabled",
+        "info": "The GetCreds feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the GetCreds feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.getCreds.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the GetCreds feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.getCreds.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.getCreds\\.disable : ",
+        "expect": "isolation\\.tools\\.getCreds\\.disable : TRUE$"
+    },
+    "custom_item_13": {
+        "description": "8.4.18 (L2) Ensure Host Guest File System Server is disabled",
+        "info": "The Host Guest File System Server should be disabled if it is not needed.\n\nCertain automated operations such as automated tool upgrades use a component in the hypervisor called Host Guest File System (HGFS), and an attacker could potentially use this to transfer files inside the guest OS. These VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features, such as the Host Guest File System Server, are not implemented in ESXi. Explicitly disabling these features reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.hgfsServerSet.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Host Guest File System Server, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.hgfsServerSet.disable\" -value $true\n\nImpact:\n\nThis will cause the VMX process to not respond to commands from the tools process. Setting isolation.tools.hgfsServerSet.disable to TRUE disables the registration of the guest's HGFS server with the host. APIs that use HGFS to transfer files to and from the guest operating system, such as some VIX commands or the VMware Tools auto-upgrade utility, will not function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.hgfsServerSet\\.disable : ",
+        "expect": "isolation\\.tools\\.hgfsServerSet\\.disable : TRUE$"
+    },
+    "custom_item_14": {
+        "description": "8.4.19 (L2) Ensure Guest Host Interaction Launch Menu is disabled",
+        "info": "The Guest Host Interaction Launch Menu feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Guest Host Interaction Launch Menu feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.ghi.launchmenu.change with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Guest Host Interaction Launch Menu feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.ghi.launchmenu.change\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.ghi\\.launchmenu\\.change : ",
+        "expect": "isolation\\.tools\\.ghi\\.launchmenu\\.change : TRUE$"
+    },
+    "custom_item_15": {
+        "description": "8.4.2 (L2) Ensure Autologon is disabled",
+        "info": "Autologon should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as autologon, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.ghi.autologon.disable with a value of TRUE\n - Click OK then OK again.\n\nAlternatively you may run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.ghi.autologon.disable\" -value $true",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|16.7,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.ghi\\.autologon\\.disable",
+        "expect": "isolation\\.tools\\.ghi\\.autologon\\.disable : TRUE$"
+    },
+    "custom_item_16": {
+        "description": "8.4.20 (L2) Ensure memSchedFakeSampleStats is disabled",
+        "info": "The memSchedFakeSampleStats feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the memSchedFakeSampleStats feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.memSchedFakeSampleStats.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the memSchedFakeSampleStats feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.memSchedFakeSampleStats.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.memSchedFakeSampleStats\\.disable : ",
+        "expect": "isolation\\.tools\\.memSchedFakeSampleStats\\.disable : TRUE$"
+    },
+    "custom_item_17": {
+        "description": "8.4.3 (L2) Ensure BIOS BBS is disabled",
+        "info": "BIOS BBS should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as BIOS BBS, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.bios.bbs.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable BIOS BBS, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.bios.bbs.disable\" -value $true",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.bios\\.bbs\\.disable",
+        "expect": "isolation\\.bios\\.bbs\\.disable : TRUE$"
+    },
+    "custom_item_18": {
+        "description": "8.4.4 (L2) Ensure Guest Host Interaction Protocol Handler is set to disabled",
+        "info": "Guest Host Interaction Protocol Handle should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as Guest Host Interaction Protocol Handle, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.ghi.protocolhandler.info.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable Guest Host Interaction Protocol Handle, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.ghi.protocolhandler.info.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.ghi\\.protocolhandler\\.info\\.disable",
+        "expect": "isolation\\.tools\\.ghi\\.protocolhandler\\.info\\.disable : TRUE$"
+    },
+    "custom_item_19": {
+        "description": "8.4.5 (L2) Ensure Unity Taskbar is disabled",
+        "info": "The Unity Taskbar feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity Taskbar feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unity.taskbar.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity Taskbar feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unity.taskbar.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unity\\.taskbar\\.disable",
+        "expect": "isolation\\.tools\\.unity\\.taskbar\\.disable : TRUE$"
+    },
+    "custom_item_20": {
+        "description": "8.4.6 (L2) Ensure Unity Active is disabled",
+        "info": "The Unity Active feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity Active feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unityActive.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity Active feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unityActive.disable\" -value $True\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unityActive\\.disable",
+        "expect": "isolation\\.tools\\.unityActive\\.disable : TRUE$"
+    },
+    "custom_item_21": {
+        "description": "8.4.7 (L2) Ensure Unity Window Contents is disabled",
+        "info": "The Unity Window Contents feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity Window Contents feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unity.windowContents.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity Window Contents feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unity.windowContents.disable\" -value $True\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unity\\.windowContents\\.disable",
+        "expect": "isolation\\.tools\\.unity\\.windowContents\\.disable : TRUE$"
+    },
+    "custom_item_22": {
+        "description": "8.4.8 (L2) Ensure Unity Push Update is disabled",
+        "info": "The Unity Push Update feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Unity Push Update feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.unity.push.update.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Unity Push Update feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.unity.push.update.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.unity\\.push\\.update\\.disable",
+        "expect": "isolation\\.tools\\.unity\\.push\\.update\\.disable : TRUE$"
+    },
+    "custom_item_23": {
+        "description": "8.4.9 (L2) Ensure Drag and Drop Version Get is disabled",
+        "info": "The Drag and Drop Version Get feature should be disabled if it is not needed.\n\nSome VMX parameters don't apply on vSphere because VMware virtual machines work on vSphere and hosted virtualization platforms such as Workstation and Fusion. The code paths for these features are not implemented in ESXi. Explicitly disabling these features, such as the Drag and Drop Version Get feature, reduces the potential for vulnerabilities because it reduces the number of ways in which a guest can affect the host. Note that these are referenced for organizations that insist any documented setting, regardless of whether it is implemented in code or not, must have a value.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input isolation.tools.vmxDnDVersionGet.disable with a value of TRUE\n - Click OK then OK again.\n\nTo disable the Drag and Drop Version Get feature, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"isolation.tools.vmxDnDVersionGet.disable\" -value $true\n\nImpact:\n\nSome automated tools and processes may cease to function.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.vmxDnDVersionGet\\.disable : ",
+        "expect": "isolation\\.tools\\.vmxDnDVersionGet\\.disable : TRUE$"
+    },
+    "custom_item_24": {
+        "description": "CPU Share Level",
+        "xsl_stmt": "",
+        "regex": "CPU Share Level : ",
+        "expect": "CPU Share Level : @CPU_SHARE_LEVEL@$"
+    },
+    "custom_item_25": {
+        "description": "Num Mem Shares",
+        "xsl_stmt": "",
+        "regex": "Num Mem Shares : ",
+        "expect": "Num Mem Shares : @NUM_MEM_SHARES@$"
+    },
+    "custom_item_26": {
+        "description": "Mem Share Level",
+        "xsl_stmt": "",
+        "regex": "Mem Share Level : ",
+        "expect": "Mem Share Level : @MEM_SHARE_LEVEL@$"
+    },
+    "custom_item_27": {
+        "description": "8.5.2 (L2) Ensure hardware-based 3D acceleration is disabled",
+        "info": "Due to performance reasons, modern graphic rendering is done within a dedicated graphic processing unit (GPU). Virtual machines can use the host-based GPU for such operations as well. Such dedicated hardware is typically accessed by using complex APIs like OpenGL and DirectX. This hardware-based 3D acceleration should be disabled if it is not needed.\n\nSecurity flaws within APIs can lead to serious security breaches like memory corruption, denial of service, and remote code execution.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input mks.enable3d with a value of FALSE\n - Click OK then OK again.\n\nTo disable hardware-based 3D acceleration, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"mks.enable3d\" -value $false",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "mks\\.enable3d : ",
+        "not_expect": "mks\\.enable3d : (TRUE|NOT configured)$"
+    },
+    "custom_item_28": {
+        "description": "8.6.1 (L2) Ensure nonpersistent disks are limited",
+        "info": "By default, VM disks use dependent mode, which means they are affected by snapshots. To avoid this, VM disks can use independent mode instead. Independent mode can be configured as persistent (data is written permanently to the disk) or nonpersistent (all changes made to disk are lost when the system is rebooted). Use of nonpersistent mode should be avoided unless the data is not needed (e.g., already duplicated elsewhere).\n\nFrom a security standpoint, nonpersistent mode allows successful attackers to remove evidence of their actions or even their presence within a VM by performing a simple shutdown or reboot.",
+        "solution": "To limit the use of nonpersistent mode, run the following PowerCLI command:\n\n#Add the parameters for the following cmdlet to set the VM Disk Type:\nGet-VM | Get-HardDisk | Set-HardDisk",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|AU-11,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53|SI-12,800-53r5|AU-11,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,800-53r5|SI-12,CSCv7|5.1,CSCv8|3.4,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|2A,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T3.6.2,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|GS8b,NIAv2|SM7,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|10.5.1,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "Virtual Disk Mode : ",
+        "expect": "Virtual Disk Mode : (persistent|independent_persistent|NOT configured)$"
+    },
+    "custom_item_29": {
+        "description": "8.7.2 (L2) Ensure host information is not sent to guests",
+        "info": "Configure VMware Tools to disable host information from being sent to guests unless a particular VM requires this information for performance monitoring purposes.\n\nBy enabling a VM to get detailed information about the physical host, an adversary could potentially use this information to inform further attacks on the host.",
+        "solution": "To set this configuration utilize the vSphere interface as follows:\n\n - Select the VM then select Actions followed by Edit Settings\n - Click on the VM Options tab then expand Advanced\n - Click on EDIT CONFIGURATION\n - Click on ADD CONFIGURATION PARAMS then input tools.guestlib.enableHostInfo with a value of FALSE\n - Click OK then OK again.\n\nTo prevent host information from being sent to guests, run the following PowerCLI command:\n\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name \"tools.guestlib.enableHostInfo\" -value $false",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|13.3,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15334",
+        "xsl_stmt": "",
+        "regex": "tools\\.guestlib\\.enableHostInfo : ",
+        "expect": "tools\\.guestlib\\.enableHostInfo : FALSE$"
+    }
+}

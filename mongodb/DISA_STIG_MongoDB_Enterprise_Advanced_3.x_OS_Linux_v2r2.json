@@ -1,0 +1,224 @@
+{
+    "custom_item_1": {
+        "description": "Check for MongoDB 3",
+        "cmd": "mongo --version",
+        "expect": "MongoDB shell version v@MONGODB_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "MD3X-00-000010 - MongoDB must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+        "info": "MongoDB must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+        "solution": "Edit the MongoDB configuration file (default location: /etc/mongod.con) to include the following:\n\nsecurity:\nauthorization: 'enabled'\n\nThis will enable SCRAM-SHA-1 authentication (default).\n\nInstruction on configuring the default authentication is provided here:\n\nhttps://docs.mongodb.com/v3.4/tutorial/enable-authentication/\n\nThe high-level steps described by the above will require the following:\n\n1. Start MongoDB without access control.\n2. Connect to the instance.\n3. Create the user administrator.\n4. Restart the MongoDB instance with access control.\n5. Connect and authenticate as the user administrator.\n6. Create additional users as needed for your deployment.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CAT|I,CCI|CCI-000015,CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-221158r879522_rule,STIG-ID|MD3X-00-000010,STIG-Legacy|SV-96557,STIG-Legacy|V-81843,Vuln-ID|V-221158",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'authorization:'",
+        "expect": "^[\\\\s]*authorization:[\\\\s]*[\"\\']*enabled[\"\\']*[\\\\s]*"
+    },
+    "custom_item_3": {
+        "description": "MD3X-00-000040 - MongoDB must provide audit record generation for DoD-defined auditable events within all DBMS/database components.",
+        "info": "MongoDB must provide audit record generation capability for DoD-defined auditable events within all DBMS/database components.\n\nSatisfies: SRG-APP-000089-DB-000064, SRG-APP-000080-DB-000063, SRG-APP-000090-DB-000065, SRG-APP-000091-DB-000066, SRG-APP-000091-DB-000325, SRG-APP-000092-DB-000208, SRG-APP-000093-DB-000052, SRG-APP-000095-DB-000039, SRG-APP-000096-DB-000040, SRG-APP-000097-DB-000041, SRG-APP-000098-DB-000042, SRG-APP-000099-DB-000043, SRG-APP-000100-DB-000201, SRG-APP-000101-DB-000044, SRG-APP-000109-DB-000049, SRG-APP-000356-DB-000315, SRG-APP-000360-DB-000320, SRG-APP-000381-DB-000361, SRG-APP-000492-DB-000332, SRG-APP-000492-DB-000333, SRG-APP-000494-DB-000344, SRG-APP-000494-DB-000345, SRG-APP-000495-DB-000326, SRG-APP-000495-DB-000327, SRG-APP-000495-DB-000328, SRG-APP-000495-DB-000329, SRG-APP-000496-DB-000334, SRG-APP-000496-DB-000335, SRG-APP-000498-DB-000346, SRG-APP-000498-DB-000347, SRG-APP-000499-DB-000330, SRG-APP-000499-DB-000331, SRG-APP-000501-DB-000336, SRG-APP-000501-DB-000337, SRG-APP-000502-DB-000348, SRG-APP-000502-DB-000349, SRG-APP-000503-DB-000350, SRG-APP-000503-DB-000351, SRG-APP-000504-DB-000354, SRG-APP-000504-DB-000355, SRG-APP-000505-DB-000352, SRG-APP-000506-DB-000353, SRG-APP-000507-DB-000356, SRG-APP-000507-DB-000357, SRG-APP-000508-DB-000358, SRG-APP-000515-DB-000318",
+        "solution": "If the 'auditLog' setting was not present in the MongoDB configuration file (default location: '/etc/mongod.conf)' edit this file and add a configured 'auditLog' setting:\n\nauditLog:\ndestination: syslog\n\nStop/start (restart) the mongod or mongos instance using this configuration.\n\nIf the 'auditLog' setting was present and contained a 'filter:' parameter, ensure the 'filter:' expression does not prevent the auditing of events that should be audited or remove the 'filter:' parameter to enable auditing all events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.4,800-171|3.4.5,800-53|AU-3,800-53|AU-3(1),800-53|AU-3(2),800-53|AU-4(1),800-53|AU-5b.,800-53|AU-5(2),800-53|AU-10,800-53|AU-12b.,800-53|AU-12c.,800-53|AU-14(1),800-53|AU-14(2),800-53|CM-5(1),800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-4(1),800-53r5|AU-5b.,800-53r5|AU-5(2),800-53r5|AU-10,800-53r5|AU-12b.,800-53r5|AU-12c.,800-53r5|AU-14,800-53r5|AU-14(1),800-53r5|CM-5(1),800-53r5|PL-9,CAT|II,CCI|CCI-000130,CCI|CCI-000131,CCI|CCI-000132,CCI|CCI-000133,CCI|CCI-000134,CCI|CCI-000135,CCI|CCI-000140,CCI|CCI-000166,CCI|CCI-000171,CCI|CCI-000172,CCI|CCI-001462,CCI|CCI-001464,CCI|CCI-001487,CCI|CCI-001814,CCI|CCI-001844,CCI|CCI-001851,CCI|CCI-001858,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|7.1.3.3(e),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.DS-4,CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-3(2),ITSG-33|AU-4,ITSG-33|AU-5b.,ITSG-33|AU-5(2),ITSG-33|AU-10,ITSG-33|AU-12b.,ITSG-33|AU-12c.,ITSG-33|AU-14,ITSG-33|AU-14a.,ITSG-33|CM-5(1),NESA|T3.3.1,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T4.3.1,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.3.3,NESA|T7.5.3,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|GS7f,NIAv2|SM8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221160r879559_rule,STIG-ID|MD3X-00-000040,STIG-Legacy|SV-96561,STIG-Legacy|V-81847,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-221160",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A4 '^auditLog:' | /bin/grep 'destination'",
+        "expect": "^[\\\\s]*destination:[\\\\s]*[\"\\']*(syslog|console|file)[\"\\']*[\\\\s]*"
+    },
+    "custom_item_4": {
+        "description": "Check if auditLog destination is set to 'file'",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A4 '^auditLog:' | /bin/grep 'destination:'",
+        "expect": "^[\\\\s]*destination:[\\\\s]*[\"\\']*file[\"\\']*[\\\\s]*"
+    },
+    "custom_item_5": {
+        "description": "Check if auditLog path is set",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A4 '^auditLog:' | /bin/grep 'path:'",
+        "expect": "^[\\\\s]*path:[\\\\s]*.+"
+    },
+    "custom_item_6": {
+        "description": "MD3X-00-000190 - The audit information produced by MongoDB must be protected from unauthorized read access.",
+        "info": "If audit data were to become compromised, then competent forensic analysis and discovery of the true source of potentially malicious system activity is difficult, if not impossible, to achieve. In addition, access to audit records provides information an attacker could potentially use to his or her advantage.\n\nTo ensure the veracity of audit data, the information system and/or the application must protect audit information from any and all unauthorized access. This includes read, write, copy, etc.\n\nThis requirement can be achieved through multiple methods which will depend upon system architecture and design. Some commonly employed methods include ensuring log files enjoy the proper file system permissions utilizing file system protections and limiting log data location.\n\nAdditionally, applications with user interfaces to audit records should not allow for the unfettered manipulation of or access to those records via the application. If the application provides access to the audit data, the application becomes accountable for ensuring that audit information is protected from unauthorized access.\n\nAudit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.\n\nSatisfies: SRG-APP-000118-DB-000059, SRG-APP-000119-DB-000060, SRG-APP-000120-DB-000061",
+        "solution": "Run these commands:\n\n'chown mongod'\n'chgrp mongod'\n'chmod 700 <'\n\n(The path for the MongoDB auditLog directory will vary according to local circumstances. The auditLog directory will be found in the MongoDB configuration file whose default location is '/etc/mongod.conf'.)\n\nTo find the auditLog directory name, view and search for the entry in the MongoDB configuration file for the auditLog.path:\n\nExample:\n\nauditLog:\ndestination: file\nformat: BSON\npath: /var/lib/mongo/auditLog.bson\n\nGiven the example above, to find the auditLog directory name run the following command:\n\n> dirname /var/lib/mongo/auditLog.bson\nthe output will be the ''\n\n/var/lib/mongo",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CCI|CCI-000163,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221161r879576_rule,STIG-ID|MD3X-00-000190,STIG-Legacy|SV-96563,STIG-Legacy|V-81849,Vuln-ID|V-221161",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "file": "@AUDITLOG_PATH@",
+        "owner": "mongod",
+        "mask": "077",
+        "group": "mongod"
+    },
+    "custom_item_7": {
+        "description": "MD3X-00-000220 - MongoDB must protect its audit features from unauthorized access.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data.\n\nDepending upon the log format and application, system and application log tools may provide the only means to manipulate and manage application and system log data. It is, therefore, imperative that access to audit tools be controlled and protected from unauthorized access.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order make access decisions regarding the access to audit tools.\n\nAudit tools include, but are not limited to, OS-provided audit tools, vendor-provided audit tools, and open source audit tools needed to successfully view and manipulate audit information system activity and records.\n\nIf an attacker were to gain access to audit tools, he could analyze audit logs for system weaknesses or weaknesses in the auditing itself. An attacker could also manipulate logs to hide evidence of malicious activity.\n\nSatisfies: SRG-APP-000121-DB-000202, SRG-APP-000122-DB-000203, SRG-APP-000122-DB-000204",
+        "solution": "Run these commands:\n\n'chown mongod'\n'chgrp mongod'\n'chmod 700 <'\n\n(The name and location for the MongoDB configuration file will vary according to local circumstances. The default name and location is '/etc/mongod.conf'.)\n\nUsing the default name and location the commands would be:\n\n> chown mongod /etc/mongod.conf\n> chgrp mongod /etc/mongod.conf\n> chmod 700 /etc/mongod.conf",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001493,CCI|CCI-001494,CCI|CCI-001495,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221162r879579_rule,STIG-ID|MD3X-00-000220,STIG-Legacy|SV-96565,STIG-Legacy|V-81851,Vuln-ID|V-221162",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "file": "@MONGOD_CONF_FULL_PATH@",
+        "owner": "mongod",
+        "mask": "077",
+        "group": "mongod"
+    },
+    "custom_item_8": {
+        "description": "MD3X-00-000280 - Unused database components, DBMS software, and database objects must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "On data-bearing nodes and arbiter nodes, the mongodb-enterprise-tools, mongodb-enterprise-shell and mongodb-enterprise-mongos can be removed (or not installed).\n\nOn applications servers that typically run the mongos process when connecting to a shared cluster, the only package required is the mongodb-enterprise-mongos package.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-221166r879587_rule,STIG-ID|MD3X-00-000280,STIG-Legacy|SV-96573,STIG-Legacy|V-81859,SWIFT-CSCv1|2.3,Vuln-ID|V-221166",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/rpm -qa | /bin/grep mongodb-*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_9": {
+        "description": "Check if net.http exists in /etc/mongod.conf",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A15 '^net:' | /bin/grep 'http:'",
+        "expect": "^[\\\\s]*http:[\\\\s]*"
+    },
+    "custom_item_10": {
+        "description": "enabled",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A5 '^http:' | /bin/grep '^[\\\\s]*enabled:'",
+        "expect": "^[\\\\s]*enabled:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_11": {
+        "description": "JSONPEnabled",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A5 '^http:' | /bin/grep '^[\\\\s]*JSONPEnabled:'",
+        "expect": "^[\\\\s]*JSONPEnabled:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_12": {
+        "description": "RESTInterfaceEnabled",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A5 '^http:' | /bin/grep '^[\\\\s]*RESTInterfaceEnabled:'",
+        "expect": "^[\\\\s]*RESTInterfaceEnabled:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_13": {
+        "description": "MD3X-00-000310 - MongoDB must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+        "info": "To assure accountability and prevent unauthenticated access, organizational users must be identified and authenticated to prevent potential misuse and compromise of the system.\n\nOrganizational users include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors). Organizational users (and any processes acting on behalf of users) must be uniquely identified and authenticated for all accesses, except the following:\n\n(i) Accesses explicitly identified and documented by the organization. Organizations document specific user actions that can be performed on the information system without identification or authentication; and\n(ii) Accesses that occur through authorized use of group authenticators without individual authentication. Organizations may require unique identification of individuals using shared accounts, for detailed accountability of individual activity.",
+        "solution": "Prereq: To drop a user from a database, must have the 'dropUser' action on the database.\n\nFor any user not a member of an appropriate organization and has access to a database in the system run the following command:\n\n// Change to the appropriate database\nusedb.dropUser(, {w: 'majority', wtimeout: 5000}\n\nIf the MongoDB configuration file (default location: /etc/mongod.conf) does not contain\n\nsecurity: authorization: 'enabled'\n\nEdit the MongoDB configuration file, add these parameters, stop/start (restart) any mongod or mongos process using this MongoDB configuration file.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-221168r879589_rule,STIG-ID|MD3X-00-000310,STIG-Legacy|SV-96577,STIG-Legacy|V-81863,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-221168",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'authorization:'",
+        "expect": "^[\\\\s]*authorization:[\\\\s]*[\"\\']*enabled[\"\\']*[\\\\s]*"
+    },
+    "custom_item_14": {
+        "description": "mode",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'mode:'",
+        "expect": "^[\\\\s]*mode:[\\\\s]*[\"\\']*requireSSL[\"\\']*[\\\\s]*"
+    },
+    "custom_item_15": {
+        "description": "PEMKeyFile",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'PEMKeyFile:'",
+        "expect": "^[\\\\s]*PEMKeyFile:[\\\\s]*[\"\\']*@PEMKEYFILE_PATH@[\"\\']*[\\\\s]*"
+    },
+    "custom_item_16": {
+        "description": "CAFile",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'CAFile:'",
+        "expect": "^[\\\\s]*CAFile:[\\\\s]*[\"\\']*@CAFILE_PATH@[\"\\']*[\\\\s]*"
+    },
+    "custom_item_17": {
+        "description": "allowInvalidCertificates",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'allowInvalidCertificates:'",
+        "expect": "^[\\\\s]*allowInvalidCertificates:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_18": {
+        "description": "PEMKeyFile",
+        "file": "@PEMKEYFILE_PATH@",
+        "owner": "mongod",
+        "mask": "177",
+        "group": "mongod"
+    },
+    "custom_item_19": {
+        "description": "CAFile",
+        "file": "@CAFILE_PATH@",
+        "owner": "mongod",
+        "mask": "177",
+        "group": "mongod"
+    },
+    "custom_item_20": {
+        "description": "MD3X-00-000380 - MongoDB must use NIST FIPS 140-2-validated cryptographic modules for cryptographic operations.",
+        "info": "Use of weak or not validated cryptographic algorithms undermines the purposes of utilizing encryption and digital signatures to protect data. Weak algorithms can be easily broken and not validated cryptographic modules may not implement algorithms correctly. Unapproved cryptographic modules or algorithms should not be relied on for authentication, confidentiality, or integrity. Weak cryptography could allow an attacker to gain access to and modify data stored in the database as well as the administration settings of MongoDB.\n\nApplications, including DBMSs, utilizing cryptography are required to use approved NIST FIPS 140-2-validated cryptographic modules that meet the requirements of applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nThe security functions validated as part of FIPS 140-2 for cryptographic modules are described in FIPS 140-2 Annex A.\n\nNSA Type-X (where X=1, 2, 3, 4) products are NSA-certified, hardware-based encryption modules.\n\nSatisfies: SRG-APP-000179-DB-000114, SRG-APP-000514-DB-000381, SRG-APP-000514-DB-000382, SRG-APP-000514-DB-000383, SRG-APP-000416-DB-000380",
+        "solution": "Enable FIPS 140-2 mode for MongoDB Enterprise.\n\nEdit the MongoDB database configuration file (default location: /etc/mongod.conf) to contain the following parameter setting:\n\nnet:\nssl:\nFIPSMode: true\n\nStop/start (restart) the mongod or mongos instance using this configuration.\n\nFor the operating system finding, please refer to the appropriate operating system documentation for the procedure to install, configure, and test FIPS mode.",
+        "reference": "800-171|3.13.11,800-53|IA-7,800-53|SC-13,800-53r5|IA-7,800-53r5|SC-13,CAT|I,CCI|CCI-000803,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-221174r879616_rule,STIG-ID|MD3X-00-000380,STIG-Legacy|SV-96589,STIG-Legacy|V-81875,Vuln-ID|V-221174",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^net:' | /bin/grep -A3 'ssl:' | /bin/grep -A3 'FIPSMode:'",
+        "expect": "^[\\\\s]*FIPSMode:[\\\\s]*[\"\\']*true[\"\\']*[\\\\s]*"
+    },
+    "custom_item_21": {
+        "description": "MD3X-00-000420 - MongoDB must fail to a secure state if system initialization fails, shutdown fails, or aborts fail.",
+        "info": "Failure to a known state can address safety or security in accordance with the mission/business needs of the organization.\n\nFailure to a known secure state helps prevent a loss of confidentiality, integrity, or availability in the event of a failure of the information system or a component of the system.\n\nFailure to a known safe state helps prevent systems from failing to a state that may cause loss of data or unauthorized access to system resources. Systems that fail suddenly and with no incorporated failure state planning may leave the hosting system available but with a reduced security protection capability. Preserving information system state data also facilitates system restart and return to the operational mode of the organization with less disruption of mission/business processes.\n\nDatabases must fail to a known consistent state. Transactions must be successfully completed or rolled back.\n\nIn general, security mechanisms should be designed so that a failure will follow the same execution path as disallowing the operation. For example, application security methods, such as isAuthorized(), isAuthenticated(), and validate(), should all return false if there is an exception during processing. If security controls can throw exceptions, they must be very clear about exactly what that condition means.\n\nAbort refers to stopping a program or function before it has finished naturally. The term abort refers to both requested and unexpected terminations.\n\nSatisfies: SRG-APP-000225-DB-000153, SRG-APP-000226-DB-000147",
+        "solution": "Modify the mongod startup command-line options by removing the '--nojournal' option.\n\nEdit the MongoDB database configuration file (default location: /etc/mongod.conf) to ensure it contains the following parameter setting:\n\nstorage:\njournal:\nenabled: true\n\nStop/start (restart) any or all mongod processes.",
+        "reference": "800-53|SC-24,800-53r5|SC-24,CAT|II,CCI|CCI-001190,CCI|CCI-001665,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-24,ITSG-33|SC-24a.,QCSC-v1|5.2.1,Rule-ID|SV-221177r879640_rule,STIG-ID|MD3X-00-000420,STIG-Legacy|SV-96595,STIG-Legacy|V-81881,Vuln-ID|V-221177",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^storage:' | /bin/grep -A2 'journal:' | /bin/grep 'enabled:'",
+        "expect": "^[\\\\s]*enabled:[\\\\s]*[\"\\']*true[\"\\']*[\\\\s]*"
+    },
+    "custom_item_22": {
+        "description": "MD3X-00-000440 - MongoDB must protect the confidentiality and integrity of all information at rest.",
+        "info": "This control is intended to address the confidentiality and integrity of information at rest in non-mobile devices and covers user information and system information. Information at rest refers to the state of information when it is located on a secondary storage device (e.g., disk drive, tape drive) within an organizational information system. Applications and application users generate information throughout the course of their application use.\n\nUser data generated, as well as application-specific configuration data, needs to be protected. Organizations may choose to employ different mechanisms to achieve confidentiality and integrity protections, as appropriate.\n\nIf the confidentiality and integrity of application data is not protected, the data will be open to compromise and unauthorized modification.",
+        "solution": "Ensure that the MongoDB Configuration file (default location: /etc/mongod.conf) has the following set:\n\nsecurity:\nenableEncryption: 'true'\n\nEnsure that any mongod process that contains the option '--enableEcryption' has 'true' as its parametervalue (e.g., '--enableEncryption true').\n\nStop/start (restart) and mongod process using either the MongoDB configuration file or that contains the '--enableEncryption' option.",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|I,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-221178r879642_rule,STIG-ID|MD3X-00-000440,STIG-Legacy|SV-96597,STIG-Legacy|V-81883,Vuln-ID|V-221178",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'enableEncryption:'",
+        "expect": "^[\\\\s]*enableEncryption:[\\\\s]*[\"\\']*true[\"\\']*[\\\\s]*"
+    },
+    "custom_item_23": {
+        "description": ".conf file",
+        "file": "@MONGOD_CONF_FULL_PATH@",
+        "owner": "mongod",
+        "mask": "022",
+        "group": "mongod"
+    },
+    "custom_item_24": {
+        "description": "Data Dir",
+        "file": "@MONGO_DATA_DIR_PATH@",
+        "owner": "mongod",
+        "mask": "022",
+        "group": "mongod"
+    },
+    "custom_item_25": {
+        "description": "MD3X-00-000490 - MongoDB must check the validity of all data inputs except those specifically identified by the organization.",
+        "info": "Invalid user input occurs when a user inserts data or characters into an application's data entry fields and the application is unprepared to process that data. This results in unanticipated application behavior, potentially leading to an application or information system compromise. Invalid user input is one of the primary methods employed when attempting to compromise an application.\n\nWith respect to database management systems, one class of threat is known as SQL Injection, or more generally, code injection. It takes advantage of the dynamic execution capabilities of various programming languages, including dialects of SQL. Potentially, the attacker can gain unauthorized access to data, including security settings, and severely corrupt or destroy the database.\n\nEven when no such hijacking takes place, invalid input that gets recorded in the database, whether accidental or malicious, reduces the reliability and usability of the system. Available protections include data types, referential constraints, uniqueness constraints, range checking, and application-specific logic. Application-specific logic can be implemented within the database in stored procedures and triggers, where appropriate.\n\nThis calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the database administrator (DBA) is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed, and must document what has been discovered.",
+        "solution": "Disable the javascriptEnabled option in the config file.\n\nsecurity:\njavascriptEnabled: false\n\nIf document validation is needed, it should be configured according to the documentation page at https://docs.mongodb.com/manual/core/document-validation/.",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-221181r879652_rule,STIG-ID|MD3X-00-000490,STIG-Legacy|SV-96603,STIG-Legacy|V-81889,Vuln-ID|V-221181",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'javascriptEnabled:'",
+        "expect": "^[\\\\s]*javascriptEnabled:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_26": {
+        "description": "MD3X-00-000500 - MongoDB and associated applications must reserve the use of dynamic code execution for situations that require it.",
+        "info": "With respect to database management systems, one class of threat is known as SQL Injection, or more generally, code injection. It takes advantage of the dynamic execution capabilities of various programming languages, including dialects of SQL. In such cases, the attacker deduces the manner in which SQL statements are being processed, either from inside knowledge or by observing system behavior in response to invalid inputs. When the attacker identifies scenarios where SQL queries are being assembled by application code (which may be within the database or separate from it) and executed dynamically, the attacker is then able to craft input strings that subvert the intent of the query. Potentially, the attacker can gain unauthorized access to data, including security settings, and severely corrupt or destroy the database.\n\nThe principal protection against code injection is not to use dynamic execution except where it provides necessary functionality that cannot be utilized otherwise. Use strongly typed data items rather than general-purpose strings as input parameters to task-specific, pre-compiled stored procedures and functions (and triggers).\n\nThis calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the database administrator (DBA) is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed, and must document what has been discovered.\n\nSatisfies: SRG-APP-000251-DB-000391, SRG-APP-000251-DB-000392",
+        "solution": "Disable the 'javascriptEnabled' option.\n\nEdit the MongoDB configuration file (default location: /etc/mongod.conf' to include the following:\n\nsecurity:\njavascriptEnabled: false",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-221182r879652_rule,STIG-ID|MD3X-00-000500,STIG-Legacy|SV-96605,STIG-Legacy|V-81891,Vuln-ID|V-221182",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'javascriptEnabled:'",
+        "expect": "^[\\\\s]*javascriptEnabled:[\\\\s]*[\"\\']*false[\"\\']*[\\\\s]*"
+    },
+    "custom_item_27": {
+        "description": "MD3X-00-000530 - MongoDB must reveal detailed error messages only to the ISSO, ISSM, SA, and DBA.",
+        "info": "If MongoDB provides too much information in error logs and administrative messages to the screen, this could lead to compromise. The structure and content of error messages need to be carefully considered by the organization and development team. The extent to which the information system is able to identify and handle error conditions is guided by organizational policy and operational requirements.\n\nSome default DBMS error messages can contain information that could aid an attacker in, among others things, identifying the database type, host address, or state of the database. Custom errors may contain sensitive customer information.\n\nIt is important that detailed error messages be visible only to those who are authorized to view them; that general users receive only generalized acknowledgment that errors have occurred; and that these generalized messages appear only when relevant to the user's task. For example, a message along the lines of, 'An error has occurred. Unable to save your changes. If this problem persists, contact your help desk' would be relevant. A message such as 'Warning: your transaction generated a large number of page splits' would likely not be relevant.\n\nAdministrative users authorized to review detailed error messages typically are the ISSO, ISSM, SA, and DBA. Other individuals or roles may be specified according to organization-specific needs, with appropriate approval.\n\nThis calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the database administrator (DBA) is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed, and must document what has been discovered.",
+        "solution": "Edit the MongoDB configuration file (default location: /etc/mongod.conf) and add the following parameter 'redactClientLogData' in the security section of that file:\n\nsecurity:\nredactClientLogData: 'true'\n\nStop/start (restart) any mongod or mongos using the MongoDB configuration file.",
+        "reference": "800-53|SI-11b.,800-53r5|SI-11b.,CAT|II,CCI|CCI-001314,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11c.,Rule-ID|SV-221184r879656_rule,STIG-ID|MD3X-00-000530,STIG-Legacy|SV-96609,STIG-Legacy|V-81895,Vuln-ID|V-221184",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^security:' | /bin/grep 'redactClientLogData:'",
+        "expect": "^[\\\\s]*redactClientLogData:[\\\\s]*[\"\\']*true[\"\\']*[\\\\s]*"
+    },
+    "custom_item_28": {
+        "description": "MD3X-00-000600 - MongoDB must utilize centralized management of the content captured in audit records generated by all components of MongoDB.",
+        "info": "Without the ability to centrally manage the content captured in the audit records, identification, troubleshooting, and correlation of suspicious behavior would be difficult and could lead to a delayed or incomplete analysis of an ongoing attack.\n\nThe content captured in audit records must be managed from a central location (necessitating automation). Centralized management of audit records and logs provides for efficiency in maintenance and management of records, as well as the backup and archiving of those records.\n\nMongoDB may write audit records to database tables, to files in the file system, to other kinds of local repository, or directly to a centralized log management system. Whatever the method used, it must be compatible with off-loading the records to the centralized system.",
+        "solution": "Install a centralized syslog collecting tool and configured it as instructed in its documentation.\n\nTo enable auditing and print audit events to the syslog in JSON format, specify the syslog for the --auditDestination setting:\nmongod --dbpath data/db --auditDestination syslog\n\nAlternatively, these options can also be specified in the configuration file:\nstorage:\ndbPath: data/db\nauditLog:\ndestination: syslog",
+        "reference": "800-171|3.3.1,800-53|AU-3(2),800-53r5|PL-9,CAT|II,CCI|CCI-001844,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3(2),NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221188r879729_rule,STIG-ID|MD3X-00-000600,STIG-Legacy|SV-96617,STIG-Legacy|V-81903,SWIFT-CSCv1|6.4,Vuln-ID|V-221188",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A10 '^storage:' | /bin/grep 'dbPath:'",
+        "expect": "^[\\\\s]*dbPath:[\\\\s]*[\"\\']*@MONGO_DATA_DIR_PATH@[\"\\']*[\\\\s]*"
+    },
+    "custom_item_29": {
+        "description": "MD3X-00-000760 - MongoDB must maintain the confidentiality and integrity of information during preparation for transmission.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during preparation for transmission, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nUse of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen transmitting data, MongoDB, associated applications, and infrastructure must leverage transmission protection mechanisms.",
+        "solution": "Stop the MongoDB instance if it is running. Obtain a certificate from a valid DoD certificate authority to be used for encrypted data transmission. Modify the MongoDB configuration file with ssl configuration options such as:\n\nnet:\nssl:\nmode: requireSSL\nPEMKeyFile: /etc/ssl/mongodb.pem\n\nSet 'net.ssl.mode' to the 'requireSSL'.\nSet 'net.ssl.KeyFile' to the full path of the certificate (.pem) file.\n\nStart/stop (restart) all mongod or mongos instances using the MongoDB configuration file (default location: /etc/mongod.conf).",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-221197r879812_rule,STIG-ID|MD3X-00-000760,STIG-Legacy|SV-96635,STIG-Legacy|V-81921,SWIFT-CSCv1|2.1,Vuln-ID|V-221197",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'mode:'",
+        "expect": "^[\\\\s]*mode:[\\\\s]*[\"\\']*requireSSL[\"\\']*[\\\\s]*"
+    },
+    "custom_item_30": {
+        "description": "MD3X-00-000770 - MongoDB must maintain the confidentiality and integrity of information during reception.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during reception, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nThis requirement applies only to those applications that are either distributed or can allow access to data nonlocally. Use of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen receiving data, MongoDB, associated applications, and infrastructure must leverage protection mechanisms.",
+        "solution": "Obtain a certificate from a valid DoD certificate authority to be used for encrypted data transmission.\n\nModify the MongoDB configuration file (default location: /etc/mongod.conf) with the network configuration options.\n\nnet:\nssl:\nmode: requireSSL\nPEMKeyFile: /etc/ssl/mongodb.pem\n\nSet 'net.ssl.mode' to the 'requireSSL'.\nSet 'net.ssl.KeyFile' to the full path of the certificate (.pem) file.\n\nStart/stop (restart) all mongod or mongos instances using the MongoDB configuration file (default location: /etc/mongod.conf).",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002422,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|MongoDB_3-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-221198r879813_rule,STIG-ID|MD3X-00-000770,STIG-Legacy|SV-96637,STIG-Legacy|V-81923,SWIFT-CSCv1|2.1,Vuln-ID|V-221198",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MDB_Enterprise_Advanced_3-x_V2R2_STIG.zip",
+        "cmd": "/bin/cat @MONGOD_CONF_FULL_PATH@ | /bin/grep -A14 '^net:' | /bin/grep -A16 'ssl:' | /bin/grep 'PEMKeyFile:'",
+        "expect": "^[\\\\s]*PEMKeyFile:[\\\\s]*[\"\\']*@PEMKEYFILE_PATH@[\"\\']*[\\\\s]*"
+    }
+}

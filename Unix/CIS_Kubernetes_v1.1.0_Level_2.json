@@ -1,0 +1,36 @@
+{
+    "custom_item_1": {
+        "description": "Check if kubelet is enabled",
+        "service": "kubelet",
+        "levels": "2345"
+    },
+    "custom_item_2": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_3": {
+        "description": "Check if Controller Manager is running",
+        "cmd": "ps -ef | grep 'controller-manager ' | grep -v grep",
+        "expect": "controller-manager "
+    },
+    "custom_item_4": {
+        "description": "Check if API Server is running",
+        "cmd": "ps -ef | egrep '/etcd[2]?([[:space:]]|$)' | grep -v grep",
+        "expect": "etcd "
+    },
+    "custom_item_5": {
+        "description": "Check if kubectl exists",
+        "file": "@KUBECTL_PATH@/kubectl"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "1.6.4 Create network segmentation using Network Policies",
+        "info": "Use network policies to isolate your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints. `NetworkPolicy` resources use labels to select pods and define whitelist rules which allow traffic to the selected pods in addition to what is allowed by the isolation policy for a given namespace.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create `NetworkPolicy` objects as you need them.\n\nImpact:\n\nYou need a networking solution which supports `NetworkPolicy` - simply creating the resource without a controller to implement it will have no effect.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(21),800-53r5|SC-7(21),CN-L3|8.1.10.6(j),CSCv6|14.1,CSF|PR.AC-5,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2M,NESA|T4.5.3,NIAv2|VL6,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1738",
+        "cmd": "@KUBECTL_PATH@/kubectl get pods --namespace=kube-system",
+        "expect": "MANUAL_REVIEW"
+    }
+}

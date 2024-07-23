@@ -1,0 +1,270 @@
+{
+    "custom_item_1": {
+        "description": "JBoss is installed",
+        "file": "@JBOSS_INSTALL_DIR@/jboss-modules.jar"
+    },
+    "custom_item_2": {
+        "description": "1 - Remove or Disable Example Content - ExampleDS",
+        "info": "Although it can be a good idea to keep some example content in a test environment, to check if the server is running correctly, it is not a good practice in production.\n\nRemoving the samples will prevent an external client seeing what version of the AS you are running and will also prevent the AS instance being affected by future security bugs on this content.",
+        "solution": "Delete the example datasource shipped with the default configuration:",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_3": {
+        "description": "2 - Remove or Disable Example Content - enable-welcome-root",
+        "info": "Although it can be a good idea to keep some example content in a test environment, to check if the server is running correctly, it is not a good practice in production.\n\nRemoving the samples will prevent an external client seeing what version of the AS you are running and will also prevent the AS instance being affected by future security bugs on this content.",
+        "solution": "Disable or remove the welcome-content directory by placing \"false\" as a value on enable-welcome-root",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_4": {
+        "description": "3 - Audit Logging - Handler",
+        "info": "It is good practice to log the actions on the org.jboss.security class. This category includes all the security related actions on the particular instance of the AS (authentication, failures, administrative changes ..).\n\nIt is good to keep these events in a separate file for easy classification and analysis.",
+        "solution": "Insert a new handler into the logging subsystem:logging actions",
+        "reference": "800-53|AU-11,800-53r5|AU-11,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,NESA|M5.2.3,NESA|T3.6.2,NIAv2|SM7,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_5": {
+        "description": "3 - Audit Logging - Logger",
+        "info": "It is good practice to log the actions on the org.jboss.security class. This category includes all the security related actions on the particular instance of the AS (authentication, failures, administrative changes ..).\n\nIt is good to keep these events in a separate file for easy classification and analysis.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Create a new category and reference the handler needed:",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_6": {
+        "description": "4 - Send logs to a remote server",
+        "info": "Sending logs to a remote location is an excellent way to increase security (preventing log tampering) and improve your application error analysis. Jboss supports a syslog handler designed for this purpose.",
+        "solution": "Add the syslog handler in your logging subsystem:....",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_7": {
+        "description": "5 - Granular Log Levels",
+        "info": "If your application is handling sensitive data or you are regulated by any data security compliance, you may want to reduce the log level of the sensitive classes of your application to avoid logging sensitive data on production system.\n\nIf your log file is for some reason compromised, the attacker may reach sensitive data stored in the logs if the class log level is not set up properly.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review allentries and their levels to match requirements.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "6 - Run your Instance as non privileged user",
+        "info": "This is a global requirement for any mission-critical application, your AS 7 instance should never run as root account in a secure environment.",
+        "solution": "Please refer to your operating system documentation to understand how to run AS7 as non privileged user.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "cmd": "ps aux | grep '[j]boss' | grep root | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^none$"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "7 - File system permissions of log files",
+        "info": "In order to prevent modifications to your log files, you can restrict the OS permissions to only be readable/writable by the JBoss user.",
+        "solution": "In order to change the location of your log files you can use this Java property at startup jboss.domain.log.dir and set a different log directory (I.E. /var/log/jboss)\n\n-Djboss.domain.log.dir=/var/log/jboss/",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@LOG_DIR@/*",
+        "owner": "@JBOSS_USER@",
+        "mask": "@LOG_DIR_MASK@",
+        "group": "@JBOSS_GROUP@"
+    },
+    "custom_item_10": {
+        "description": "8 - Secure Datasources",
+        "info": "In order to secure your datasources, it is good practice is associate them with a security domain.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure security domains with needed requirements.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_11": {
+        "description": "9 - Deployment Scanner",
+        "info": "The deployment scanner scans the file system where your AS instance is running to automatically deploy any new application copied in your deploy directory. If it is not needed, the deployment scanner must be disabled in order to prevent unauthorized files being deployed.",
+        "solution": "Configure the scan-interval parameter as -1 , this will configure the deployment scanner to only allow deployments from console or at instance startup.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_12": {
+        "description": "10 - Enable SSL Connector",
+        "info": "Enabling the SSL connector for the web subsystem will encrypt everything that is using that particular port",
+        "solution": "Configure the the SSL connector for the web subsystem:",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_13": {
+        "description": "11 - JSP Regeneration",
+        "info": "If you do not need automatic regeneration of JSP pages, set up the Web Subsystem to not regenerate the content automatically. This can prevent someone injecting code in your JSP resources and compiling them without your knowledge.",
+        "solution": "The 'Development' value set to false will prevent JSP resources being automatically generated and force a restart in order to implement the changes.........",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_14": {
+        "description": "12 - Remove and mask informational headers - JSP Configuration",
+        "info": "When a resource is requested from the Web Connector via HTTP, the response contains headers with information about the server which generated the response.\n\n  This information can help an attacker to quickly identify which version you are running and consequently tune the attack attempts specifically for your software instance.",
+        "solution": "In order to hide or mask these headers we can set up the web subsystem with the following:........",
+        "reference": "800-53|SC-30,800-53r5|SC-30,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-30,ITSG-33|SC-30a.",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_15": {
+        "description": "12 - Remove and mask informational headers - Server Property Override",
+        "info": "When a resource is requested from the Web Connector via HTTP, the response contains headers with information about the server which generated the response.\n\n  This information can help an attacker to quickly identify which version you are running and consequently tune the attack attempts specifically for your software instance.",
+        "solution": "You should mask the 'Server:' value in the header. By default this header shows the version of our servlet container.\n\nIn order to remove it we can set up a global property in this way:........",
+        "reference": "800-53|SC-30,800-53r5|SC-30,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-30,ITSG-33|SC-30a.",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_16": {
+        "description": "13 - Disable stacktrace in response body",
+        "info": "Stacktraces in response bodies are useful for quick debugging in development and test environments. However in production, showing stracktraces can leak sensitive information to the client.",
+        "solution": "To disable this particular functionality, the display-source-fragment directive must be set to false.........",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_17": {
+        "description": "14 - SSL Encryption - Modify WSDL Address",
+        "info": "Define the secure WSDL port leveraging on the Web Subsystem ssl connector.",
+        "solution": "needs to be set to true in order for the Webservices subsystem to change all the http:// links in your WSDL file to https://, and instruct the client to go only to the secure version of your resources.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_18": {
+        "description": "14 - SSL Encryption - WSDL Secure Port",
+        "info": "Define the secure WSDL port leveraging on the Web Subsystem ssl connector.",
+        "solution": "must be a secure SSL connector port.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_19": {
+        "description": "15 - Authentication",
+        "info": "To create a security domain for your Webservices endpoints, you can use different login modules.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Please consult the Security subsystem configuration (https://docs.jboss.org/author/display/AS72/Security+subsystem+configuration) for more detailed information.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_20": {
+        "description": "16 - ORB Subsystem - Initializers On",
+        "info": "The AS 7 ORB implementation can be secured by enabling SSL encryption in the JacORB subsystem.",
+        "solution": "To enable this in JacORB setup the tags security-domain and security:",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_21": {
+        "description": "16 - ORB Subsystem - Security-Domain Set",
+        "info": "The AS 7 ORB implementation can be secured by enabling SSL encryption in the JacORB subsystem.",
+        "solution": "To enable this in JacORB setup the tags security-domain and security:",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_22": {
+        "description": "17 - Setup a security domain",
+        "info": "Like the other subsystems, the messaging subsystem can be linked to a security-domain in order to delegate encryption or authentication settings.",
+        "solution": "Reference the name of your security domain after theelementmysecuritydomain...",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Passed"
+    },
+    "custom_item_23": {
+        "description": "18 - Role Based Authentication per queue",
+        "info": "In order to have  role based authentication inside our queue server you need to setup HornetQ with these directives.\n\nYou can restrict the access to particular queue (read/write) or even prevent the creation, deletion of new queues, with a basic role based access control.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Set the security-setting parameters to match needed requirements:",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_24": {
+        "description": "19 - Cluster Authentication",
+        "info": "If a messaging cluster is used, authentication must be in place to prevent unauthorized nodes joining the cluster pool.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Setup you password in theelement:....myuser${jboss.messaging.cluster.password:mypass}",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_25": {
+        "description": "20 - Enable Encryption",
+        "info": "The ENCRYPT protocol uses a keystore in order to encrypt the communication layer of all the other protocols below it.\n\nBefore configuring the AS, you must create another keystore to use specifically in JGroups.\n\nUnfortunately, JGroups does not support the keystores generated with the standard JDK keytool. You must create your custom keystore with a java file called KeyStoreGenerator which is included in the demo package of JGroups.\n\njava -cp /your/path/to/jboss/modules/system/layers/base/org/jgroups/main/JGroups-version.jar org.jgroups.demos.KeyStoreGenerator --alg AES --size 128 --storeName FILENAME --storePass PASSWORD --alias MyKey\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Include the ENCRYPT protocol in the standalone-full-ha of your JBoss AS instance:....true128AES/ECB/PKCS5Padding512RSAYOURKEYSTOREPASSWORDpath/to/keystoreMyKeyYOURTRUSTSTOREPASSWORD....You can move the ENCRYPT element up and down trough the protocols stack, this will configure the subsystem to encrypt only the protocols below the ENCRYPT element.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://docs.jboss.org/author/display/AS72/Hardening+Guidelines",
+        "file": "@SERVER_XML@",
+        "xsl_stmt": "",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    }
+}

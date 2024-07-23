@@ -1,0 +1,261 @@
+{
+    "custom_item_1": {
+        "description": "1.1 Select an appropriate authentication mechanism - PAM User Auth",
+        "info": "Sybase ASE provides multiple means of authenticating users. These include Sybase\nproprietary authentication (username and password), Kerberos, LDAP user authentication\n(LDAPUA), secure LDAPUA and PAM user authentication (PAMUA). The Sybase LDAPUA\nimplementation interoperates with LDAP v3 compliant servers such as Active Directory,\niPlanet and OpenLDAP.\n\nRationale:\n\nThe most appropriate authentication mechanism depends on how Sybase is used within\nyour organization. It is recommended that the System Security Officer consult the Sybase\nASE 15.0 Administration Guide, Volume 1, Chapter 16 (External Authentication) for a\ndiscussion of the advantages and disadvantages of each.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Set appropriate authentication mechanism in accordance with your organizations\nsecurity policy.\n\n2. Ensure that the authentication mechanism is configured to not fallback to an\nalternative mechanism unless your organizations security policy explicitly permits\nthis.\n\nFor LDAPUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable ldap user auth', 2\n\nFor PAMUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable pam user auth', 2",
+        "reference": "LEVEL|1NS",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'enable pam user auth'",
+        "sql_expect": "enable pam user auth"
+    },
+    "custom_item_2": {
+        "description": "1.1 Select an appropriate authentication mechanism - LDAP User Auth",
+        "info": "Sybase ASE provides multiple means of authenticating users. These include Sybase\nproprietary authentication (username and password), Kerberos, LDAP user authentication\n(LDAPUA), secure LDAPUA and PAM user authentication (PAMUA). The Sybase LDAPUA\nimplementation interoperates with LDAP v3 compliant servers such as Active Directory,\niPlanet and OpenLDAP.\n\nRationale:\n\nThe most appropriate authentication mechanism depends on how Sybase is used within\nyour organization. It is recommended that the System Security Officer consult the Sybase\nASE 15.0 Administration Guide, Volume 1, Chapter 16 (External Authentication) for a\ndiscussion of the advantages and disadvantages of each.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Set appropriate authentication mechanism in accordance with your organizations\nsecurity policy.\n\n2. Ensure that the authentication mechanism is configured to not fallback to an\nalternative mechanism unless your organizations security policy explicitly permits\nthis.\n\nFor LDAPUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable ldap user auth', 2\n\nFor PAMUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable pam user auth', 2",
+        "reference": "LEVEL|1NS",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'enable ldap user auth'",
+        "sql_expect": "enable ldap user auth"
+    },
+    "custom_item_3": {
+        "description": "1.1 Select an appropriate authentication mechanism - use security services",
+        "info": "Sybase ASE provides multiple means of authenticating users. These include Sybase\nproprietary authentication (username and password), Kerberos, LDAP user authentication\n(LDAPUA), secure LDAPUA and PAM user authentication (PAMUA). The Sybase LDAPUA\nimplementation interoperates with LDAP v3 compliant servers such as Active Directory,\niPlanet and OpenLDAP.\n\nRationale:\n\nThe most appropriate authentication mechanism depends on how Sybase is used within\nyour organization. It is recommended that the System Security Officer consult the Sybase\nASE 15.0 Administration Guide, Volume 1, Chapter 16 (External Authentication) for a\ndiscussion of the advantages and disadvantages of each.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Set appropriate authentication mechanism in accordance with your organizations\nsecurity policy.\n\n2. Ensure that the authentication mechanism is configured to not fallback to an\nalternative mechanism unless your organizations security policy explicitly permits\nthis.\n\nFor LDAPUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable ldap user auth', 2\n\nFor PAMUA this is accomplished by connecting to the ASE server as a user with the\nsso_role and executing the following SQL statement:\n\nexec sp_configure 'enable pam user auth', 2",
+        "reference": "LEVEL|1NS",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'use security services'",
+        "sql_expect": "use security services"
+    },
+    "custom_item_4": {
+        "description": "1.3 Store password hashes using SHA-256 only",
+        "info": "Sybase ASE 15.0.2 supports storing encrypted passwords using both SHA-256 hashes and\nthe ASE proprietary algorithm or as SHA-256 hashes only. This setting is toggled via the\nallow password downgrade password policy option.\n\nThe default install setting for new ASE 15.0.2 installations is to store encrypted passwords\nas SHA-256 hashes only. ASE servers upgraded to 15.0.2 are set to also store encrypted\npasswords using the ASE proprietary algorithm.\n\nSupport for the ASE proprietary algorithm facilitates downgrades to older versions of\nSybase ASE. If the System Administrator is certain that the ASE server will not be\ndowngraded to an earlier version then encrypted passwords should be stored as SHA-256\nhashes only.\n\nNote that this configuration setting is not present ASE 15.0 or 15.0.1.\n\nRationale:\n\nThe SHA-256 algorithm is considered more secure than the ASE proprietary algorithm.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to prevent the storage of encrypted passwords with the ASE algorithm:\n\nexec sp_passwordpolicy 'set', 'allow password downgrade', 0",
+        "sql_request": "exec sp_passwordpolicy 'list', 'allow password downgrade'"
+    },
+    "custom_item_5": {
+        "description": "1.3 Store password hashes using SHA-256 only",
+        "info": "Sybase ASE 15.0.2 supports storing encrypted passwords using both SHA-256 hashes and\nthe ASE proprietary algorithm or as SHA-256 hashes only. This setting is toggled via the\nallow password downgrade password policy option.\n\nThe default install setting for new ASE 15.0.2 installations is to store encrypted passwords\nas SHA-256 hashes only. ASE servers upgraded to 15.0.2 are set to also store encrypted\npasswords using the ASE proprietary algorithm.\n\nSupport for the ASE proprietary algorithm facilitates downgrades to older versions of\nSybase ASE. If the System Administrator is certain that the ASE server will not be\ndowngraded to an earlier version then encrypted passwords should be stored as SHA-256\nhashes only.\n\nNote that this configuration setting is not present ASE 15.0 or 15.0.1.\n\nRationale:\n\nThe SHA-256 algorithm is considered more secure than the ASE proprietary algorithm.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to prevent the storage of encrypted passwords with the ASE algorithm:\n\nexec sp_passwordpolicy 'set', 'allow password downgrade', 0",
+        "sql_request": "exec sp_passwordpolicy 'list', 'allow password downgrade'",
+        "sql_expect": "0",
+        "regex": "Last Password downgrade was allowed on.*"
+    },
+    "custom_item_6": {
+        "description": "1.3 Store password hashes using SHA-256 only",
+        "info": "Sybase ASE 15.0.2 supports storing encrypted passwords using both SHA-256 hashes and\nthe ASE proprietary algorithm or as SHA-256 hashes only. This setting is toggled via the\nallow password downgrade password policy option.\n\nThe default install setting for new ASE 15.0.2 installations is to store encrypted passwords\nas SHA-256 hashes only. ASE servers upgraded to 15.0.2 are set to also store encrypted\npasswords using the ASE proprietary algorithm.\n\nSupport for the ASE proprietary algorithm facilitates downgrades to older versions of\nSybase ASE. If the System Administrator is certain that the ASE server will not be\ndowngraded to an earlier version then encrypted passwords should be stored as SHA-256\nhashes only.\n\nNote that this configuration setting is not present ASE 15.0 or 15.0.1.\n\nRationale:\n\nThe SHA-256 algorithm is considered more secure than the ASE proprietary algorithm.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to prevent the storage of encrypted passwords with the ASE algorithm:\n\nexec sp_passwordpolicy 'set', 'allow password downgrade', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_passwordpolicy 'list', 'allow password downgrade'",
+        "regex": ".*"
+    },
+    "custom_item_7": {
+        "description": "1.3 Store password hashes using SHA-256 only",
+        "info": "Sybase ASE 15.0.2 supports storing encrypted passwords using both SHA-256 hashes and\nthe ASE proprietary algorithm or as SHA-256 hashes only. This setting is toggled via the\nallow password downgrade password policy option.\n\nThe default install setting for new ASE 15.0.2 installations is to store encrypted passwords\nas SHA-256 hashes only. ASE servers upgraded to 15.0.2 are set to also store encrypted\npasswords using the ASE proprietary algorithm.\n\nSupport for the ASE proprietary algorithm facilitates downgrades to older versions of\nSybase ASE. If the System Administrator is certain that the ASE server will not be\ndowngraded to an earlier version then encrypted passwords should be stored as SHA-256\nhashes only.\n\nNote that this configuration setting is not present ASE 15.0 or 15.0.1.\n\nRationale:\n\nThe SHA-256 algorithm is considered more secure than the ASE proprietary algorithm.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to prevent the storage of encrypted passwords with the ASE algorithm:\n\nexec sp_passwordpolicy 'set', 'allow password downgrade', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_passwordpolicy 'list', 'allow password downgrade'"
+    },
+    "custom_item_8": {
+        "description": "1.4 Secure the sa account",
+        "info": "The System Administrator account, sa, is extremely powerful, having the sa_role,\nsso_role, oper_role and Sybase_ts_role by default. Furthermore, the password to the sa\naccount is blank on install.\n\nSybase recommends using the sa account only for initial database configuration such as\ncreating other users, devices and databases. It is then recommended that the sa account is\nlocked.\n\nThe following steps represent best practice handling of the sa account:\n\n. Set a strong password on the sa account; although the sa account should ultimately\nbe locked, setting a strong password acts as a mitigating step while the database is\nbeing configured or should it be accidently re-enabled. This may have severe\nrepercussions as the default password for the sa account is blank.\n. Create separate user accounts and groups assigning the sa_role, sso_role,\noper_role and sybase_ts_role roles as necessary, following the principle of least\nprivilege.\n\n. Remove the sa_role, sso_role, oper_role and the sybase_ts_role from the sa\naccount.\n. Lock the sa account\n\nRationale:\n\nThe first attack an intruder is likely to launch against Sybase ASE will be to test whether the\nsa account is enabled and whether it has a blank password. If both of these conditions are\ntrue, the attacker has no additional work to do to fully compromise the database.\nFurthermore, in many organizations auditing requirements mandate the user of non-\ndefault accounts so that operations can be accurately tracked.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the ASE server as a user with the sa_role and execute the following SQL\nstatement to set a strong password on the sa account (whereshould be substituted for a suitable password):\n\nexec sp_password NULL, ''\n\n2. Ensure the above statement returns Password correctly set.\n\n3. Create separate user accounts and groups assigning the sa_role, sso_role,\noper_role and sybase_ts_role roles as necessary, following the principle of least\nprivilege.\n\n4. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statements, ensuring they complete successfully, to strip the sa account of the\nsso_role, oper_role and sybase_ts_role roles.\n\nNote that it is essential that other accounts with at least the sa_role and the\nsso_role have been created prior to carrying out this and the proceeding step.\n\nrevoke role sso_role from 'sa'\n\nrevoke role oper_role from 'sa'\n\nrevoke role sybase_ts_role from 'sa'\n\n5. Connect to the ASE Server as user with the sa_role and executing the following\nstatement, ensuring it completes successfully, to strip the sa account of the\nsa_role.\n\nrevoke role sa_role from 'sa'\n\n6. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statement to lock the sa account:\n\nexec sp_locklogin sa, 'lock'\n\n7. Ensure the above statement returns Account locked.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_displaylogin 'sa'",
+        "sql_expect": "ManualReviewRequired"
+    },
+    "custom_item_9": {
+        "description": "1.5 Remove unused accounts and change default passwords",
+        "info": "Many Sybase components that interact with ASE create user accounts with weak\npasswords such as Sybase, SQL or the username itself.\n\nIt is recommended that default accounts are given passwords that conform to a strong\npassword policy. Furthermore, accounts that are not in use should be removed. Below is a\nlist of common accounts to inspect:\n\n. probe\n. sybmail\n. jstask\n. mon_user\n\nRationale:\n\nDefault passwords present an easy means of compromising a database, even for unskilled\nattackers. Even if the targeted user account does not have access to powerful roles or\nsensitive data, the attacker need only find a privilege escalation vulnerability to execute a\nfull compromise.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the ASE server as a user that has select permission on\nmaster.dbo.syslogins (such as a user with the sso_role) and execute the\nfollowing SQL statement to retrieve a list of database usernames:\n\nuse master\n\nselect name from syslogins\n\n2. Set strong passwords on these accounts via the sp_password stored procedure and\nensure all client components that make use of the account are updated to use the\nnew password.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "select name from syslogins"
+    },
+    "custom_item_10": {
+        "description": "2.2 Enable message integrity",
+        "info": "Sybase ASE supports a means of signaling to the underlying security mechanism that message integrity is required via the msg integrity reqd configuration parameter.\nThe setting is disabled by default. It is recommended the message integrity is enabled. Note that enabling the use security services configuration parameter is a prerequisite for enabling message integrity.\n\nRationale:\nEnabling message integrity prevents an attacker positioned between the client and the server from intercepting and modifying messages.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL statement to enable message integrity.\nexec sp_configure 'msg integrity reqd', 1",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'msg integrity reqd'",
+        "sql_expect": "msg integrity reqd"
+    },
+    "custom_item_11": {
+        "description": "2.3 Enable message confidentiality",
+        "info": "Sybase ASE supports a means of signaling to the underlying security mechanism that\nmessage confidentiality via encryption is required. This is accomplished through the msg\nconfidentiality reqd configuration parameter.\n\n\nThe setting is disabled by default. It is recommended the message confidentiality is\nenabled. Note that enabling the use security services configuration parameter is a\nprerequisite for enabling message confidentiality.\n\nRationale:\n\nEnabling message confidentiality prevents an attacker positioned between a client and the\nservers from being able to capture sensitive data.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to enable message confidentiality.\n\nexec sp_configure 'msg confidentiality reqd', 1",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'msg confidentiality reqd'",
+        "sql_expect": "msg confidentiality reqd"
+    },
+    "custom_item_12": {
+        "description": "2.4 Enable network password encryption",
+        "info": "Sybase ASE 15.0.2 supports the use of asymmetric encryption to securely transmit\npasswords from the client to the server using the RSA public key encryption algorithm.\nThis setting is enabled via the net password encryption reqd configuration parameter.\nThis feature does not depend on PKI, Kerberos, nor SSL.\n\nThere are three possible settings for the value of the net password encryption reqd\nconfiguration parameter:\n\n\n. 0  This setting allows the client to choose the encryption types, including no\nencryption. This is the default settings.\n. 1  This setting causes the server to permit either the older proprietary ASE\nencryption or the RSA algorithm only.\n. 2  This setting causes the server to permit only the RSA algorithm.\n\nIf all client applications within your organization support the RSA algorithm (i.e. they use\nclient libraries accompanying ASE 15.0.2 or are RSA algorithm aware) then it is\nrecommended that setting 2 is enabled, otherwise it is recommended that setting 1 is\nenabled.\n\nNote that this setting is not supported by ASE 15.0 or 15.0.1.\n\nRationale:\n\nEnabling network password encryption prevents an attacker positioned between the client\nand the server from sniffing the password during the login process. The RSA algorithm is\npreferred over the proprietary ASE algorithm since RSA is a widely accepted and analyzed\nalgorithm.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement to set the network password encryption to 2:\n\nexec sp_configure 'net password encryption reqd', 2",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),LEVEL|1S,NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'net password encryption reqd'",
+        "sql_expect": "net password encryption reqd"
+    },
+    "custom_item_13": {
+        "description": "2.5.1 Enable password encryption",
+        "info": "When a local Sybase ASE server connects to a remote server, the user account password is\nsent across the network encrypted or in plain text dependant on the net password\nencryption setting for the server.\n\n. On Sybase ASE 15.0, net password encryption is set to false by default.\n. On Sybase ASE 15.0.1, net password encryption is set to false by default.\n. On Sybase ASE 15.0.2, net password encryption is set to false by default (for any\nnew server added using sp_addserver and for sysservers entries with an\nASEnterprise class value during upgrade to this release).\n\nThe net password encryption should be set to true for each remote server.\n\nRationale:\n\nAn attacker that is able to sniff the traffic between two servers would be able to capture\npasswords that are sent in plain text.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement (whererepresents the name of the remote server for\nwhich password encryption will be enabled):\n\nexec sp_serveroption, 'net password encryption', true",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),LEVEL|1S,NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_helpserver '%'",
+        "regex": ".*"
+    },
+    "custom_item_14": {
+        "description": "3.1.1 Set an appropriate default database for all users",
+        "info": "It is recommended that no users except those who have the sa_role or sso_role are\nassigned a default database of master, since this database stores all system tables.\n\nRationale:\n\nAs a general best practice recommendation, all standard users should be associated with a\nspecific home database other than master.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the ASE server as a user that has select permission on syslogins (e.g a\nuser with the sa_role) and execute the following SQL statement to retrieve the list\nof users that currently have a default database of master:\n\nuse master\n\nselect name, dbname from syslogins where dbname = 'master'\n\n2. For each user that has a default database of master, that does not have the sa_role\nand/or the sso_role (role membership can be determined via the\nsp_displaylogin stored procedure), execute the following SQL statement to modify\ntheir default database.should be substituted for the appropriate username\nandfor the new default database to be set.\n\nexec sp_modifylogin, defdb,",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "select name, dbname from syslogins where dbname = 'master'",
+        "regex": ".*"
+    },
+    "custom_item_15": {
+        "description": "3.1.2 Restrict use of set proxy",
+        "info": "Sybase ASE supports proxy authorization, allowing Security Officers the ability to grant\nselected logins the ability to assume the security context of another user via the set proxy\ngrant.\n\nRationale:\n\nThe set proxy grant potentially allows a user to impersonate any other login unless\nrestricted via the restrict role parameter.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. When using the set proxy command, always use the restrict role parameter.",
+        "reference": "LEVEL|1NS",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "sp_helprotect @permission_name = 'Set Proxy'"
+    },
+    "custom_item_16": {
+        "description": "3.3.1 Avoid use of grant all",
+        "info": "When granting or revoking privileges to a database object, Sybase ASE allows the syntax\ngrant all to signify that all privileges applicable to the specified object should be granted\nor revoked. It is recommended that use of grant all is avoided where possible.\n\nRationale:\n\nSecurity best practice advocates the principle of least privilege, i.e. only the privileges that\nare absolutely necessary should be granted to a user. In situations where all privileges are\nnot required, use of grant all violates this principle.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Use specific grant statements to assign the required privileges.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_helprotect"
+    },
+    "custom_item_17": {
+        "description": "3.4 Revoke default permissions for the public role",
+        "info": "By default, the public role has select permission on many system tables, including the\nsyslogins table in the master database (though not on the password column).\n\nSince all database users have the public role it is recommended that these permissions\nare revoked from all databases.\n\nThis setting should be thoroughly tested on non-production servers before it is applied\nsince additional table privileges may need to be granted to specific users or groups once\npublic access is revoked.\n\nRationale:\n\nLow privileged database users can glean useful information from system tables such as\naccount names and lockout status.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Connect to the ASE server as a user with the sa_role and execute the following SQL\nstatement for each database listed in sysdatabases (whereshould be\nsubstituted for the appropriate database name). For the complete list of tables that\nthis command affects, see the description of the revoke command in the Sybase ASE\nReference Manual: Commands.\n\nNote that the tables affected differ depending on whether the database is the master\ndatabase or not.\n\nuserevoke default permissions on system tables",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_helprotect"
+    },
+    "custom_item_18": {
+        "description": "3.5 Ensure updates to system tables are not permitted",
+        "info": "Sybase ASE can protect system tables from direct or accidental alteration through SQL\nqueries via the allow updates to system tables configuration parameter.\n\nThis setting is enabled by default. It is recommended that this setting is re-enabled if it has\nbeen disabled.\n\nRationale:\n\nAn attacker with sufficient privilege can re-enable direct updates to system tables, but this\nconfiguration setting should protect against accidental alterations and will aid the audit\ntrail.",
+        "solution": "1. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statement:\n\nexec sp_configure 'allow updates to system tables', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'allow updates to system tables'",
+        "sql_expect": "allow updates to system tables"
+    },
+    "custom_item_19": {
+        "description": "3.5.1 Protect database object text in syscomments",
+        "info": "The syscomments table contains the source code for business logic implementation such as\nstored procedures. It also contains the text of views, triggers, default table constraints, and\nprocedures. By default the public role has select permission on this system table.\n\nSybase ASE supports a configuration parameter, select on syscomments.txt, that\nrestricts select permission to the object owner and users with the sa_role. It is\nrecommended that this configuration is enabled.\n\nRationale:\n\nselect permission should be restricted to the object owner and system administrators\nonly since stored procedures, triggers and views often contain sensitive information.\nFurthermore, source code access is likely to facilitate the discovery of logic flaws that may\nresult in privilege escalation or information disclosure.",
+        "solution": "1. Connect to the database as a user with the sso_role and execute the following SQL\nstatement:\n\nexec sp_configure 'select on syscomments.text', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'select on syscomments.text'",
+        "sql_expect": "select on syscomments.text"
+    },
+    "custom_item_20": {
+        "description": "3.6.1 Ensure a strong system encryption password is set",
+        "info": "It is the responsibility of the System Security Officer to set a strong system encryption\npassword. This password is used to generate a 128-bit key-encrypting key, which in turn is\nused to encrypt column encryption keys (created by users with the create encryption\nkey privilege).\n\nRationale:\n\nSetting a weak system encryption password facilitates the decryption of column encryption\nkeys and ultimately the data itself.",
+        "solution": "1. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statement to set a system encryption password (whereshould be\nsubstituted for the strong system encryption password). Note that support for\nencrypted columns must be enabled before the system encryption password can be\nset.\n\nexec sp_encryption system_encr_passwd, ''",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_encryption helpkey, system_encr_passwd",
+        "regex": ".*"
+    },
+    "custom_item_21": {
+        "description": "4.2 Enabling resource limits",
+        "info": "Sybase ASE provides a means of resource limiting via the allow resource limits\nconfiguration parameter. This functionality is disabled by default. When it is enabled, the\nserver applies limits to user sessions.\n\nIt is recommended that this setting is enabled to mitigate against denial of service and data\nmining attacks. This setting should be thoroughly tested on non-production servers to\nensure that it does not interfere with normal application behavior.\n\nRationale:\n\nResource limiting may be a useful defense against potential attacks aimed at denial of\nservice or data mining attacks (e.g. through SQL Injection).",
+        "solution": "Connect to the ASE server as a user with the sa_role and execute the following SQL\nstatement to enable resource limits. Note that the ASE Server must be restarted for\nthis configuration to take effect.\n\nexec sp_configure 'allow resource limits', 1",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'allow resource limits'",
+        "sql_expect": "allow resource limits"
+    },
+    "custom_item_22": {
+        "description": "4.3 Enable auditing - sp_configure 'auditing'",
+        "info": "Auditing is disabled by default in Sybase ASE. It should be enabled and at a minimum and\nconfigured to audit the following events:\n\n. All commands which require the sa_role\n. All errors\n. All logins to the database\n\nIn addition, audit settings should also be configured to detect significant departures from\ntypical business use such as execution of unused stored procedures as well as the creation\nand modification of database objects. This may mean auditing GRANT, DROP and CREATE\nactions as well.\n\nAuditing settings should be thoroughly tested on non-production systems to ensure they\ndo not impact performance on database with heavy usage.\n\nRationale:\n\nAuditing of security-related events is essential to ensure the security of the database and\nthe integrity of the data held within it.",
+        "solution": "1. Install the auditing functionality. This is a multistage process involving the\nfollowing steps:\n\n. Creation of the auditing devices.\n. Creation of the auditing database.\n. Running the installsecurity (instsecu on Windows) script to populate\nthe database tables.\n. Restarting the database.\n\nFor detailed information, see\n. the Sybase ASE Configuration Guide for your platform (Windows or UNIX),\nChapter on Adding Optional Functionality to Adaptive Server,\n. the Sybase ASE System Administration Guide chapter on Auditing.\n\n\n2. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statement to enable auditing of security-related events, errors and login\nattempts:\n\nexec sp_configure 'auditing', 1\n\n/* Enable auditing of all security-related events for all users */\n\nexec sp_audit 'security', 'all', 'all', 'on'\n\n/* Enable auditing of all errors for all users */\n\nexec sp_audit 'errors', 'all', 'all', 'on'\n\n/* Enable auditing of all logins for all users */\n\nexec sp_audit 'login', 'all', 'all', 'on'\n\n\n3. Configure additional auditing options as required.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'auditing'",
+        "sql_expect": "auditing"
+    },
+    "custom_item_23": {
+        "description": "4.6 Review audit queue size",
+        "info": "Sybase ASE allows the number of audit records held in memory to be set via the audit\nqueue size configuration parameter.\n\nThe default value is 100 audit records (approximately 42K of memory). If an attacker is\nable to trigger a crash while an audit record is stored in memory but has not been written\nto disk, the audit record will likely be lost (it may, however, be stored in a crash dump\ndepending on the system configuration).\n\nIt is recommended that this setting is reviewed; the default value of 100 is likely to be\nsufficient for most organizations although depending on the nature of the data stored in the\ndatabase, this value could be reduced.\n\nIt should be noted that decreasing this value is likely to have an effect on performance,\nespecially on a system that is under heavy use and that generates a significant number of\naudit events.\n\nRationale:\n\nIf this value is set high, an attacker may be able to cover their tracks by triggering a crash.",
+        "solution": "1. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statement to set the audit queue size to 100 (modify 100 as per your\norganizations requirements):\n\nsp_configure 'audit queue size', 100",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "sp_configure 'audit queue size'",
+        "sql_expect": "audit queue size"
+    },
+    "custom_item_24": {
+        "description": "4.8 Log successful and failed login attempt - failure",
+        "info": "Sybase ASE can be configured to log successful and/or failed login attempts to the\nWindows Event Log via the log audit logon failure and log audit logon success\nconfiguration parameters.\n\nIt is recommended that both successful and failed login attempts are logged to the\nWindows Event Log in addition to the standard Sybase audit trail.\n\nRationale:\n\nLogging key events such as successful and failed login attempts to multiple places (i.e. the\nWindows Event Log and the Sybase audit tables) means that there is less likelihood of an\nattacker being able to cover their tracks in the event of a compromise.",
+        "solution": "1. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statements:\n\nexec sp_configure 'log audit logon failure', 1\n\nexec sp_configure 'log audit logon success', 1",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'log audit logon failure'",
+        "sql_expect": "log audit logon failure"
+    },
+    "custom_item_25": {
+        "description": "4.8 Log successful and failed login attempt - success",
+        "info": "Sybase ASE can be configured to log successful and/or failed login attempts to the\nWindows Event Log via the log audit logon failure and log audit logon success\nconfiguration parameters.\n\nIt is recommended that both successful and failed login attempts are logged to the\nWindows Event Log in addition to the standard Sybase audit trail.\n\nRationale:\n\nLogging key events such as successful and failed login attempts to multiple places (i.e. the\nWindows Event Log and the Sybase audit tables) means that there is less likelihood of an\nattacker being able to cover their tracks in the event of a compromise.",
+        "solution": "1. Connect to the ASE server as a user with the sso_role and execute the following\nSQL statements:\n\nexec sp_configure 'log audit logon failure', 1\n\nexec sp_configure 'log audit logon success', 1",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'log audit logon success'",
+        "sql_expect": "log audit logon success"
+    },
+    "custom_item_26": {
+        "description": "5.1 Ensure Java is disabled",
+        "info": "Sybase ASE supports Java extensively, incorporating the Sun Java Virtual Machine (JVM)\nand offering full interoperability with Transact-SQL. Sybase implements part 1 of the SQLJ\nstandard, and extends the standard, for instance by permitting direct references to Java\nmethods and classes.\n\nJava access in Sybase ASE cannot be configured on a per user basis; it is either available to\nall users, or to none. It is disabled by default and it is recommended that it is not enabled\nunless absolutely necessary. Note that only users with the sa_role can enable Java.\n\nRationale:\n\nJava in ASE is a powerful target for an attacker since they can use it to interact with file\nsystem and network resources. With Java disabled, the potential for gaining a foothold on\nthe host operating system and/or network is reduced.",
+        "solution": "1. Connect to the ASE server with a user that has the sa_role and execute the\nfollowing SQL statement:\n\nexec sp_configure 'enable java', 0",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'enable java'",
+        "sql_expect": "enable java"
+    },
+    "custom_item_27": {
+        "description": "5.2 Ensure External File System Access is disabled - enable cis",
+        "info": "Sybase ASE contains functionality for interacting with the file system through the creation\nof 'proxy tables'. This functionality is implemented by the Component Integration Service\n(CIS) and is accessed via standard Transact-SQL commands. It allows files and directories\nto be created, deleted, written to and queried.\n\nBy default only users with the sa_role or the sso_role can create proxy tables that map to\nfiles or directories. It is nonetheless recommended that external file system access is\ndisabled.\n\nRationale:\n\nThough an attacker would need to have compromised an account with the sa_role or sso\nrole in order to create new proxy tables via External File System Access, this functionality,\nif not in use, should be disabled as a defense in depth measure. This functionality could be\nabused to modify operating system configuration files or create files that would allow an\nattacker to run code in another process.",
+        "solution": "1. Connect to the ASE server with a user that has the sa_role and execute the\nfollowing SQL statement:\n\nexec sp_configure 'enable cis', 0\n\n2. If an error is returned indicating that the transaction coordinator must be disabled,\nexecute the following SQL statement to accomplish this, restart the server and\nexecute the above SQL statements again.\n\nexec sp_configure 'enable xact coordination', 0\n\n3. Restart the server.\n\n4. Connect to the ASE server with a user that has the sa_role and execute the\nfollowing SQL statement:\n\nexec sp_configure 'enable file access', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'enable cis'",
+        "sql_expect": "enable cis"
+    },
+    "custom_item_28": {
+        "description": "5.2 Ensure External File System Access is disabled - enable file access",
+        "info": "Sybase ASE contains functionality for interacting with the file system through the creation\nof 'proxy tables'. This functionality is implemented by the Component Integration Service\n(CIS) and is accessed via standard Transact-SQL commands. It allows files and directories\nto be created, deleted, written to and queried.\n\nBy default only users with the sa_role or the sso_role can create proxy tables that map to\nfiles or directories. It is nonetheless recommended that external file system access is\ndisabled.\n\nRationale:\n\nThough an attacker would need to have compromised an account with the sa_role or sso\nrole in order to create new proxy tables via External File System Access, this functionality,\nif not in use, should be disabled as a defense in depth measure. This functionality could be\nabused to modify operating system configuration files or create files that would allow an\nattacker to run code in another process.",
+        "solution": "1. Connect to the ASE server with a user that has the sa_role and execute the\nfollowing SQL statement:\n\nexec sp_configure 'enable cis', 0\n\n2. If an error is returned indicating that the transaction coordinator must be disabled,\nexecute the following SQL statement to accomplish this, restart the server and\nexecute the above SQL statements again.\n\nexec sp_configure 'enable xact coordination', 0\n\n3. Restart the server.\n\n4. Connect to the ASE server with a user that has the sa_role and execute the\nfollowing SQL statement:\n\nexec sp_configure 'enable file access', 0",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "exec sp_configure 'enable file access'",
+        "sql_expect": "enable file access"
+    },
+    "custom_item_29": {
+        "description": "6.6 Remove sample databases if installed",
+        "info": "The Sybase ASE installer does not install sample databases by default. If they have been installed they should be removed.\nRationale:\nRemoval of sample databases is in accordance with the best practice principal of attack surface reduction.\nNote: Nessus has not performed this check, and this check is only provided for informational purposes.",
+        "solution": "1. Connect to the ASE server as a user with the sa_role and execute the following SQL statements to determine which sample databases are present:\nuse master select name from sysdatabases where name = 'pubs2' or name = 'pubs3' or name = 'images' or name = 'jpubs' or name = 'interpubs'\n2. Execute the following SQL statement for each database name returned in the query (whereshould be substituted for the appropriate database name):\ndrop database",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "select name from sysdatabases where name = 'pubs2' or name = 'pubs3' or name = 'images' or name = 'jpubs' or name = 'interpubs'"
+    },
+    "custom_item_30": {
+        "description": "6.11 Keep up-to-date with Sybase security patches",
+        "info": "Sybase ASE suffers from security vulnerabilities as any large software product invariably\ndoes. Previous publicly documented vulnerabilities have allowed for low privileged users\nto execute arbitrary code in the context of the operating system user that the ASE server is\nrunning under.\n\nUpdates to Sybase ASE come in the following forms:\n\n. Emergency Bug Fixes (EBFs) are released to correct the flawed component. The\naccompanying documentation will typically state the severity of the issue (e.g.\nSybase views this as a mandatory correction that you should implement\nimmediately).\n\n\n. Electronic Software Distribution packages (ESDs) are released periodically and\ntypically contain multiple EBFs and other non-security bug fixes packaged as a\nsingle download, but no additional features. The most recent ESD for a given release\nrepresents the most up-to-date stable version.\n\n\n. Interim Releases (IRs) are minor releases that introduce new features and\nenhancements, incorporating previous ESDs.\n\n\n. Notification of upcoming patches and possible security threats from third party\ncomponents is often announced as an Urgent Notice. Urgent Notices may be\ndownloaded from the Sybase support site.\n\n\nOccasionally details of vulnerabilities for which no patch exists may surface on security\nmailing lists such as Bugtraq or Full Disclosure. It is therefore recommended that these\nlists are regularly monitored. It may be preferable to set up keyword filters for Sybase\nsince these lists carry a high volume of traffic.\n\n\nEBFs, ESDs and IRs should be installed in a timely manner subject to your organizations\npatching policy and only after they have been fully tested on non-production servers.\n\nRationale:\n\nIt is important to keep up-to-date with patches to ensure the security and integrity of the\ndata within the database. Privilege escalation vulnerabilities could be used directly via low\nprivileged users or indirectly via application flaws such as SQL injection to compromise the\ndatabase and gain a foothold on the host operating system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "1. Download and install the latest EBFs/ESD/IR from the Sybase download site.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/1612",
+        "sql_request": "select @@version"
+    }
+}

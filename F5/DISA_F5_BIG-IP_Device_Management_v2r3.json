@@ -1,0 +1,315 @@
+{
+    "custom_item_1": {
+        "description": "Verify the target returns expected F5 data",
+        "f5_command": "/tm/sys/software/volume",
+        "json_transform": ".items[] | .product",
+        "expect": "^BIG-IP$"
+    },
+    "custom_item_2": {
+        "description": "F5BI-DM-000003 - The BIG-IP appliance must limit the number of concurrent sessions to the Configuration Utility to 10 or an organization-defined number.",
+        "info": "Device management includes the ability to control the number of administrators and management sessions that manage a device. Limiting the number of allowed administrators and sessions per administrator is helpful in limiting risks related to DoS attacks.\n\nThis requirement addresses concurrent sessions for administrative accounts and does not address concurrent sessions by a single administrator via multiple administrative accounts. The maximum number of concurrent sessions should be defined based upon mission needs and the operational environment for each system.",
+        "solution": "Configure the BIG-IP appliance either to limit the number of concurrent sessions to 10 or an organization-defined number.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-217381r879511_rule,STIG-ID|F5BI-DM-000003,STIG-Legacy|SV-74521,STIG-Legacy|V-60091,Vuln-ID|V-217381",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".maxClients",
+        "expect": "^@MAX_HTTP_CLIENTS@$"
+    },
+    "custom_item_3": {
+        "description": "F5BI-DM-000013 - The BIG-IP appliance must provide automated support for account management functions.",
+        "info": "Account management functions include: assignment of group or role membership; identifying account type; specifying user access authorizations (i.e., privileges); account removal, update, or termination; and administrative alerts. The network device must be configured to automatically provide account management functions, and these functions must immediately enforce the organization's current account policy.\n\nAll accounts used for access to the network device are privileged or system-level accounts. Therefore, if account management functions are not automatically enforced, an attacker could gain privileged access to a vital element of the network security architecture.\n\nThis control does not include emergency administration accounts that provide access to the network device components in case of network failure. There must be only one such locally defined account.\n\nAll other accounts must be defined. All other accounts must be created and managed on the site's authentication server (e.g., RADIUS, LDAP, or Active Directory). This requirement is applicable to account management functions provided by the network device application. If the function is provided by the underlying OS or an authentication server, it must be secured using the applicable security guide or STIG.",
+        "solution": "Configure the BIG-IP appliance to use an approved remote authentication server that provides automated support for account management.",
+        "reference": "800-171|3.1.1,800-171|3.4.2,800-53|AC-2(1),800-53|CM-6b.,800-53r5|AC-2(1),800-53r5|CM-6b.,CAT|II,CCI|CCI-000015,CCI|CCI-000366,CN-L3|7.1.3.2(d),CN-L3|8.1.10.6(d),CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.IP-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),ITSG-33|CM-6b.,NESA|T3.2.1,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-228978r879887_rule,STIG-ID|F5BI-DM-000013,STIG-Legacy|SV-74525,STIG-Legacy|V-60095,SWIFT-CSCv1|2.3,Vuln-ID|V-228978",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/auth/source",
+        "json_transform": ".type",
+        "not_expect": "^local$"
+    },
+    "custom_item_4": {
+        "description": "F5BI-DM-000067 - The BIG-IP appliance must be configured to alert the ISSO and SA (at a minimum) in the event of an audit processing failure.",
+        "info": "It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. Without this notification, the security personnel may be unaware of an impending failure of the audit capability, and system operation may be adversely affected.\n\nAudit processing failures include software/hardware errors, failures in the audit capturing mechanisms, and audit storage capacity being reached or exceeded.",
+        "solution": "Configure the BIG-IP appliance to alert the ISSO and SA (at a minimum) in the event of an audit processing failure.",
+        "reference": "800-171|3.3.4,800-171|3.4.2,800-53|AU-5a.,800-53|CM-6b.,800-53r5|AU-5a.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000139,CCI|CCI-000366,CN-L3|7.1.3.3(e),CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5a.,ITSG-33|CM-6b.,NESA|T3.2.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-228983r879887_rule,STIG-ID|F5BI-DM-000067,STIG-Legacy|SV-74553,STIG-Legacy|V-60123,SWIFT-CSCv1|2.3,Vuln-ID|V-228983",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/daemon-log-settings/mcpd",
+        "json_transform": ".audit",
+        "expect": "^all$"
+    },
+    "custom_item_5": {
+        "description": "F5BI-DM-000087 - The BIG-IP appliance must be configured to use NIAP evaluated cryptographic mechanisms to protect the integrity of audit information at rest.",
+        "info": "Audit records may be tampered with. If the integrity of audit data were to become compromised, then forensic analysis and discovery of the true source of potentially malicious system activity is impossible to achieve.\n\nProtection of audit records and audit data, including audit configuration settings, is of critical importance. Cryptographic mechanisms are the industry-established standard used to protect the integrity of audit data. An example of a cryptographic mechanism is the computation and application of a cryptographic-signed hash using asymmetric cryptography.\n\nThis requirement is not intended to cause a new cryptographic hash to be generated every time a record is added to a log file.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to off-load audit information to a system that uses NIAP evaluated cryptographic mechanisms to protect the integrity of audit information at rest.",
+        "reference": "800-171|3.3.8,800-171|3.4.2,800-53|AU-9(3),800-53|CM-6b.,800-53r5|AU-9(3),800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CCI|CCI-001350,CN-L3|8.1.4.3(d),CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(3),ITSG-33|CM-6b.,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.2.1,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-228987r879887_rule,STIG-ID|F5BI-DM-000087,STIG-Legacy|SV-74567,STIG-Legacy|V-60137,SWIFT-CSCv1|2.3,TBA-FIISB|37.3.3,Vuln-ID|V-228987",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/syslog",
+        "json_transform": ".remoteServers | .[] | .host",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_6": {
+        "description": "F5BI-DM-000095 - The BIG-IP appliance must be configured to uniquely identify and authenticate organizational administrators (or processes acting on behalf of organizational administrators).",
+        "info": "To assure accountability and prevent unauthenticated access, organizational administrators must be uniquely identified and authenticated for all network management accesses to prevent potential misuse and compromise of the system.",
+        "solution": "Configure the BIG-IP appliance to use a properly configured authentication server that uniquely identifies and authenticates organizational administrators.",
+        "reference": "800-171|3.4.2,800-171|3.5.1,800-53|CM-6b.,800-53|IA-2,800-53r5|CM-6b.,800-53r5|IA-2,CAT|I,CCI|CCI-000366,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.1.10.6(d),CN-L3|8.5.4.1(a),CSF|PR.AC-1,CSF|PR.IP-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|CM-6b.,ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T3.2.1,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-228988r879887_rule,STIG-ID|F5BI-DM-000095,STIG-Legacy|SV-74573,STIG-Legacy|V-60143,SWIFT-CSCv1|2.3,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-228988",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/auth/source",
+        "json_transform": ".type",
+        "not_expect": "^local$"
+    },
+    "custom_item_7": {
+        "description": "F5BI-DM-000101 - The BIG-IP appliance must be configured to ensure administrators are authenticated with an individual authenticator prior to using a group authenticator.",
+        "info": "To assure individual accountability and prevent unauthorized access, administrators must be individually identified and authenticated.\n\nIndividual accountability mandates that each administrator is uniquely identified. A group authenticator is a shared account or some other form of authentication that allows multiple unique individuals to access the network device using a single account.\n\nIf a device allows or provides for group authenticators, it must first individually authenticate administrators prior to implementing group authenticator functionality.\n\nSome devices may not have the need to provide a group authenticator; this is considered a matter of device design. In those instances where the device design includes the use of a group authenticator, this requirement will apply. This requirement applies to accounts created and managed on or by the network device.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to authenticate administrators with an individual authenticator prior to using a group authenticator.",
+        "reference": "800-171|3.5.1,800-53|IA-2(5),800-53r5|IA-2(5),CAT|II,CCI|CCI-000770,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(5),ITSG-33|IA-2(5)(a),ITSG-33|IA-2(5)(b),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-217397r879594_rule,STIG-ID|F5BI-DM-000101,STIG-Legacy|SV-74575,STIG-Legacy|V-60145,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-217397",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/auth/remote-role/role-info",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_8": {
+        "description": "Idle Time Before Automatic Logout",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".authPamIdleTimeout",
+        "expect": "^(?:[1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)$"
+    },
+    "custom_item_9": {
+        "description": "Enforce Idle Timeout While Viewing The Dashboard",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".authPamDashboardTimeout",
+        "expect": "^on$"
+    },
+    "custom_item_10": {
+        "description": "mcpd audit",
+        "f5_command": "/tm/sys/daemon-log-settings/mcpd",
+        "json_transform": ".audit",
+        "expect": "^all$"
+    },
+    "custom_item_11": {
+        "description": "global failsafeAction",
+        "f5_command": "/tm/sys/global-settings",
+        "json_transform": ".failsafeAction",
+        "expect": "^(reboot|restart-all|failover-restart-tm)"
+    },
+    "custom_item_12": {
+        "description": "httpd authPamValidateIP",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".authPamValidateIp",
+        "expect": "^on$"
+    },
+    "custom_item_13": {
+        "description": "httpd authPamDashboardTimeout",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".authPamDashboardTimeout",
+        "expect": "^on$"
+    },
+    "custom_item_14": {
+        "description": "F5BI-DM-000179 - The BIG-IP appliance must be configured to enforce organization-defined role-based access control policies over defined subjects and objects.",
+        "info": "Organizations can create specific roles based on job functions and the authorizations (i.e., privileges) to perform needed operations on organizational information systems associated with the organization-defined roles. When administrators are assigned to the organizational roles, they inherit the authorizations or privileges defined for those roles. RBAC simplifies privilege administration for organizations because privileges are not assigned directly to every administrator (which can be a significant number of individuals for mid- to large-size organizations) but are instead acquired through role assignments. RBAC can be implemented either as a mandatory or discretionary form of access control.\n\nThe RBAC policies and the subjects and objects are defined uniquely for each network device, so they cannot be specified in the requirement.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to use a properly configured authentication server to enforce organization-defined role-based access control policy over defined subjects and objects.",
+        "reference": "800-171|3.1.1,800-171|3.4.2,800-53|AC-3(7),800-53|CM-6b.,800-53r5|AC-3(7),800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CCI|CCI-002169,CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CN-L3|8.1.10.6(d),CSF|PR.AC-4,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|CM-6b.,NESA|T3.2.1,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-217411r879706_rule,STIG-ID|F5BI-DM-000179,STIG-Legacy|SV-74623,STIG-Legacy|V-60193,SWIFT-CSCv1|2.3,TBA-FIISB|31.1,Vuln-ID|V-217411",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/auth/remote-role/role-info",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "F5BI-DM-000191 - The BIG-IP appliance must be configured to allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+        "info": "In order to ensure network devices have a sufficient storage capacity in which to write the audit logs, they need to be able to allocate audit record storage capacity. The task of allocating audit record storage capacity is usually performed during initial device setup if it is modifiable.\n\nThe value for the organization-defined audit record storage requirement will depend on the amount of storage available on the network device, the anticipated volume of logs, the frequency of transfer from the network device to centralized log servers, and other factors.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to use a properly configured syslog server to allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-217413r879730_rule,STIG-ID|F5BI-DM-000191,STIG-Legacy|SV-74631,STIG-Legacy|V-60201,Vuln-ID|V-217413",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/syslog",
+        "json_transform": ".remoteServers | .[] | .host",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_16": {
+        "description": "F5BI-DM-000193 - The BIG-IP appliance must be configured to generate an immediate alert when allocated audit record storage volume reaches 75% of repository maximum audit record storage capacity.",
+        "info": "If security personnel are not notified immediately upon storage volume utilization reaching 75%, they are unable to plan for storage capacity expansion. This could lead to the loss of audit information. Note that while the network device must generate the alert, notification may be done by a management server.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to use a properly configured syslog server to generate an immediate alert when allocated audit record storage volume reaches 75% of repository maximum audit record storage capacity.",
+        "reference": "800-171|3.3.4,800-171|3.4.2,800-53|AU-5(1),800-53|CM-6b.,800-53r5|AU-5(1),800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CCI|CCI-001855,CN-L3|7.1.3.7(e),CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(1),ITSG-33|CM-6b.,NESA|T3.2.1,NESA|T3.3.1,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-229005r879887_rule,STIG-ID|F5BI-DM-000193,STIG-Legacy|SV-74633,STIG-Legacy|V-60203,SWIFT-CSCv1|2.3,TBA-FIISB|37.3.2,Vuln-ID|V-229005",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/syslog",
+        "json_transform": ".remoteServers | .[] | .host",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_17": {
+        "description": "Primary NTP Server",
+        "f5_command": "/tm/sys/ntp",
+        "json_transform": ".servers[]",
+        "expect": "@NTP_SERVER_ONE@"
+    },
+    "custom_item_18": {
+        "description": "Secondary NTP Server",
+        "f5_command": "/tm/sys/ntp",
+        "json_transform": ".servers[]",
+        "expect": "@NTP_SERVER_TWO@"
+    },
+    "custom_item_19": {
+        "description": "F5BI-DM-000211 - The BIG-IP appliance must be configured to implement automated security responses if baseline configurations are changed in an unauthorized manner.",
+        "info": "Unauthorized changes to the baseline configuration could make the device vulnerable to various attacks or allow unauthorized access to the device. Changes to device configurations can have unintended side effects, some of which may be relevant to security.\n\nDetecting such changes and providing an automated response can help avoid unintended, negative consequences that could ultimately affect the security state of the device. Examples of security responses include, but are not limited to, the following: halting application processing; halting selected functions; or issuing alerts/notifications to organizational personnel when there is an unauthorized modification of a configuration item. The appropriate automated security response may vary depending on the nature of the baseline configuration change, the role of the network device, the availability of organizational personnel to respond to alerts, etc.",
+        "solution": "Configure the BIG-IP appliance to implement automated security responses if baseline configurations are changed in an unauthorized manner.",
+        "reference": "800-171|3.4.2,800-171|3.4.3,800-53|CM-3(5),800-53|CM-6b.,800-53r5|CM-3(5),800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CCI|CCI-001744,CN-L3|8.1.10.6(d),CN-L3|8.1.10.6(g),CSF|DE.CM-1,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.IP-3,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.1.2,ITSG-33|CM-3,ITSG-33|CM-6b.,NESA|T3.2.1,NESA|T3.2.3,NESA|T3.3.2,NESA|T7.5.1,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|CM1,NIAv2|CM1a,NIAv2|CM1b,NIAv2|CM1c,PCI-DSSv3.2.1|11.5,PCI-DSSv4.0|11.5.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|6.2,QCSC-v1|7.2,QCSC-v1|8.2.1,Rule-ID|SV-229006r879887_rule,STIG-ID|F5BI-DM-000211,STIG-Legacy|SV-74637,STIG-Legacy|V-60207,SWIFT-CSCv1|2.3,Vuln-ID|V-229006",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/daemon-log-settings/mcpd",
+        "json_transform": ".audit",
+        "expect": "^all$"
+    },
+    "custom_item_20": {
+        "description": "F5BI-DM-000213 - The BIG-IP appliance must be configured to enforce access restrictions associated with changes to device configuration.",
+        "info": "Failure to provide logical access restrictions associated with changes to device configuration may have significant effects on the overall security of the system.\n\nWhen dealing with access restrictions pertaining to change control, it should be noted that any changes to the hardware, software, and/or firmware components of the device can potentially have significant effects on the overall security of the device.\n\nAccordingly, only qualified and authorized individuals should be allowed to obtain access to device components for the purposes of initiating changes, including upgrades and modifications.\n\nLogical access restrictions include, for example, controls that restrict access to workflow automation, media libraries, abstract layers (e.g., changes implemented into third-party interfaces rather than directly into information systems), and change windows (e.g., changes occur only during specified times, making unauthorized changes easy to discover).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to use role-based access to enforce access restrictions associated with changes to device configuration.",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001813,CSF|PR.IP-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-217415r879753_rule,STIG-ID|F5BI-DM-000213,STIG-Legacy|SV-74639,STIG-Legacy|V-60209,Vuln-ID|V-217415",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/auth/remote-role/role-info",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_21": {
+        "description": "F5BI-DM-000215 - The BIG-IP appliance must be configured to audit the enforcement actions used to restrict access associated with changes to the device.",
+        "info": "Without auditing the enforcement of access restrictions against changes to the device configuration, it will be difficult to identify attempted attacks, and an audit trail will not be available for forensic investigation for after-the-fact actions.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Audit items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Configure the BIG-IP appliance to audit the enforcement actions used to restrict access associated with changes to the device.",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-217416r879754_rule,STIG-ID|F5BI-DM-000215,STIG-Legacy|SV-74641,STIG-Legacy|V-60211,Vuln-ID|V-217416",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/daemon-log-settings/mcpd",
+        "json_transform": ".audit",
+        "expect": "^all$"
+    },
+    "custom_item_22": {
+        "description": "F5BI-DM-000239 - The BIG-IP appliance must be configured to protect against or limit the effects of all known types of Denial of Service (DoS) attacks on the BIG-IP appliance management network by limiting the number of concurrent sessions.",
+        "info": "DoS is a condition when a resource is not available for legitimate users. When this occurs, the organization either cannot accomplish its mission or must operate at degraded capacity.\n\nThis requirement addresses the configuration of network devices to mitigate the impact of DoS attacks that have occurred or are ongoing on device availability. For each network device, known and potential DoS attacks must be identified and solutions for each type implemented. A variety of technologies exist to limit or, in some cases, eliminate the effects of DoS attacks (e.g., limiting processes or restricting the number of sessions the device opens at one time). Employing increased capacity and bandwidth, combined with service redundancy, may reduce the susceptibility to some DoS attacks.\n\nThe security safeguards cannot be defined at the DoD level because they vary according to the capabilities of the individual network devices and the security controls applied on the adjacent networks (for example, firewalls performing packet filtering to block DoS attacks).",
+        "solution": "Configure the BIG-IP appliance to limit the effects of DoS attacks by employing security safeguards to limit the number of concurrent sessions to the configuration utility.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|I,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-217417r879806_rule,STIG-ID|F5BI-DM-000239,STIG-Legacy|SV-74647,STIG-Legacy|V-60217,Vuln-ID|V-217417",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/httpd",
+        "json_transform": ".maxClients",
+        "expect": "^@HTTPD_MAX_CLIENTS@$"
+    },
+    "custom_item_23": {
+        "description": "F5BI-DM-000257 - The BIG-IP appliance must be configured to off-load audit records onto a different system or media than the system being audited.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.\n\nOff-loading is a common process in information systems with limited audit storage capacity.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to off-load audit records onto a different system or media than the system being audited.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-217418r879886_rule,STIG-ID|F5BI-DM-000257,STIG-Legacy|SV-74649,STIG-Legacy|V-60219,Vuln-ID|V-217418",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/syslog",
+        "json_transform": ".remoteServers | .[] | .host",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_24": {
+        "description": "alertd",
+        "f5_command": "/tm/sys/log-config/destination/alertd",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_25": {
+        "description": "arcsight",
+        "f5_command": "/tm/sys/log-config/destination/arcsight",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_26": {
+        "description": "ipfix",
+        "f5_command": "/tm/sys/log-config/destination/ipfix",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_27": {
+        "description": "local-database",
+        "f5_command": "/tm/sys/log-config/destination/local-database",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_28": {
+        "description": "local-syslog",
+        "f5_command": "/tm/sys/log-config/destination/local-syslog",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_29": {
+        "description": "remote-high-speed-log",
+        "f5_command": "/tm/sys/log-config/destination/remote-high-speed-log",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_30": {
+        "description": "remote-syslog",
+        "f5_command": "/tm/sys/log-config/destination/remote-syslog",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_31": {
+        "description": "splunk",
+        "f5_command": "/tm/sys/log-config/destination/splunk",
+        "json_transform": ".items | .[] | .name",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_32": {
+        "description": "F5BI-DM-000279 - The BIG-IP appliance must be configured to create backups of information system documentation, including security-related documentation, when changes occur or weekly, whichever is sooner.",
+        "info": "Information system backup is a critical step in maintaining data assurance and availability. Information system and security-related documentation contains information pertaining to system configuration and security settings. If this information were not backed up and a system failure were to occur, the security settings would be difficult to reconfigure quickly and accurately. Maintaining a backup of information system and security-related documentation provides for a quicker recovery time when system outages occur.\n\nThis control requires the network device to support the organizational central backup process for user account information associated with the network device. This function may be provided by the network device itself; however, the preferred best practice is a centralized backup rather than each network device performing discrete backups.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to create backups of information system documentation, including security-related documentation, when changes occur.",
+        "reference": "800-171|3.4.2,800-171|3.8.9,800-53|CM-6b.,800-53|CP-9c.,800-53r5|CM-6b.,800-53r5|CP-9c.,CAT|II,CCI|CCI-000366,CCI|CCI-000539,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.IP-4,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CM-6b.,ITSG-33|CP-9c.,NESA|T3.2.1,NESA|T3.5.1,Rule-ID|SV-217422r879887_rule,STIG-ID|F5BI-DM-000279,STIG-Legacy|SV-74665,STIG-Legacy|V-60235,SWIFT-CSCv1|2.3,Vuln-ID|V-217422",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/sys/syslog",
+        "json_transform": ".remoteServers | .[] | .host",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_33": {
+        "description": "F5BI-DM-000283 - The BIG-IP appliance must be configured to obtain its public key certificates from an appropriate certificate policy through a DoD-approved service provider.",
+        "info": "For user certificates, each organization obtains certificates from an approved, shared service provider, as required by OMB policy. For federal agencies operating a legacy public key infrastructure cross-certified with the Federal Bridge Certification Authority at medium assurance or higher, this Certification Authority will suffice.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the BIG-IP appliance to obtain its public key certificates from an appropriate certificate policy through a DoD-approved service provider.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53|SC-17,800-53r5|CM-6b.,800-53r5|SC-17,CAT|II,CCI|CCI-000366,CCI|CCI-001159,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|F5_BIG-IP_Device_Management_11-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,ITSG-33|SC-17,ITSG-33|SC-17a.,NESA|T3.2.1,NESA|T7.4.2,NIAv2|CY5a,NIAv2|CY10,NIAv2|CY12,NIAv2|SS25,Rule-ID|SV-217423r879887_rule,STIG-ID|F5BI-DM-000283,STIG-Legacy|SV-74669,STIG-Legacy|V-60239,SWIFT-CSCv1|2.3,Vuln-ID|V-217423",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_F5_BIG-IP_Y24M01_STIG.zip",
+        "f5_command": "/tm/cm/cert",
+        "json_transform": ".items[]",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_34": {
+        "description": "Global Banner Enabled",
+        "f5_command": "/tm/sys/global-settings",
+        "json_transform": ".guiSecurityBanner",
+        "expect": "enabled"
+    },
+    "custom_item_35": {
+        "description": "Global Banner Text",
+        "f5_command": "/tm/sys/global-settings",
+        "json_transform": ".guiSecurityBannerText",
+        "expect": "@SECURITY_BANNER_TEXT@"
+    },
+    "custom_item_36": {
+        "description": "disablebash",
+        "f5_command": "/tm/sys/db",
+        "expect": "true"
+    },
+    "custom_item_37": {
+        "description": "disablerootlogin",
+        "f5_command": "/tm/sys/db",
+        "expect": "true"
+    },
+    "custom_item_38": {
+        "description": "SSHD Banner Enabled",
+        "f5_command": "/tm/sys/sshd",
+        "json_transform": ".banner",
+        "expect": "^enabled$"
+    },
+    "custom_item_39": {
+        "description": "SSHD Banner Content",
+        "f5_command": "/tm/sys/sshd",
+        "json_transform": ".bannerText",
+        "expect": "@SSHD_BANNER_TEXT@"
+    }
+}

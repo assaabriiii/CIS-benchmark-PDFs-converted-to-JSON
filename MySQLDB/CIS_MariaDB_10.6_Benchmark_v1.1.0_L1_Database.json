@@ -1,0 +1,347 @@
+{
+    "custom_item_1": {
+        "description": "MariaDB 10 is installed",
+        "sql_request": "show variables like 'version';",
+        "sql_expect": "version"
+    },
+    "custom_item_2": {
+        "description": "2.4 Do Not Reuse Usernames",
+        "info": "Database user accounts should not be reused for multiple applications or users.\n\nRationale:\n\nUtilizing unique database accounts across applications will reduce the impact of a compromised MySQL account. If a user is reused, then a compromise of this user will compromise multiple parts of the system and/or application.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Add/Remove users so that each user is only used for one specific purpose.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|4.3,CSCv8|5.1,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1M,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT host, user, plugin, IF(plugin = 'mysql_native_password', 'WEAK SHA1', 'STRONG SHA2') AS HASHTYPE FROM mysql.user WHERE user NOT IN ('mysql.infoschema', 'mysql.session', 'mysql.sys') AND plugin NOT LIKE 'auth%' AND plugin <> 'mysql_no_login' AND LENGTH(authentication_string) > 0 ORDER BY plugin;",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_3": {
+        "description": "Global password_lifetime is less than or equal to 365",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables where VARIABLE_NAME like 'default_password_lifetime';",
+        "sql_expect": "default_password_lifetime"
+    },
+    "custom_item_4": {
+        "description": "User password_lifetime is less than or equal to 365",
+        "sql_request": "WITH password_expiration_info AS (SELECT User, Host, IF(IFNULL(JSON_EXTRACT(Priv, '$.password_lifetime'), -1) = -1, @@global.default_password_lifetime, JSON_EXTRACT(Priv, '$.password_lifetime')) AS password_lifetime, JSON_EXTRACT(Priv, '$.password_last_changed') AS password_last_changed FROM mysql.global_priv) SELECT pei.User, pei.Host, pei.password_lifetime, FROM_UNIXTIME(pei.password_last_changed) AS password_last_changed_datetime, FROM_UNIXTIME(pei.password_last_changed + (pei.password_lifetime * 60 * 60 * 24)) AS password_expiration_datetime FROM password_expiration_info pei WHERE pei.password_lifetime != 0 AND pei.password_last_changed IS NOT NULL UNION SELECT pei.User, pei.Host, pei.password_lifetime, FROM_UNIXTIME(pei.password_last_changed) AS password_last_changed_datetime, 0 AS password_expiration_datetime FROM password_expiration_info pei WHERE pei.password_lifetime = 0 OR pei.password_last_changed IS NULL;",
+        "sql_expect": ".+"
+    },
+    "custom_item_5": {
+        "description": "4.2 Ensure Example or Test Databases are Not Installed on Production Servers",
+        "info": "The default MariaDB installation does not contain any example or test databases. However, it is a good idea to review for common example databases and ensure they have been removed from production systems.\n\nRationale:\n\nDropping example databases will reduce the attack surface of the MariaDB server.",
+        "solution": "Execute the following SQL statement to drop an example database:\n\nDROP DATABASE;\n\nDefault Value:\n\nBy default, MariaDB 10.6 does not contain any example or test databases.",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|1A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA where SCHEMA_NAME not in ('mysql','information_schema', 'sys', 'performance_schema') AND SCHEMA_NAME REGEXP 'test|example';"
+    },
+    "custom_item_6": {
+        "description": "4.4 Harden Usage for 'local_infile' on MariaDB Clients",
+        "info": "The local_infile parameter dictates whether files located on the MariaDB client's computer can be loaded or selected via LOAD DATA INFILE or SELECT local_file.\n\nRationale:\n\nFor MariaDB client programs and connectors prior to 10.2.0, disabling local_infile reduces an attacker's ability to read sensitive files off the affected server via an SQL injection vulnerability.\n\nImpact:\n\nDisabling local_infile will impact the functionality of solutions that rely on it.",
+        "solution": "Upgrade all MariaDB clients and connectors to 10.2.0 or higher.\nIn the case where using local_infile is needed, the following changes further harden security:\nOn client side, secure by:\nLimiting the location from where data can be read using --load-data-local-dir.\n\nmariadb --local-infile=0 --load-data-local-dir=/my/local/data\n\nAdding TLS connection to assure server identity by requiring verification.\n\nmariadb --local-infile=0 --load-data-local-dir=/my/local/data --ssl-mode=VERIFY_IDENTITY\n\nIf local_infile is not in use or if clients are not upgraded - add the following line to the [mariadbd] section of the MySQL configuration file and restart the MariaDB service:\n\nlocal-infile=0\n\nDefault Value:\n\n0 (OFF)",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|4.7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW VARIABLES WHERE Variable_name = 'local_infile';",
+        "sql_expect": "local_infile"
+    },
+    "custom_item_7": {
+        "description": "4.6 Ensure Symbolic Links are Disabled",
+        "info": "The symbolic-links and skip-symbolic-links options for MariaDB determine whether symbolic link support is available. When use of symbolic links is enabled, they have different effects depending on the host platform. When symbolic links are disabled, then symbolic links stored in files or entries in tables are not used by the database.\n\nRationale:\n\nPrevents symbolic links from being used for database files. This is especially important when MariaDB is executing as root as arbitrary files may be overwritten. The symbolic-links option might allow someone to direct actions by the MariaDB server to other files and/or directories.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MariaDB configuration file (mariadb.cnf)\n\nLocate skip-symbolic-links in the configuration\n\nSet the skip-symbolic-links to YES\n\nNote: If skip-symbolic-links does not exist, add it to the configuration file in the mariadbd section.",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv7|13,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|1A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW variables LIKE 'have_symlink';",
+        "sql_expect": "have_symlink"
+    },
+    "custom_item_8": {
+        "description": "4.7 Ensure the 'secure_file_priv' is Configured Correctly",
+        "info": "The secure_file_priv option restricts to paths used by LOAD DATA INFILE or SELECT local_file. It is recommended that this option be set to a file system location that contains only resources expected to be loaded by MariaDB. Even better, if data import/export using LOAD DATA INFILE or SELECT local_file is not used, the functionality should be disabled entirely by setting --secure-file-priv to NULL.\n\nRationale:\n\nSetting secure_file_priv reduces an attacker's ability to read sensitive files off the affected server via a SQL injection vulnerability.\n\nImpact:\n\nSolutions that rely on loading data from various sub-directories may be negatively impacted by this change. Consider consolidating load directories under a common parent directory.\n\nThe server checks the value of secure_file_priv at startup and writes a warning to the error log if the value is insecure. A non-NULL value is considered insecure if it is empty, or the value is the data directory or a subdirectory of it, or a directory that is accessible by all users.",
+        "solution": "If you are not going to use this feature, remove secure_file_priv from the [mariadbd] section of the MariaDB configuration file and restart the MariaDB service.\nIf you need this feature add the following line to the [mariadbd] section of the MariaDB configuration file and restart the MariaDB service:\n\nsecure_file_priv=Default Value:\n\nNo value set.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|13,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW GLOBAL VARIABLES WHERE Variable_name = 'secure_file_priv';",
+        "sql_expect": "secure_file_priv"
+    },
+    "custom_item_9": {
+        "description": "5.1 Ensure Only Administrative Users Have Full Database Access",
+        "info": "The mysql.user, mysql.db, and other mysql tables ending in _priv list a variety of privileges that can be granted (or denied) to MariaDB users. Some of the privileges of concern include: Select_priv, Insert_priv, Update_priv, Delete_priv, Drop_priv, and so on. Typically, these privileges should not be available to every MySQL user and often are reserved for administrative use only. The information_schema.user_privileges provides a consolidated view of all user privileges.\n\nRationale:\n\nLimiting the accessibility of the mysql database will protect the confidentiality, integrity, and availability of the data housed within MariaDB. A user which has direct access to mysql.* might view password hashes, change permissions, or alter or destroy information intentionally or unintentionally.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following actions to remediate this setting:\n\nEnumerate non-administrative users resulting from the audit procedure.\n\nFor each non-administrative user, use the REVOKE statement to remove privileges as appropriate.",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.1,CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select grantee, privilege_type, is_grantable from information_schema.user_privileges where grantee not like ('\\'mysql.%localhost\\'');",
+        "sql_expect": ".+"
+    },
+    "custom_item_10": {
+        "description": "5.2 Ensure 'FILE' is Not Granted to Non-Administrative Users",
+        "info": "The FILE privilege is used to allow or disallow a user from reading and writing files on the server host. Any user with the FILE right granted has the ability to:\n\nRead files from the local file system that are readable by the MariaDB server (this includes world-readable files).\n\nWrite files to the local file system where the MariaDB server has write access.\n\nRationale:\n\nThe FILE right allows MariaDB users to read files from disk and to write files to disk. This may be leveraged by an attacker to further compromise MariaDB. It should be noted that the MariaDB server should not overwrite existing files.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure.\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE FILE ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'FILE';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_11": {
+        "description": "5.4 Ensure 'SUPER' is Not Granted to Non-Administrative Users",
+        "info": "The SUPER privilege is a powerful and far-reaching privilege and should not be granted lightly. In MariaDB, SUPER is deprecated and will be removed in a future version of MariaDB.\n\nThe SUPER privilege shown in the INFORMATION_SCHEMA.USER_PRIVILEGES table governs the use of a variety of MariaDB features. These features include, CHANGE MASTER TO, KILL, mysqladmin kill option, PURGE BINARY LOGS, SET GLOBAL, mysqladmin debug option, logging control, and more.\n\nIn MariaDB, SUPER is deprecated and will be removed in a future version of MariaDB. Migrating Accounts from SUPER to Dynamic Privileges is recommended.\n\nRationale:\n\nThe SUPER privilege allows principals to perform many actions, including view and terminate currently executing MariaDB statements (including statements used to manage passwords). This privilege also provides the ability to configure MariaDB, such as enable/disable logging, alter data, disable/enable features. Limiting the accounts that have the SUPER privilege reduces the chances that an attacker can exploit these capabilities.\n\nIt is more secure to migrate administrative users off SUPER and instead assign the specific and minimal set of mysql Dynamic Privileges needed to perform their tasks.\n\nImpact:\n\nWhen the SUPER privilege is denied to a given user, that user will be unable to take advantage of certain capabilities, such as certain mysqladmin options.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE SUPER ON *.* FROM '';\n\nNext minimize administrator rights\n\nAssess the minimal set of Dynamic Permissions needed by a user to perform their duties.\n\nFor each user assign the appropriate Dynamic Permission and then revoke thatSUPER capability.\nFor example, if administrator 'u1'@'localhost' requires SUPER for binary log purging and system variable modification, these statements make the required changes to the account thus limiting rights to what is needed:\n\nGRANT BINLOG_ADMIN, SYSTEM_VARIABLES_ADMIN ON *.* TO 'u1'@'localhost';\nREVOKE SUPER ON *.* FROM 'u1'@'localhost';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'SUPER';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_12": {
+        "description": "5.5 Ensure 'SHUTDOWN' is Not Granted to Non-Administrative Users",
+        "info": "The SHUTDOWN privilege simply enables use of the shutdown option to the mysqladmin command, which allows a user with the SHUTDOWN privilege the ability to shut down the MariaDB server.\n\nRationale:\n\nThe SHUTDOWN privilege allows principals to shutdown MariaDB. This may be leveraged by an attacker to negatively impact the availability of MariaDB.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure.\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE SHUTDOWN ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'SHUTDOWN';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_13": {
+        "description": "5.6 Ensure 'CREATE USER' is Not Granted to Non-Administrative Users",
+        "info": "The CREATE USER privilege governs the right of a given user to add or remove users, change existing users' names, or revoke existing users' privileges.\n\nRationale:\n\nReducing the number of users granted the CREATE USER right minimizes the number of users able to add/drop users, alter existing users' names, and manipulate existing users' privileges.\n\nImpact:\n\nUsers that are denied the CREATE USER privilege will not only be unable to create a user, but they may be unable to drop a user, rename a user, or otherwise revoke a given user's privileges.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE CREATE USER ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'CREATE USER';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_14": {
+        "description": "5.7 Ensure 'GRANT OPTION' is Not Granted to Non-Administrative Users",
+        "info": "The GRANT OPTION privilege exists in different contexts (mysql.user, mysql.db) for the purpose of governing the ability of a privileged user to manipulate the privileges of other users.\n\nRationale:\n\nThe GRANT OPTION privilege allows a principal to grant other principals additional privileges. This may be used by an attacker to compromise MariaDB.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result sets of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE GRANT OPTION ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT DISTINCT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE IS_GRANTABLE = 'YES';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_15": {
+        "description": "5.8 Ensure 'REPLICATION SLAVE' is Not Granted to Non-Administrative Users",
+        "info": "The REPLICATION SLAVE privilege governs whether a given user (in the context of the source server) can request updates that have been made on the source server.\n\nRationale:\n\nThe REPLICATION SLAVE privilege allows a principal to fetch binlog files containing all data changing statements and/or changes to table data from the source. This may be used by an attacker to read/fetch sensitive data from MariaDB.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-replica users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-replica user):\n\nREVOKE REPLICATION SLAVE ON *.* FROM '';\n\nUse the REVOKE statement to remove the REPLICATION SLAVE privilege from users who shouldn't have it.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'REPLICATION SLAVE';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_16": {
+        "description": "5.9 Ensure DML/DDL Grants are Limited to Specific Databases and Users",
+        "info": "DML/DDL includes the set of privileges used to modify or create data structures. This includes INSERT, SELECT, UPDATE, DELETE, DROP, CREATE, and ALTER privileges.\n\nRationale:\n\nINSERT, SELECT, UPDATE, DELETE, DROP, CREATE, and ALTER are powerful privileges in any database. Such privileges should be limited only to those users requiring such rights. By limiting the users with these rights and ensuring that they are limited to specific databases, the attack surface of the database is reduced.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the unauthorized users, hosts, and databases returned in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the unauthorized user,with host name, andwith the database name):\n\nREVOKE SELECT ON.FROM;\nREVOKE INSERT ON.FROM;\nREVOKE UPDATE ON.FROM;\nREVOKE DELETE ON.FROM;\nREVOKE CREATE ON.FROM;\nREVOKE DROP ON.FROM;\nREVOKE ALTER ON.FROM;",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT User,Host,Db FROM mysql.db WHERE Select_priv='Y' OR Insert_priv='Y' OR Update_priv='Y' OR Delete_priv='Y' OR Create_priv='Y' OR Drop_priv='Y' OR Alter_priv='Y';",
+        "sql_expect": ".+"
+    },
+    "custom_item_17": {
+        "description": "5.10 Securely Define Stored Procedures and Functions DEFINER and INVOKER",
+        "info": "Stored procedure and stored function declarations include a definition of permissions which can be used to escalate permissions. It's important to inspect these settings to ensure they do not unnecessarily escalate privileges.\n\nRationale:\n\nA stored procedure or function that improperly escalates privileges may provide unintended access rights which can be improperly used.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Drop and recreate stored procedures and functions using proper DEFINER and INVOKER settings, or other code changes.",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv7|14.6,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|1M,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT SPECIFIC_NAME, SECURITY_TYPE FROM information_schema.routines WHERE SECURITY_TYPE IN ('INVOKER','DEFINER');",
+        "sql_expect": ".+"
+    },
+    "custom_item_18": {
+        "description": "6.1 Ensure 'log_error' is configured correctly",
+        "info": "The error log contains information about events such as mariadbd starting and stopping, when a table needs to be checked or repaired, and, depending on the host operating system, stack traces when mariadbd fails.\n\nRationale:\n\nEnabling error logging can increase the ability to detect malicious attempts against MariaDB, and other critical messages. For example, if the error log is not enabled then a connection error could go unnoticed.\n\nWhen configured to stderr MariaDB will send log data to the console. Logging to the console is useful, but remember it is ephemeral. This is not recommended due to the fact that logging to console does not provide a means to force restricted access via permissions strictly to MariaDB and dedicated MariaDB audit accounts. This may compromise the confidentiality of the MariaDB log data. Furthermore use caution if co-mingling log data from multiple sources as that can complicate log inspection. Additionally from a security auditing perspective, it's difficult and error prone to verify logging is correct using stderr or redirected stderr.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MariaDB configuration file (mariadb.cnf).\n\nSet the log_error option to the path for the error log.\n\nDefault Value:\n\n./stderr.err",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW variables WHERE variable_name = 'log_error' AND value = '' or value LIKE '%stderr%';"
+    },
+    "custom_item_19": {
+        "description": "6.2 Ensure Log Files are Stored on a Non-System Partition",
+        "info": "MariaDB log files can be set in the MariaDB configuration to exist anywhere on the filesystem. It is common practice to ensure that the system filesystem is left uncluttered by application logs. System filesystems include the root (/), /var, or /usr.\n\nRationale:\n\nMoving the MariaDB logs off the system partition will reduce the probability of denial of service via the exhaustion of available disk space to the operating system.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MariaDB configuration file (mariadb.cnf)\n\nLocate the log_bin entry and set it to a file not on root (/), /var, or /usr",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT @@global.log_bin_basename WHERE @@global.log_bin_basename = '/' or @@global.log_bin_basename like '%/var%' or  @@global.log_bin_basename like '%/usr%';"
+    },
+    "custom_item_20": {
+        "description": "6.5 Ensure the Audit Plugin Can't be Unloaded",
+        "info": "Set server_audit to FORCE_PLUS_PERMANENT\n\nRationale:\n\nThis disables unloading on the plugin.\n\nImpact:\n\nIf someone can unload the plugin it would be possible to perform actions on the database without audit events being logged to the audit log. If the audit log plugin can be unloaded the audit log can be temporarily or permanently disabled.",
+        "solution": "To remediate this setting, follow these steps:\n\nOpen the MariaDB configuration file (mariadb.cnf)\n\nEnsure the following line is found in the mariadbd section\n\nserver_audit=FORCE_PLUS_PERMANENT",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT LOAD_OPTION FROM information_schema.plugins WHERE PLUGIN_NAME='SERVER_AUDIT';",
+        "sql_expect": "FORCE_PLUS_PERMANENT"
+    },
+    "custom_item_21": {
+        "description": "old_passwords",
+        "sql_request": "SHOW VARIABLES WHERE Variable_name = 'old_passwords';",
+        "sql_expect": "old_passwords"
+    },
+    "custom_item_22": {
+        "description": "secure_auth",
+        "sql_request": "SHOW VARIABLES WHERE Variable_name = 'secure_auth';",
+        "sql_expect": "secure_auth"
+    },
+    "custom_item_23": {
+        "description": "7.3 Ensure strong authentication is utilized for all accounts",
+        "info": "The mysql_native_password and mysql_old_password plugins utilize weak cryptography and/or weak password routines.\n\nIn particular, the mysql_old_password plugin utilizes cracked password routines and is subject to Pass-the-Hash attacks. The mysql_native_password plugin relies on the Secure Hash Algorithm 1 (SHA-1) algorithm. The National Institute of Standards and Technology (NIST) recommends against use of SHA-1.\n\nAdditionally, these plugins allow users to set blank passwords, which allow authentication without providing a password.\n\nAll users should be using alternative, stronger plugins or be configured with invalid passwords. See Default Value section and References for more details on specific account configurations.\n\nRationale:\n\nWithout a password, only knowing the username and the list of allowed hosts will allow someone to connect to the server and assume the identity of the user. This, in effect, bypasses authentication mechanisms.\n\nAcquisition of user password hashes exposes users to password cracking and Pass-the-Hash attacks.\n\nSetting a root password exposes password-based root access to remote users and to non-root linux users.\n\nImpact:\n\nUsing the ed25519 plugin will require installation of the plugin, and some clients may need to be configured to utilize the client_ed25519 plugin.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If the root user is returned in the audit procedure results, set that account to utilize only the unix_socket plugin by running the following mariadb command:\n\nalter user 'root'@'localhost' identified via 'unix_socket';\n\nIf the mysql user is returned in the audit procedure results, set that account to use an invalid password by running the following mariadb command:\n\nset password for 'mysql'@'localhost' = 'invalid';\n\nIf the mariadb.sys user is returned in the audit procedure results, set that account to use an invalid password by running the following mariadb command:\n\nset password for 'mariadb.sys'@'localhost' = 'invalid';\n\nFor every other user identified by the audit procedure, use the ALTER USER command to configure the account to utilize one of the following authentication plugins as appropriate:\n\ned25519\n\ngssapi\n\npam\n\nunix_socket\n\nNotes:\nSome of these plugins will require installation if not already in use. Changing a user to utilize the ed25519 plugin but without providing a password will make the account inaccessible. For service accounts, set a new password in MariaDB and where the service account is used. For human user accounts, set a temporary password and notify the user to change the password immediately.\nIf password validation plugins are already implemented, strict_password_validation may need to be temporarily disabled to reset mysql and mariadb.sys accounts to use invalid passwords. To do so, run set global strict_password_validation=0; before and set global strict_password_validation=1; after the set password commands.\n\nDefault Value:\n\nroot is configured to use the unix_socket plugin but to fallback to the mysql_native_password plugin. root and mysql users are created with an invalid password string, preventing password-based authentication. mariadb.sys is a locked account without a password set. If the account becomes unlocked, authentication without a password can occur. By default, all new users are created using the mysql_native_password plugin and without a password unless otherwise specified. This allows authentication without a password.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv7|16.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT User,host FROM mysql.user WHERE (plugin IN('mysql_native_password', 'mysql_old_password','') AND NOT (User = 'root' AND authentication_string = 'invalid') AND NOT (User = 'mysql' and authentication_string = 'invalid'));"
+    },
+    "custom_item_24": {
+        "description": "simple_password_check",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS where PLUGIN_NAME = 'simple_password_check';",
+        "sql_expect": "simple_password_check"
+    },
+    "custom_item_25": {
+        "description": "cracklib_password_check",
+        "sql_request": "SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS where PLUGIN_NAME = 'cracklib_password_check';",
+        "sql_expect": "cracklib_password_check"
+    },
+    "custom_item_26": {
+        "description": "simple_password_check_minimal_length",
+        "sql_request": "SHOW VARIABLES where VARIABLE_NAME = 'simple_password_check_minimal_length';",
+        "sql_expect": "simple_password_check_minimal_length"
+    },
+    "custom_item_27": {
+        "description": "strict_password_validation",
+        "sql_request": "SHOW VARIABLES where VARIABLE_NAME = 'strict_password_validation';",
+        "sql_expect": "strict_password_validation"
+    },
+    "custom_item_28": {
+        "description": "cracklib_password_check_dictionary",
+        "sql_request": "SHOW VARIABLES where VARIABLE_NAME = 'cracklib_password_check_dictionary';",
+        "sql_expect": "cracklib_password_check_dictionary"
+    },
+    "custom_item_29": {
+        "description": "7.5 Ensure No Users Have Wildcard Hostnames",
+        "info": "MariaDB can make use of host wildcards when granting permissions to users on specific databases. For example, you may grant a given privilege to ''@'%'.\n\nRationale:\n\nAvoiding the use of wildcards within hostnames helps control the specific locations from which a given user may connect to and interact with the database.",
+        "solution": "Perform the following actions to remediate this setting:\n\nEnumerate all users returned after running the audit procedure.\n\nEither ALTER the user's host to be specific or DROP the user.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select user,host from mysql.user where host = '%';"
+    },
+    "custom_item_30": {
+        "description": "7.6 Ensure No Anonymous Accounts Exist",
+        "info": "Anonymous accounts are users with empty usernames (''). Anonymous accounts have no passwords, so anyone can use them to connect to the MariaDB server.\n\nRationale:\n\nRemoving anonymous accounts will help ensure that only identified and trusted principals are capable of interacting with MariaDB.\n\nImpact:\n\nAny applications relying on anonymous database access will be adversely affected by this change.",
+        "solution": "Perform the following actions to remediate this setting:\n\nEnumerate the anonymous users returned from executing the audit procedure.\n\nFor each anonymous user, DROP or assign them a name.\n\nNote: As an alternative, you may execute the mariadb-secure-installation utility.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|16.6,CSCv8|5.1,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT user, host FROM mysql.user WHERE user = '';"
+    },
+    "custom_item_31": {
+        "description": "@@require_secure_transport",
+        "sql_request": "select @@require_secure_transport;",
+        "sql_expect": "(YES|1)"
+    },
+    "custom_item_32": {
+        "description": "have_ssl",
+        "sql_request": "SHOW variables WHERE variable_name = 'have_ssl';",
+        "sql_expect": "have_ssl"
+    },
+    "custom_item_33": {
+        "description": "8.2 Ensure 'ssl_type' is Set to 'ANY', 'X509', or 'SPECIFIED' for All Remote Users",
+        "info": "All network traffic must use SSL/TLS when traveling over untrusted networks.\n\nSSL/TLS should be enforced on a per-user basis for users which enter the system through the network.\n\nRationale:\n\nSSL/TLS helps to prevent eavesdropping and man-in-the-middle attacks.\n\nImpact:\n\nWhen SSL/TLS is enforced then clients which do not use SSL will not be able to connect. If the server is not configured for SSL/TLS then accounts for which SSL/TLS is mandatory will not be able to connect.",
+        "solution": "Use the ALTER USER statement to require the use of SSL/TLS:\n\nALTER USER 'my_user'@'app1.example.com' REQUIRE SSL;\n\nNote: REQUIRE SSL only enforces TLS. There are additional options REQUIRE X509, REQUIRE ISSUER, REQUIRE SUBJECT and REQUIRE CIPHER which can be used to further restrict the connection.\n\nDefault Value:\n\nThe Value of ssl_type defaults to an empty string, the equivalent result of using REQUIRE NONE with an ALTER USER statement.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT user, host, ssl_type FROM mysql.user WHERE NOT HOST IN ('::1', '127.0.0.1', 'localhost');",
+        "sql_expect": ".+"
+    },
+    "custom_item_34": {
+        "description": "global max_connections",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables WHERE VARIABLE_NAME LIKE 'max_%connections';",
+        "sql_expect": "max_(user_)?connections"
+    },
+    "custom_item_35": {
+        "description": "8.3 Set Maximum Connection Limits for Server and per User",
+        "info": "Limiting concurrent connections to a MariaDB server can be used to reduce risk of Denial of Service (DoS) attacks performed by exhausting connection resources.\n\nRationale:\n\nLimiting the number of concurrent sessions at the server and per user level helps to reduce the risk of DoS attacks. MariaDB provides mechanisms to limit the number of simultaneous connections that can be made at the server level or by any given account.",
+        "solution": "To persist changes to global settings, you must set these variables within MariaDB configuration files.\n\nTo set the global default per-user connection limit, set the max_user_connections variable to a numeric value.\n\nTo set the maximum number of clients the server permits to simultaneously connect, set the max_connections variable to a numeric value.\n\nYou may also set these variables dynamically (and only temporarily) for a running instance of MariaDB by connecting as an administrator and utilizing the commands below.\n\nSET GLOBAL max_user_connections=;\nSET GLOBAL max_connections=;\n\nAdditionally, connections limits can be set distinctly for each user using CREATE or ALTER commands.\nFor example:\n\nALTER USER 'fred'@'localhost'\nWITH MAX_CONNECTIONS_PER_HOUR 5\nMAX_USER_CONNECTIONS 2;\n\nDefault Value:\n\nThe default value of max_connections is 151, max_user_connections is 0 (unlimited, thus limited by max_connections). By default, users are created without their own distinct connection limits.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1M,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables WHERE VARIABLE_NAME LIKE 'max_%connections';",
+        "sql_expect": "max_(user_)?connections"
+    },
+    "custom_item_36": {
+        "description": "8.3 Set Maximum Connection Limits for Server and per User",
+        "info": "Limiting concurrent connections to a MariaDB server can be used to reduce risk of Denial of Service (DoS) attacks performed by exhausting connection resources.\n\nRationale:\n\nLimiting the number of concurrent sessions at the server and per user level helps to reduce the risk of DoS attacks. MariaDB provides mechanisms to limit the number of simultaneous connections that can be made at the server level or by any given account.",
+        "solution": "To persist changes to global settings, you must set these variables within MariaDB configuration files.\n\nTo set the global default per-user connection limit, set the max_user_connections variable to a numeric value.\n\nTo set the maximum number of clients the server permits to simultaneously connect, set the max_connections variable to a numeric value.\n\nYou may also set these variables dynamically (and only temporarily) for a running instance of MariaDB by connecting as an administrator and utilizing the commands below.\n\nSET GLOBAL max_user_connections=;\nSET GLOBAL max_connections=;\n\nAdditionally, connections limits can be set distinctly for each user using CREATE or ALTER commands.\nFor example:\n\nALTER USER 'fred'@'localhost'\nWITH MAX_CONNECTIONS_PER_HOUR 5\nMAX_USER_CONNECTIONS 2;\n\nDefault Value:\n\nThe default value of max_connections is 151, max_user_connections is 0 (unlimited, thus limited by max_connections). By default, users are created without their own distinct connection limits.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1M,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select user, host, max_connections, max_user_connections from mysql.user where user not like 'mysql.%' and user not like 'root';",
+        "sql_expect": ".+"
+    },
+    "custom_item_37": {
+        "description": "Check replica status null",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_38": {
+        "description": "9.1 Ensure Replication Traffic is Secured",
+        "info": "The replication traffic between servers should be secured. Security measures should include ensuring the confidentiality and integrity of the traffic and performing mutual authentication between the servers before performing replication.\n\nRationale:\n\nThe replication traffic should be secured as it gives access to all transferred information and might leak passwords.\n\nImpact:\n\nWhen the replication traffic is not secured someone might be able to capture passwords and other sensitive information when sent to the replica.",
+        "solution": "Secure the network traffic using one or more technologies to provide confidentiality and integrity for the traffic and mutual authentication for the servers.\nIf using SSL/TLS, run the following commands on the REPLICA server(s):\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO MASTER_SSL=1;\nSTART REPLICA; -- required if you want to restart replication\n\nNote: The PRIMARY and REPLICA servers must already have SSL/TLS enabled and have each others' CA certificates in their trusted CA certificates files.\nSSL/TLS mutual authentication procedures are provided in subsequent recommendations. For other implementation options, remediate mutual authentication issues as part of this recommendation.\n\nDefault Value:\n\nBy default, replication traffic is not secured with encryption or other protections.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_39": {
+        "description": "9.1 Ensure Replication Traffic is Secured",
+        "info": "The replication traffic between servers should be secured. Security measures should include ensuring the confidentiality and integrity of the traffic and performing mutual authentication between the servers before performing replication.\n\nRationale:\n\nThe replication traffic should be secured as it gives access to all transferred information and might leak passwords.\n\nImpact:\n\nWhen the replication traffic is not secured someone might be able to capture passwords and other sensitive information when sent to the replica.",
+        "solution": "Secure the network traffic using one or more technologies to provide confidentiality and integrity for the traffic and mutual authentication for the servers.\nIf using SSL/TLS, run the following commands on the REPLICA server(s):\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO MASTER_SSL=1;\nSTART REPLICA; -- required if you want to restart replication\n\nNote: The PRIMARY and REPLICA servers must already have SSL/TLS enabled and have each others' CA certificates in their trusted CA certificates files.\nSSL/TLS mutual authentication procedures are provided in subsequent recommendations. For other implementation options, remediate mutual authentication issues as part of this recommendation.\n\nDefault Value:\n\nBy default, replication traffic is not secured with encryption or other protections.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;",
+        "sql_expect": ".*"
+    },
+    "custom_item_40": {
+        "description": "Check replica status null",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_41": {
+        "description": "9.2 Ensure 'MASTER_SSL_VERIFY_SERVER_CERT' is enabled",
+        "info": "On the MariaDB REPLICA, the setting MASTER_SSL_VERIFY_SERVER_CERT indicates whether the REPLICA should perform server certificate verification of the PRIMARY's certificate.\n\nRationale:\n\nWhen establishing TLS connections, clients use certificate verification to authenticate the server as their intended peer in the connection. In this case, the REPLICA (client) should verify the PRIMARY's (server's) certificate to authenticate the PRIMARY prior to continuing the connection.\n\nImpact:\n\nWhen using CHANGE MASTER TO, be aware of the following:\n\nREPLICA processes need to be stopped by running STOP REPLICA prior to executing CHANGE MASTER TO\n\nUse of CHANGE MASTER TO starts new relay logs without keeping the old ones unless explicitly told to keep them\n\nWhen CHANGE MASTER TO is invoked, some information is dumped to the error log (previous values for MASTER_HOST, MASTER_PORT, MASTER_LOG_FILE, and MASTER_LOG_POS)\n\nInvoking CHANGE MASTER TO will implicitly commit any ongoing transactions in the session where the CHANGE MASTER TO was run, but not all ongoing transactions on the database.",
+        "solution": "To remediate this setting, you must use the CHANGE MASTER TO command.\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO MASTER_SSL_VERIFY_SERVER_CERT=1;\nSTART REPLICA; -- required if you want to restart replication\n\nDefault Value:\n\nDisabled.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|13.9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_42": {
+        "description": "9.2 Ensure 'MASTER_SSL_VERIFY_SERVER_CERT' is enabled",
+        "info": "On the MariaDB REPLICA, the setting MASTER_SSL_VERIFY_SERVER_CERT indicates whether the REPLICA should perform server certificate verification of the PRIMARY's certificate.\n\nRationale:\n\nWhen establishing TLS connections, clients use certificate verification to authenticate the server as their intended peer in the connection. In this case, the REPLICA (client) should verify the PRIMARY's (server's) certificate to authenticate the PRIMARY prior to continuing the connection.\n\nImpact:\n\nWhen using CHANGE MASTER TO, be aware of the following:\n\nREPLICA processes need to be stopped by running STOP REPLICA prior to executing CHANGE MASTER TO\n\nUse of CHANGE MASTER TO starts new relay logs without keeping the old ones unless explicitly told to keep them\n\nWhen CHANGE MASTER TO is invoked, some information is dumped to the error log (previous values for MASTER_HOST, MASTER_PORT, MASTER_LOG_FILE, and MASTER_LOG_POS)\n\nInvoking CHANGE MASTER TO will implicitly commit any ongoing transactions in the session where the CHANGE MASTER TO was run, but not all ongoing transactions on the database.",
+        "solution": "To remediate this setting, you must use the CHANGE MASTER TO command.\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO MASTER_SSL_VERIFY_SERVER_CERT=1;\nSTART REPLICA; -- required if you want to restart replication\n\nDefault Value:\n\nDisabled.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|13.9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;",
+        "sql_expect": ".*"
+    },
+    "custom_item_43": {
+        "description": "Check replica status null",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_44": {
+        "description": "9.3 Ensure 'super_priv' is Not Set to 'Y' for Replication Users",
+        "info": "The SUPER privilege found in the mysql.user table governs the use of a variety of MariaDB features. These features include, CHANGE MASTER TO, KILL, mysqladmin kill option, PURGE BINARY LOGS, SET GLOBAL, mysqladmin debug option, logging control, and more.\n\nRationale:\n\nThe SUPER privilege allows principals to perform many actions, including view and terminate currently executing MariaDB statements (including statements used to manage passwords). This privilege also provides the ability to configure MariaDB, such as enable/disable logging, alter data, disable/enable features. Limiting the accounts that have the SUPER privilege reduces the chances that an attacker can exploit these capabilities.\n\nImpact:\n\nWhen the SUPER privilege is denied to a given user, that user will be unable to take advantage of certain capabilities, such as certain mysqladmin options.",
+        "solution": "Execute the following steps to remediate this setting:\n\nEnumerate the replication users found in the result set of the audit procedure\n\nFor each replication user, issue the following SQL statement (replace repl with your replication user's name):\n\nREVOKE SUPER ON *.* FROM 'repl';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.7,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_45": {
+        "description": "9.3 Ensure 'super_priv' is Not Set to 'Y' for Replication Users",
+        "info": "The SUPER privilege found in the mysql.user table governs the use of a variety of MariaDB features. These features include, CHANGE MASTER TO, KILL, mysqladmin kill option, PURGE BINARY LOGS, SET GLOBAL, mysqladmin debug option, logging control, and more.\n\nRationale:\n\nThe SUPER privilege allows principals to perform many actions, including view and terminate currently executing MariaDB statements (including statements used to manage passwords). This privilege also provides the ability to configure MariaDB, such as enable/disable logging, alter data, disable/enable features. Limiting the accounts that have the SUPER privilege reduces the chances that an attacker can exploit these capabilities.\n\nImpact:\n\nWhen the SUPER privilege is denied to a given user, that user will be unable to take advantage of certain capabilities, such as certain mysqladmin options.",
+        "solution": "Execute the following steps to remediate this setting:\n\nEnumerate the replication users found in the result set of the audit procedure\n\nFor each replication user, issue the following SQL statement (replace repl with your replication user's name):\n\nREVOKE SUPER ON *.* FROM 'repl';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.7,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select user, host from mysql.user where user='@REPLICATION_USER@' and Super_priv = 'Y';"
+    },
+    "custom_item_46": {
+        "description": "show replica status",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_47": {
+        "description": "9.5 Ensure mutual TLS is enabled",
+        "info": "Mutual TLS (a.k.a. Two-Way TLS) enhances TLS by requiring that both parties authenticate each other when establishing a connection. Mutual TLS adds a requirement (over TLS) that the client provide its certificate so the server can authenticate the client.\n\nRationale:\n\nBy requiring the client to authenticate to the server (in this case, the REPLICA to authenticate to the PRIMARY), the server (PRIMARY) prevents unauthorized clients (REPLICAs) from performing replication.\n\nImpact:\n\nThe REPLICA will need to have TLS enabled to support mutual TLS.",
+        "solution": "To remediate this setting, you must run the CHANGE MASTER TO command on the REPLICA with MASTER_SSL_CERT and MASTER_SSL_KEY set to the paths for the REPLICA's certificate and private key files.\nFor example, run:\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO\n   MASTER_SSL_CERT='/etc/mysql/mariadb.conf.d/certificates/server-cert.pem',\n   MASTER_SSL_KEY='/etc/mysql/mariadb.conf.d/certificates/server-key.pem';\nSTART REPLICA; -- required if you want to restart replication\n\nIf the PRIMARY does not require your replication users to provide X.509 certificates, use the ALTER USER command with REQUIRE X509 (and/or optionally REQUIRE SUBJECT and/or REQUIRE ISSUER) for the user accounts needing remediation.\nFor example, run:\n\nALTER USERREQUIRE X509;\n\nDefault Value:\n\nDisabled.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|1.7,CSCv8|13.9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_48": {
+        "description": "Select ssl_type from Replication User",
+        "sql_request": "select ssl_type from mysql.user where user='@REPLICATION_USER@';",
+        "sql_expect": "X509"
+    }
+}

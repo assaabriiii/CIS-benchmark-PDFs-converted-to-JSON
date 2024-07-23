@@ -1,0 +1,167 @@
+{
+    "custom_item_1": {
+        "description": "RHEV: Product Info",
+        "info": "Review product information to verify the version in operation is still supported by the vendor.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getAPI",
+        "json_transform": "\"Name : \\(.product_info.name)\", \"Version: \\(.product_info.version.full_version)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_2": {
+        "description": "RHEV: Clusters",
+        "info": "Review the list of clusters to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getClusters",
+        "json_transform": ".[] | .[] | \"Name : \\(.name), Version: \\(.version.major).\\(.version.minor), Description: \\(.description)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_3": {
+        "description": "RHEV: Clusters Memory Balooning",
+        "info": "From https://www.ovirt.org/documentation/administration_guide/index.html:\n\nMemory Ballooning\nVirtual machines start with the full amount of virtual memory you have assigned to them. As virtual memory usage exceeds RAM, the host relies more on swap space. If enabled, memory ballooning lets virtual machines give up the unused portion of that memory. The freed memory can be reused by other processes and virtual machines on the host. The reduced memory footprint makes swapping less likely and improves performance.",
+        "solution": "To enable memory ballooning, click the Optimization tab in the New Cluster or Edit Cluster windows. Then select the Enable Memory Balloon Optimization checkbox. This setting enables memory overcommitment on virtual machines running on the hosts in this cluster. When this check box is selected, the MoM starts ballooning where and when possible, with a limitation of the guaranteed memory size of every virtual machine.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getClusters",
+        "json_transform": ".[] | .[] | \"Name : \\(.name), Ballooning Enabled: \\(.ballooning_enabled)\"",
+        "expect": "Ballooning Enabled: true"
+    },
+    "custom_item_4": {
+        "description": "RHEV: Datacenters",
+        "info": "Review the list of datacenters to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getDatacenters",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Description: \\(.description), Status: \\(.status)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_5": {
+        "description": "RHEV: Hosts",
+        "info": "Review the list of hosts to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getHosts",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Address: \\(.address), Status: \\(.status), Port: \\(.port)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_6": {
+        "description": "RHEV: Hosts - Update required",
+        "info": "Review the list of hosts to monitor for updates.",
+        "solution": "To update hosts, click Compute > Hosts > Review list of hosts needing an update",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getHosts",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Update Available: \\(.update_available)\"",
+        "expect": "Update Available: false"
+    },
+    "custom_item_7": {
+        "description": "RHEV: Roles",
+        "info": "Review the list of roles to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getRoles",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Description: \\(.description), Mutable: \\(.mutable), Administrative: \\(.administrative)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_8": {
+        "description": "RHEV: Administrative Roles",
+        "info": "Review the list of administrative roles to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getRoles",
+        "json_transform": ".[] | .[] | select(.administrative==\"true\") | \"Name: \\(.name), Description: \\(.description), Mutable: \\(.mutable), Administrative: \\(.administrative)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_9": {
+        "description": "RHEV: Storage Domains",
+        "info": "Review the list of storage domains to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getStorageDomains",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Description: \\(.description), Status: \\(.status), Master: \\(.master), Address: \\(.address)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_10": {
+        "description": "RHEV: Storage Domains - Backup storage",
+        "info": "Specify a storage domain for backup purposes.\n\n  From https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/administration_guide/sect-backing_up_and_restoring_virtual_machines_using_a_backup_domain:\n\n  A backup storage domain is one that you can use specifically for storing and migrating virtual machines and virtual machine templates for the purpose of backing up and restoring for disaster recovery, migration, or any other backup/restore usage model. A backup domain differs from a non-backup domain in that all virtual machines on a backup domain are in a powered-down state. A virtual machine cannot run on a backup domain.",
+        "solution": "To specify a backup storage domain, click Storage > Domains > Manage Domain > Advanced Parameters > Check 'Backup' box",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getStorageDomains",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Backup: \\(.backup)\"",
+        "expect": "Backup: true"
+    },
+    "custom_item_11": {
+        "description": "RHEV: Users",
+        "info": "Review the list of users to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getUsers",
+        "json_transform": ".[] | .[] | \"User Name: \\(.user_name), Name: \\(.name), Principal: \\(.admin)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_12": {
+        "description": "RHEV: Review Events with severity >= Error",
+        "info": "Review the list of events to monitor for errors.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getEvents",
+        "json_transform": ".[] | .[] | select(.severity==\"error\") | \"Time: \\(.time), Description: \\(.description)\"",
+        "not_expect": "Time:"
+    },
+    "custom_item_13": {
+        "description": "RHEV: Groups",
+        "info": "Review the list of groups to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getGroups",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Namespace: \\(.namespace)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_14": {
+        "description": "RHEV: Domains",
+        "info": "Review the list of domains to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getDomains",
+        "json_transform": ".[] | .[] | \"Name: \\(.name)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_15": {
+        "description": "RHEV: All VMs",
+        "info": "Review the list of virtual machines to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getVMs",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Description: \\(.description), Status: \\(.status)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_16": {
+        "description": "RHEV: Running VMs",
+        "info": "Review the list of active running machines to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getVMs",
+        "json_transform": ".[] | .[] | select(.status==\"up\") | \"Name: \\(.name), Description: \\(.description), Status: \\(.status)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_17": {
+        "description": "RHEV: Stopped VMs",
+        "info": "Review the list of stopped virtual machines to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getVMs",
+        "json_transform": ".[] | .[] | select(.status==\"down\") | \"Name: \\(.name), Description: \\(.description), Status: \\(.status)\"",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_18": {
+        "description": "RHEV: VMs copy/paste feature",
+        "info": "Disable the copy/paste feature",
+        "solution": "To disable the copy paste feature, click Compute > Virtual Machines > Choose VM > Edit > Show Advanced Options > Console > Uncheck 'Enable SPICE clipboard copy and paste'",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getVMs",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Copy Paste Enabled: \\(.display.copy_paste_enabled)\"",
+        "expect": "Copy Paste Enabled: false"
+    },
+    "custom_item_19": {
+        "description": "RHEV: VMs file transfer feature",
+        "info": "Disable the file transfer feature",
+        "solution": "To disable the copy paste feature, click Compute > Virtual Machines > Choose VM > Edit > Show Advanced Options > Console > Uncheck 'Enable SPICE clipboard copy and paste'",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getVMs",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), File Transfer Enabled: \\(.display.file_transfer_enabled)\"",
+        "expect": "File Transfer Enabled: false"
+    },
+    "custom_item_20": {
+        "description": "RHEV: Disks",
+        "info": "Review the list of disks to monitor for changes.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "see_also": "https://access.redhat.com/documentation/en-us/red_hat_virtualization/4.3/html/rest_api_guide/index",
+        "request": "getDisks",
+        "json_transform": ".[] | .[] | \"Name: \\(.name), Description: \\(.description), Status: \\(.status)\"",
+        "expect": "Manual Review Required"
+    }
+}

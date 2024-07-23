@@ -1,0 +1,893 @@
+{
+    "custom_item_1": {
+        "system": "Linux",
+        "description": "6.2.5 Ensure root is the only UID 0 account",
+        "info": "Any account with UID 0 has superuser privileges on the system.\n\nRationale:\n\nThis access must be limited to only the default root account and only from the system console. Administrative access must be through an unprivileged account using an approved mechanism as noted in Item 5.6 Ensure access to the su command is restricted.",
+        "solution": "Remove any users other than root with UID 0 or assign them a new UID if appropriate.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "name": "passwd_zero_uid"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "6.2.16 Ensure no duplicate UIDs exist",
+        "info": "Although the useradd program will not let you create a duplicate User ID (UID), it is possible for an administrator to manually edit the /etc/passwd file and change the UID field.\n\nRationale:\n\nUsers must be assigned unique UIDs for accountability and to ensure appropriate access protections.",
+        "solution": "Based on the results of the audit script, establish unique UIDs and review all files owned by the shared UIDs to determine which UID they are supposed to belong to.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1A,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "name": "passwd_duplicate_uid"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "6.2.17 Ensure no duplicate GIDs exist",
+        "info": "Although the groupadd program will not let you create a duplicate Group ID (GID), it is possible for an administrator to manually edit the /etc/group file and change the GID field.\n\nRationale:\n\nUser groups must be assigned unique GIDs for accountability and to ensure appropriate access protections.",
+        "solution": "Based on the results of the audit script, establish unique GIDs and review all files owned by the shared GID to determine which group they are supposed to belong to.\n\nAdditional Information:\n\nYou can also use the grpck command to check for other inconsistencies in the /etc/group file.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1A,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "name": "group_duplicate_gid"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "6.2.18 Ensure no duplicate user names exist",
+        "info": "Although the useradd program will not let you create a duplicate user name, it is possible for an administrator to manually edit the /etc/passwd file and change the user name.\n\nRationale:\n\nIf a user is assigned a duplicate user name, it will create and have access to files with the first UID for that username in /etc/passwd . For example, if 'test4' has a UID of 1000 and a subsequent 'test4' entry has a UID of 2000, logging in as 'test4' will use UID 1000. Effectively, the UID is shared, which is a security problem.",
+        "solution": "Based on the results of the audit script, establish unique user names for the users. File ownerships will automatically reflect the change as long as the users have unique UIDs.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1A,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "name": "passwd_duplicate_username"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "6.2.19 Ensure no duplicate group names exist",
+        "info": "Although the groupadd program will not let you create a duplicate group name, it is possible for an administrator to manually edit the /etc/group file and change the group name.\n\nRationale:\n\nIf a group is assigned a duplicate group name, it will create and have access to files with the first GID for that group in /etc/group . Effectively, the GID is shared, which is a security problem.",
+        "solution": "Based on the results of the audit script, establish unique names for the user groups. File group ownerships will automatically reflect the change as long as the groups have unique GIDs.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1A,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "name": "group_duplicate_name"
+    },
+    "custom_item_6": {
+        "description": "Google Container-Optimized found",
+        "file": "/etc/os-release",
+        "regex": "PRETTY_NAME=\"Container-Optimized OS from Google\"",
+        "expect": "PRETTY_NAME=\"Container-Optimized OS from Google\""
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "1.1.2 Ensure /tmp is configured - mount check",
+        "info": "The /tmp directory is a world-writable directory used for temporary storage by all users and some applications.\n\nRationale:\n\nMaking /tmp its own file system allows an administrator to set the noexec option on the mount, making /tmp useless for an attacker to install executable code. It would also prevent an attacker from establishing a hardlink to a system setuid program and wait for it to be updated. Once the program was updated, the hardlink would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.\n\nThis can be accomplished by either mounting tmpfs to /tmp, or creating a separate partition for /tmp.\n\nImpact:\n\nSince the /tmp directory is intended to be world-writable, there is a risk of resource exhaustion if it is not bound to a separate partition.\n\nRunning out of /tmp space is a problem regardless of what kind of filesystem lies under it, but in a default installation a disk-based /tmp will essentially have the whole disk available, as it only creates a single / partition. On the other hand, a RAM-based /tmp as with tmpfs will almost certainly be much smaller, which can lead to applications filling up the filesystem much more easily.\n\n/tmp utilizing tmpfs can be resized using the size={size} parameter on the Options line on the tmp.mount file",
+        "solution": "Run the following commands to configure mount options\n\nsystemctl edit tmp.mount\n\nEdit the file to define the options that needs to be set. For example:\n\n[Mount]\nOptions=\nOptions=mode=1777,strictatime,noexec,nodev,nosuid\n\nRestart the tmp.mount\n\nsystemctl daemon-reload # might be optional\nsystemctl restart tmp.mount\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep /tmp",
+        "expect": ".*on[\\\\s]+/tmp[\\\\s]+type.*"
+    },
+    "custom_item_8": {
+        "description": "Determine whether systemd or legacy fstab",
+        "cmd": "/usr/bin/systemctl is-enabled tmp.mount",
+        "expect": "enabled"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "1.1.2 Ensure /tmp is configured - config check",
+        "info": "The /tmp directory is a world-writable directory used for temporary storage by all users and some applications.\n\nRationale:\n\nMaking /tmp its own file system allows an administrator to set the noexec option on the mount, making /tmp useless for an attacker to install executable code. It would also prevent an attacker from establishing a hardlink to a system setuid program and wait for it to be updated. Once the program was updated, the hardlink would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.\n\nThis can be accomplished by either mounting tmpfs to /tmp, or creating a separate partition for /tmp.\n\nImpact:\n\nSince the /tmp directory is intended to be world-writable, there is a risk of resource exhaustion if it is not bound to a separate partition.\n\nRunning out of /tmp space is a problem regardless of what kind of filesystem lies under it, but in a default installation a disk-based /tmp will essentially have the whole disk available, as it only creates a single / partition. On the other hand, a RAM-based /tmp as with tmpfs will almost certainly be much smaller, which can lead to applications filling up the filesystem much more easily.\n\n/tmp utilizing tmpfs can be resized using the size={size} parameter on the Options line on the tmp.mount file",
+        "solution": "Run the following commands to configure mount options\n\nsystemctl edit tmp.mount\n\nEdit the file to define the options that needs to be set. For example:\n\n[Mount]\nOptions=\nOptions=mode=1777,strictatime,noexec,nodev,nosuid\n\nRestart the tmp.mount\n\nsystemctl daemon-reload # might be optional\nsystemctl restart tmp.mount\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/systemctl is-enabled tmp.mount",
+        "expect": "enabled"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "1.1.2 Ensure /tmp is configured - config check",
+        "info": "The /tmp directory is a world-writable directory used for temporary storage by all users and some applications.\n\nRationale:\n\nMaking /tmp its own file system allows an administrator to set the noexec option on the mount, making /tmp useless for an attacker to install executable code. It would also prevent an attacker from establishing a hardlink to a system setuid program and wait for it to be updated. Once the program was updated, the hardlink would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.\n\nThis can be accomplished by either mounting tmpfs to /tmp, or creating a separate partition for /tmp.\n\nImpact:\n\nSince the /tmp directory is intended to be world-writable, there is a risk of resource exhaustion if it is not bound to a separate partition.\n\nRunning out of /tmp space is a problem regardless of what kind of filesystem lies under it, but in a default installation a disk-based /tmp will essentially have the whole disk available, as it only creates a single / partition. On the other hand, a RAM-based /tmp as with tmpfs will almost certainly be much smaller, which can lead to applications filling up the filesystem much more easily.\n\n/tmp utilizing tmpfs can be resized using the size={size} parameter on the Options line on the tmp.mount file",
+        "solution": "Run the following commands to configure mount options\n\nsystemctl edit tmp.mount\n\nEdit the file to define the options that needs to be set. For example:\n\n[Mount]\nOptions=\nOptions=mode=1777,strictatime,noexec,nodev,nosuid\n\nRestart the tmp.mount\n\nsystemctl daemon-reload # might be optional\nsystemctl restart tmp.mount\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /tmp '",
+        "expect": ".* on /tmp type .*"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "1.1.3 Ensure nodev option set on /tmp partition",
+        "info": "The nodev mount option specifies that the filesystem cannot contain special devices.\n\nRationale:\n\nSince the /tmp filesystem is not intended to support devices, set this option to ensure that users cannot attempt to create block or character special devices in /tmp .",
+        "solution": "Run the following command to remount /tmp :\n\n# mount -o remount,nodev /tmp\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /tmp ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?nodev|not mounted)"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "1.1.4 Ensure nosuid option set on /tmp partition",
+        "info": "The nosuid mount option specifies that the filesystem cannot contain setuid files.\n\nRationale:\n\nSince the /tmp filesystem is only intended for temporary file storage, set this option to ensure that users cannot create setuid files in /tmp .",
+        "solution": "Run the following command to remount /tmp :\n\n# mount -o remount,nosuid /tmp\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /tmp ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?nosuid|not mounted)"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "1.1.5 Ensure noexec option set on /tmp partition",
+        "info": "The noexec mount option specifies that the filesystem cannot contain executable binaries.\n\nRationale:\n\nSince the /tmp filesystem is only intended for temporary file storage, set this option to ensure that users cannot run executable binaries from /tmp .",
+        "solution": "Run the following command to remount /tmp :\n\n# mount -o remount,noexec /tmp\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /tmp ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?noexec|not mounted)"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "1.1.9 Ensure nodev option set on /home partition",
+        "info": "The nodev mount option specifies that the filesystem cannot contain special devices.\n\nRationale:\n\nSince the user partitions are not intended to support devices, set this option to ensure that users cannot attempt to create block or character special devices.",
+        "solution": "Run the following command to remount /var :\n\n# mount -o remount,nodev /home\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.\n\nAdditional Information:\n\nThe actions in this recommendation refer to the /home partition, which is the default user partition that is defined in many distributions. If you have created other user partitions, it is recommended that the Remediation and Audit steps be applied to these partitions as well.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /home ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?nodev|not mounted)"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "1.1.10 Ensure nodev option set on /dev/shm partition",
+        "info": "The nodev mount option specifies that the filesystem cannot contain special devices.\n\nRationale:\n\nSince the /dev/shm filesystem is not intended to support devices, set this option to ensure that users cannot attempt to create special devices in /dev/shm partitions.",
+        "solution": "Run the following command to remount /dev/shm :\n\n# mount -o remount,nodev /dev/shm\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /dev/shm ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?nodev|not mounted)"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "1.1.11 Ensure nosuid option set on /dev/shm partition",
+        "info": "The nosuid mount option specifies that the filesystem cannot contain setuid files.\n\nRationale:\n\nSetting this option on a file system prevents users from introducing privileged programs onto the system and allowing non-root users to execute them.",
+        "solution": "Run the following command to remount /dev/shm :\n\n# mount -o remount,nosuid /dev/shm\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /dev/shm ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?nosuid|not mounted)"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "1.1.12 Ensure noexec option set on /dev/shm partition",
+        "info": "The noexec mount option specifies that the filesystem cannot contain executable binaries.\n\nRationale:\n\nSetting this option on a file system prevents users from executing programs from shared memory. This deters users from introducing potentially malicious software on the system.",
+        "solution": "Run the following command to remount /dev/shm:\n\n# mount -o remount,noexec /dev/shm\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/mount | /bin/grep 'on /dev/shm ' | /usr/bin/awk '{print} END {if (NR == 0) print \"not mounted\"}'",
+        "expect": "([\\\\s]*[,]?noexec|not mounted)"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "1.1.13 Disable Automounting",
+        "info": "autofs allows automatic mounting of devices, typically including CD/DVDs and USB drives.\n\nRationale:\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in system even if they lacked permissions to mount it themselves.\n\nImpact:\n\nThe use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations is considered adequate there is little value add in turning off automounting.",
+        "solution": "Run the following command to disable autofs:\n\n# systemctl disable autofs\n\nAdditional Information:\n\nAdditional methods of disabling a service exist. Consult your distribution documentation for appropriate methods.\n\nThis control should align with the tolerance of the use of portable drives and optical media in the organization. On a server requiring an admin to manually mount media can be part of defense-in-depth to reduce the risk of unapproved software or information being introduced or proprietary software or information being exfiltrated. If admins commonly use flash drives and Server access has sufficient physical controls, requiring manual mounting may not increase security.",
+        "reference": "800-171|3.8.7,800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|MP-7,800-53|SI-3,800-53r5|MP-7,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CN-L3|8.5.4.1(c),CSCv7|8.4,CSCv7|8.5,CSCv8|10.3,CSCv8|10.4,CSF|DE.CM-4,CSF|DE.DP-3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1A,NESA|T1.4.1,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/systemctl is-enabled autofs | /usr/bin/awk '{print} END {if(NR==0) print \"disabled\" }'",
+        "expect": "(disabled|masked|static)"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "1.2.1 Ensure dm-verity is enabled",
+        "info": "device-mapper-verity (dm-verity) kernel feature feature provides transparent integrity checking of block devices using a cryptographic digest provided by the kernel crypto API. When a dm-verity device is configured, it is expected that the caller has been authenticated in some way (cryptographic signatures, etc). After instantiation, all hashes will be verified on-demand during disk access. If they cannot be verified up to the root node of the tree, the root hash, then the I/O will fail. This should detect tampering with any data on the device and the hash data.\n\nRationale:\n\nThe Container-Optimized OS root filesystem is always mounted as read-only. Additionally, its checksum is computed at build time and verified by the kernel on each boot. This mechanism prevents against attackers from 'owning' the machine through permanent local changes.",
+        "solution": "An OS image update that has the dm-verity enabled kernel is required.",
+        "reference": "800-171|3.1.7,800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AC-6(9),800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AC-6(9),800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.2(d),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CN-L3|8.1.10.6(a),CSCv7|14.9,CSCv8|3.14,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.3,ITSG-33|AC-6,ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM23f,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,SWIFT-CSCv1|6.4,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/zcat /proc/config.gz | /bin/grep CONFIG_DM_VERITY=y | /usr/bin/awk '{print} END {if (NR!=0) print \"enabled\" ; else print \"CONFIG_DM_VERITY not configured\" }'",
+        "expect": "^enabled$"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "1.3.1 Ensure authentication required for single user mode - rescue.service",
+        "info": "Single user mode (rescue mode) is used for recovery when the system detects an issue during boot or by manual selection from the bootloader.\n\nRationale:\n\nRequiring authentication in single user mode (rescue mode) prevents an unauthorized user from rebooting the system into single user to gain root privileges without credentials.",
+        "solution": "Rootfs is read-only file system. Therefore, update to an OS image which requires single user mode authentication.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.5.2,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|IA-5,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|IA-5,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSCv8|4.7,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|IA-5,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.2.3,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/usr/lib/systemd/system/rescue.service",
+        "regex": "^ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue",
+        "expect": "^ExecStart=-/usr/lib/systemd/systemd-sulogin-shell rescue"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "1.3.1 Ensure authentication required for single user mode - emergency.service",
+        "info": "Single user mode (rescue mode) is used for recovery when the system detects an issue during boot or by manual selection from the bootloader.\n\nRationale:\n\nRequiring authentication in single user mode (rescue mode) prevents an unauthorized user from rebooting the system into single user to gain root privileges without credentials.",
+        "solution": "Rootfs is read-only file system. Therefore, update to an OS image which requires single user mode authentication.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.5.2,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|IA-5,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|IA-5,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSCv8|4.7,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|IA-5,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.2.3,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/usr/lib/systemd/system/emergency.service",
+        "regex": "^ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency",
+        "expect": "^ExecStart=-/usr/lib/systemd/systemd-sulogin-shell emergency"
+    },
+    "custom_item_22": {
+        "description": "Check if journalctl",
+        "file": "/bin/journalctl"
+    },
+    "custom_item_23": {
+        "system": "Linux",
+        "description": "1.4.2 Ensure XD/NX support is enabled",
+        "info": "The NX bit (no-execute) is a technology used in CPUs to segregate areas of memory for use by either storage of processor instructions or for storage of data. An operating system with support for the NX bit may mark certain areas of memory as non-executable. The processor will then refuse to execute any code residing in these areas of memory. This ability can help prevent exploitation of buffer overflow vulnerabilities and should be activated whenever possible.\n\nRecent processors in the x86 family support the ability to prevent code execution on a per memory page basis. On AMD processors, this ability is called No Execute (NX), on Intel processors it is called Execute Disable (XD) and on ARM processors it is called Execute Never (XN). Extra steps must be taken to ensure that this protection is enabled, particularly on 32-bit x86 systems. Other processors, such as Itanium and POWER, have included such support since inception and the standard kernel for those platforms supports the feature. Starting from ARMv6, the XN bit is supported by default and the kernel cannot disable it. For this reason, this recommend is not applicable for Container-Optimized OS ARM images.\n\nRationale:\n\nEnabling any feature that can protect against buffer overflow attacks enhances the security of the system.",
+        "solution": "On 32 bit systems install a kernel with PAE support, no installation is required on 64 bit systems:\nIf necessary configure your bootloader to load the new kernel and reboot the system.\nYou may need to enable NX or XD support in your bios.\n\nAdditional Information:\n\nEnsure your system supports the XD or NX bit and has PAE support before implementing this recommendation as this may prevent it from booting if these are not supported by your hardware.",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/journalctl | /bin/grep \\'NX (Execute\\' 2>&1",
+        "expect": "NX[\\\\s]+\\\\(Execute[\\\\s]+Disable\\\\)[\\\\s]+protection:[\\\\s]+active"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "1.4.2 Ensure XD/NX support is enabled",
+        "info": "The NX bit (no-execute) is a technology used in CPUs to segregate areas of memory for use by either storage of processor instructions or for storage of data. An operating system with support for the NX bit may mark certain areas of memory as non-executable. The processor will then refuse to execute any code residing in these areas of memory. This ability can help prevent exploitation of buffer overflow vulnerabilities and should be activated whenever possible.\n\nRecent processors in the x86 family support the ability to prevent code execution on a per memory page basis. On AMD processors, this ability is called No Execute (NX), on Intel processors it is called Execute Disable (XD) and on ARM processors it is called Execute Never (XN). Extra steps must be taken to ensure that this protection is enabled, particularly on 32-bit x86 systems. Other processors, such as Itanium and POWER, have included such support since inception and the standard kernel for those platforms supports the feature. Starting from ARMv6, the XN bit is supported by default and the kernel cannot disable it. For this reason, this recommend is not applicable for Container-Optimized OS ARM images.\n\nRationale:\n\nEnabling any feature that can protect against buffer overflow attacks enhances the security of the system.",
+        "solution": "On 32 bit systems install a kernel with PAE support, no installation is required on 64 bit systems:\nIf necessary configure your bootloader to load the new kernel and reboot the system.\nYou may need to enable NX or XD support in your bios.\n\nAdditional Information:\n\nEnsure your system supports the XD or NX bit and has PAE support before implementing this recommendation as this may prevent it from booting if these are not supported by your hardware.",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/echo -n \"$(grep noexec[0-9]*=off /proc/cmdline; grep -E -i ' (pae|nx) ' /proc/cpuinfo; grep '\\sNX\\s.*\\sprotection:\\s' /var/log/dmesg | /bin/grep -v active)\" | /usr/bin/awk '{print} END {if (NR != 0) print \"NX Protection is not active\" ; else print \"NX Protection is not supported\"}'",
+        "expect": "NX Protection is not supported"
+    },
+    "custom_item_25": {
+        "system": "Linux",
+        "description": "1.4.3 Ensure address space layout randomization (ASLR) is enabled - sysctl",
+        "info": "Address space layout randomization (ASLR) is an exploit mitigation technique which randomly arranges the address space of key data areas of a process.\n\nRationale:\n\nRandomly placing virtual memory regions will make it difficult to write memory page exploits as the memory placement will be consistently shifting.",
+        "solution": "Set the following parameter in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nkernel.randomize_va_space = 2\n\nRun the following command to set the active kernel parameter:\n\n# sysctl -w kernel.randomize_va_space=2",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sysctl kernel.randomize_va_space",
+        "expect": "^[\\\\s]*kernel\\\\.randomize_va_space[\\\\s]*=[\\\\s]*2[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "system": "Linux",
+        "description": "1.4.3 Ensure address space layout randomization (ASLR) is enabled - sysctl.conf sysctl.d",
+        "info": "Address space layout randomization (ASLR) is an exploit mitigation technique which randomly arranges the address space of key data areas of a process.\n\nRationale:\n\nRandomly placing virtual memory regions will make it difficult to write memory page exploits as the memory placement will be consistently shifting.",
+        "solution": "Set the following parameter in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nkernel.randomize_va_space = 2\n\nRun the following command to set the active kernel parameter:\n\n# sysctl -w kernel.randomize_va_space=2",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*kernel\\\\.randomize_va_space[\\\\s]*=[\\\\s]*2[\\\\s]*' /etc/sysctl.conf /etc/sysctl.d/* | /usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_27": {
+        "system": "Linux",
+        "description": "1.5.1.2 Ensure local login warning banner is configured properly - banner text",
+        "info": "The contents of the /etc/issue file are displayed to users prior to login for local terminals.\n\nUnix-based systems have typically displayed information about the OS release and patch level upon logging in to the system. This information can be useful to developers who are developing software for a particular OS platform. If mingetty(8) supports the following options, they display operating system information: \\m - machine architecture \\r - operating system release \\s - operating system name \\v - operating system version - or the operating system's name\n\nRationale:\n\nWarning messages inform users who are attempting to login to the system of their legal status regarding the system and must include the name of the organization that owns the system and any monitoring policies that are in place. Displaying OS and patch level information in login banners also has the side effect of providing detailed system information to attackers attempting to target specific exploits of a system. Authorized users can easily get this information by running the ' uname -a ' command once they have logged in.",
+        "solution": "Edit the /etc/issue file with the appropriate contents according to your site policy, remove any instances of \\m , \\r , \\s , \\v or references to the OS platform\n\n# echo 'Authorized uses only. All activity may be monitored and reported.' > /etc/issue\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/issue",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_28": {
+        "system": "Linux",
+        "description": "1.5.1.2 Ensure local login warning banner is configured properly - platform flags",
+        "info": "The contents of the /etc/issue file are displayed to users prior to login for local terminals.\n\nUnix-based systems have typically displayed information about the OS release and patch level upon logging in to the system. This information can be useful to developers who are developing software for a particular OS platform. If mingetty(8) supports the following options, they display operating system information: \\m - machine architecture \\r - operating system release \\s - operating system name \\v - operating system version - or the operating system's name\n\nRationale:\n\nWarning messages inform users who are attempting to login to the system of their legal status regarding the system and must include the name of the organization that owns the system and any monitoring policies that are in place. Displaying OS and patch level information in login banners also has the side effect of providing detailed system information to attackers attempting to target specific exploits of a system. Authorized users can easily get this information by running the ' uname -a ' command once they have logged in.",
+        "solution": "Edit the /etc/issue file with the appropriate contents according to your site policy, remove any instances of \\m , \\r , \\s , \\v or references to the OS platform\n\n# echo 'Authorized uses only. All activity may be monitored and reported.' > /etc/issue\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/issue",
+        "regex": "\\\\\\\\[mrsv]",
+        "expect": "\\\\\\\\[mrsv]"
+    },
+    "custom_item_29": {
+        "system": "Linux",
+        "description": "1.5.1.3 Ensure remote login warning banner is configured properly - banner text",
+        "info": "The contents of the /etc/issue.net file are displayed to users prior to login for remote connections from configured services.\n\nUnix-based systems have typically displayed information about the OS release and patch level upon logging in to the system. This information can be useful to developers who are developing software for a particular OS platform. If mingetty(8) supports the following options, they display operating system information: \\m - machine architecture \\r - operating system release \\s - operating system name \\v - operating system version\n\nRationale:\n\nWarning messages inform users who are attempting to login to the system of their legal status regarding the system and must include the name of the organization that owns the system and any monitoring policies that are in place. Displaying OS and patch level information in login banners also has the side effect of providing detailed system information to attackers attempting to target specific exploits of a system. Authorized users can easily get this information by running the ' uname -a ' command once they have logged in.",
+        "solution": "Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \\m , \\r , \\s , \\v or references to the OS platform\n\n# echo 'Authorized uses only. All activity may be monitored and reported.' > /etc/issue.net\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/issue.net",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_30": {
+        "system": "Linux",
+        "description": "1.5.1.3 Ensure remote login warning banner is configured properly - platform flags",
+        "info": "The contents of the /etc/issue.net file are displayed to users prior to login for remote connections from configured services.\n\nUnix-based systems have typically displayed information about the OS release and patch level upon logging in to the system. This information can be useful to developers who are developing software for a particular OS platform. If mingetty(8) supports the following options, they display operating system information: \\m - machine architecture \\r - operating system release \\s - operating system name \\v - operating system version\n\nRationale:\n\nWarning messages inform users who are attempting to login to the system of their legal status regarding the system and must include the name of the organization that owns the system and any monitoring policies that are in place. Displaying OS and patch level information in login banners also has the side effect of providing detailed system information to attackers attempting to target specific exploits of a system. Authorized users can easily get this information by running the ' uname -a ' command once they have logged in.",
+        "solution": "Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \\m , \\r , \\s , \\v or references to the OS platform\n\n# echo 'Authorized uses only. All activity may be monitored and reported.' > /etc/issue.net\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/issue.net",
+        "regex": "\\\\\\\\[mrsv]",
+        "expect": "\\\\\\\\[mrsv]"
+    },
+    "custom_item_31": {
+        "system": "Linux",
+        "description": "1.5.1.5 Ensure permissions on /etc/issue are configured",
+        "info": "The contents of the /etc/issue file are displayed to users prior to login for local terminals.\n\nRationale:\n\nIf the /etc/issue file does not have the correct ownership it could be modified by unauthorized users with incorrect or misleading information.",
+        "solution": "Run the following commands to set permissions on /etc/issue :\n\n# chown root:root /etc/issue\n# chmod 644 /etc/issue\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/issue",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_32": {
+        "system": "Linux",
+        "description": "1.6 Ensure AppArmor is installed",
+        "info": "SELinux and AppArmor provide Mandatory Access Controls.\n\nRationale:\n\nWithout a Mandatory Access Control system installed only the default Discretionary Access Control system will be available.",
+        "solution": "Update to an OS image that includes the the apparmor package.\n\nAdditional Information:\n\nSELinux and AppArmor both have several package names in use on different distributions. Research the appropriate packages for your environment.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s '\"name\": \"apparmor\"' /etc/cos-package-info.json | /usr/bin/awk '{print} END {if (NR != 0) print \"AppArmor is installed\" ; else print \"AppArmor is not installed\"}'",
+        "expect": "^AppArmor is installed$"
+    },
+    "custom_item_33": {
+        "description": "systemd-timesyncd is installed",
+        "cmd": "/bin/systemctl is-enabled systemd-timesyncd",
+        "expect": "enabled"
+    },
+    "custom_item_34": {
+        "description": "NTP is installed",
+        "cmd": "/bin/systemctl is-enabled ntp",
+        "expect": "enabled"
+    },
+    "custom_item_35": {
+        "description": "Chrony is installed",
+        "cmd": "/bin/systemctl is-enabled chrony",
+        "expect": "enabled"
+    },
+    "custom_item_36": {
+        "system": "Linux",
+        "description": "2.1.2 Ensure X Window System is not installed",
+        "info": "The X Window System provides a Graphical User Interface (GUI) where users can have multiple windows in which to run programs and various add on. The X Windows system is typically used on workstations where users login, but not on servers where users typically do not login.\n\nRationale:\n\nUnless your organization specifically requires graphical login access via X Windows, remove it to reduce the potential attack surface.\n\nImpact:\n\nMany Linux systems run applications which require a Java runtime. Some Linux Java packages have a dependency on specific X Windows xorg-x11-fonts. One workaround to avoid this dependency is to use the 'headless' Java packages for your specific Java runtime, if provided by your distribution.",
+        "solution": "An OS image update that does not include X Window System is required.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s 'xorg' /etc/cos-package-info.json | /usr/bin/awk '{print} END {if (NR == 0) print \"X Window System is not installed\" ; else print \"X Window System is installed\"}'",
+        "expect": "^X Window System is not installed$"
+    },
+    "custom_item_37": {
+        "system": "Linux",
+        "description": "2.1.3 Ensure NFS and RPC are not enabled - nfs-server",
+        "info": "The Network File System (NFS) is one of the first and most widely distributed file systems in the UNIX environment. It provides the ability for systems to mount file systems of other servers through the network.\n\nRationale:\n\nIf the system does not export NFS shares or act as an NFS client, it is recommended that these services be disabled to reduce the remote attack surface.",
+        "solution": "Run the following commands to disable the nfs-server and rpcbind:\n\n# systemctl --now disable nfs-server\n# systemctl --now disable rpcbind\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.\n\nAdditional Information:\n\nAdditional methods of disabling a service exist. Consult your distribution documentation for appropriate methods.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|CM-6,800-53|CM-7,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSCv8|4.8,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,NIAv2|SS15a,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/systemctl is-enabled nfs-server | /usr/bin/awk \\'{print} END { if(NR==0) print \"disabled\" }\\'",
+        "expect": "disabled"
+    },
+    "custom_item_38": {
+        "system": "Linux",
+        "description": "2.1.3 Ensure NFS and RPC are not enabled - rpcbind",
+        "info": "The Network File System (NFS) is one of the first and most widely distributed file systems in the UNIX environment. It provides the ability for systems to mount file systems of other servers through the network.\n\nRationale:\n\nIf the system does not export NFS shares or act as an NFS client, it is recommended that these services be disabled to reduce the remote attack surface.",
+        "solution": "Run the following commands to disable the nfs-server and rpcbind:\n\n# systemctl --now disable nfs-server\n# systemctl --now disable rpcbind\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.\n\nAdditional Information:\n\nAdditional methods of disabling a service exist. Consult your distribution documentation for appropriate methods.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|CM-6,800-53|CM-7,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSCv8|4.8,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,NIAv2|SS15a,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/systemctl is-enabled rpcbind | /usr/bin/awk \\'{print} END { if(NR==0) print \"disabled\" }\\'",
+        "expect": "disabled"
+    },
+    "custom_item_39": {
+        "system": "Linux",
+        "description": "2.1.4 Ensure rsync service is not enabled",
+        "info": "The rsyncd service can be used to synchronize files between systems over network links.\n\nRationale:\n\nThe rsyncd service presents a security risk as it uses unencrypted protocols for communication.",
+        "solution": "Run the following command to disable rsyncd :\n\n# systemctl --now disable rsyncd\n\n/etc is stateless on Container-Optimized OS. Therefore, the steps mentioned above needs to be performed after every boot.\n\nAdditional Information:\n\nAdditional methods of disabling a service exist. Consult your distribution documentation for appropriate methods.\n\nOn some distributions the rsync service is known as rsync, not rsyncd.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|CM-6,800-53|CM-7,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSCv8|4.8,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,NIAv2|SS15a,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/dpkg -s rsync | /bin/grep -E '(Status:|not installed)'",
+        "expect": "dpkg-query: package 'rsync' is not installed and no information is available"
+    },
+    "custom_item_40": {
+        "system": "Linux",
+        "description": "3.1.1 Ensure packet redirect sending is disabled - net.ipv4.conf.all.send_redirects (sysctl.conf/sysctl.d)",
+        "info": "ICMP Redirects are used to send routing information to other hosts. As a host itself does not act as a router (in a host only configuration), there is no need to send redirects.\n\nRationale:\n\nAn attacker could use a compromised host to send invalid ICMP redirects to other router devices in an attempt to corrupt routing and have users access a system set up by the attacker as opposed to a valid system.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.send_redirects=0\n# sysctl -w net.ipv4.conf.default.send_redirects=0\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.15,800-53|CM-6,800-53|CM-7,800-53|SC-23,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-23,CSCv7|5.1,CSCv8|12.3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|1A,NESA|T4.5.1,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/sysctl.conf /etc/sysctl.d/*",
+        "regex": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.send_redirects[\\\\s]*",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_41": {
+        "system": "Linux",
+        "description": "3.1.1 Ensure packet redirect sending is disabled - sysctl net.ipv4.conf.all.send_redirects",
+        "info": "ICMP Redirects are used to send routing information to other hosts. As a host itself does not act as a router (in a host only configuration), there is no need to send redirects.\n\nRationale:\n\nAn attacker could use a compromised host to send invalid ICMP redirects to other router devices in an attempt to corrupt routing and have users access a system set up by the attacker as opposed to a valid system.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.send_redirects=0\n# sysctl -w net.ipv4.conf.default.send_redirects=0\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.15,800-53|CM-6,800-53|CM-7,800-53|SC-23,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-23,CSCv7|5.1,CSCv8|12.3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|1A,NESA|T4.5.1,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.send_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_42": {
+        "system": "Linux",
+        "description": "3.1.1 Ensure packet redirect sending is disabled - net.ipv4.conf.default.send_redirects (sysctl.conf/sysctl.d)",
+        "info": "ICMP Redirects are used to send routing information to other hosts. As a host itself does not act as a router (in a host only configuration), there is no need to send redirects.\n\nRationale:\n\nAn attacker could use a compromised host to send invalid ICMP redirects to other router devices in an attempt to corrupt routing and have users access a system set up by the attacker as opposed to a valid system.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.send_redirects=0\n# sysctl -w net.ipv4.conf.default.send_redirects=0\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.15,800-53|CM-6,800-53|CM-7,800-53|SC-23,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-23,CSCv7|5.1,CSCv8|12.3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|1A,NESA|T4.5.1,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/sysctl.conf /etc/sysctl.d/*",
+        "regex": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.send_redirects[\\\\s]*",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_43": {
+        "system": "Linux",
+        "description": "3.1.1 Ensure packet redirect sending is disabled - sysctl net.ipv4.conf.default.send_redirects",
+        "info": "ICMP Redirects are used to send routing information to other hosts. As a host itself does not act as a router (in a host only configuration), there is no need to send redirects.\n\nRationale:\n\nAn attacker could use a compromised host to send invalid ICMP redirects to other router devices in an attempt to corrupt routing and have users access a system set up by the attacker as opposed to a valid system.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.send_redirects = 0\nnet.ipv4.conf.default.send_redirects = 0\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.send_redirects=0\n# sysctl -w net.ipv4.conf.default.send_redirects=0\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.15,800-53|CM-6,800-53|CM-7,800-53|SC-23,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-23,CSCv7|5.1,CSCv8|12.3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|1A,NESA|T4.5.1,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.send_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_44": {
+        "system": "Linux",
+        "description": "3.2.5 Ensure broadcast ICMP requests are ignored - sysctl.conf/sysctl.d",
+        "info": "Setting net.ipv4.icmp_echo_ignore_broadcasts to 1 will cause the system to ignore all ICMP echo and timestamp requests to broadcast and multicast addresses.\n\nRationale:\n\nAccepting ICMP echo and timestamp requests with broadcast or multicast destinations for your network could be used to trick your host into starting (or participating) in a Smurf attack. A Smurf attack relies on an attacker sending large amounts of ICMP broadcast messages with a spoofed source address. All hosts receiving this message and responding would send echo-reply messages back to the spoofed address, which is probably not routable. If many hosts respond to the packets, the amount of traffic on the network could be significantly multiplied.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.icmp_echo_ignore_broadcasts = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*net\\\\.ipv4\\\\.icmp_echo_ignore_broadcasts[\\\\s]*=[\\\\s]*1[\\\\s]*$' /etc/sysctl.conf /etc/sysctl.d/* |/usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_45": {
+        "system": "Linux",
+        "description": "3.2.5 Ensure broadcast ICMP requests are ignored - sysctl exec",
+        "info": "Setting net.ipv4.icmp_echo_ignore_broadcasts to 1 will cause the system to ignore all ICMP echo and timestamp requests to broadcast and multicast addresses.\n\nRationale:\n\nAccepting ICMP echo and timestamp requests with broadcast or multicast destinations for your network could be used to trick your host into starting (or participating) in a Smurf attack. A Smurf attack relies on an attacker sending large amounts of ICMP broadcast messages with a spoofed source address. All hosts receiving this message and responding would send echo-reply messages back to the spoofed address, which is probably not routable. If many hosts respond to the packets, the amount of traffic on the network could be significantly multiplied.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.icmp_echo_ignore_broadcasts = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.icmp_echo_ignore_broadcasts",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.icmp_echo_ignore_broadcasts[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_46": {
+        "system": "Linux",
+        "description": "3.2.6 Ensure bogus ICMP responses are ignored - sysctl.conf/sysctl.d",
+        "info": "Setting icmp_ignore_bogus_error_responses to 1 prevents the kernel from logging bogus responses (RFC-1122 non-compliant) from broadcast reframes, keeping file systems from filling up with useless log messages.\n\nRationale:\n\nSome routers (and some attackers) will send responses that violate RFC-1122 and attempt to fill up a log file system with many useless error messages.",
+        "solution": "Set the following parameter in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.icmp_ignore_bogus_error_responses = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*net\\\\.ipv4\\\\.icmp_ignore_bogus_error_responses[\\\\s]*=[\\\\s]*1[\\\\s]*$' /etc/sysctl.conf /etc/sysctl.d/* |/usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_47": {
+        "system": "Linux",
+        "description": "3.2.6 Ensure bogus ICMP responses are ignored - sysctl exec",
+        "info": "Setting icmp_ignore_bogus_error_responses to 1 prevents the kernel from logging bogus responses (RFC-1122 non-compliant) from broadcast reframes, keeping file systems from filling up with useless log messages.\n\nRationale:\n\nSome routers (and some attackers) will send responses that violate RFC-1122 and attempt to fill up a log file system with many useless error messages.",
+        "solution": "Set the following parameter in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.icmp_ignore_bogus_error_responses = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.icmp_ignore_bogus_error_responses",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.icmp_ignore_bogus_error_responses[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_48": {
+        "system": "Linux",
+        "description": "3.2.7 Ensure Reverse Path Filtering is enabled - net.ipv4.conf.all.rp_filter' (sysctl.conf/sysctl.d)",
+        "info": "Setting net.ipv4.conf.all.rp_filter and net.ipv4.conf.default.rp_filter to 1 forces the Linux kernel to utilize reverse path filtering on a received packet to determine if the packet was valid. Essentially, with reverse path filtering, if the return packet does not go out the same interface that the corresponding source packet came from, the packet is dropped (and logged if log_martians is set).\n\nRationale:\n\nSetting these flags is a good way to deter attackers from sending your system bogus packets that cannot be responded to. One instance where this feature breaks down is if asymmetrical routing is employed. This would occur when using dynamic routing protocols (bgp, ospf, etc) on your system. If you are using asymmetrical routing on your system, you will not be able to enable this feature without breaking the routing.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.rp_filter=1\n# sysctl -w net.ipv4.conf.default.rp_filter=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$' /etc/sysctl.conf /etc/sysctl.d/* |/usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_49": {
+        "system": "Linux",
+        "description": "3.2.7 Ensure Reverse Path Filtering is enabled - sysctl net.ipv4.conf.all.rp_filter",
+        "info": "Setting net.ipv4.conf.all.rp_filter and net.ipv4.conf.default.rp_filter to 1 forces the Linux kernel to utilize reverse path filtering on a received packet to determine if the packet was valid. Essentially, with reverse path filtering, if the return packet does not go out the same interface that the corresponding source packet came from, the packet is dropped (and logged if log_martians is set).\n\nRationale:\n\nSetting these flags is a good way to deter attackers from sending your system bogus packets that cannot be responded to. One instance where this feature breaks down is if asymmetrical routing is employed. This would occur when using dynamic routing protocols (bgp, ospf, etc) on your system. If you are using asymmetrical routing on your system, you will not be able to enable this feature without breaking the routing.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.rp_filter=1\n# sysctl -w net.ipv4.conf.default.rp_filter=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.rp_filter",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_50": {
+        "system": "Linux",
+        "description": "3.2.7 Ensure Reverse Path Filtering is enabled - net.ipv4.conf.default.rp_filter' (sysctl.conf/sysctl.d)",
+        "info": "Setting net.ipv4.conf.all.rp_filter and net.ipv4.conf.default.rp_filter to 1 forces the Linux kernel to utilize reverse path filtering on a received packet to determine if the packet was valid. Essentially, with reverse path filtering, if the return packet does not go out the same interface that the corresponding source packet came from, the packet is dropped (and logged if log_martians is set).\n\nRationale:\n\nSetting these flags is a good way to deter attackers from sending your system bogus packets that cannot be responded to. One instance where this feature breaks down is if asymmetrical routing is employed. This would occur when using dynamic routing protocols (bgp, ospf, etc) on your system. If you are using asymmetrical routing on your system, you will not be able to enable this feature without breaking the routing.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.rp_filter=1\n# sysctl -w net.ipv4.conf.default.rp_filter=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$' /etc/sysctl.conf /etc/sysctl.d/* |/usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_51": {
+        "system": "Linux",
+        "description": "3.2.7 Ensure Reverse Path Filtering is enabled - sysctl net.ipv4.conf.default.rp_filter",
+        "info": "Setting net.ipv4.conf.all.rp_filter and net.ipv4.conf.default.rp_filter to 1 forces the Linux kernel to utilize reverse path filtering on a received packet to determine if the packet was valid. Essentially, with reverse path filtering, if the return packet does not go out the same interface that the corresponding source packet came from, the packet is dropped (and logged if log_martians is set).\n\nRationale:\n\nSetting these flags is a good way to deter attackers from sending your system bogus packets that cannot be responded to. One instance where this feature breaks down is if asymmetrical routing is employed. This would occur when using dynamic routing protocols (bgp, ospf, etc) on your system. If you are using asymmetrical routing on your system, you will not be able to enable this feature without breaking the routing.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.conf.all.rp_filter = 1\nnet.ipv4.conf.default.rp_filter = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.conf.all.rp_filter=1\n# sysctl -w net.ipv4.conf.default.rp_filter=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.rp_filter",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_52": {
+        "system": "Linux",
+        "description": "3.2.8 Ensure TCP SYN Cookies is enabled - sysctl.conf/sysctl.d",
+        "info": "When tcp_syncookies is set, the kernel will handle TCP SYN packets normally until the half-open connection queue is full, at which time, the SYN cookie functionality kicks in. SYN cookies work by not using the SYN queue at all. Instead, the kernel simply replies to the SYN with a SYN|ACK, but will include a specially crafted TCP sequence number that encodes the source and destination IP address and port number and the time the packet was sent. A legitimate connection would send the ACK packet of the three way handshake with the specially crafted sequence number. This allows the system to verify that it has received a valid response to a SYN cookie and allow the connection, even though there is no corresponding SYN in the queue.\n\nRationale:\n\nAttackers use SYN flood attacks to perform a denial of service attacked on a system by sending many SYN packets without completing the three way handshake. This will quickly use up slots in the kernel's half-open connection queue and prevent legitimate connections from succeeding. SYN cookies allow the system to keep accepting valid connections, even if under a denial of service attack.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.tcp_syncookies = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.tcp_syncookies=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s -P '^[\\\\s]*net\\\\.ipv4\\\\.tcp_syncookies[\\\\s]*=[\\\\s]*1[\\\\s]*$' /etc/sysctl.conf /etc/sysctl.d/* |/usr/bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_53": {
+        "system": "Linux",
+        "description": "3.2.8 Ensure TCP SYN Cookies is enabled - sysctl exec",
+        "info": "When tcp_syncookies is set, the kernel will handle TCP SYN packets normally until the half-open connection queue is full, at which time, the SYN cookie functionality kicks in. SYN cookies work by not using the SYN queue at all. Instead, the kernel simply replies to the SYN with a SYN|ACK, but will include a specially crafted TCP sequence number that encodes the source and destination IP address and port number and the time the packet was sent. A legitimate connection would send the ACK packet of the three way handshake with the specially crafted sequence number. This allows the system to verify that it has received a valid response to a SYN cookie and allow the connection, even though there is no corresponding SYN in the queue.\n\nRationale:\n\nAttackers use SYN flood attacks to perform a denial of service attacked on a system by sending many SYN packets without completing the three way handshake. This will quickly use up slots in the kernel's half-open connection queue and prevent legitimate connections from succeeding. SYN cookies allow the system to keep accepting valid connections, even if under a denial of service attack.",
+        "solution": "Set the following parameters in /etc/sysctl.conf or a /etc/sysctl.d/* file:\n\nnet.ipv4.tcp_syncookies = 1\n\nRun the following commands to set the active kernel parameters:\n\n# sysctl -w net.ipv4.tcp_syncookies=1\n# sysctl -w net.ipv4.route.flush=1\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|5.1,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/sbin/sysctl net.ipv4.tcp_syncookies",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.tcp_syncookies[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_54": {
+        "system": "Linux",
+        "description": "3.3.3 Ensure iptables is installed",
+        "info": "iptables allows configuration of the IPv4 and IPv6 tables in the linux kernel and the rules stored within them. Most firewall configuration utilities operate as a front end to iptables.\n\nRationale:\n\niptables is required for firewall management and configuration.",
+        "solution": "Update to an OS image that includes the iptables package.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -s '\"name\": \"iptables\"' /etc/cos-package-info.json | /usr/bin/awk '{print} END {if (NR != 0) print \"iptables is installed\" ; else print \"iptables is not installed\"}'",
+        "expect": "^iptables is installed$"
+    },
+    "custom_item_55": {
+        "system": "Linux",
+        "description": "4.1.2.2 Ensure journald is configured to write logfiles to persistent disk",
+        "info": "Data from journald may be stored in volatile memory or persisted locally on the server. Logs in memory will be lost upon a system reboot. By persisting logs to local disk on the server they are protected from loss.\n\nRationale:\n\nWriting log data to disk will provide the ability to forensically reconstruct events which may have impacted the operations or security of a system even after a system crash or reboot.",
+        "solution": "Edit the /etc/systemd/journald.conf file and add the following line:\n\nStorage=persistent\n\n/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/systemd/journald.conf",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$"
+    },
+    "custom_item_56": {
+        "system": "Linux",
+        "description": "5.1.1 Ensure permissions on /etc/ssh/sshd_config are configured",
+        "info": "The /etc/ssh/sshd_config file contains configuration specifications for sshd. The command below sets the owner and group of the file to root.\n\nRationale:\n\nThe /etc/ssh/sshd_config file needs to be protected from unauthorized changes by non-privileged users.",
+        "solution": "Run the following commands to set ownership and permissions on /etc/ssh/sshd_config:\n\n# chown root:root /etc/ssh/sshd_config\n# chmod og-rwx /etc/ssh/sshd_config",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/sshd_config",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_57": {
+        "system": "Linux",
+        "description": "5.1.2 Ensure permissions on SSH private host key files are configured",
+        "info": "An SSH private key is one of two files used in SSH public key authentication. In this authentication method, the possession of the private key is proof of identity. Only a private key that corresponds to a public key will be able to authenticate successfully. The private keys need to be stored and handled carefully, and no copies of the private key should be distributed.\n\nRationale:\n\nIf an unauthorized user obtains the private SSH host key file, the host could be impersonated",
+        "solution": "Run the following commands to set ownership and permissions on the private SSH host key files\n\n# find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chown root:root {} \\;\n\n# find /etc/ssh -xdev -type f -name 'ssh_host_*_key' -exec chmod 0600 {} \\;",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/ssh_host_*_key",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_58": {
+        "system": "Linux",
+        "description": "5.1.3 Ensure permissions on SSH public host key files are configured",
+        "info": "An SSH public key is one of two files used in SSH public key authentication. In this authentication method, a public key is a key that can be used for verifying digital signatures generated using a corresponding private key. Only a public key that corresponds to a private key will be able to authenticate successfully.\n\nRationale:\n\nIf a public host key file is modified by an unauthorized user, the SSH service may be compromised.",
+        "solution": "Run the following commands to set permissions and ownership on the SSH host public key files\n\n# find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chmod 0644 {} \\;\n\n#find /etc/ssh -xdev -type f -name 'ssh_host_*_key.pub' -exec chown root:root {} \\;",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/ssh_host_*_key.pub",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_59": {
+        "system": "Linux",
+        "description": "5.1.4 Ensure SSH Protocol is set to 2",
+        "info": "Older versions of SSH support two different and incompatible protocols: SSH1 and SSH2. SSH1 was the original protocol and was subject to security issues. SSH2 is more advanced and secure.\n\nRationale:\n\nSSH v1 suffers from insecurities that do not affect SSH v2.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nProtocol 2\n\nAdditional Information:\n\nThis command not longer exists in newer versions of SSH. This check is still being included for systems that may be running an older version of SSH. As of openSSH version 7.4 this parameter will not cause an issue when included.",
+        "reference": "800-171|3.1.13,800-171|3.4.6,800-171|3.4.7,800-171|3.5.2,800-171|3.7.5,800-171|3.13.8,800-53|AC-17(2),800-53|CM-7,800-53|IA-5,800-53|IA-5(1),800-53|MA-4,800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|CM-7,800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|MA-4,800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|4.5,CSCv7|14.4,CSCv8|3.10,CSCv8|4.6,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.MA-2,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|CM-7,ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|MA-4,ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T2.3.4,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS15a,NIAv2|SS24,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1,TBA-FIISB|45.2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Protocol[\\\\s]",
+        "expect": "^[\\\\s]*Protocol[\\\\s]+2[\\\\s]*$"
+    },
+    "custom_item_60": {
+        "system": "Linux",
+        "description": "5.1.5 Ensure SSH LogLevel is appropriate",
+        "info": "INFO level is the basic level that only records login activity of SSH users. In many situations, such as Incident Response, it is important to determine when a particular user was active on a system. The logout record can eliminate those users who disconnected, which helps narrow the field.\n\nVERBOSE level specifies that login and logout activity as well as the key fingerprint for any SSH key used for login will be logged. This information is important for SSH key management, especially in legacy environments.\n\nRationale:\n\nSSH provides several logging levels with varying amounts of verbosity. DEBUG is specifically not recommended other than strictly for debugging SSH communications since it provides so much data that it is difficult to identify important security information.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nLogLevel VERBOSE\n\nOR\n\nLogLevel INFO\n\nDefault Value:\n\nLogLevel INFO",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i loglevel",
+        "expect": "^[\\\\s]*(?i)LogLevel(?-i)[\\\\s]+(INFO|VERBOSE)[\\\\s]*$"
+    },
+    "custom_item_61": {
+        "system": "Linux",
+        "description": "5.1.6 Ensure SSH X11 forwarding is disabled",
+        "info": "The X11Forwarding parameter provides the ability to tunnel X11 traffic through the connection to enable remote graphic connections.\n\nRationale:\n\nDisable X11 forwarding unless there is an operational requirement to use X11 applications directly. There is a small risk that the remote X11 servers of users who are logged in via SSH with X11 forwarding could be compromised by other users on the X11 server. Note that even if X11 forwarding is disabled, users can always install their own forwarders.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nX11Forwarding no",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i x11forwarding",
+        "expect": "^[\\\\s]*(?i)X11Forwarding(?-i)[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_62": {
+        "system": "Linux",
+        "description": "5.1.8 Ensure SSH IgnoreRhosts is enabled",
+        "info": "The IgnoreRhosts parameter specifies that .rhosts and .shosts files will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale:\n\nSetting this parameter forces users to enter a password when authenticating with ssh.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nIgnoreRhosts yes\n\nDefault Value:\n\nIgnoreRhosts yes",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i ignorerhosts",
+        "expect": "^[\\\\s]*(?i)IgnoreRhosts(?-i)[\\\\s]+yes[\\\\s]*$"
+    },
+    "custom_item_63": {
+        "system": "Linux",
+        "description": "5.1.9 Ensure SSH HostbasedAuthentication is disabled",
+        "info": "The HostbasedAuthentication parameter specifies if authentication is allowed through trusted hosts via the user of .rhosts, or /etc/hosts.equiv, along with successful public key client host authentication. This option only applies to SSH Protocol Version 2.\n\nRationale:\n\nEven though the .rhosts files are ineffective if support is disabled in /etc/pam.conf, disabling the ability to use .rhosts files in SSH provides an additional layer of protection.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nHostbasedAuthentication no\n\nDefault Value:\n\nHostbasedAuthentication no",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53|IA-2(2),800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv7|16.3,CSCv8|6.3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|1A,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep hostbasedauthentication",
+        "expect": "^[\\\\s]*(?i)HostbasedAuthentication(?-i)[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_64": {
+        "system": "Linux",
+        "description": "5.1.10 Ensure SSH root login is disabled",
+        "info": "The PermitRootLogin parameter specifies if the root user can log in using ssh. The default is no.\n\nRationale:\n\nDisallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root via sudo or su. This in turn limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nPermitRootLogin no\n\nDefault Value:\n\nPermitRootLogin without-password",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i permitrootlogin",
+        "expect": "^[\\\\s]*(?i)PermitRootLogin(?-i)[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_65": {
+        "system": "Linux",
+        "description": "5.1.11 Ensure SSH PermitEmptyPasswords is disabled",
+        "info": "The PermitEmptyPasswords parameter specifies if the SSH server allows login to accounts with empty password strings.\n\nRationale:\n\nDisallowing remote shell access to accounts that have an empty password reduces the probability of unauthorized access to the system",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nPermitEmptyPasswords no\n\nDefault Value:\n\nPermitEmptyPasswords no",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53|IA-2(2),800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv7|16.3,CSCv8|6.3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|1A,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep permitemptypasswords",
+        "expect": "^[\\\\s]*(?i)PermitEmptyPasswords(?-i)[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_66": {
+        "system": "Linux",
+        "description": "5.1.12 Ensure SSH PermitUserEnvironment is disabled",
+        "info": "The PermitUserEnvironment option allows users to present environment options to the ssh daemon.\n\nRationale:\n\nPermitting users the ability to set environment variables through the SSH daemon could potentially allow users to bypass security controls (e.g. setting an execution path that has ssh executing trojan'd programs)",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nPermitUserEnvironment no\n\nDefault Value:\n\nPermitUserEnvironment no",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i permituserenvironment",
+        "expect": "^[\\\\s]*(?i)PermitUserEnvironment(?-i)[\\\\s]+no[\\\\s]*$"
+    },
+    "custom_item_67": {
+        "system": "Linux",
+        "description": "5.1.13 Ensure only strong Ciphers are used - weak ciphers",
+        "info": "This variable limits the ciphers that SSH can use during communication.\n\nRationale:\n\nWeak ciphers that are used for authentication to the cryptographic module cannot be relied upon to provide confidentiality or integrity, and system data may be compromised\n\nThe DES, Triple DES, and Blowfish ciphers, as used in SSH, have a birthday bound of approximately four billion blocks, which makes it easier for remote attackers to obtain cleartext data via a birthday attack against a long-duration encrypted session, aka a 'Sweet32' attack\n\nThe RC4 algorithm, as used in the TLS protocol and SSL protocol, does not properly combine state data with key data during the initialization phase, which makes it easier for remote attackers to conduct plaintext-recovery attacks against the initial bytes of a stream by sniffing network traffic that occasionally relies on keys affected by the Invariance Weakness, and then using a brute-force approach involving LSB values, aka the 'Bar Mitzvah' issue\n\nThe passwords used during an SSH session encrypted with RC4 can be recovered by an attacker who is able to capture and replay the session\n\nError handling in the SSH protocol; Client and Server, when using a block cipher algorithm in Cipher Block Chaining (CBC) mode, makes it easier for remote attackers to recover certain plaintext data from an arbitrary block of ciphertext in an SSH session via unknown vectors\n\nThe mm_newkeys_from_blob function in monitor_wrap.c, when an AES-GCM cipher is used, does not properly initialize memory for a MAC context data structure, which allows remote authenticated users to bypass intended ForceCommand and login-shell restrictions via packet data that provides a crafted callback address",
+        "solution": "Edit the /etc/ssh/sshd_config file add/modify the Ciphers line to contain a comma separated list of the site approved ciphers\nExample:\n\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n\nDefault Value:\n\nciphers aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*[Cc]iphers[\\\\s]+",
+        "expect": "^[\\\\s]*[Cc]iphers[\\\\s]+(?:.*-cbc.*,?|.*arcfour.*,?).+$"
+    },
+    "custom_item_68": {
+        "system": "Linux",
+        "description": "5.1.13 Ensure only strong Ciphers are used - approved ciphers",
+        "info": "This variable limits the ciphers that SSH can use during communication.\n\nRationale:\n\nWeak ciphers that are used for authentication to the cryptographic module cannot be relied upon to provide confidentiality or integrity, and system data may be compromised\n\nThe DES, Triple DES, and Blowfish ciphers, as used in SSH, have a birthday bound of approximately four billion blocks, which makes it easier for remote attackers to obtain cleartext data via a birthday attack against a long-duration encrypted session, aka a 'Sweet32' attack\n\nThe RC4 algorithm, as used in the TLS protocol and SSL protocol, does not properly combine state data with key data during the initialization phase, which makes it easier for remote attackers to conduct plaintext-recovery attacks against the initial bytes of a stream by sniffing network traffic that occasionally relies on keys affected by the Invariance Weakness, and then using a brute-force approach involving LSB values, aka the 'Bar Mitzvah' issue\n\nThe passwords used during an SSH session encrypted with RC4 can be recovered by an attacker who is able to capture and replay the session\n\nError handling in the SSH protocol; Client and Server, when using a block cipher algorithm in Cipher Block Chaining (CBC) mode, makes it easier for remote attackers to recover certain plaintext data from an arbitrary block of ciphertext in an SSH session via unknown vectors\n\nThe mm_newkeys_from_blob function in monitor_wrap.c, when an AES-GCM cipher is used, does not properly initialize memory for a MAC context data structure, which allows remote authenticated users to bypass intended ForceCommand and login-shell restrictions via packet data that provides a crafted callback address",
+        "solution": "Edit the /etc/ssh/sshd_config file add/modify the Ciphers line to contain a comma separated list of the site approved ciphers\nExample:\n\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\n\nDefault Value:\n\nciphers aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T | /bin/grep -P -i '^[\\\\s]*[Cc]iphers[\\\\s]+'",
+        "expect": "^[\\\\s]*[Cc]iphers[\\\\s]+(?:chacha20-poly1305@openssh\\\\.com|aes(?:128|192|256)-ctr|aes(?:128|256)-gcm@openssh\\\\.com).*$"
+    },
+    "custom_item_69": {
+        "system": "Linux",
+        "description": "5.1.15 Ensure only strong Key Exchange algorithms are used - weak algorithms",
+        "info": "Key exchange is any method in cryptography by which cryptographic keys are exchanged between two parties, allowing use of a cryptographic algorithm. If the sender and receiver wish to exchange encrypted messages, each must be equipped to encrypt messages to be sent and decrypt messages received\n\nRationale:\n\nKey exchange methods that are considered weak should be removed. A key exchange method may be weak because too few bits are used, or the hashing algorithm is considered too weak. Using weak algorithms could expose connections to man-in-the-middle attacks",
+        "solution": "Edit the /etc/ssh/sshd_config file add/modify the KexAlgorithms line to contain a comma separated list of the site approved key exchange algorithms\nExample:\n\nKexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256\n\nDefault Value:\n\nkexalgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\n\nAdditional Information:\n\nKex algorithms have a higher preference the earlier they appear in the list\n\nSome organizations may have stricter requirements for approved Key exchange algorithms. Ensure that Key exchange algorithms used are in compliance with site policy.\n\nThe only Key Exchange Algorithms currently FIPS 140-2 approved are: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\n\nThe Key Exchange algorithms supported by OpenSSH 7 are:\n\ncurve25519-sha256\n\ncurve25519-sha256@libssh.org\n\ndiffie-hellman-group1-sha1\n\ndiffie-hellman-group14-sha1\n\ndiffie-hellman-group-exchange-sha1\n\ndiffie-hellman-group-exchange-sha256\n\necdh-sha2-nistp256\n\necdh-sha2-nistp384\n\necdh-sha2-nistp521",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*[Kk]ex[Aa]lgorithms[\\\\s]+",
+        "expect": "^[\\\\s]*[Kk]ex[Aa]lgorithms[\\\\s]+(?:.*-sha1).*$"
+    },
+    "custom_item_70": {
+        "system": "Linux",
+        "description": "5.1.15 Ensure only strong Key Exchange algorithms are used - approved algorithms",
+        "info": "Key exchange is any method in cryptography by which cryptographic keys are exchanged between two parties, allowing use of a cryptographic algorithm. If the sender and receiver wish to exchange encrypted messages, each must be equipped to encrypt messages to be sent and decrypt messages received\n\nRationale:\n\nKey exchange methods that are considered weak should be removed. A key exchange method may be weak because too few bits are used, or the hashing algorithm is considered too weak. Using weak algorithms could expose connections to man-in-the-middle attacks",
+        "solution": "Edit the /etc/ssh/sshd_config file add/modify the KexAlgorithms line to contain a comma separated list of the site approved key exchange algorithms\nExample:\n\nKexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256\n\nDefault Value:\n\nkexalgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\n\nAdditional Information:\n\nKex algorithms have a higher preference the earlier they appear in the list\n\nSome organizations may have stricter requirements for approved Key exchange algorithms. Ensure that Key exchange algorithms used are in compliance with site policy.\n\nThe only Key Exchange Algorithms currently FIPS 140-2 approved are: ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\n\nThe Key Exchange algorithms supported by OpenSSH 7 are:\n\ncurve25519-sha256\n\ncurve25519-sha256@libssh.org\n\ndiffie-hellman-group1-sha1\n\ndiffie-hellman-group14-sha1\n\ndiffie-hellman-group-exchange-sha1\n\ndiffie-hellman-group-exchange-sha256\n\necdh-sha2-nistp256\n\necdh-sha2-nistp384\n\necdh-sha2-nistp521",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T | /bin/grep -P -i '^[\\\\s]*[Kk]ex[Aa]lgorithms[\\\\s]+'",
+        "expect": "^[\\\\s]*[Kk]ex[Aa]lgorithms[\\\\s]+(?:curve25519-sha256|diffie-hellman-group(?:14|16|18)-sha(?:256|512)|diffie-hellman-group-exchange-sha256|ecdh-sha2-nistp(?:256|384|521)).*$"
+    },
+    "custom_item_71": {
+        "system": "Linux",
+        "description": "5.1.20 Ensure SSH PAM is enabled",
+        "info": "UsePAM Enables the Pluggable Authentication Module interface. If set to 'yes' this will enable PAM authentication using ChallengeResponseAuthentication and PasswordAuthentication in addition to PAM account and session module processing for all authentication types\n\nRationale:\n\nWhen usePAM is set to yes, PAM runs through account and session types properly. This is important if you want to restrict access to services based off of IP, time or other factors of the account. Additionally, you can make sure users inherit certain environment variables on login or disallow access to the server\n\nImpact:\n\nIf UsePAM is enabled, you will not be able to run sshd(8) as a non-root user.",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nUsePAM yes\n\nDefault Value:\n\nusePAM yes",
+        "reference": "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-3,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|1A,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /usr/bin/awk '{print $1}')\" | /bin/grep -i usepam",
+        "expect": "^[\\\\s]*(?i)UsePAM(?-i)[\\\\s]+yes[\\\\s]*$"
+    },
+    "custom_item_72": {
+        "system": "Linux",
+        "description": "5.3.1.3 Ensure password expiration warning days is 7 or more - login.defs",
+        "info": "The PASS_WARN_AGE parameter in /etc/login.defs allows an administrator to notify users that their password will expire in a defined number of days. It is recommended that the PASS_WARN_AGE parameter be set to 7 or more days.\n\nRationale:\n\nProviding an advance warning that a password will be expiring gives users time to think of a secure password. Users caught unaware may choose a simple password or write it down where it may be discovered.",
+        "solution": "Set the PASS_WARN_AGE parameter to 7 in /etc/login.defs :\n\nPASS_WARN_AGE 7\n\nModify user parameters for all users with a password set to match:\n\n# chage --warndays 7Additional Information:\n\nYou can also check this setting in /etc/shadow directly. The 6th field should be 7 or more for all users with a password.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*PASS_WARN_AGE[\\\\s]+",
+        "expect": "^[\\\\s]*PASS_WARN_AGE[\\\\s]+@PASSWORD_WARN_AGE@[\\\\s]*$"
+    },
+    "custom_item_73": {
+        "system": "Linux",
+        "description": "5.3.1.3 Ensure password expiration warning days is 7 or more - users",
+        "info": "The PASS_WARN_AGE parameter in /etc/login.defs allows an administrator to notify users that their password will expire in a defined number of days. It is recommended that the PASS_WARN_AGE parameter be set to 7 or more days.\n\nRationale:\n\nProviding an advance warning that a password will be expiring gives users time to think of a secure password. Users caught unaware may choose a simple password or write it down where it may be discovered.",
+        "solution": "Set the PASS_WARN_AGE parameter to 7 in /etc/login.defs :\n\nPASS_WARN_AGE 7\n\nModify user parameters for all users with a password set to match:\n\n# chage --warndays 7Additional Information:\n\nYou can also check this setting in /etc/shadow directly. The 6th field should be 7 or more for all users with a password.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/echo 'Username, Number of days of warning before password expires'; output=\"\"; failures=0; for i in $(/bin/egrep \"^[^:]+:[^\\!*]\" /etc/shadow | cut -d: -f1); do change_date=$(chage --list \"$i\" | /bin/grep 'Number of days of warning before password expires' | cut -d: -f2 | /usr/bin/awk '{$1=$1};1'); output=\"${i}, ${change_date}\"; if [ $change_date -ge 7 ]; then output=\"${output} - Pass\"; else output=\"${output} - Fail\"; failures=$((failures+1)); fi; echo \"${output}\"; done; echo \"Number of failures: ${failures}\"",
+        "expect": "^Number of failures: 0$"
+    },
+    "custom_item_74": {
+        "system": "Linux",
+        "description": "5.3.1.5 Ensure all users last password change date is in the past",
+        "info": "All users should have a password change date in the past.\n\nRationale:\n\nIf a users recorded password change date is in the future then they could bypass any set password expiration.",
+        "solution": "Investigate any users with a password change date in the future and correct them. Locking the account, expiring the password, or resetting the password manually may be appropriate.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "echo 'Username, Current Days, Last Password Change Days'; output=\"\"; failures=0; for i in $(cut -d: -f1 < /etc/shadow); do now=$(($(date +%s) / 86400)); change_date=$(chage --list \"$i\" | /bin/grep 'Last password change' | cut -d: -f2 | /usr/bin/awk '{$1=$1};1'); if [[ $change_date != \"never\" ]]; then epoch_change_date=$(($(date -d \"${change_date}\" +%s) / 86400)); else epoch_change_date='Never'; fi; output=\"${i}, ${now}, ${epoch_change_date}\"; if [[ $epoch_change_date < $now ]]; then output=\"${output} - Pass\"; else output=\"${output} - Fail\"; ((failures++)); fi; echo \"${output}\"; done; echo \"Number of failures: ${failures}\"",
+        "expect": "^Number of failures: 0$"
+    },
+    "custom_item_75": {
+        "system": "Linux",
+        "description": "5.3.3 Ensure default group for the root account is GID 0",
+        "info": "The usermod command can be used to specify which group the root user belongs to. This affects permissions of files that are created by the root user.\n\nRationale:\n\nUsing GID 0 for the root account helps prevent root -owned files from accidentally becoming accessible to non-privileged users.",
+        "solution": "Run the following command to set the root user default group to GID 0 :\n\n# usermod -g 0 root",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/passwd",
+        "regex": "^root:",
+        "expect": "^root:x:0:0:"
+    },
+    "custom_item_76": {
+        "system": "Linux",
+        "description": "5.4 Ensure root login is restricted to system console",
+        "info": "The file /etc/securetty contains a list of valid terminals that may be logged in directly as root.\n\nRationale:\n\nSince the system console has special properties to handle emergency situations, it is important to ensure that the console is in a physically secure location and that unauthorized consoles have not been defined.",
+        "solution": "Remove entries for any consoles that are not in a physically secure location.",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|5.1,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep -v \"console\" /etc/securetty | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "none"
+    },
+    "custom_item_77": {
+        "system": "Linux",
+        "description": "5.5 Ensure access to the su command is restricted - wheel group contains root",
+        "info": "The su command allows a user to run a command or shell as another user. The program has been superseded by sudo , which allows for more granular control over privileged access. Normally, the su command can be executed by any user. By uncommenting the pam_wheel.so statement in /etc/pam.d/su , the su command will only allow users in the wheel group to execute su .\n\nRationale:\n\nRestricting the use of su , and using sudo in its place, provides system administrators better control of the escalation of user privileges to execute privileged commands. The sudo utility also provides a better logging and audit mechanism, as it can log each command executed via sudo , whereas su can only record that a user executed the su program.",
+        "solution": "Add the following line to the /etc/pam.d/su file:\n\nauth required pam_wheel.so use_uid\n\nCreate a comma separated list of users in the wheel statement in the /etc/group file:\n\nwheel:!:10:root,/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/bin/grep ^wheel: /etc/group",
+        "expect": "^wheel:x:10:(@WHEEL_GROUP_USERS@|[\\\\s]*$)"
+    },
+    "custom_item_78": {
+        "system": "Linux",
+        "description": "5.5 Ensure access to the su command is restricted - pam_wheel.so",
+        "info": "The su command allows a user to run a command or shell as another user. The program has been superseded by sudo , which allows for more granular control over privileged access. Normally, the su command can be executed by any user. By uncommenting the pam_wheel.so statement in /etc/pam.d/su , the su command will only allow users in the wheel group to execute su .\n\nRationale:\n\nRestricting the use of su , and using sudo in its place, provides system administrators better control of the escalation of user privileges to execute privileged commands. The sudo utility also provides a better logging and audit mechanism, as it can log each command executed via sudo , whereas su can only record that a user executed the su program.",
+        "solution": "Add the following line to the /etc/pam.d/su file:\n\nauth required pam_wheel.so use_uid\n\nCreate a comma separated list of users in the wheel statement in the /etc/group file:\n\nwheel:!:10:root,/etc is stateless on Container-Optimized OS. Therefore, /etc cannot be used to make these changes persistent across reboots. The steps mentioned above needs to be performed after every boot.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|5.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/pam.d/su",
+        "regex": "^[\\\\s]*auth[\\\\s]+required[\\\\s]+pam_wheel\\\\.so[\\\\s]+use_uid[\\\\s]*$",
+        "expect": "^[\\\\s]*auth[\\\\s]+required[\\\\s]+pam_wheel\\\\.so[\\\\s]+use_uid[\\\\s]*$"
+    },
+    "custom_item_79": {
+        "system": "Linux",
+        "description": "6.1.1 Ensure permissions on /etc/passwd are configured",
+        "info": "The /etc/passwd file contains user account information that is used by many system utilities and therefore must be readable for these utilities to operate.\n\nRationale:\n\nIt is critical to ensure that the /etc/passwd file is protected from unauthorized write access. Although it is protected by default, the file permissions could be changed either inadvertently or through malicious actions.",
+        "solution": "Run the following command to set permissions on /etc/passwd :\n\n# chown root:root /etc/passwd\n# chmod 644 /etc/passwd",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|16.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/passwd",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_80": {
+        "system": "Linux",
+        "description": "6.1.2 Ensure permissions on /etc/shadow are configured",
+        "info": "The /etc/shadow file is used to store the information about user accounts that is critical to the security of those accounts, such as the hashed password and other security information.\n\nRationale:\n\nIf attackers can gain read access to the /etc/shadow file, they can easily run a password cracking program against the hashed password to break it. Other security information that is stored in the /etc/shadow file (such as expiration) could also be useful to subvert the user accounts.",
+        "solution": "Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/shadow :\n\n# chown root:root /etc/shadow\n# chown root:shadow /etc/shadow\n\n# chmod o-rwx,g-wx /etc/shadow",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|16.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/shadow",
+        "owner": "root",
+        "mask": "137",
+        "group": "shadow"
+    },
+    "custom_item_81": {
+        "system": "Linux",
+        "description": "6.1.3 Ensure permissions on /etc/group are configured",
+        "info": "The /etc/group file contains a list of all the valid groups defined in the system. The command below allows read/write access for root and read access for everyone else.\n\nRationale:\n\nThe /etc/group file needs to be protected from unauthorized changes by non-privileged users, but needs to be readable as this information is used with many non-privileged programs.",
+        "solution": "Run the following command to set permissions on /etc/group :\n\n# chown root:root /etc/group\n# chmod 644 /etc/group",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|16.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/group",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_82": {
+        "system": "Linux",
+        "description": "6.1.4 Ensure permissions on /etc/gshadow are configured",
+        "info": "The /etc/gshadow file is used to store the information about groups that is critical to the security of those accounts, such as the hashed password and other security information.\n\nRationale:\n\nIf attackers can gain read access to the /etc/gshadow file, they can easily run a password cracking program against the hashed password to break it. Other security information that is stored in the /etc/gshadow file (such as group administrators) could also be useful to subvert the group.",
+        "solution": "Run the one of the following chown commands as appropriate and the chmod to set permissions on /etc/gshadow :\n\n# chown root:root /etc/gshadow\n# chown root:shadow /etc/gshadow\n\n# chmod o-rwx,g-rw /etc/gshadow",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|16.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/gshadow",
+        "owner": "root",
+        "mask": "137",
+        "group": "shadow"
+    },
+    "custom_item_83": {
+        "system": "Linux",
+        "description": "6.1.7 Ensure permissions on /etc/group- are configured",
+        "info": "The /etc/group- file contains a backup list of all the valid groups defined in the system.\n\nRationale:\n\nIt is critical to ensure that the /etc/group- file is protected from unauthorized access. Although it is protected by default, the file permissions could be changed either inadvertently or through malicious actions.",
+        "solution": "Run the following command to set permissions on /etc/group- :\n\n# chown root:root /etc/group-\n# chmod u-x,go-wx /etc/group-",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|16.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/group-",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_84": {
+        "system": "Linux",
+        "description": "6.2.1 Ensure password fields are not empty",
+        "info": "An account with an empty password field means that anybody may log in as that user without providing a password.\n\nRationale:\n\nAll accounts must have passwords or be locked to prevent the account from being used by an unauthorized user.",
+        "solution": "If any accounts in the /etc/shadow file do not have a password, run the following command to lock the account until it can be determined why it does not have a password:\n\n# passwd -lAlso, check to see if the account is logged in and investigate what it is being used for to determine if it needs to be forced off.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/awk -F : \\'($2 == \"\") { print $1 \" does not have a password.\"}\\' /etc/shadow | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_85": {
+        "system": "Linux",
+        "description": "6.2.2 Ensure no legacy '+' entries exist in /etc/passwd - + entries exist in /etc/passwd",
+        "info": "The character + in various files used to be markers for systems to insert data from NIS maps at a certain point in a system configuration file. These entries are no longer required on most systems, but may exist in files that have been imported from other platforms.\n\nRationale:\n\nThese entries may provide an avenue for attackers to gain privileged access on the system.",
+        "solution": "Remove any legacy '+' entries from /etc/passwd if they exist.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/passwd",
+        "regex": "^\\\\+[^:\\\\n\\\\r]*:",
+        "expect": "^\\\\+[^:\\\\n\\\\r]*:"
+    },
+    "custom_item_86": {
+        "system": "Linux",
+        "description": "6.2.3 Ensure no legacy '+' entries exist in /etc/shadow - + entries exist in /etc/shadow",
+        "info": "The character + in various files used to be markers for systems to insert data from NIS maps at a certain point in a system configuration file. These entries are no longer required on most systems, but may exist in files that have been imported from other platforms.\n\nRationale:\n\nThese entries may provide an avenue for attackers to gain privileged access on the system.",
+        "solution": "Remove any legacy '+' entries from /etc/shadow if they exist.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/shadow",
+        "regex": "^\\\\+[^:\\\\n\\\\r]*:",
+        "expect": "^\\\\+[^:\\\\n\\\\r]*:"
+    },
+    "custom_item_87": {
+        "system": "Linux",
+        "description": "6.2.4 Ensure no legacy '+' entries exist in /etc/group - + entries exist in /etc/group",
+        "info": "The character + in various files used to be markers for systems to insert data from NIS maps at a certain point in a system configuration file. These entries are no longer required on most systems, but may exist in files that have been imported from other platforms.\n\nRationale:\n\nThese entries may provide an avenue for attackers to gain privileged access on the system.",
+        "solution": "Remove any legacy '+' entries from /etc/group if they exist.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "file": "/etc/group",
+        "regex": "^\\\\+[^:\\\\n\\\\r]*:",
+        "expect": "^\\\\+[^:\\\\n\\\\r]*:"
+    },
+    "custom_item_88": {
+        "system": "Linux",
+        "description": "6.2.20 Ensure shadow group is empty - /etc/passwd",
+        "info": "The shadow group allows system programs which require access the ability to read the /etc/shadow file. No users should be assigned to the shadow group.\n\nRationale:\n\nAny users assigned to the shadow group would be granted read access to the /etc/shadow file. If attackers can gain read access to the /etc/shadow file, they can easily run a password cracking program against the hashed passwords to break them. Other security information that is stored in the /etc/shadow file (such as expiration) could also be useful to subvert additional user accounts.",
+        "solution": "Remove all users from the shadow group, and change the primary group of any users with shadow as their primary group.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/awk -F: -v GID=\"$(/usr/bin/awk -F: '($1==\"shadow\") {print $3}' /etc/group)\" '($4==GID) {print $1}' /etc/passwd | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"'}",
+        "expect": "none"
+    },
+    "custom_item_89": {
+        "system": "Linux",
+        "description": "6.2.20 Ensure shadow group is empty - /etc/group",
+        "info": "The shadow group allows system programs which require access the ability to read the /etc/shadow file. No users should be assigned to the shadow group.\n\nRationale:\n\nAny users assigned to the shadow group would be granted read access to the /etc/shadow file. If attackers can gain read access to the /etc/shadow file, they can easily run a password cracking program against the hashed passwords to break them. Other security information that is stored in the /etc/shadow file (such as expiration) could also be useful to subvert additional user accounts.",
+        "solution": "Remove all users from the shadow group, and change the primary group of any users with shadow as their primary group.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/8717",
+        "cmd": "/usr/bin/awk -F: '($1==\"shadow\") {print $NF}' /etc/group | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"'}",
+        "expect": "none"
+    }
+}

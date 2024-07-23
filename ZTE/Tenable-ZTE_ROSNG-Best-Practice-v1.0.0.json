@@ -1,0 +1,564 @@
+{
+    "custom_item_1": {
+        "description": "1.1 Secure Login and Telnet Disabling - Enable SSH server",
+        "info": "From the perspective of security, the management plane should support at least the SSH/SSL login mode. Ordinary plain text Telnet/ftp login is vulnerable to attack, and such secure login modes as SSH and SFTP should be supported. The session validity period must be limited.",
+        "solution": "It is recommended to enable ssh server\n\n    Enable SSH server by running:\n    ZXR10 (config)#ssh server enable",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^ssh server enable"
+    },
+    "custom_item_2": {
+        "description": "1.1 Secure Login and Telnet Disabling - Disable telnet server",
+        "info": "From the perspective of security, the management plane should support at least the SSH/SSL login mode. Ordinary plain text Telnet/ftp login is vulnerable to attack, and such secure login modes as SSH and SFTP should be supported. The session validity period must be limited.",
+        "solution": "It is recommended to disable telnet server.\n\n    Disable telnet server by running:\n    ZXR10 (config)#line telnet server disable",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^line telnet server disable"
+    },
+    "custom_item_3": {
+        "description": "1.2 Password Security Policy - a) The default password length shouldn't be below 8 characters",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set password length to at least 8 characters\n\n     ZXR10# configure terminal\n     ZXR10 (config)# system-user\n     ZXR10 (config-system-user)# strong-password length 8",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password length ([8-9]|[1-9][0-9]|\\\\d{3,}).+",
+        "section": "system-user"
+    },
+    "custom_item_4": {
+        "description": "1.2 Password Security Policy - b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set password consists of digits, letters, and symbols\n\n     ZXR10# configure terminal\n     ZXR10 (config)# system-user\n     ZXR10 (config-system-user)# strong-password length 8 character number capital lowercase special-character",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "(.*strong-password length .+ character number capital lowercase special-character|.*strong-password length .+ character number capital lowercase|.*strong-password length .+ character number capital special-character|.*strong-password length .+ character number lowercase special-character|.*strong-password length .+ character capital lowercase special-character)|(.*strong-password length .+ character-set-num [3-4])",
+        "section": "system-user"
+    },
+    "custom_item_5": {
+        "description": "1.2 Password Security Policy - c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password - strong-password dictionary",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set password to support check of simple passwords and weak passwords\n\n     ZXR0# configure terminal\n     ZXR10 (config)# system-user\n     ZXR10 (config-system-user)# strong-password dictionary",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password dictionary",
+        "section": "system-user"
+    },
+    "custom_item_6": {
+        "description": "1.2 Password Security Policy - c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password - same-consecutive",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set password to support check of simple passwords and weak passwords\n\n     ZXR10# configure terminal\n     ZXR10 (config)# system-user\n     ZXR10 (config-system-user)# strong-password same-consecutive 5",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password same-consecutive .+",
+        "section": "system-user"
+    },
+    "custom_item_7": {
+        "description": "1.2 Password Security Policy - d) Check either of the following words exist in configuration file",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended config to support stores passwords in ciphertext, do not include the following phrases in the configuration:\n\n     - encrypt none\n     - authentication null\n     - encrypted null\n     - encryption null\n     - security-protocol noauth\n     - encrypted noauth",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "(encrypt none|(authentication|encrypted|encryption) null|(security-protocol|encrypted) noauth)"
+    },
+    "custom_item_8": {
+        "description": "Check if strong-password max-length has been enabled",
+        "item": ".*strong-password max-length",
+        "section": "system-user"
+    },
+    "custom_item_9": {
+        "description": "Check if strong-password dictionary has been enabled",
+        "item": ".*strong-password username-related-chk",
+        "section": "system-user"
+    },
+    "custom_item_10": {
+        "description": "Check if strong-password same-consecutive has been enabled",
+        "item": ".*strong-password date-check enable",
+        "section": "system-user"
+    },
+    "custom_item_11": {
+        "description": "1.2 Password Security Policy - e) Check for strong-password max-length - strong-password username-related-chk inverse",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n         a) The default password length shouldn't be below 8 characters.\n         b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n         c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n         d) Check either of the following words exist in configuration file:\n            - Encrypt none\n            - Authentication null\n            - Encrypted null\n            - Encryption null\n            - Security-protocol noauth\n            - Encrypted noauth\n         e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n            If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n         f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set the password to irrelevant to the username and date.\n\n         ZXR10# configure terminal\n         ZXR10 (config)# system-user\n         ZXR10 (config-system-user)# strong-password username-related-chk inverse",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password username-related-chk",
+        "section": "system-user"
+    },
+    "custom_item_12": {
+        "description": "1.2 Password Security Policy - e) Check for strong-password max-length - strong-password date-check enable",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n         a) The default password length shouldn't be below 8 characters.\n         b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n         c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n         d) Check either of the following words exist in configuration file:\n            - Encrypt none\n            - Authentication null\n            - Encrypted null\n            - Encryption null\n            - Security-protocol noauth\n            - Encrypted noauth\n         e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n            If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n         f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set the password to irrelevant to the username and date.\n\n         ZXR10# configure terminal\n         ZXR10 (config)# system-user\n         ZXR10 (config-system-user)# strong-password date-check enable",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password date-check enable",
+        "section": "system-user"
+    },
+    "custom_item_13": {
+        "description": "1.2 Password Security Policy - e) Check for strong-password max-length",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n        a) The default password length shouldn't be below 8 characters.\n        b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n        c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n        d) Check either of the following words exist in configuration file:\n           - Encrypt none\n           - Authentication null\n           - Encrypted null\n           - Encryption null\n           - Security-protocol noauth\n           - Encrypted noauth\n        e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n           If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n        f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set the maximum password length to at least 10\n\n       ZXR10# configure terminal\n       ZXR10 (config)# system-user\n       ZXR10 (config-system-user)# strong-password max-length 64",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*strong-password max-length (10|[1-9][0-9]|1[0-1][0-9]|12[0-8])",
+        "section": "system-user"
+    },
+    "custom_item_14": {
+        "description": "1.2 Password Security Policy - f) The validity period of an account can be configured",
+        "info": "Strong passwords are supported to prevent passwords from being cracked. When a password is set, password complexity is detected by default. If a password does not meet the policy, a warning is required. A strong password mode should be provided. The password verification mechanism is as follows:\n\n     a) The default password length shouldn't be below 8 characters.\n     b) The password must include either three of 'number', 'capital', 'lowercase', 'special-character' or set the 'character-set-num' value to 3-4\n     c) Configure 'strong-password dictionary' and 'same-consecutive' to avoid weak password\n     d) Check either of the following words exist in configuration file:\n        - Encrypt none\n        - Authentication null\n        - Encrypted null\n        - Encryption null\n        - Security-protocol noauth\n        - Encrypted noauth\n     e) If 'strong-password max-length' not displayed in configuration, then pass this check.\n        If 'strong-password max-length' displayed in configuration, but max-length value below 10, or not both configuration 'username-related-chk inverse' and 'strong-password date-check enable' commands, then fail this check.\n     f) The validity period of an account can be configured.",
+        "solution": "It is recommended to set the password validity period\n\n     ZXR10# configure terminal\n     ZXR10 (config)# system-user\n     ZXR10 (config-system-user)# user-name xxx\n     ZXR10 (config-system-user-username)# password-duration 360",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "[^\\\\r\\\\n]*password-duration ([1-9]|[1-9][0-9]|[1-2][0-9][0-9]|[3][0-5][0-9]|360)",
+        "section": "system-user"
+    },
+    "custom_item_15": {
+        "description": "Check if user-authen-restriction is configured",
+        "item": ".*user-authen-restriction"
+    },
+    "custom_item_16": {
+        "description": "Check if user-authen-restriction is configured",
+        "item": ".*user-authen-restriction.+fail-time.+lock-minute.+"
+    },
+    "custom_item_17": {
+        "description": "1.3 Account Anti-riot Attack",
+        "info": "Some tools exist on the Internet, which specifically attack the management-plane protocol accounts of the system and frequently attempt accounts to attack devices so as to obtain accounts. Therefore, the system should be able to reject all remote login requests in a blocking manner when it is found that repeated remote login attempts fail for a certain number of consecutive times by monitoring the system account authentication. At this time, only IP requests from whitelisted users are allowed to be responded). This blocking can last for a period of time, so as to achieve the purpose of timely cutting off brute-force cracking attempts and protecting the CPU processing capability of the management plane.",
+        "solution": "Configuring the number of failures and locking time by running the following commands:\n\n          ZXR10 (config)#system-user\n          ZXR10 (config-system-user)#user-authen-restriction fail-time 3 lock-minute 2",
+        "reference": "800-171|3.1.8,800-53|AC-7,800-53r5|AC-7,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7,NIAv2|AM24,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*user-authen-restriction.+fail-time.+lock-minute.+"
+    },
+    "custom_item_18": {
+        "description": "Check if SNMP server v1 has been enabled",
+        "item": "snmp-server version v1 enable"
+    },
+    "custom_item_19": {
+        "description": "Check if SNMP server v2c has been enabled",
+        "item": "snmp-server version v2c enable"
+    },
+    "custom_item_20": {
+        "description": "Check if SNMP server v1 has been enabled",
+        "item": "snmp-server version v1 enable"
+    },
+    "custom_item_21": {
+        "description": "Check if SNMP server v2c has been enabled",
+        "item": "snmp-server version v2c enable"
+    },
+    "custom_item_22": {
+        "description": "Check if SNMP server v3 has been enabled",
+        "item": "snmp-server version v3 enable"
+    },
+    "custom_item_23": {
+        "description": "1.4 SNMP Security - a) SNMP Community Security",
+        "info": "Modify the default Community password of SNMP to prevent hackers from using the same Community to obtain sensitive device information and attack ROSNG series products.",
+        "solution": "Configuring VIEW-based read/write access capability\n\n        ZXR10#config terminal\n\n        Enter configuration commands, one per line. End with CNTL/Z.\n        ZXR10 (config)# snmp-server community my_readonly view AllView ro\n        ZXR10 (config)# snmp-server community my_readwrite view AllView rw",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^snmp-server community encrypted .{60}.* view AllView (ro|rw)"
+    },
+    "custom_item_24": {
+        "description": "1.4 SNMP Security - b) SNMP server",
+        "info": "Specify SNMP server, restrict the management address, prevent untrusted networks from connecting to snmp, and reduce the possibility of ROSNG products being attacked.",
+        "solution": "Configure the snmp Server:\n\n        ZXR10#config terminal\n\n        Enter configuration commands, one per line. End with CNTL/Z.\n        ZXR10 (config)## ipv4-access-list snmp_acl\n        ZXR10 (config-ipv4-acl)#rule 1 permit 14.2.6.60 0.0.0.0\n        ZXR10 (config-ipv4-acl)#exit\n        ZXR10 (config)# snmp-server access-list ipv4 snmp_acl",
+        "reference": "800-171|3.13.1,800-53|SC-7(11),800-53r5|SC-7(11),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(11),NESA|T4.5.4,NIAv2|GS7c,PCI-DSSv3.2.1|1.3.1,PCI-DSSv3.2.1|1.3.2,PCI-DSSv3.2.1|1.3.3,PCI-DSSv3.2.1|1.3.5,PCI-DSSv4.0|1.3.1,PCI-DSSv4.0|1.4.2,PCI-DSSv4.0|1.4.3,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|31.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^snmp-server access-list ipv(4|6) .+"
+    },
+    "custom_item_25": {
+        "description": "1.4 SNMP Security - c) SNMP Security Protection Function",
+        "info": "Enable the SNMP security function to restrict the number of times of management address, prevent hackers from malicious attacks, and improve the security of ROSNG series products.",
+        "solution": "Enable security protection:\n        ZXR10 (config)#snmp-server security block 200  15 100 when 10 60",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^snmp-server security block .+"
+    },
+    "custom_item_26": {
+        "description": "Check for if ftp-server is enabled",
+        "item": "ftp-server enable"
+    },
+    "custom_item_27": {
+        "description": "Check for if sftp-server is enabled",
+        "item": "sftp-server enable"
+    },
+    "custom_item_28": {
+        "description": "Check if SSH server is enabled",
+        "item": "^ssh server enable"
+    },
+    "custom_item_29": {
+        "description": "Check if sftp top-directory has been configured",
+        "item": ".*sftp top-directory"
+    },
+    "custom_item_30": {
+        "description": "1.5 FTP/SFTP Access Authorization - sftp top-directory",
+        "info": "Set ftp upload and download file permission control to facilitate the separate control of different users and different permissions, and strengthen the security of ROSNG series products.",
+        "solution": "Under authorization-template, configure the corresponding ftp permissions, such as:\n\n        ZXR10 (config-system-user-author-temp) #sftp top-directory /datadisk0/ read-only",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*sftp top-directory"
+    },
+    "custom_item_31": {
+        "description": "1.5 FTP/SFTP Access Authorization - login-type-allowed",
+        "info": "Set ftp upload and download file permission control to facilitate the separate control of different users and different permissions, and strengthen the security of ROSNG series products.",
+        "solution": "Close the ftp access channel, for example:\n\n           ZXR10 (config)# no ftp-server enable\n           ZXR10 (config-system-user-author-temp)# login-type-allowed ssh.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*login-type-allowed ssh"
+    },
+    "custom_item_32": {
+        "description": "Check if ciphersuite is configured",
+        "item": ".*ciphersuite .+"
+    },
+    "custom_item_33": {
+        "description": "Check if web secure-server ssl-context is configured",
+        "item": "web secure-server ssl-context .+"
+    },
+    "custom_item_34": {
+        "description": "1.6 Support Web Access Security - a) ciphersuite",
+        "info": "Provide secure HTTPS webpage access between the local device and users, and a secure transmission channel for users' Web management devices. Avoid interception of intermediate data. If the login page needs to be displayed in the WEB, the login username and password can be used to access the page, meeting the scanning requirements of security tools such as nessus, webinspect, and AWE.",
+        "solution": "1. use HTTPS instead of HTTP, SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n       2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n       3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*ciphersuite.+((-md5 |-sha |-cbc-sha )|(-md5$|-sha$|-cbc-sha$))"
+    },
+    "custom_item_35": {
+        "description": "1.6 Support Web Access Security - b) ssl-context field",
+        "info": "Provide secure HTTPS webpage access between the local device and users, and a secure transmission channel for users' Web management devices. Avoid interception of intermediate data. If the login page needs to be displayed in the WEB, the login username and password can be used to access the page, meeting the scanning requirements of security tools such as nessus, webinspect, and AWE.",
+        "solution": "1. use HTTPS instead of HTTP, SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n       2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n       3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "web secure-server ssl-context .+"
+    },
+    "custom_item_36": {
+        "description": "Check if version is configured",
+        "item": ".*version .+"
+    },
+    "custom_item_37": {
+        "description": "Check if SSL version is not of SSL2.0, SSL3.0, TLS1.0",
+        "item": ".*version (ssl2.0|ssl3.0|tls1.0)"
+    },
+    "custom_item_38": {
+        "description": "Check if SSL version is not of SSL2.0, SSL3.0, TLS1.0",
+        "item": ".*version tls1.1"
+    },
+    "custom_item_39": {
+        "description": "1.6 Support Web Access Security - c) version",
+        "info": "Provide secure HTTPS webpage access between the local device and users, and a secure transmission channel for users' Web management devices. Avoid interception of intermediate data. If the login page needs to be displayed in the WEB, the login username and password can be used to access the page, meeting the scanning requirements of security tools such as nessus, webinspect, and AWE.",
+        "solution": "1. use HTTPS instead of HTTP, SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n             2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n             3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*version tls(1.2|1.3) ?(tls1.3)?"
+    },
+    "custom_item_40": {
+        "description": "1.7 Log Auditing",
+        "info": "Generate logs for auditable events and record at least the following information in each audit record:\n     1) Date and time when the event occurs\n     2) Event type\n     3) Administrator identity\n     4) Event Result (succeed or fail)",
+        "solution": "Configure the log type and permission of the user authorization template:\n\n     ZXR10(config-system-user)#authorization-template 1\n        ZXR10(config-system-user-author-temp)#logfile-allowed cmd-log read-only",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*logfile-allowed .+"
+    },
+    "custom_item_41": {
+        "description": "1.8 SSH Strong Algorithm - a) Disable encryption none",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption none disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption none disable"
+    },
+    "custom_item_42": {
+        "description": "1.8 SSH Strong Algorithm - b) Disable encryption 3des-cbc",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption 3des-cbc disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption 3des-cbc disable"
+    },
+    "custom_item_43": {
+        "description": "1.8 SSH Strong Algorithm - c) Disable encryption aes128-cbc",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption aes128-cbc disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption aes128-cbc disable"
+    },
+    "custom_item_44": {
+        "description": "1.8 SSH Strong Algorithm - d) Disable encryption aes192-cbc",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption aes192-cbc disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption aes192-cbc disable"
+    },
+    "custom_item_45": {
+        "description": "1.8 SSH Strong Algorithm - e) Disable encryption aes256-cbc",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption aes256-cbc disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption aes256-cbc disable"
+    },
+    "custom_item_46": {
+        "description": "1.8 SSH Strong Algorithm - f) Disable encryption blowfish-cbc",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server encryption blowfish-cbc disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server encryption blowfish-cbc disable"
+    },
+    "custom_item_47": {
+        "description": "1.8 SSH Strong Algorithm - g) Disable hmac md5",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server hmac md5 disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server hmac md5 disable"
+    },
+    "custom_item_48": {
+        "description": "1.8 SSH Strong Algorithm - h) Disable hmac none",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server hmac none disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server hmac none disable"
+    },
+    "custom_item_49": {
+        "description": "1.8 SSH Strong Algorithm - i) Disable diffie-hellman group-exchange-sha1",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server diffie-hellman group-exchange-sha1 disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server diffie-hellman group-exchange-sha1 disable"
+    },
+    "custom_item_50": {
+        "description": "1.8 SSH Strong Algorithm - j) Disable diffie-hellman group1-sha1",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server diffie-hellman group1-sha1 disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server diffie-hellman group1-sha1 disable"
+    },
+    "custom_item_51": {
+        "description": "1.8 SSH Strong Algorithm - k) Disable hmac sha1",
+        "info": "Disable the weak algorithm of the ssh to interact with the client through the strong algorithm in the ssh connection, and provide security protection for the ROSNG series products.",
+        "solution": "Disable the ssh weak algorithm:\n\n     ZXR10 (config)#ssh server diffie-hellman group1-sha1 disable",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ssh server hmac sha1 disable"
+    },
+    "custom_item_52": {
+        "description": "Check if ssl version has been configured",
+        "item": ".*version .+",
+        "section": "ssl"
+    },
+    "custom_item_53": {
+        "description": "Check if SSL version is not of SSL2.0, SSL3.0, TLS1.0",
+        "item": ".*version (ssl2.0|ssl3.0|tls1.0)",
+        "section": "ssl"
+    },
+    "custom_item_54": {
+        "description": "Check if SSL version is not of SSL2.0, SSL3.0, TLS1.0",
+        "item": ".*version tls1.1",
+        "section": "ssl"
+    },
+    "custom_item_55": {
+        "description": "1.9 SSL Strong Algorithm - a) Version",
+        "info": "There is a security risk to the ssl lower versions of the equipment. The device can be configured to support higher versions and algorithms only to reduce the connection risk of the ROSNG series products.",
+        "solution": "1. SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n         2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n         3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5\n         4. Disable renegotiate",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "version tls(1.2|1.3) ?(tls1.3)?",
+        "section": "ssl"
+    },
+    "custom_item_56": {
+        "description": "1.9 SSL Strong Algorithm - b) ciphersuite",
+        "info": "There is a security risk to the ssl lower versions of the equipment. The device can be configured to support higher versions and algorithms only to reduce the connection risk of the ROSNG series products.",
+        "solution": "1. SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n      2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n      3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5\n      4. Disable renegotiate",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*ciphersuite.+((-md5 |-sha1 |-cbc-sha )|(-md5$|-sha1$|-cbc-sha$))",
+        "section": "ssl"
+    },
+    "custom_item_57": {
+        "description": "1.9 SSL Strong Algorithm - c) pki-profile",
+        "info": "There is a security risk to the ssl lower versions of the equipment. The device can be configured to support higher versions and algorithms only to reduce the connection risk of the ROSNG series products.",
+        "solution": "1. SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n      2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n      3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5\n      4. Disable renegotiate",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "pki-profile .+",
+        "section": "ssl"
+    },
+    "custom_item_58": {
+        "description": "1.9 SSL Strong Algorithm - d) renegotiate",
+        "info": "There is a security risk to the ssl lower versions of the equipment. The device can be configured to support higher versions and algorithms only to reduce the connection risk of the ROSNG series products.",
+        "solution": "1. SSL must bound PKI profile, the bounded PKI profile needs to import a legal and valid CA certificate\n      2. TLS(SSL) version is recommended to be greater than TLS v1.2, at least not less than TLS v1.1.\n      3. TLS algorithm does not contain insecure algorithms, which include: CBC, SHA1, MD5\n      4. Disable renegotiate",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "renegotiate disable",
+        "section": "ssl"
+    },
+    "custom_item_59": {
+        "description": "2.1 Protection Policy for the CPS Control Engine",
+        "info": "Generate logs for auditable events and record at least the following information in each audit record:\n     1) Date and time when the event occurs\n     2) Event type\n     3) Administrator identity\n     4) Event Result (succeed or fail)",
+        "solution": "ZXR10 (config-cps-policy)#ipv6-black-list match ipv6-access-list blackv6",
+        "reference": "800-171|3.13.1,800-53|SC-7(11),800-53r5|SC-7(11),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(11),NESA|T4.5.4,NIAv2|GS7c,PCI-DSSv3.2.1|1.3.1,PCI-DSSv3.2.1|1.3.2,PCI-DSSv3.2.1|1.3.3,PCI-DSSv3.2.1|1.3.5,PCI-DSSv4.0|1.3.1,PCI-DSSv4.0|1.4.2,PCI-DSSv4.0|1.4.3,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|31.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^control-plane-security",
+        "item": "ipv(4|6)-(white|black)-list match ipv(4|6)-access-list .+"
+    },
+    "custom_item_60": {
+        "description": "2.2 NTP Security Protection - a) Enable NTP",
+        "info": "From the perspective of security, the equipment should support the NTP clock synchronization protocol to ensure that all the equipment in the network have the same clock and that the log timestamps are correct. ROSNG supports the NTP protocol.\n\n        In addition, in order to ensure the security of the NTP protocol, it supports ACL filtering to limit NTP packets that enter the IP network device from the external network, and allows MD5 authentication on NTP sessions.",
+        "solution": "It is recommended to config NTP for clock synchronization.\n\n     ZXR10(config)#ntp enable",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "^ntp enable"
+    },
+    "custom_item_61": {
+        "description": "2.2 NTP Security Protection - b) NTP access-group",
+        "info": "From the perspective of security, the equipment should support the NTP clock synchronization protocol to ensure that all the equipment in the network have the same clock and that the log timestamps are correct. ROSNG supports the NTP protocol.\n\n        In addition, in order to ensure the security of the NTP protocol, it supports ACL filtering to limit NTP packets that enter the IP network device from the external network, and allows MD5 authentication on NTP sessions.",
+        "solution": "It is recommended to config NTP for clock synchronization, and also set the ipv4-access-list filtering rules.\n\n     ZXR10#config terminal\n     ZXR10 (config)#ntp access-group ipv4-access-list xxx",
+        "reference": "800-171|3.13.1,800-53|SC-7(11),800-53r5|SC-7(11),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(11),NESA|T4.5.4,NIAv2|GS7c,PCI-DSSv3.2.1|1.3.1,PCI-DSSv3.2.1|1.3.2,PCI-DSSv3.2.1|1.3.3,PCI-DSSv3.2.1|1.3.5,PCI-DSSv4.0|1.3.1,PCI-DSSv4.0|1.4.2,PCI-DSSv4.0|1.4.3,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|31.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "(^ntp access-group ipv(4|6)-access-list .+|^ntp access-group ipv(4|6)-server-only .+)"
+    },
+    "custom_item_62": {
+        "description": "2.2 NTP Security Protection - c) NTP Auth-key encrypted",
+        "info": "From the perspective of security, the equipment should support the NTP clock synchronization protocol to ensure that all the equipment in the network have the same clock and that the log timestamps are correct. ROSNG supports the NTP protocol.\n\n        In addition, in order to ensure the security of the NTP protocol, it supports ACL filtering to limit NTP packets that enter the IP network device from the external network, and allows MD5 authentication on NTP sessions.",
+        "solution": "It is recommended to config NTP for clock synchronization, and also set the ipv4-access-list filtering rules and authentication key.\n\n     ZXR10#config terminal\n     ZXR10 (config)#ntp authenticate\n     ZXR10 (config)#ntp authentication-key 1 md5 clear xxxxxxx\n     ZXR10 (config)#ntp trusted-key 1",
+        "reference": "800-171|3.3.7,800-53|AU-8(1),800-53r5|SC-45(1),CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.4,ITSG-33|AU-8(1),NESA|T3.6.7,NIAv2|NS44,NIAv2|NS45,NIAv2|NS46,NIAv2|NS47,PCI-DSSv3.2.1|10.4,PCI-DSSv3.2.1|10.4.1,PCI-DSSv3.2.1|10.4.3,PCI-DSSv4.0|10.6,PCI-DSSv4.0|10.6.1,PCI-DSSv4.0|10.6.2,PCI-DSSv4.0|10.6.3,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "ntp authentication-key .+ md5 encrypted .+"
+    },
+    "custom_item_63": {
+        "description": "Check if inter-vlan-proxy has been configured",
+        "context": "^arp",
+        "item": ".*inter-vlan-proxy"
+    },
+    "custom_item_64": {
+        "description": "Check if local-proxy-arp has been configured",
+        "context": "^arp",
+        "item": ".*local-proxy-arp"
+    },
+    "custom_item_65": {
+        "description": "Check if proxy has been configured",
+        "context": "^arp",
+        "item": ".*proxy"
+    },
+    "custom_item_66": {
+        "description": "Check if proxy local has been configured",
+        "context": "^arp",
+        "item": ".*proxy local"
+    },
+    "custom_item_67": {
+        "description": "2.3 Disable the Proxy ARP Function - a) No proxy",
+        "info": "PROXY ARP should be used in networks where the host is not configured with default gateway or there is no routing policy.\n\n      PROXY ARP has negative effects:\n      1. ARP traffic on one network segment is increased\n      2. The host needs a larger ARP table to process the mapping from IP address to MAC address\n      3. Security problems are available, such as ARP spoofing (spoofing)\n      4. Does not work for a network that does not use ARP to parse addresses\n      5. Network topology cannot be summarized and promoted",
+        "solution": "Disable the functions related to Proxy ARP:\n\n      ZXR10 (config)#arp\n      ZXR10 (config-arp)#interface fei-0/1/1/13\n      ZXR10 (config-arp-if)#no proxy\n      ZXR10 (config-arp-if)#no inter-vlan-proxy\n      ZXR10 (config-arp-if)#no proxy local\n      ZXR10 (config-arp-if)#no local-proxy-arp",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^arp",
+        "item": ".*proxy"
+    },
+    "custom_item_68": {
+        "description": "2.3 Disable the Proxy ARP Function - b) No inter-vlan-proxy",
+        "info": "PROXY ARP should be used in networks where the host is not configured with default gateway or there is no routing policy.\n\n      PROXY ARP has negative effects:\n      1. ARP traffic on one network segment is increased\n      2. The host needs a larger ARP table to process the mapping from IP address to MAC address\n      3. Security problems are available, such as ARP spoofing (spoofing)\n      4. Does not work for a network that does not use ARP to parse addresses\n      5. Network topology cannot be summarized and promoted",
+        "solution": "Disable the functions related to Proxy ARP:\n\n      ZXR10 (config)#arp\n      ZXR10 (config-arp)#interface fei-0/1/1/13\n      ZXR10 (config-arp-if)#no proxy\n      ZXR10 (config-arp-if)#no inter-vlan-proxy\n      ZXR10 (config-arp-if)#no proxy local\n      ZXR10 (config-arp-if)#no local-proxy-arp",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^arp",
+        "item": ".*inter-vlan-proxy"
+    },
+    "custom_item_69": {
+        "description": "2.3 Disable the Proxy ARP Function - c) No proxy local",
+        "info": "PROXY ARP should be used in networks where the host is not configured with default gateway or there is no routing policy.\n\n      PROXY ARP has negative effects:\n      1. ARP traffic on one network segment is increased\n      2. The host needs a larger ARP table to process the mapping from IP address to MAC address\n      3. Security problems are available, such as ARP spoofing (spoofing)\n      4. Does not work for a network that does not use ARP to parse addresses\n      5. Network topology cannot be summarized and promoted",
+        "solution": "Disable the functions related to Proxy ARP:\n\n      ZXR10 (config)#arp\n      ZXR10 (config-arp)#interface fei-0/1/1/13\n      ZXR10 (config-arp-if)#no proxy\n      ZXR10 (config-arp-if)#no inter-vlan-proxy\n      ZXR10 (config-arp-if)#no proxy local\n      ZXR10 (config-arp-if)#no local-proxy-arp",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^arp",
+        "item": ".*proxy local"
+    },
+    "custom_item_70": {
+        "description": "2.3 Disable the Proxy ARP Function - d) No local-proxy-arp",
+        "info": "PROXY ARP should be used in networks where the host is not configured with default gateway or there is no routing policy.\n\n      PROXY ARP has negative effects:\n      1. ARP traffic on one network segment is increased\n      2. The host needs a larger ARP table to process the mapping from IP address to MAC address\n      3. Security problems are available, such as ARP spoofing (spoofing)\n      4. Does not work for a network that does not use ARP to parse addresses\n      5. Network topology cannot be summarized and promoted",
+        "solution": "Disable the functions related to Proxy ARP:\n\n      ZXR10 (config)#arp\n      ZXR10 (config-arp)#interface fei-0/1/1/13\n      ZXR10 (config-arp-if)#no proxy\n      ZXR10 (config-arp-if)#no inter-vlan-proxy\n      ZXR10 (config-arp-if)#no proxy local\n      ZXR10 (config-arp-if)#no local-proxy-arp",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^arp",
+        "item": ".*local-proxy-arp"
+    },
+    "custom_item_71": {
+        "description": "2.4 Disable the IP Unreachable Function",
+        "info": "The ROSNG system product no longer uses U to respond to the icmp request.\n\n     Use icmp unreachable and change the source address to the address of the attacking device to prevent smurf attack",
+        "solution": "ZXR10#config terminal\n     ZXR10 (config)#icmp-config\n     ZXR10 (config-icmp)# interface fei-0/2/1/7\n     ZXR10 (config-icmp-if)#no ip unreachable\n     ZXR10 (config-icmp-if)#no ipv6 unreachable\n     ZXR10 (config-icmp-if)#end",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "context": "^icmp-config",
+        "item": ".*(ip|ipv6) unreachable disable"
+    },
+    "custom_item_72": {
+        "description": "2.5 Product Default Banner",
+        "info": "Use the banner to modify the system greeting so as to prevent hackers from malicious access to ROSNG system product information.",
+        "solution": "Configure the system greeting:\n\n     ZXR10 (config)#banner incoming C\n     Enter TEXT message. End with the character 'C'.\n     'Your greeting message'\n     C\n     ZXR10 (config)#",
+        "reference": "800-171|3.1.9,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8,NESA|M1.3.6,TBA-FIISB|45.2.4",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": "banner incoming .+",
+        "section": "system-config"
+    },
+    "custom_item_73": {
+        "description": "Check if ospf routing has been configured",
+        "item": "router ospf .+"
+    },
+    "custom_item_74": {
+        "description": "3.1 Authentication and Verification of OSPF Routing Protocols - authentication message-digest",
+        "info": "To improve network security, the OSPF routing algorithm should support MD5 encryption authentication",
+        "solution": "Enable MD5 authentication\n\n      ZXR10 (config-ospf-100-area-1)#authentication message-digest\n      ZXR10 (config-ospf-100-if-fei-0/1/0/8.1)#authentication message-digest\n      ZXR10 (config-ospf-100-if-fei-0/1/0/8.1)#message-digest-key 1 md5 fffff",
+        "reference": "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*authentication message-digest"
+    },
+    "custom_item_75": {
+        "description": "3.1 Authentication and Verification of OSPF Routing Protocols - message-digest-key",
+        "info": "To improve network security, the OSPF routing algorithm should support MD5 encryption authentication",
+        "solution": "Enable MD5 authentication\n\n      ZXR10 (config-ospf-100-area-1)#authentication message-digest\n      ZXR10 (config-ospf-100-if-fei-0/1/0/8.1)#authentication message-digest\n      ZXR10 (config-ospf-100-if-fei-0/1/0/8.1)#message-digest-key 1 md5 fffff",
+        "reference": "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*message-digest-key .+ md5 .+"
+    },
+    "custom_item_76": {
+        "description": "Check if ISIS routing has been configured",
+        "item": "router isis .+"
+    },
+    "custom_item_77": {
+        "description": "Check if ISIS routing has been configured",
+        "item": ".*authentication-type hmac-md5"
+    },
+    "custom_item_78": {
+        "description": "Check if ISIS routing has been configured",
+        "context": "router isis",
+        "item": ".*authentication .+"
+    },
+    "custom_item_79": {
+        "description": "3.2 Authentication and Verification of ISIS Routing Protocols - authentication-type hmac-md5",
+        "info": "To improve network security, the ISIS routing algorithm should support HMAC-MD5 encryption authentication",
+        "solution": "Enable HMAC-MD5 authentication.\n\n       ZXR10 (config-isis-100-if-fei-0/1/0/8.1)#authentication-type hmac-md5\n       ZXR10 (config-isis-100-if-fei-0/1/0/8.1)#authentication kkk\n       ZXR10 (config-isis-100)#authentication-type hmac-md5\n       ZXR10 (config-isis-100)#authentication ffff",
+        "reference": "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*authentication-type hmac-md5"
+    },
+    "custom_item_80": {
+        "description": "3.2 Authentication and Verification of ISIS Routing Protocols - authentication",
+        "info": "To improve network security, the ISIS routing algorithm should support HMAC-MD5 encryption authentication",
+        "solution": "Enable HMAC-MD5 authentication.\n\n       ZXR10 (config-isis-100-if-fei-0/1/0/8.1)#authentication-type hmac-md5\n       ZXR10 (config-isis-100-if-fei-0/1/0/8.1)#authentication kkk\n       ZXR10 (config-isis-100)#authentication-type hmac-md5\n       ZXR10 (config-isis-100)#authentication ffff",
+        "reference": "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*authentication .+"
+    },
+    "custom_item_81": {
+        "description": "Check if bgp routing has been configured",
+        "item": "router bgp .+"
+    },
+    "custom_item_82": {
+        "description": "3.3 Authentication and Verification of BGP Routing Protocols",
+        "info": "To improve network security, BGP must support MD5 encryption authentication.",
+        "solution": "Enable MD5 authentication.\n\n     R1 (config-bgp-100)#neighbor 100.100.100.2 password xxx",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://support.zte.com.cn/support/doccenter/DocumentProductHandBookDetail.aspx?sid=102&id=30768582&type=docfeedback",
+        "item": ".*neighbor .+ password encrypted .+"
+    }
+}

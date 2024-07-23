@@ -1,0 +1,456 @@
+{
+    "custom_item_1": {
+        "description": "Check if MacOS is installed",
+        "cmd": "/usr/bin/sw_vers | /usr/bin/grep 'ProductName'",
+        "expect": "^ProductName[\\\\s]*:[\\\\s]*(macOS|Mac OS X)"
+    },
+    "custom_item_2": {
+        "system": "Darwin",
+        "description": "FFOX-00-000001 - The installed version of Firefox must be supported.",
+        "info": "Using versions of an application that are not supported by the vendor is not permitted. Vendors respond to security flaws with updates and patches. These updates are not available for unsupported versions, which can leave the application vulnerable to attack.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Upgrade the version of the browser to an approved version by obtaining software from the vendor or other trusted source.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|I,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-251545r879827_rule,STIG-ID|FFOX-00-000001,SWIFT-CSCv1|2.2,Vuln-ID|V-251545",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "cmd": "/Applications/Firefox.app/Contents/MacOS/firefox -v",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_3": {
+        "system": "Darwin",
+        "description": "FFOX-00-000002 - Firefox must be configured to allow only TLS 1.2 or above.",
+        "info": "Use of versions prior to TLS 1.2 are not permitted. SSL 2.0 and SSL 3.0 contain a number of security flaws. These versions must be disabled in compliance with the Network Infrastructure and Secure Remote Computing STIGs.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|I,CCI|CCI-001453,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-251546r879889_rule,STIG-ID|FFOX-00-000002,SWIFT-CSCv1|2.6,Vuln-ID|V-251546",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "tls1.[23]",
+        "plist_item": "SSLVersionMin",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_4": {
+        "system": "Darwin",
+        "description": "FFOX-00-000003 - Firefox must be configured to ask which certificate to present to a website when a certificate is required.",
+        "info": "When a website asks for a certificate for user authentication, Firefox must be configured to have the user choose which certificate to present. Websites within DoD require user authentication for access, which increases security for DoD information. Access will be denied to the user if certificate management is not configured.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(c),800-53r5|IA-5(2)(c),CAT|II,CCI|CCI-000187,CSF|PR.AC-1,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(c),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-251547r879614_rule,STIG-ID|FFOX-00-000003,Vuln-ID|V-251547",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"security.default_personal_cert\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+\"Ask Every Time\";",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_5": {
+        "system": "Darwin",
+        "description": "FFOX-00-000004 - Firefox must be configured to not automatically check for updated versions of installed search plugins.",
+        "info": "Updates must be controlled and installed from authorized and trusted servers. This setting overrides a number of other settings that may direct the application to access external URLs.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251548r879587_rule,STIG-ID|FFOX-00-000004,SWIFT-CSCv1|2.3,Vuln-ID|V-251548",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"browser.search.update\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_6": {
+        "system": "Darwin",
+        "description": "FFOX-00-000005 - Firefox must be configured to not automatically update installed add-ons and plugins.",
+        "info": "Set this to false to disable checking for updated versions of the Extensions/Themes. Automatic updates from untrusted sites puts the enclave at risk of attack and may override security settings.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Extensions\nPolicy Name: Extension Update\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:ExtensionUpdateLinux 'policies.json' file:\nAdd the following in the policies section:\n'ExtensionUpdate': false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251549r879587_rule,STIG-ID|FFOX-00-000005,SWIFT-CSCv1|2.3,Vuln-ID|V-251549",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "0",
+        "plist_item": "ExtensionUpdate",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_7": {
+        "system": "Darwin",
+        "description": "FFOX-00-000007 - Firefox must be configured to disable form fill assistance.",
+        "info": "To protect privacy and sensitive data, Firefox provides the ability to configure the program so that data entered into forms is not saved. This mitigates the risk of a website gleaning private information from prefilled information.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Form History\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisableFormHistoryLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisableFormHistory': true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251551r879587_rule,STIG-ID|FFOX-00-000007,SWIFT-CSCv1|2.3,Vuln-ID|V-251551",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableFormHistory",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_8": {
+        "system": "Darwin",
+        "description": "FFOX-00-000008 - Firefox must be configured to not use a password store with or without a master password.",
+        "info": "Firefox can be set to store passwords for sites visited by the user. These individual passwords are stored in a file and can be protected by a master password. Autofill of the password can then be enabled when the site is visited. This feature could also be used to autofill the certificate PIN, which could lead to compromise of DoD information.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: PasswordManager\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:PasswordManagerEnabledLinux 'policies.json' file:\nAdd the following in the policies section:\n'PasswordManagerEnabled': false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251552r879587_rule,STIG-ID|FFOX-00-000008,SWIFT-CSCv1|2.3,Vuln-ID|V-251552",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "0",
+        "plist_item": "PasswordManagerEnabled",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_9": {
+        "system": "Darwin",
+        "description": "Default",
+        "regex": "[\\\\s]+Default[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "PopupBlocking",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_10": {
+        "system": "Darwin",
+        "description": "Locked",
+        "regex": "[\\\\s]+Locked[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "PopupBlocking",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_11": {
+        "system": "Darwin",
+        "description": "Allowed Sites",
+        "regex": "[\\\\s]+Allow[\\\\s]*=[\\\\s]*\\(.+\\);",
+        "plist_item": "PopupBlocking",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_12": {
+        "system": "Darwin",
+        "description": "FFOX-00-000010 - Firefox must be configured to prevent JavaScript from moving or resizing windows.",
+        "info": "JavaScript can make changes to the browser's appearance. This activity can help disguise an attack taking place in a minimized background window. Configure the browser setting to prevent scripts on visited websites from moving and resizing browser windows.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251554r879587_rule,STIG-ID|FFOX-00-000010,SWIFT-CSCv1|2.3,Vuln-ID|V-251554",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"dom.disable_window_move_resize\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_13": {
+        "system": "Darwin",
+        "description": "FFOX-00-000011 - Firefox must be configured to prevent JavaScript from raising or lowering windows.",
+        "info": "JavaScript can raise and lower browser windows to cause improper input. Configure the browser setting to prevent scripts on visited websites from raising and lowering browser windows.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251555r879587_rule,STIG-ID|FFOX-00-000011,SWIFT-CSCv1|2.3,Vuln-ID|V-251555",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"dom.disable_window_flip\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_14": {
+        "system": "Darwin",
+        "description": "FFOX-00-000013 - Firefox must be configured to disable the installation of extensions.",
+        "info": "A browser extension is a program that has been installed into the browser to add functionality. Where a plug-in interacts only with a web page and usually a third-party external application (e.g., Flash, Adobe Reader), an extension interacts with the browser program itself. Extensions are not embedded in web pages and must be downloaded and installed in order to work. Extensions allow browsers to avoid restrictions that apply to web pages.\n\nFor example, an extension can be written to combine data from multiple domains and present it when a certain page is accessed, which can be considered cross-site scripting. If a browser is configured to allow unrestricted use of extensions, plug-ins can be loaded and installed from malicious sources and used on the browser.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Addons\nPolicy Name: Allow add-on installs from websites\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:InstallAddonsPermissionLinux 'policies.json' file:\nAdd the following in the policies section:\n'InstallAddonsPermission': {\n      'Default': false\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251557r879587_rule,STIG-ID|FFOX-00-000013,SWIFT-CSCv1|2.3,Vuln-ID|V-251557",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "0",
+        "plist_item": "InstallAddonsPermission",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_15": {
+        "system": "Darwin",
+        "description": "FFOX-00-000014 - Background submission of information to Mozilla must be disabled.",
+        "info": "Firefox by default sends information about Firefox to Mozilla servers. There should be no background submission of technical and other information from DoD computers to Mozilla with portions posted publicly.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Telemetry\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisableTelemetryLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisableTelemetry': true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251558r879587_rule,STIG-ID|FFOX-00-000014,SWIFT-CSCv1|2.3,Vuln-ID|V-251558",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableTelemetry",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_16": {
+        "system": "Darwin",
+        "description": "FFOX-00-000015 - Firefox development tools must be disabled.",
+        "info": "Information needed by an attacker to begin looking for possible vulnerabilities in a web browser includes any information about the web browser and plug-ins or modules being used. When debugging or trace information is enabled in a production web browser, information about the web browser, such as web browser type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any back ends being used for data storage may be displayed. Because this information may be placed in logs and general messages during normal operation of the web browser, an attacker does not have to cause an error condition to gain this information.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Developer Tools\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisableDeveloperToolsLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisableDeveloperTools': true",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|III,CCI|CCI-001312,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-251559r879655_rule,STIG-ID|FFOX-00-000015,Vuln-ID|V-251559",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableDeveloperTools",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_17": {
+        "system": "Darwin",
+        "description": "Cache",
+        "regex": "[\\\\s]Cache[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_18": {
+        "system": "Darwin",
+        "description": "Cookies",
+        "regex": "[\\\\s]Cookies[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_19": {
+        "system": "Darwin",
+        "description": "Downloads",
+        "regex": "[\\\\s]Downloads[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_20": {
+        "system": "Darwin",
+        "description": "FormData",
+        "regex": "[\\\\s]FormData[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_21": {
+        "system": "Darwin",
+        "description": "History",
+        "regex": "[\\\\s]History[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_22": {
+        "system": "Darwin",
+        "description": "Sessions",
+        "regex": "[\\\\s]Sessions[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_23": {
+        "system": "Darwin",
+        "description": "SiteSettings",
+        "regex": "[\\\\s]SiteSettings[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_24": {
+        "system": "Darwin",
+        "description": "OfflineApps",
+        "regex": "[\\\\s]OfflineApps[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_25": {
+        "system": "Darwin",
+        "description": "Locked",
+        "regex": "[\\\\s]Locked[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "SanitizeOnShutdown",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_26": {
+        "system": "Darwin",
+        "description": "FFOX-00-000018 - Firefox must prevent the user from quickly deleting data.",
+        "info": "There should not be an option for a user to 'forget' work they have done. This is required to meet non-repudiation controls.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Forget Button\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisableForgetButtonLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisableForgetButton': true",
+        "reference": "800-53|AC-24(2),800-53r5|AC-24(2),CAT|II,CCI|CCI-002355,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-251562r879703_rule,STIG-ID|FFOX-00-000018,Vuln-ID|V-251562",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableForgetButton",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_27": {
+        "system": "Darwin",
+        "description": "FFOX-00-000019 - Firefox private browsing must be disabled.",
+        "info": "Private browsing allows the user to browse the internet without recording their browsing history/activity. From a forensics perspective, this is unacceptable. Best practice requires that browser history is retained.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Private Browsing\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisablePrivateBrowsingLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisablePrivateBrowsing': true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251563r879587_rule,STIG-ID|FFOX-00-000019,SWIFT-CSCv1|2.3,Vuln-ID|V-251563",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisablePrivateBrowsing",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_28": {
+        "system": "Darwin",
+        "description": "FFOX-00-000020 - Firefox search suggestions must be disabled.",
+        "info": "Search suggestions must be disabled as this could lead to searches being conducted that were never intended to be made.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Search\nPolicy Name: Search Suggestions\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:SearchSuggestEnabledLinux 'policies.json' file:\nAdd the following in the policies section:\n'SearchSuggestEnabled': false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251564r879587_rule,STIG-ID|FFOX-00-000020,SWIFT-CSCv1|2.3,Vuln-ID|V-251564",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "0",
+        "plist_item": "SearchSuggestEnabled",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_29": {
+        "system": "Darwin",
+        "description": "FFOX-00-000021 - Firefox autoplay must be disabled.",
+        "info": "Autoplay allows the user to control whether videos can play automatically (without user consent) with audio content. The user must be able to select content that is run within the browser window.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Permissions\\Autoplay\nPolicy Name: Default autoplay level\nPolicy State: Enabled\nPolicy Value: Block Audio and Video\n\nmacOS 'plist' file:\nAdd the following:PermissionsAutoplayblock-audio-videoLinux 'policies.json' file:\nAdd the following in the policies section:\n'Permissions': {\n  'Autoplay': {\n    'Default': 'block-audio-video'\n  }\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251565r879587_rule,STIG-ID|FFOX-00-000021,SWIFT-CSCv1|2.3,Vuln-ID|V-251565",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+Autoplay[\\\\s]+=[\\\\s]+{[\\\\s]+Default[\\\\s]+=[\\\\s]+\"block-audio-video\";",
+        "plist_item": "Permissions",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_30": {
+        "system": "Darwin",
+        "description": "FFOX-00-000022 - Firefox network prediction must be disabled.",
+        "info": "If network prediction is enabled, requests to URLs are made without user consent. The browser should always make a direct DNS request without prefetching occurring.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Network Prediction\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:NetworkPredictionLinux 'policies.json' file:\nAdd the following in the policies section:\n'NetworkPrediction': false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251566r879587_rule,STIG-ID|FFOX-00-000022,SWIFT-CSCv1|2.3,Vuln-ID|V-251566",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "0",
+        "plist_item": "NetworkPrediction",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_31": {
+        "system": "Darwin",
+        "description": "FFOX-00-000023 - Firefox fingerprinting protection must be enabled.",
+        "info": "The Content Blocking/Tracking Protection feature stops Firefox from loading content from malicious sites. The content might be a script or an image, for example. If a site is on one of the tracker lists that Firefox is set to use, the fingerprinting script (or other tracking script/image) will not be loaded from that site.\n\nFingerprinting scripts collect information about browser and device configuration, such as operating system, screen resolution, and other settings. By compiling these pieces of data, fingerprinters create a unique profile that can be used to track the user around the web.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Tracking Protection\nPolicy Name: Fingerprinting\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:EnableTrackingProtectionFingerprintingLinux 'policies.json' file:\nAdd the following in the policies section:\n'EnableTrackingProtection': {\n  'Fingerprinting': true\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251567r879587_rule,STIG-ID|FFOX-00-000023,SWIFT-CSCv1|2.3,Vuln-ID|V-251567",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+Fingerprinting[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "EnableTrackingProtection",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_32": {
+        "system": "Darwin",
+        "description": "FFOX-00-000024 - Firefox cryptomining protection must be enabled.",
+        "info": "The Content Blocking/Tracking Protection feature stops Firefox from loading content from malicious sites. The content might be a script or an image, for example. If a site is on one of the tracker lists that Firefox is set to use, the fingerprinting script (or other tracking script/image) will not be loaded from that site.\n\nCryptomining scripts use a computer's central processing unit to invisibly mine cryptocurrency.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Tracking Protection\nPolicy Name: Cryptomining\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:EnableTrackingProtectionCryptominingLinux 'policies.json' file:\nAdd the following in the policies section:\n'EnableTrackingProtection': {\n  'Cryptomining': true\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251568r879587_rule,STIG-ID|FFOX-00-000024,SWIFT-CSCv1|2.3,Vuln-ID|V-251568",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+Cryptomining[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "EnableTrackingProtection",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_33": {
+        "system": "Darwin",
+        "description": "FFOX-00-000025 - Firefox Enhanced Tracking Protection must be enabled.",
+        "info": "Tracking generally refers to content, cookies, or scripts that can collect browsing data across multiple sites.\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to advertising software or browser plug-ins that are not related to requirements or provide a wide array of functionality not required for every mission but that cannot be disabled.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251569r879587_rule,STIG-ID|FFOX-00-000025,SWIFT-CSCv1|2.3,Vuln-ID|V-251569",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"browser.contentblocking.category\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+strict;",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_34": {
+        "system": "Darwin",
+        "description": "FFOX-00-000026 - Firefox extension recommendations must be disabled.",
+        "info": "The Recommended Extensions program makes it easier for users to discover extensions that have been reviewed for security, functionality, and user experience. Allowed extensions are to be centrally managed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251570r879587_rule,STIG-ID|FFOX-00-000026,SWIFT-CSCv1|2.3,Vuln-ID|V-251570",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"extensions.htmlaboutaddons.recommendations.enabled\"[\\\\s]+=[\\\\s]+{[\\\\s]+Status[\\\\s]+=[\\\\s]+locked;[\\\\s]+Value[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "Preferences",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_35": {
+        "system": "Darwin",
+        "description": "FFOX-00-000027 - Firefox deprecated ciphers must be disabled.",
+        "info": "A weak cipher is defined as an encryption/decryption algorithm that uses a key of insufficient length. Using an insufficient length for a key in an encryption/decryption algorithm opens up the possibility (or probability) that the encryption scheme could be broken.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Disabled Ciphers\nPolicy Name: TLS_RSA_WITH_3DES_EDE_CBC_SHA\nPolicy State: Enabled\n\nmacOS 'plist' file:\nAdd the following:DisabledCiphersTLS_RSA_WITH_3DES_EDE_CBC_SHALinux 'policies.json' file:\nAdd the following in the policies section:\n'DisabledCiphers': {\n  'TLS_RSA_WITH_3DES_EDE_CBC_SHA': true\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251571r879587_rule,STIG-ID|FFOX-00-000027,SWIFT-CSCv1|2.3,Vuln-ID|V-251571",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+\"TLS_RSA_WITH_3DES_EDE_CBC_SHA\"[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "DisabledCiphers",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_36": {
+        "system": "Darwin",
+        "description": "FFOX-00-000028 - Firefox must not recommend extensions as the user is using the browser.",
+        "info": "The Recommended Extensions program recommends extensions to users as they surf the web.\n\nThe user must not be encouraged to install extensions from the websites they visit. Allowed extensions are to be centrally managed.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\User Messaging\nPolicy Name: Extension Recommendations\nPolicy State: Disabled\n\nmacOS 'plist' file:\nAdd the following:UserMessagingExtensionRecommendationsLinux 'policies.json' file:\nAdd the following in the policies section:\n'UserMessaging': {\n  'ExtensionRecommendations': false\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251572r879587_rule,STIG-ID|FFOX-00-000028,SWIFT-CSCv1|2.3,Vuln-ID|V-251572",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+ExtensionRecommendations[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "UserMessaging",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_37": {
+        "system": "Darwin",
+        "description": "Search",
+        "regex": "[\\\\s]+Search[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_38": {
+        "system": "Darwin",
+        "description": "TopSites",
+        "regex": "[\\\\s]+TopSites[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_39": {
+        "system": "Darwin",
+        "description": "SponsoredTopSites",
+        "regex": "[\\\\s]+SponsoredTopSites[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_40": {
+        "system": "Darwin",
+        "description": "Pocket",
+        "regex": "[\\\\s]+Pocket[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_41": {
+        "system": "Darwin",
+        "description": "SponsoredPocket",
+        "regex": "[\\\\s]+SponsoredPocket[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_42": {
+        "system": "Darwin",
+        "description": "Highlights",
+        "regex": "[\\\\s]+Highlights[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_43": {
+        "system": "Darwin",
+        "description": "Snippets",
+        "regex": "[\\\\s]+Snippets[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_44": {
+        "system": "Darwin",
+        "description": "Locked",
+        "regex": "[\\\\s]+Locked[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "FirefoxHome",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_45": {
+        "system": "Darwin",
+        "description": "FFOX-00-000033 - Firefox must be configured so that DNS over HTTPS is disabled.",
+        "info": "DNS over HTTPS has generally not been adopted in the DoD. DNS is tightly controlled.\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, advertising software or browser plug-ins not related to requirements or providing a wide array of functionality not required for every mission, but cannot be disabled.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\DNS Over HTTPS\nPolicy Name: Enabled\nPolicy State: Disabled\n\nmacOS 'plist' file:DNSOverHTTPSEnabledLinux 'policies.json' file:\nAdd the following in the policies section:\n'DNSOverHTTPS': {'Enabled': false}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251577r879587_rule,STIG-ID|FFOX-00-000033,SWIFT-CSCv1|2.3,Vuln-ID|V-251577",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+Enabled[\\\\s]+=[\\\\s]+0;",
+        "plist_item": "DNSOverHTTPS",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_46": {
+        "system": "Darwin",
+        "description": "FFOX-00-000034 - Firefox accounts must be disabled.",
+        "info": "Disable Firefox Accounts integration (Sync).\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to advertising software or browser plug-ins that are not related to requirements or provide a wide array of functionality not required for every mission but that cannot be disabled.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251578r879587_rule,STIG-ID|FFOX-00-000034,SWIFT-CSCv1|2.3,Vuln-ID|V-251578",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableFirefoxAccounts",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_47": {
+        "system": "Darwin",
+        "description": "FFOX-00-000036 - Firefox feedback reporting must be disabled.",
+        "info": "Disable the menus for reporting sites (Submit Feedback, Report Deceptive Site).\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to advertising software or browser plug-ins that are not related to requirements or provide a wide array of functionality not required for every mission but that cannot be disabled.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251580r879587_rule,STIG-ID|FFOX-00-000036,SWIFT-CSCv1|2.3,Vuln-ID|V-251580",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableFeedbackCommands",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_48": {
+        "system": "Darwin",
+        "description": "FFOX-00-000037 - Firefox encrypted media extensions must be disabled.",
+        "info": "Enable or disable Encrypted Media Extensions and optionally lock it.\n\nIf 'Enabled' is set to 'false', Firefox does not download encrypted media extensions (such as Widevine) unless the user consents to installing them.\n\nIf 'Locked' is set to 'true' and 'Enabled' is set to 'false', Firefox will not download encrypted media extensions (such as Widevine) or ask the user to install them.\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to advertising software or browser plug-ins that are not related to requirements or provide a wide array of functionality not required for every mission but that cannot be disabled.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\\Encrypted Media Extensions\nPolicy Name: Enable Encrypted Media Extensions\nPolicy State: Disabled\nPolicy Name: Lock Encrypted Media Extensions\nPolicy State: Enabled\n\nmacOS 'plist' file:EncryptedMediaExtensionsEnabledLockedLinux 'policies.json' file:\nAdd the following in the policies section:\n'EncryptedMediaExtensions': {\n  'Enabled': false,\n  'Locked': true\n}",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-251581r879587_rule,STIG-ID|FFOX-00-000037,SWIFT-CSCv1|2.3,Vuln-ID|V-251581",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "[\\\\s]+Enabled[\\\\s]+=[\\\\s]+0;[\\\\s]+Locked[\\\\s]+=[\\\\s]+1;",
+        "plist_item": "EncryptedMediaExtensions",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_49": {
+        "system": "Darwin",
+        "description": "FFOX-00-000038 - Pocket must be disabled.",
+        "info": "Pocket, previously known as Read It Later, is a social bookmarking service for storing, sharing, and discovering web bookmarks. Data gathering cloud services such as this are generally disabled in the DoD.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Pocket\nPolicy State: Enabled\n\nmacOS 'plist' file:DisablePocketLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisablePocket': true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252908r879587_rule,STIG-ID|FFOX-00-000038,SWIFT-CSCv1|2.3,Vuln-ID|V-252908",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisablePocket",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    },
+    "custom_item_50": {
+        "system": "Darwin",
+        "description": "FFOX-00-000039 - Firefox Studies must be disabled.",
+        "info": "Studies try out different features and ideas before they are released to all Firefox users. Testing beta software is not in the DoD user's mission.",
+        "solution": "Windows group policy:\n1. Open the group policy editor tool with 'gpedit.msc'.\n2. Navigate to Policy Path: Computer Configuration\\Administrative Templates\\Mozilla\\Firefox\nPolicy Name: Disable Firefox Studies\nPolicy State: Enabled\n\nmacOS 'plist' file:DisableFirefoxStudiesLinux 'policies.json' file:\nAdd the following in the policies section:\n'DisableFirefoxStudies': true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MOZ_Firefox_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252909r879587_rule,STIG-ID|FFOX-00-000039,SWIFT-CSCv1|2.3,Vuln-ID|V-252909",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MOZ_Firefox_V6R5_STIG.zip",
+        "regex": "1",
+        "plist_item": "DisableFirefoxStudies",
+        "plist_name": "/Library/Preferences/org.mozilla.firefox"
+    }
+}

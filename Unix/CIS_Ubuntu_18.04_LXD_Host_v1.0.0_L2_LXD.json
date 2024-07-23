@@ -1,0 +1,61 @@
+{
+    "custom_item_1": {
+        "description": "Ubuntu 18.04 is installed",
+        "file": "/etc/lsb-release",
+        "regex": "^[\\\\s]*DISTRIB_RELEASE[\\\\s]*=",
+        "expect": "^[\\\\s]*DISTRIB_RELEASE[\\\\s]*=[\\\\s]*@PLATFORM_VERSION@[\\\\s]*$"
+    },
+    "custom_item_2": {
+        "description": "lxd is installed",
+        "cmd": "/usr/bin/dpkg -s sudo sudo-ldap 2>&1",
+        "expect": "install[\\\\s]+ok[\\\\s]+installed"
+    },
+    "custom_item_3": {
+        "description": "Check that /sys/firmware/efi exists",
+        "file": "/sys/firmware/efi"
+    },
+    "custom_item_4": {
+        "description": "Check that /boot/efi exists",
+        "file": "/boot/efi"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.1.1.8 Ensure mounting of FAT filesystems is limited - fstab",
+        "info": "The FAT filesystem format is primarily used on older windows systems and portable USB drives or flash modules. It comes in three types FAT12 , FAT16 , and FAT32 all of which are supported by the vfat kernel module.\n\nRationale:\n\nRemoving support for unneeded filesystem types reduces the local attack surface of the system. If this filesystem type is not needed, disable it.\n\nImpact:\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit or create a file in the /etc/modprobe.d/ directory ending in .conf\nExample: vi /etc/modprobe.d/vfat.conf\n\ninstall vfat /bin/true\n\nRun the following command to unload the vfat module:\n\n# rmmod vfat",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2971",
+        "cmd": "/bin/grep -E -i '^[^#]*\\\\svfat\\\\s' /etc/fstab | /bin/grep -v -E '\\\\s/boot\\\\s' | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "^none$"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "1.1.1.8 Ensure mounting of FAT filesystems is limited - fstab",
+        "info": "The FAT filesystem format is primarily used on older windows systems and portable USB drives or flash modules. It comes in three types FAT12 , FAT16 , and FAT32 all of which are supported by the vfat kernel module.\n\nRationale:\n\nRemoving support for unneeded filesystem types reduces the local attack surface of the system. If this filesystem type is not needed, disable it.\n\nImpact:\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit or create a file in the /etc/modprobe.d/ directory ending in .conf\nExample: vi /etc/modprobe.d/vfat.conf\n\ninstall vfat /bin/true\n\nRun the following command to unload the vfat module:\n\n# rmmod vfat",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2971",
+        "cmd": "/bin/grep -E -i '^[^#]*\\svfat\\s' /etc/fstab | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "^none$"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "1.1.1.8 Ensure mounting of FAT filesystems is limited - modprobe",
+        "info": "The FAT filesystem format is primarily used on older windows systems and portable USB drives or flash modules. It comes in three types FAT12 , FAT16 , and FAT32 all of which are supported by the vfat kernel module.\n\nRationale:\n\nRemoving support for unneeded filesystem types reduces the local attack surface of the system. If this filesystem type is not needed, disable it.\n\nImpact:\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit or create a file in the /etc/modprobe.d/ directory ending in .conf\nExample: vi /etc/modprobe.d/vfat.conf\n\ninstall vfat /bin/true\n\nRun the following command to unload the vfat module:\n\n# rmmod vfat",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2971",
+        "cmd": "/sbin/modprobe -n -v vfat",
+        "expect": "install /bin/true"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "1.1.1.8 Ensure mounting of FAT filesystems is limited - lsmod",
+        "info": "The FAT filesystem format is primarily used on older windows systems and portable USB drives or flash modules. It comes in three types FAT12 , FAT16 , and FAT32 all of which are supported by the vfat kernel module.\n\nRationale:\n\nRemoving support for unneeded filesystem types reduces the local attack surface of the system. If this filesystem type is not needed, disable it.\n\nImpact:\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit or create a file in the /etc/modprobe.d/ directory ending in .conf\nExample: vi /etc/modprobe.d/vfat.conf\n\ninstall vfat /bin/true\n\nRun the following command to unload the vfat module:\n\n# rmmod vfat",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2971",
+        "cmd": "/sbin/lsmod | /bin/grep vfat | /usr/bin/awk \\'{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}\\'",
+        "expect": "pass"
+    }
+}

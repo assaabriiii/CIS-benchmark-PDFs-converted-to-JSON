@@ -1,0 +1,385 @@
+{
+    "custom_item_1": {
+        "description": "Verify IIS is installed.",
+        "value_data": "(internet|iis)",
+        "reg_key": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\W3SVC",
+        "reg_item": "ImagePath"
+    },
+    "custom_item_2": {
+        "description": "Verify IIS 10 installed.",
+        "value_data": "^Version @PRODUCT_VERSION@[\\s]*$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp",
+        "reg_item": "VersionString"
+    },
+    "custom_item_3": {
+        "description": "Windows Server 2016/2019/2022 and Windows 10",
+        "value_data": "^[a-zA-Z0-9\\(\\)\\s]*@PLATFORM_VERSION@[a-zA-Z0-9\\(\\)\\s]*$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Windows Nt\\Currentversion",
+        "reg_item": "ProductName"
+    },
+    "custom_item_4": {
+        "description": "IIST-SI-000201 - The IIS 10.0 website session state must be enabled.",
+        "info": "When the session information is stored on the client, the session ID, along with the user authorization and identity information, is sent along with each client request and is either stored in a cookie, embedded in the uniform resource locator (URL), or placed in a hidden field on the displayed form. Each of these offers advantages and disadvantages. The biggest disadvantage to all three is the hijacking of a session along with all of the user's credentials.\n\nWhen the user authorization and identity information is stored on the server in a protected and encrypted database, the communication between the client and web server will only send the session identifier, and the server can then retrieve user credentials for the session when needed. If, during transmission, the session were to be hijacked, the user's credentials would not be compromised.\n\nASP.NET provides a session state, which is available as the HttpSessionState class, as a method of storing session-specific information that is visible only within the session. ASP.NET session state identifies requests from the same browser during a limited time window as a session, and provides the ability to persist variable values for the duration of that session.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nUnder the 'ASP.NET' section, select 'Session State'.\n\nUnder 'Session State Mode Settings', verify the 'In Process' mode is selected.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-218735r879511_rule,STIG-ID|IIST-SI-000201,STIG-Legacy|SV-109295,STIG-Legacy|V-100191,Vuln-ID|V-218735",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "InProc",
+        "appcmd_args": "list config {} /section:system.web/sessionState /text:mode",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_5": {
+        "description": "IIST-SI-000202 - The IIS 10.0 website session state cookie settings must be configured to Use Cookies mode.",
+        "info": "When the session information is stored on the client, the session ID, along with the user authorization and identity information, is sent along with each client request and is stored in either a cookie, embedded in the uniform resource locator (URL), or placed in a hidden field on the displayed form. Each of these offers advantages and disadvantages. The biggest disadvantage to all three is the hijacking of a session along with all of the user's credentials.\n\nWhen the user authorization and identity information is stored on the server in a protected and encrypted database, the communication between the client and website will only send the session identifier, and the server can then retrieve user credentials for the session when needed. If, during transmission, the session were to be hijacked, the user's credentials would not be compromised.\n\nASP.NET provides a session state, which is available as the HttpSessionState class, as a method of storing session-specific information visible only within the session. ASP.NET session state identifies requests from the same browser during a limited time window as a session and provides the ability to persist variable values for the duration of that session.\n\nWhen using the URI mode for cookie settings under session state, IIS will reject and reissue session IDs that do not have active sessions. Configuring IIS to expire session IDs and regenerate tokens gives a potential attacker less time to capture a cookie and gain access to server content.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nUnder the ASP.NET section, select 'Session State'.\n\nUnder 'Cookie Settings', select the 'Use Cookies' from the 'Mode:' drop-down list.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-218736r879511_rule,STIG-ID|IIST-SI-000202,STIG-Legacy|SV-109297,STIG-Legacy|V-100193,Vuln-ID|V-218736",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "UseCookies",
+        "appcmd_args": "list config {} /section:system.web/sessionState /text:cookieless",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_6": {
+        "description": "IIST-SI-000203 - A private IIS 10.0 website must only accept Secure Socket Layer (SSL) connections.",
+        "info": "Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2-approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\n\nNIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nDouble-click the 'SSL Settings' icon.\n\nSelect 'Require SSL' check box.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-218737r903109_rule,STIG-ID|IIST-SI-000203,STIG-Legacy|SV-109299,STIG-Legacy|V-100195,SWIFT-CSCv1|2.6,Vuln-ID|V-218737",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "Ssl(128)?",
+        "appcmd_args": "list config {} /section:access /text:sslFlags",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_7": {
+        "description": "IIST-SI-000204 - A public IIS 10.0 website must only accept Secure Socket Layer (SSL) connections when authentication is required.",
+        "info": "Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2-approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\n\nNIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Note: If the server being reviewed is a private IIS 10.0 web server, this is Not Applicable.\n\nFollow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nDouble-click the 'SSL Settings' icon.\n\nSelect 'Require SSL' check box.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-218738r903111_rule,STIG-ID|IIST-SI-000204,STIG-Legacy|SV-109301,STIG-Legacy|V-100197,SWIFT-CSCv1|2.6,Vuln-ID|V-218738",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "Ssl(128)?",
+        "appcmd_args": "list config {} /section:access /text:sslFlags",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_8": {
+        "description": "IIST-SI-000206 - Both the log file and Event Tracing for Windows (ETW) for each IIS 10.0 website must be enabled.",
+        "info": "Internet Information Services (IIS) on Windows Server 2012 provides basic logging capabilities. However, because IIS takes some time to flush logs to disk, administrators do not have access to logging information in real-time. In addition, text-based log files can be difficult and time-consuming to process.\n\nIn IIS 10.0, the administrator has the option of sending logging information to Event Tracing for Windows (ETW). This option gives the administrator the ability to use standard query tools, or create custom tools, for viewing real-time logging information in ETW. This provides a significant advantage over parsing text-based log files that are not updated in real time.\n\nSatisfies: SRG-APP-000092-WSR-000055, SRG-APP-000108-WSR-000166",
+        "solution": "Note: 'Microsoft-IIS-Logging/logs' must be enabled prior to configuring this setting.\n\nFollow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nClick the 'Logging' icon.\n\nUnder Log Event Destination, select the 'Both log file and ETW event' radio button.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.3.4,800-53|AU-5a.,800-53|AU-14(1),800-53r5|AU-5a.,800-53r5|AU-14(1),CAT|II,CCI|CCI-000139,CCI|CCI-001464,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5a.,ITSG-33|AU-14,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-218739r879562_rule,STIG-ID|IIST-SI-000206,STIG-Legacy|SV-109303,STIG-Legacy|V-100199,SWIFT-CSCv1|6.4,Vuln-ID|V-218739",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "File, ETW",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logTargetW3C",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_9": {
+        "description": "Verify 'RequestHeader' is set to Connection",
+        "value_data": "Passed"
+    },
+    "custom_item_10": {
+        "description": "Verify 'RequestHeader' is set to Warning",
+        "value_data": "Passed"
+    },
+    "custom_item_11": {
+        "description": "Verify 'User Agent' field is selected",
+        "value_data": "UserAgent",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logExtFileFlags",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_12": {
+        "description": "Verify field 'User Name' is selected",
+        "value_data": "UserName",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logExtFileFlags",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_13": {
+        "description": "Verify field 'Referer' is selected",
+        "value_data": "Referer",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logExtFileFlags",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_14": {
+        "description": "Verify 'Response Header' is set to Custom Authorization",
+        "value_data": "Passed"
+    },
+    "custom_item_15": {
+        "description": "Verify 'Response Header' is set to Custom Content-Type",
+        "value_data": "Passed"
+    },
+    "custom_item_16": {
+        "description": "Verify exe extension is not included",
+        "value_data": "\\.exe",
+        "appcmd_args": "list config {} /section:staticContent",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_17": {
+        "description": "Verify dll extension is not included",
+        "value_data": "\\.dll",
+        "appcmd_args": "list config {} /section:staticContent",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_18": {
+        "description": "Verify com extension is not included",
+        "value_data": "\\.com",
+        "appcmd_args": "list config {} /section:staticContent",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_19": {
+        "description": "Verify bat extension is not included",
+        "value_data": "\\.bat",
+        "appcmd_args": "list config {} /section:staticContent",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_20": {
+        "description": "Verify csh extension is not included",
+        "value_data": "\\.csh",
+        "appcmd_args": "list config {} /section:staticContent",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_21": {
+        "description": "IIST-SI-000217 - The IIS 10.0 website must have Web Distributed Authoring and Versioning (WebDAV) disabled.",
+        "info": "A web server can be installed with functionality that by its nature is not secure. Web Distributed Authoring (WebDAV) is an extension to the HTTP protocol that, when developed, was meant to allow users to create, change, and move documents on a server, typically a web server or web share. Allowing this functionality, development, and deployment is much easier for web authors.\n\nWebDAV is not widely used and has serious security concerns because it may allow clients to modify unauthorized files on the web server.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nAccess Server Manager on the IIS 10.0 website.\n\nSelect the 'Local Server'.\n\nClick 'Manage'.\n\nSelect 'Add Roles and Features'.\n\nClick 'Next' in the 'Before you begin' dialog box.\n\nSelect 'Role-based or feature-based installation' in the 'Installation Type' dialog box and click 'Next'.\n\nSelect the IIS 10.0 web server on the 'Server Selection' dialog box.\n\nFrom the 'Windows Features' dialog box, navigate to 'World Wide Web Services' >> 'Common HTTP Features'.\n\nDe-select 'WebDAV Publishing' and click 'Next' to complete removing the WebDAV Publishing feature from the IIS 10.0 web server.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218746r879587_rule,STIG-ID|IIST-SI-000217,STIG-Legacy|SV-109317,STIG-Legacy|V-100213,SWIFT-CSCv1|2.3,Vuln-ID|V-218746",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "false",
+        "powershell_args": "get-windowsfeature | where-object { $_.name -eq 'web-dav-publishing' } | select-object installed | format-table -hidetableheaders"
+    },
+    "custom_item_22": {
+        "description": "IIST-SI-000219 - Each IIS 10.0 website must be assigned a default host header.",
+        "info": "The web server must be configured to listen on a specified IP address and port. Without specifying an IP address and port for the web server to use, the web server will listen on all IP addresses available to the hosting server. If the web server has multiple IP addresses, i.e., a management IP address, the web server will also accept connections on the management IP address.\n\nAccessing the hosted application through an IP address normally used for non-application functions opens the possibility of user access to resources, utilities, files, ports, and protocols that are protected on the desired application IP address.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Note: If the server being reviewed is hosting SharePoint, this is Not Applicable.\n\nFollow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nRight-click on the site name under review.\n\nSelect 'Edit Bindings'.\n\nAssign hostname entries and unique IP addresses to port 80 for HTTP and port 443 for HTTPS. Other approved and documented ports may be used.\n\nClick 'OK'.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-218748r879588_rule,STIG-ID|IIST-SI-000219,STIG-Legacy|SV-109321,STIG-Legacy|V-100217,SWIFT-CSCv1|2.3,Vuln-ID|V-218748",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "Manual Review Required"
+    },
+    "custom_item_23": {
+        "description": "IIST-SI-000220 - A private IIS 10.0 website authentication mechanism must use client certificates to transmit session identifier to assure integrity.",
+        "info": "A DoD private website must use PKI as an authentication mechanism for web users. Information systems residing behind web servers requiring authorization based on individual identity must use the identity provided by certificate-based authentication to support access control decisions. Not using client certificates allows an attacker unauthenticated access to private websites.\n\nSatisfies: SRG-APP-000172-WSR-000104, SRG-APP-000224-WSR-000135, SRG-APP-000427-WSR-000186",
+        "solution": "Note: If the server being reviewed is a public IIS 10.0 web server, this is Not Applicable.\nNote: If the server being reviewed is hosting SharePoint, this is Not Applicable.\nNote: If certificate handling is performed at the Proxy/Load Balancer, this is Not Applicable.\n\nFollow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nDouble-click the 'SSL Settings' icon.\n\nVerify the 'Clients Certificate Required' check box is selected.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.5.10,800-171|3.13.15,800-53|IA-5(1)(c),800-53|SC-23(3),800-53|SC-23(5),800-53r5|IA-5(1)(c),800-53r5|SC-23(3),800-53r5|SC-23(5),CAT|II,CCI|CCI-000197,CCI|CCI-001188,CCI|CCI-002470,CSF|PR.AC-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),ITSG-33|SC-23,ITSG-33|SC-23a.,ITSG-33|SC-23(3),NESA|T4.5.1,NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-218749r903117_rule,STIG-ID|IIST-SI-000220,STIG-Legacy|SV-109323,STIG-Legacy|V-100219,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-218749",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_24": {
+        "description": "Check for anonymous auth",
+        "value_data": "true",
+        "appcmd_args": "list config {} /section:system.webserver/security/authentication/anonymousAuthentication /text:enabled",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_25": {
+        "description": "Review the following Anonymous usernames. If the IUSR account or any account used for anonymous access is a member of any group with privileged access, this is a finding.",
+        "value_data": "",
+        "appcmd_args": "list config {} /section:system.webserver/security/authentication/anonymousAuthentication /text:userName",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_26": {
+        "description": "Review the following Users within the Local System. If the IUSR account or any account used for anonymous access is a member of any group with privileged access, this is a finding.",
+        "value_data": "",
+        "powershell_args": "Get-WmiObject -Class Win32_Group | Select-Object Name"
+    },
+    "custom_item_27": {
+        "description": "IIST-SI-000223 - The IIS 10.0 website must generate unique session identifiers that cannot be reliably reproduced.",
+        "info": "Communication between a client and the web server is done using the HTTP protocol, but HTTP is a stateless protocol. To maintain a connection or session, a web server will generate a session identifier (ID) for each client session when the session is initiated. The session ID allows the web server to track a user session and, in many cases, the user, if the user previously logged into a hosted application.\n\nBy being able to guess session IDs, an attacker can easily perform a man-in-the-middle attack. To truly generate random session identifiers that cannot be reproduced, the web server session ID generator, when used twice with the same input criteria, must generate an unrelated random ID.\n\nThe session ID generator must be a FIPS 140-2-approved generator.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nUnder the ASP.NET section, select 'Session State'.\n\nUnder 'Session State' Mode Settings, select the 'In Process' mode.",
+        "reference": "800-171|3.13.15,800-53|SC-23(3),800-53r5|SC-23(3),CAT|II,CCI|CCI-001188,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23(3),NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-218751r879639_rule,STIG-ID|IIST-SI-000223,STIG-Legacy|SV-109327,STIG-Legacy|V-100223,Vuln-ID|V-218751",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "InProc",
+        "appcmd_args": "list config {} /section:system.web/sessionState /text:mode",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_28": {
+        "description": "IIST-SI-000224 - The IIS 10.0 website document directory must be in a separate partition from the IIS 10.0 websites system files.",
+        "info": "The content database is accessed by multiple anonymous users when the web server is in production. By locating the content database on the same partition as the web server system file, the risk for unauthorized access to these protected files is increased. Additionally, having the content database path on the same drive as the system folders also increases the potential for a drive space exhaustion attack.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nClick the 'Advanced Settings' from the 'Actions' pane.\n\nChange the Physical Path to the new partition and directory location.",
+        "reference": "800-53|SC-3,800-53r5|SC-3,CAT|II,CCI|CCI-001084,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-3,ITSG-33|SC-3a.,NESA|T3.4.1,NESA|T4.3.1,NESA|T4.3.2,Rule-ID|SV-218752r928849_rule,STIG-ID|IIST-SI-000224,STIG-Legacy|SV-109329,STIG-Legacy|V-100225,Vuln-ID|V-218752",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "(SystemDrive|^C:\\\\)",
+        "appcmd_args": "list vdir {} /text:physicalPath",
+        "appcmd_list": "list vdir"
+    },
+    "custom_item_29": {
+        "description": "IIST-SI-000225 - The IIS 10.0 website must be configured to limit the maxURL.",
+        "info": "Request filtering replaces URLScan in IIS, enabling administrators to create a more granular rule set with which to allow or reject inbound web content. By setting limits on web requests, it helps to ensure availability of web services and may also help mitigate the risk of buffer overflow type attacks. The MaxURL Request Filter limits the number of bytes the server will accept in a URL.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nSet the 'maxURL' value to '4096' or less.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218753r879650_rule,STIG-ID|IIST-SI-000225,STIG-Legacy|SV-109331,STIG-Legacy|V-100227,Vuln-ID|V-218753",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_30": {
+        "description": "IIST-SI-000226 - The IIS 10.0 website must be configured to limit the size of web requests.",
+        "info": "By setting limits on web requests, it ensures availability of web services and mitigates the risk of buffer overflow type attacks. The maxAllowedContentLength Request Filter limits the number of bytes the server will accept in a request.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nSet the 'maxAllowedContentLength' value to '30000000' or less.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218754r879650_rule,STIG-ID|IIST-SI-000226,STIG-Legacy|SV-109333,STIG-Legacy|V-100229,Vuln-ID|V-218754",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_31": {
+        "description": "IIST-SI-000227 - The IIS 10.0 websites Maximum Query String limit must be configured.",
+        "info": "Setting limits on web requests helps to ensure availability of web services and may also help mitigate the risk of buffer overflow type attacks. The Maximum Query String Request Filter describes the upper limit on allowable query string lengths. Upon exceeding the configured value, IIS will generate a Status Code 404.15.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nSet the 'Maximum Query String' value to '2048' or less.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218755r879650_rule,STIG-ID|IIST-SI-000227,STIG-Legacy|SV-109335,STIG-Legacy|V-100231,Vuln-ID|V-218755",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_32": {
+        "description": "IIST-SI-000228 - Non-ASCII characters in URLs must be prohibited by any IIS 10.0 website.",
+        "info": "Setting limits on web requests ensures availability of web services and mitigates the risk of buffer overflow type attacks. The allow high-bit characters Request Filter enables rejection of requests containing non-ASCII characters.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nUncheck the 'Allow high-bit characters' check box.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218756r879650_rule,STIG-ID|IIST-SI-000228,STIG-Legacy|SV-109337,STIG-Legacy|V-100233,Vuln-ID|V-218756",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_33": {
+        "description": "IIST-SI-000229 - Double encoded URL requests must be prohibited by any IIS 10.0 website.",
+        "info": "Request filtering enables administrators to create a more granular rule set with which to allow or reject inbound web content. Setting limits on web requests ensures availability of web services and mitigates the risk of buffer overflow type attacks. When the 'Allow double escaping' option is disabled, it prevents attacks that rely on double-encoded requests.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nUncheck the 'Allow double escaping' check box.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218757r903119_rule,STIG-ID|IIST-SI-000229,STIG-Legacy|SV-109339,STIG-Legacy|V-100235,Vuln-ID|V-218757",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_34": {
+        "description": "IIST-SI-000230 - Unlisted file extensions in URL requests must be filtered by any IIS 10.0 website.",
+        "info": "Request filtering enables administrators to create a more granular rule set to allow or reject inbound web content. Setting limits on web requests helps to ensure availability of web services and may also help mitigate the risk of buffer overflow type attacks. The allow unlisted property of the 'File Extensions Request' filter enables rejection of requests containing specific file extensions not defined in the 'File Extensions' filter. Tripping this filter will cause IIS to generate a Status Code 404.7.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Request Filtering' icon.\n\nClick 'Edit Feature Settings' in the 'Actions' pane.\n\nUncheck the 'Allow unlisted file extensions' check box.",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-218758r903121_rule,STIG-ID|IIST-SI-000230,STIG-Legacy|SV-109341,STIG-Legacy|V-100237,Vuln-ID|V-218758",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_35": {
+        "description": "IIST-SI-000231 - Directory Browsing on the IIS 10.0 website must be disabled.",
+        "info": "Directory browsing allows the contents of a directory to be displayed upon request from a web client. If directory browsing is enabled for a directory in IIS, users could receive a web page listing the contents of the directory. If directory browsing is enabled the risk of inadvertently disclosing sensitive content is increased.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the Site.\n\nDouble-click the 'Directory Browsing' icon.\n\nUnder the 'Actions' pane, click 'Disabled'.",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-218759r879652_rule,STIG-ID|IIST-SI-000231,STIG-Legacy|SV-109343,STIG-Legacy|V-100239,Vuln-ID|V-218759",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "false",
+        "appcmd_args": "list config {} /section:directoryBrowse /text:enabled",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_36": {
+        "description": "IIST-SI-000233 - Warning and error messages displayed to clients must be modified to minimize the identity of the IIS 10.0 website, patches, loaded modules, and directory paths.",
+        "info": "HTTP error pages contain information that could enable an attacker to gain access to an information system. Failure to prevent the sending of HTTP error pages with full information to remote requesters exposes internal configuration information to potential attackers.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click the 'Error Pages' icon.\n\nClick each error message and click 'Edit Feature' Setting from the 'Actions' pane; set each error message to 'Detailed errors for local requests and custom error pages for remote requests' or 'Custom error pages'.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-218760r879655_rule,STIG-ID|IIST-SI-000233,STIG-Legacy|SV-109345,STIG-Legacy|V-100241,Vuln-ID|V-218760",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "DetailedLocalOnly",
+        "appcmd_args": "list config {} /section:system.webServer/httpErrors /text:errorMode",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_37": {
+        "description": "IIST-SI-000234 - Debugging and trace information used to diagnose the IIS 10.0 website must be disabled.",
+        "info": "Setting compilation debug to false ensures detailed error information does not inadvertently display during live application usage, mitigating the risk of application information being displayed to users.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nDouble-click '.NET Compilation'.\n\nScroll down to the 'Behavior' section and set the value for 'Debug' to 'False'.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-218761r903123_rule,STIG-ID|IIST-SI-000234,STIG-Legacy|SV-109347,STIG-Legacy|V-100243,Vuln-ID|V-218761",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_38": {
+        "description": "IIST-SI-000235 - The Idle Time-out monitor for each IIS 10.0 website must be enabled.",
+        "info": "The idle time-out attribute controls the amount of time a worker process will remain idle before it shuts down. A worker process is idle if it is not processing requests and no new requests are received.\n\nThe purpose of this attribute is to conserve system resources; the default value for idle time-out is 20 minutes.\n\nBy default, the World Wide Web (WWW) service establishes an overlapped recycle, in which the worker process to be shut down is kept running until after a new worker process is started.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the Application Pools.\n\nHighlight an Application Pool to review and click 'Advanced Settings' in the 'Actions' pane.\n\nScroll down to the 'Process Model' section and set the value for 'Idle Time-out' to something other than '0'. '20' or less is recommended if the amount of RAM on the system is limited.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CAT|II,CCI|CCI-002361,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,NIAv2|NS49,Rule-ID|SV-218762r879673_rule,STIG-ID|IIST-SI-000235,STIG-Legacy|SV-109349,STIG-Legacy|V-100245,Vuln-ID|V-218762",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "00:([1-9]|1[0-9]|20):00",
+        "appcmd_args": "list apppools {} /text:processModel.idleTimeout",
+        "appcmd_list": "list apppools"
+    },
+    "custom_item_39": {
+        "description": "IIST-SI-000236 - The IIS 10.0 websites connectionTimeout setting must be explicitly configured to disconnect an idle session.",
+        "info": "Leaving sessions open indefinitely is a major security risk. An attacker can easily use an already authenticated session to access the hosted application as the previously authenticated user. By closing sessions after a set period of inactivity, the web server can make certain that those sessions that are not closed through the user logging out of an application are eventually closed.\n\nAcceptable values are 5 minutes for high-value applications, 10 minutes for medium-value applications, and 15 minutes for low-value applications.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name.\n\nSelect 'Configuration Editor' under the 'Management' section.\n\nFrom the 'Section:' drop-down list at the top of the configuration editor, locate 'system.web/sessionState'.\n\nSet the 'timeout' to '00:15:00 or less'.\n\nIn the 'Actions' pane, click 'Apply'.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CAT|II,CCI|CCI-002361,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,NIAv2|NS49,Rule-ID|SV-218763r879673_rule,STIG-ID|IIST-SI-000236,STIG-Legacy|SV-109351,STIG-Legacy|V-100247,Vuln-ID|V-218763",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "^([1-9]|1[0-5])$",
+        "appcmd_args": "list config {} /section:system.web/sessionState /text:timeout",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_40": {
+        "description": "IIST-SI-000238 - The IIS 10.0 website must use a logging mechanism configured to allocate log record storage capacity large enough to accommodate the logging requirements of the IIS 10.0 website.",
+        "info": "To make certain the logging mechanism used by the web server has sufficient storage capacity in which to write the logs, the logging mechanism must be able to allocate log record storage capacity.\n\nThe task of allocating log record storage capacity is usually performed during initial installation of the logging mechanism. The system administrator will usually coordinate the allocation of physical drive space with the web server administrator along with the physical location of the partition and disk. Refer to NIST SP 800-92 for specific requirements on log rotation and storage dependent on the impact of the web server.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nUnder 'IIS' double-click on the 'Logging' icon.\n\nIf necessary, in the 'Logging' configuration box, redesignate a log path to a location able to house the logs.\n\nUnder 'Log File Rollover', deselect the 'Do not create new log files' setting.\n\nConfigure a schedule to rollover log files on a regular basis.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-218765r879730_rule,STIG-ID|IIST-SI-000238,STIG-Legacy|SV-109355,STIG-Legacy|V-100251,Vuln-ID|V-218765",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "MaxSize",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.Period",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_41": {
+        "description": "IIST-SI-000239 - The IIS 10.0 websites must use ports, protocols, and services according to Ports, Protocols, and Services Management (PPSM) guidelines.",
+        "info": "Web servers provide numerous processes, features, and functionalities that use TCP/IP ports. Some of these processes may be deemed unnecessary or too unsecure to run on a production system.\n\nThe web server must provide the capability to disable or deactivate network-related services deemed to be non-essential to the server mission, too unsecure, or prohibited by the PPSM CAL and vulnerability assessments.\n\nFailure to comply with DoD ports, protocols, and services (PPS) requirements can result in compromise of enclave boundary protections and/or functionality of the AIS.\n\nThe ISSM will ensure web servers are configured to use only authorized PPS in accordance with the Network Infrastructure STIG, DoD Instruction 8551.1, PPSM, and the associated PPS Assurance Category Assignments List.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nClick the site name under review.\n\nIn the 'Action' Pane, click 'Bindings'.\n\nEdit to change an existing binding and set the correct ports and protocol.",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-218766r879756_rule,STIG-ID|IIST-SI-000239,STIG-Legacy|SV-109357,STIG-Legacy|V-100253,SWIFT-CSCv1|2.3,Vuln-ID|V-218766",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "",
+        "powershell_args": "Foreach ($Site in get-website) { Foreach ($Bind in $Site.bindings.collection) {[pscustomobject]@{name=$Site.name;Bindings=$Bind.BindingInformation}}}"
+    },
+    "custom_item_42": {
+        "description": "IIST-SI-000242 - The IIS 10.0 private website must employ cryptographic mechanisms (TLS) and require client certificates.",
+        "info": "TLS encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2-approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\n\nNIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Note: If SSL is installed on load balancer/proxy server through which traffic is routed to the IIS 10.0 server, and the IIS 10.0 server receives traffic from the load balancer/proxy server, the SSL requirement must be met on the load balancer/proxy server. In this case, this requirement is Not Applicable.\nNote: If this is a public-facing web server, this requirement is Not Applicable.\nNote: If this server is hosting WSUS, this requirement is Not Applicable.\nNote: If the server being reviewed is hosting SharePoint, this is Not Applicable.\n\nFollow the procedures below for each site hosted on the IIS 10.0 web server:\n\nOpen the IIS 10.0 Manager.\n\nDouble-click the 'SSL Settings' icon under the 'IIS' section.\n\nSelect the 'Require SSL' setting.\n\nSelect the 'Client Certificates Required' setting.\n\nClick 'Apply' in the 'Actions' pane.\n\nClick the site under review.\n\nSelect 'Configuration Editor' under the 'Management' section.\n\nFrom the 'Section:' drop-down list at the top of the configuration editor, locate 'system.webServer/security/access'.\n\nClick on the drop-down list for 'sslFlags'.\n\nSelect the 'Ssl128' check box.\n\nClick 'Apply' in the 'Actions' pane.",
+        "reference": "800-171|3.13.16,800-53|SC-28(1),800-53r5|SC-28(1),CAT|II,CCI|CCI-002476,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28(1),PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-218768r879800_rule,STIG-ID|IIST-SI-000242,STIG-Legacy|SV-109361,STIG-Legacy|V-100257,TBA-FIISB|28.1,Vuln-ID|V-218768",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_43": {
+        "description": "IIST-SI-000244 - IIS 10.0 website session IDs must be sent to the client using TLS.",
+        "info": "The HTTP protocol is a stateless protocol. To maintain a session, a session identifier is used. The session identifier is a piece of data used to identify a session and a user. If the session identifier is compromised by an attacker, the session can be hijacked. By encrypting the session identifier, the identifier becomes more difficult for an attacker to hijack, decrypt, and use before the session has expired.",
+        "solution": "Follow the procedures below for each site hosted on the IIS 10.0 web server:\n\nAccess the IIS 10.0 Manager.\n\nSelect the website being reviewed.\n\nUnder 'Management' section, double-click the 'Configuration Editor' icon.\n\nFrom the 'Section:' drop-down list, select 'system.webServer/asp'.\n\nExpand the 'session' section.\n\nSelect 'True' for the 'keepSessionIdSecure' setting.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CAT|II,CCI|CCI-002418,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-218769r879810_rule,STIG-ID|IIST-SI-000244,STIG-Legacy|SV-109363,STIG-Legacy|V-100259,Vuln-ID|V-218769",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "true",
+        "appcmd_args": "list config {} /section:system.webServer/asp /text:session.keepSessionIdSecure",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_44": {
+        "description": "Verify if 'requireSSL' is set to true",
+        "value_data": "true",
+        "appcmd_args": "list config {} /section:system.web/httpCookies /text:requireSSL",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_45": {
+        "description": "Verify if 'compressionEnabled' is set to false",
+        "value_data": "false",
+        "appcmd_args": "list config {} /section:system.web/sessionState /text:compressionEnabled",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_46": {
+        "description": "IIST-SI-000251 - The IIS 10.0 website must have a unique application pool.",
+        "info": "Application pools isolate sites and applications to address reliability, availability, and security issues. Sites and applications may be grouped according to configurations, although each site will be associated with a unique application pool.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the site name under review.\n\nAssign a unique application pool to each website.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218771r879887_rule,STIG-ID|IIST-SI-000251,STIG-Legacy|SV-109367,STIG-Legacy|V-100263,SWIFT-CSCv1|2.3,Vuln-ID|V-218771",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "^[\\s]*([2-9]|[1-9][0-9]+)[\\s]*",
+        "powershell_args": "& $Env:SystemRoot/System32/InetSrv/appcmd.exe list apps | Select-String -Pattern '/. \\(applicationPool' | % { $_.ToString().Split(':')[1].Trim(')') } | Group-Object | Format-Table Count,Name"
+    },
+    "custom_item_47": {
+        "description": "IIST-SI-000252 - The maximum number of requests an application pool can process for each IIS 10.0 website must be explicitly set.",
+        "info": "IIS application pools can be periodically recycled to avoid unstable states possibly leading to application crashes, hangs, or memory leaks. By default, application pool recycling is overlapped, which means the worker process to be shut down is kept running until after a new worker process is started. After a new worker process starts, new requests are passed to it. The old worker process shuts down after it finishes processing its existing requests, or after a configured time-out, whichever comes first. This way of recycling ensures uninterrupted service to clients.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick 'Application Pools'.\n\nHighlight an Application Pool and click 'Advanced Settings' in the 'Action' Pane.\n\nScroll down to the 'Recycling section' and set the value for 'Request Limit' to greater than '0'.\n\nClick 'OK'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218772r879887_rule,STIG-ID|IIST-SI-000252,STIG-Legacy|SV-109369,STIG-Legacy|V-100265,SWIFT-CSCv1|2.3,Vuln-ID|V-218772",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "[1-9][0-9]*",
+        "appcmd_args": "list apppools {} /text:recycling.periodicRestart.requests",
+        "appcmd_list": "list apppools /state:Started"
+    },
+    "custom_item_48": {
+        "description": "Verify 'logEventOnRecycle' is set to Requests",
+        "value_data": "Requests",
+        "appcmd_args": "list apppools {} /text:recycling.logEventOnRecycle",
+        "appcmd_list": "list apppools /state:Started"
+    },
+    "custom_item_49": {
+        "description": "Verify 'logEventOnRecycle' is set to Schedule",
+        "value_data": "Schedule",
+        "appcmd_args": "list apppools {} /text:recycling.logEventOnRecycle",
+        "appcmd_list": "list apppools /state:Started"
+    },
+    "custom_item_50": {
+        "description": "IIST-SI-000258 - The application pools rapid fail protection for each IIS 10.0 website must be enabled.",
+        "info": "Rapid fail protection is a feature that interrogates the health of worker processes associated with websites and web applications. It can be configured to perform a number of actions such as shutting down and restarting worker processes that have reached failure thresholds. By not setting rapid fail protection, the web server could become unstable in the event of a worker process crash potentially leaving the web server unusable.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick 'Application Pools'.\n\nPerform the following for each Application Pool:\n\nHighlight an Application Pool to review and click 'Advanced Settings' in the 'Actions' pane.\n\nScroll down to the 'Rapid Fail Protection' section and set the value for 'Enabled' to 'True'.\n\nClick 'OK'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218777r879887_rule,STIG-ID|IIST-SI-000258,STIG-Legacy|SV-109379,STIG-Legacy|V-100275,SWIFT-CSCv1|2.3,Vuln-ID|V-218777",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_51": {
+        "description": "IIST-SI-000259 - The application pools rapid fail protection settings for each IIS 10.0 website must be managed.",
+        "info": "Windows Process Activation Service (WAS) manages application pool configuration and may flag a worker process as unhealthy and shut it down. The rapid fail protection must be set to a suitable value. A lack of response from the worker process might mean the worker process does not have a thread to respond to the ping request, or that it is hanging for some other reason. The ping interval and ping response time may need adjustment to gain access to timely information about application pool health without triggering false, unhealthy conditions.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick 'Application Pools'.\n\nPerform the following for each Application Pool:\n\nHighlight an Application Pool to review and click 'Advanced Settings' in the 'Actions' pane.\n\nScroll down to the 'Rapid Fail Protection' section and set the value for 'Failure Interval' to '5' or less.\n\nClick 'OK'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218778r879887_rule,STIG-ID|IIST-SI-000259,STIG-Legacy|SV-109381,STIG-Legacy|V-100277,SWIFT-CSCv1|2.3,Vuln-ID|V-218778",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip"
+    },
+    "custom_item_52": {
+        "description": "IIST-SI-000263 - Backup interactive scripts on the IIS 10.0 server must be removed.",
+        "info": "Copies of backup files will not execute on the server, but they can be read by the anonymous user if special precautions are not taken. Such backup copies contain the same sensitive information as the actual script being executed and, as such, are useful to malicious users. Techniques and systems exist today to search web servers for such files and are able to exploit the information contained in them.",
+        "solution": "Remove the backup files from the production web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Site_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218781r879587_rule,STIG-ID|IIST-SI-000263,STIG-Legacy|SV-109387,STIG-Legacy|V-100283,SWIFT-CSCv1|2.3,Vuln-ID|V-218781",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": ""
+    }
+}

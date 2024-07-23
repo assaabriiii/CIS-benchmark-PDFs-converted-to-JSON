@@ -1,0 +1,52 @@
+{
+    "custom_item_1": {
+        "description": "Test secure string",
+        "value_data": ".*",
+        "powershell_args": "hostname",
+        "secure_string": "@SECURE_STRING@"
+    },
+    "custom_item_2": {
+        "description": "CIS_Microsoft_Exchange_Server_2019_v1.0.0_Level_2_Mailbox.audit from CIS Microsoft Exchange Server 2019 Benchmark v1.0.0",
+        "info": "NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "value_data": "[\\s]+15\\.2[\\s]+.*[\\s]+True",
+        "powershell_args": "If (Get-ExchangeServer) { Get-ExchangeServer -Identity $ENV:COMPUTERNAME | Format-Table Name, AdminDisplayVersion, IsMailboxServer } Else { 'No Exchange servers found' }",
+        "secure_string": "@SECURE_STRING@"
+    },
+    "custom_item_3": {
+        "description": "Platform check",
+        "value_data": "[\\s]+15\\.2[\\s]+.*[\\s]+True",
+        "powershell_args": "If (Get-ExchangeServer) { Get-ExchangeServer -Identity $ENV:COMPUTERNAME | Format-Table Name, AdminDisplayVersion, IsMailboxServer } Else { 'No Exchange servers found' }",
+        "secure_string": "@SECURE_STRING@"
+    },
+    "custom_item_4": {
+        "description": "2.3.1 Ensure 'Enable non-delivery reports to remote domains' is set to 'False'",
+        "info": "This policy setting is used to determine if the server sends non-delivery reports (also known as NDRs or bounce messages) to remote domains.\n\nRationale:\n\nAttackers can use automated messages to determine whether a user is active, in the office, traveling etc. and can use this information to conduct other types of attacks.\n\nImpact:\n\nRemote users will not receive automated non-delivery reports.\n\nNote: If Microsoft Exchange is being used as HUB, this setting is applicable. If not, an exception to this recommendation might be required.",
+        "solution": "To implement the recommended state, execute the following PowerShell cmdlet:\n\nSet-RemoteDomain 'RemoteDomain' -NDREnabled $false\n\nDefault Value:\n\nTrue",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/12442",
+        "value_data": "NDREnabled[\\s]+:[\\s]+False",
+        "powershell_args": "Get-RemoteDomain | Format-List -property NDREnabled",
+        "secure_string": "@SECURE_STRING@"
+    },
+    "custom_item_5": {
+        "description": "2.3.2 Ensure 'Enable OOF messages to remote domains' is set to 'None'",
+        "info": "This policy setting is used to determine if the server automatically forwards out-of-office messages to remote domains.\n\nRationale:\n\nAttackers can use automated messages to determine whether a user is active, in the office, traveling, and so on. An attacker might use this information to conduct other types of attacks.\n\nImpact:\n\nRemote users will not receive automated out-of-office messages.",
+        "solution": "To implement the recommended state, execute the following PowerShell cmdlet:\n\nSet-RemoteDomain 'RemoteDomain' -AllowedOOFType None\n\nDefault Value:\n\nExternal",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/12442",
+        "value_data": "AllowedOOFType[\\s]+:[\\s]+None",
+        "powershell_args": "Get-RemoteDomain | Format-List -property AllowedOOFType",
+        "secure_string": "@SECURE_STRING@"
+    },
+    "custom_item_6": {
+        "description": "2.4.4 Ensure 'Send Exchange Customer Experience reports' is set to 'False'",
+        "info": "This parameter specifies whether the Exchange server is enrolled in the Windows Customer Experience Improvement Program (CEIP). This is a voluntary program that collects information on users and their computers in order to help Microsoft improve features and solve common issues.\n\nRationale:\n\nThe Windows Customer Experience Improvement Program (CEIP) collects information such as user's encounters with Exchange, hardware configurations and usage, and information about configuration settings in general. Although the program claims it does not collect personal information, there is no way to verify what information gets collected.\n\nImpact:\n\nThe system will not be enrolled in the Windows Customer Experience Improvement Program (CEIP).",
+        "solution": "To implement the recommended state, execute the following PowerShell cmdlet:\n\nSet-OrganizationConfig -CustomerFeedbackEnabled $false",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/12442",
+        "value_data": "All policies compliant",
+        "powershell_args": "$settings = Get-OrganizationConfig ; $settings | Format-List Name, Identity, CustomerFeedbackEnabled; If ($settings | Where {$_.CustomerFeedbackEnabled -ne $false}) { 'Non compliant policies found' } Else { 'All policies compliant' }",
+        "secure_string": "@SECURE_STRING@"
+    }
+}

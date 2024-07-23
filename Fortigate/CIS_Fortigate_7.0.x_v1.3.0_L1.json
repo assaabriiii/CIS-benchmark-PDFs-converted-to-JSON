@@ -1,0 +1,393 @@
+{
+    "custom_item_1": {
+        "description": "check that primary dns is set",
+        "context": "config system dns$",
+        "regex": "set[\\s]+primary[\\s]+",
+        "expect": "set[\\s]+primary[\\s]+@DNS_SERVER_1@"
+    },
+    "custom_item_2": {
+        "description": "check that secondary dns is set",
+        "context": "config system dns$",
+        "regex": "set[\\s]+secondary[\\s]+",
+        "expect": "set[\\s]+secondary[\\s]+@DNS_SERVER_2@"
+    },
+    "custom_item_3": {
+        "description": "1.2 Ensure intra-zone traffic is not always allowed",
+        "info": "This is to make sure that only specific, authorized traffic is allowed between networks in the same zone.\n\nThis adds an extra layer of protection between different networks.",
+        "solution": "In this example, we'll turn off intra-zone traffic in the zone DMZ.In CLI:\n\nFGT1 # config system zone\nFGT1 (zone) # edit DMZ\nFGT1 (DMZ) # set intrazone deny\nFGT1 (DMZ) # end\nFGT1 #\n\nIn the GUI, click on Network -> Interfaces, select the zone and click on \"Edit\" and turn on \"Block intra-zone traffic\"",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|2.10,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system zone",
+        "expect": "set[\\s]+intrazone[\\s]+deny"
+    },
+    "custom_item_4": {
+        "description": "1.3 Disable all management related services on WAN port",
+        "info": "Enabling any management related services on WAN interface is high risk. Management related services such as HTTPS, HTTP, ping, SSH, SNMP, and Radius should be disabled on WAN.\n\nManagement related services should only be enabled on management interface. This is part of defending the firewall from attacks and reducing the attack surface. For WAN related services such as IPSec and SSLVPN, make use of local-in-policy (refer to CIS Section 2.4) to tighten firewall defenses.",
+        "solution": "On GUI:\n\nGo to \"Network\" > \"Interfaces\".\n\nReview WAN interface and disable HTTPS, HTTP, ping, SSH, SNMP, and Radius services.\n\nOn CLI:\n\nFGT1 # config system interface\nFGT1 (interface) # edit \"port1\"\nFGT1 (port1) # unselect allowaccess ping https ssh snmp http radius-acct\n\nNote:\n\n -\n\nInterface name may differ based on deployment. For this example, port1 is deployed as WAN interface.\n\n -\n\n\"unselect allowaccess\" will only show services that you have enabled. If you have not enabled snmp on that interface, then snmp option will not be available.\n\nImpact:\n\nEnabling management related services on WAN port is convenient, but it exposes the firewall to unnecessary risks. Vulnerabilities found on vendor devices are commonly related to management services, and opening access to these allows attackers to exploit its vulnerabilities.",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|1.6,CSCv8|4.2,CSCv8|4.8,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit \"@WAN_PORT@\"",
+        "not_expect": "set allowaccess .+"
+    },
+    "custom_item_5": {
+        "description": "check pre-login banner enabled",
+        "context": "config system global",
+        "expect": "set[\\s]+pre-login-banner[\\s]+enable"
+    },
+    "custom_item_6": {
+        "description": "check pre-login banner configured",
+        "context": "config system replacemsg admin \"pre_admin-disclaimer-text\"",
+        "expect": "@PRE_BANNER@"
+    },
+    "custom_item_7": {
+        "description": "2.1.10 Ensure management GUI listens on secure TLS version",
+        "info": "As we move towards better encryption capabilities, we need to also ensure GUI access is properly secured. TLS 1.3 is currently the most secure SSL/TLS supported version for SSL-encrypted administrator access (at this time of writing).\n\nUse higher version of SSL/TLS to prevent MiTM attacks.",
+        "solution": "CLI:\n\nconfig system global\nset admin-https-ssl-versions tlsv1-3",
+        "reference": "800-171|3.1.16,800-53|AC-18,800-53r5|AC-18,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,LEVEL|1A,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "expect": "set[\\s]+admin-https-ssl-versions[\\s]+tlsv1-3"
+    },
+    "custom_item_8": {
+        "description": "2.1.12 Ensure single CPU core overloaded event is logged",
+        "info": "Add log-single-cpu-high option under config system global. When enabled, CPU single core usage will be polled every three seconds, and any single CPU core usage above the CPU usage threshold will report an event log. If a core is reported, that core will not be checked again for the next 30 seconds.\n\nThere are instances where overall CPU usage is low, but there is a single CPU core that is overloaded. But because reporting and dashboard in FortiGate shows the overall CPU usage, a single CPU core spike may get overlooked on a FortiGate with multiple CPU cores. This causes performance issues where there are instances which traffic has been stopped processing.",
+        "solution": "On CLI:\n\nconfig system global\n    set log-single-cpu-high enable\nend",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "expect": "set[\\s]+log-single-cpu-high[\\s]+enable"
+    },
+    "custom_item_9": {
+        "description": "check post-login banner is enabled",
+        "context": "config system global",
+        "expect": "set[\\s]+post-login-banner[\\s]+enable"
+    },
+    "custom_item_10": {
+        "description": "check post-login banner content is set",
+        "context": "config system replacemsg admin \"post_admin-disclaimer-text\"",
+        "expect": "@POST_BANNER@"
+    },
+    "custom_item_11": {
+        "description": "2.1.3 Ensure timezone is properly configured",
+        "info": "Sets the local time zone information so that the time displayed by the device is more relevant to those who are viewing it.\n\nHaving a correct time set on the device is important for two main reasons. The first reason is that digital certificates compare this time to the range defined by their Valid From and Valid To fields to define a specific validity period. The second reason is to have relevant time stamps when logging information. Whether you are sending messages to a Syslog server, sending messages to an SNMP monitoring station, or performing packet captures, timestamps have little usefulness if you cannot be certain of their accuracy.",
+        "solution": "In this example, we will set Eastern Timezone (GMT-5:00) for the Fortigate. Each timezone will have its corresponding ID. To find the correct ID, when you type in the command \"set timezone \", also type the question mark '?' to list all of the available timezones and their IDs. The ID of the Eastern Timezone is 12In the CLI:\n\nFGT1 # config system global\nFGT1 (global) # set timezone 12\nFGT1 (global) # end\nFGT1 #\n\nIn the GUI, do the following:\n\n1) After login to fortigate, go to 'System' -> 'Settings'\n2) Select '(GMT-5:00) Eastern Time (US & Canada)' under 'System Time'\n\nImpact:\n\nFor many features to work, including scheduling, logging, and SSL-dependent features, the FortiOS system time must be accurate.",
+        "reference": "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|1A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "regex": "set timezone[\\s]+",
+        "expect": "@TIMEZONE@"
+    },
+    "custom_item_12": {
+        "description": "check ntp server #1",
+        "context": "config system ntp$",
+        "regex": "set[\\s]+server[\\s]+",
+        "expect": "set[\\s]+server[\\s]+\"?@NTP_SERVER_1@\"?"
+    },
+    "custom_item_13": {
+        "description": "check ntp server #2 set",
+        "context": "config system ntp$",
+        "regex": "set[\\s]+server[\\s]+",
+        "expect": "set[\\s]+server[\\s]+\"?@NTP_SERVER_2@\"?"
+    },
+    "custom_item_14": {
+        "description": "2.1.5 Ensure hostname is set",
+        "info": "Changes the device default hostname.\n\nThe device hostname plays an important role in asset inventory and identification as a security requirement. It is also crucial in the public keys and certificate deployments, as well as when correlating logs from different systems during an incident handling.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "In CLI, set the hostname to 'New_FGT1' as follows:\n\nFGT1 # config system global\nFGT1 (global) # set hostname \"New_FGT1\"\nFGT1 (global) # end\nNew_FGT1 #\n\nIn GUI\n\n1) Go to 'System' > 'Settings'\n2) Update the field 'Hostname' with the new hostname\n3) click 'Apply'",
+        "reference": "800-53|SC-20,800-53r5|SC-20,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "regex": "set[\\s]+hostname[\\s]+",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "check special characters",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+min-non-alphanumeric[\\s]+@MIN_NON_ALPHANUM@$"
+    },
+    "custom_item_16": {
+        "description": "check password reuse",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+reuse-password[\\s]+@REUSE_PASSWORDS@"
+    },
+    "custom_item_17": {
+        "description": "check minimum uppercase letters",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+min-upper-case-letter[\\s]+@MIN_UPPERCASE@$"
+    },
+    "custom_item_18": {
+        "description": "check minimum length",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+minimum-length[\\s]+@MIN_LENGTH@$"
+    },
+    "custom_item_19": {
+        "description": "check password expiry time",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+expire-day[\\s]+@MAX_AGE@$"
+    },
+    "custom_item_20": {
+        "description": "check that passwords expire",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+expire-status[\\s]+@EXPIRE_PASSWORDS@"
+    },
+    "custom_item_21": {
+        "description": "check minimum lowercase letters",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+min-lower-case-letter[\\s]+@MIN_LOWERCASE@$"
+    },
+    "custom_item_22": {
+        "description": "check that password policy is enabled",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_23": {
+        "description": "check which accounts password policy applies to",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+apply-to[\\s]+@APPLIES_TO@"
+    },
+    "custom_item_24": {
+        "description": "check minimum number of numbers",
+        "context": "config system password-policy$",
+        "expect": "set[\\s]+min-number[\\s]+@MIN_NUMBER@$"
+    },
+    "custom_item_25": {
+        "description": "check admin lockout duration",
+        "context": "config system global",
+        "regex": "set[\\s]+admin-lockout-duration[\\s]+",
+        "expect": "@ADMIN_LOCKOUT_DURATION@"
+    },
+    "custom_item_26": {
+        "description": "check admin lockout threshold",
+        "context": "config system global",
+        "regex": "set[\\s]+admin-lockout-threshold[\\s]+",
+        "expect": "@ADMIN_LOCKOUT_THRESHOLD@"
+    },
+    "custom_item_27": {
+        "description": "2.4.2 Ensure all the login accounts having specific trusted hosts enabled",
+        "info": "Configure an administrative account to be accessible only to someone who is using a trusted host. You can set a specific IP address for the trusted host or use a subnet.\n\nAccess to a firewall to perform administrative tasks should only come from specific network segments reserved for administrators only. This additional layer of security ensures that no one from anywhere else on the network is able to log in, even with correct credentials.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To remove a trusted host item from the list in CLI:\n\nFG1 # config system admin\nFG1 (admin) # edit \"test_admin\"\nFG1 (test_admin) # unset trusthost1\nFG1 (test_admin) # end\nFG1 #\n\nTo add a trusted host into the list in CLI:\n\nFG1 # config system admin\nFG1 (admin) # edit \"test_admin\"\nFG1 (test_admin) # set trusthost6 1.1.1.1 255.255.255.255\nFG1 (test_admin) # end\nFG1 #\n\nBefore adding an item, please make sure that it does not already exist. For example, if trusthost3 is already in the list, using it again will override the existing host/network.\n\nIn the Web GUI:\n\n1. System > Administrators.\n2. select the account and click on edit.\n3. In the account setting page, make sure that \"Restrict login to trusted hosts\" is enabled and all the allowed hosts / subnets are in the list of trusted host.\n\nPlease take note that certain versions of FortiOS will only show the first 3 trusted hosts in the list. If you want to see more, you have to click on the \"+\" sign as if you're adding a new item into the list. Keep clicking until you see an empty field of trusted host. That's when you know that you have reached the bottom of the list. To add another trusted host, fill in the empty field of the new \"Trusted Host\". To remove a trusted host, simply erase everything in the field of that corresponding host.\n\nImpact:\n\nAll access outside of the allowed segment will be stopped, including from both legitimate and illegitimate users. Thus, administrators working remotely will have to make sure that they have access to jump hosts that sit in the allowed segment.",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-171|3.1.14,800-53|AC-6(2),800-53|AC-6(5),800-53|AC-17(3),800-53|SI-7,800-53r5|AC-6(2),800-53r5|AC-6(5),800-53r5|AC-17(3),800-53r5|SI-7,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(a),CN-L3|8.1.10.6(i),CSCv7|4.6,CSCv7|11.6,CSCv7|11.7,CSCv8|5.4,CSCv8|12.8,CSF|PR.AC-3,CSF|PR.AC-4,CSF|PR.DS-6,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),ITSG-33|AC-17(3),ITSG-33|SI-7,ITSG-33|SI-7a.,LEVEL|1A,NESA|T3.4.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.6,NESA|T5.6.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5.5,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system admin",
+        "regex": "set[\\s]+trusthost[0-9]+[\\s]+[0-9.]+[\\s]+[0-9.]+",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_28": {
+        "description": "2.4.4 Ensure idle timeout time is configured",
+        "info": "The idle timeout period is the amount of time that an administrator will stay logged in to the GUI without any activity.\n\nBest practice dictates setting admin idle timeout to prevent the risk of unauthorized access to the device, such as someone using a logged-in GUI on a PC that has been left unattended.",
+        "solution": "To change the idle timeout in the GUI:\n\n1) Login to FortiGate with Super Admin privileges\n2) Go to 'System' > 'Settings'.\n3) In the 'Administration Settings' section, set the 'Idle timeout' value to five minutes by typing 5.\n4) Click Apply.\n\nTo change the idle timeout in the CLI:\n\nconfig system global\n\tset admintimeout 5\nend\n\nImpact:\n\nThis is to prevent someone from accessing the FortiGate if the management PC is left unattended.",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|11.1,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system global",
+        "regex": "set[\\s]+admintimeout[\\s]+",
+        "expect": "@ADMIN_TIMEOUT@$"
+    },
+    "custom_item_29": {
+        "description": "2.4.5 Ensure only encrypted access channels are enabled",
+        "info": "Allow only HTTPS access to the GUI and SSH access to the CLI.\n\nBy only allowing encrypted access, we are making it harder to use \"Man in the Middle\" attacks to sniff login credentials.",
+        "solution": "If HTTP or Telnet is in the allowaccess list, you will have to set that list again with the same elements except for http or telnet.\n\nOn CLI:\n\nFG1 # config system interface\nFG1 (interface) # edit port1\nFG1 (port1) # set allowaccess ssh https ping snmp\nFG1 (port1) # end\nFG1 #\n\nIn the web GUI, click on:\n\n1. Network > Interfaces, select the interface and click \"Edit\".\n2. In the interface setting page, uncheck HTTP and Telnet in the section \"Administrative Access\".",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|4.5,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set[\\s]+allowaccess[\\s]+",
+        "not_expect": "\\b(http|telnet)\\b"
+    },
+    "custom_item_30": {
+        "description": "2.4.6 Apply Local-in Policies",
+        "info": "Configure Local-in Policies to control inbound traffic that is destined to a FortiGate interface.\n\nLocal-in Policies allow for more granular and specific control of all types of traffic that are destined for a FortiGate interface. They are not limited to management-only protocols, therefore they can extend past \"trusted host\" configurations and be configured with source and destination addresses as well as specific services.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Local-in Policies can only be configured through the CLI:\n\nconfig firewall {local-in-policy | local-in-policy6}\n    editset intfset srcaddr[source_address] ...\n        set dstaddr[destination_address] ...\n        set action {accept | deny}\n        set service[service_name] ...\n        set scheduleset commentsnext\nend\n\nFor example, to prevent the source subnet 10.10.10.0/24 from pinging port1, but allow administrative access for PING on port1:\n\nconfig firewall address\n    edit \"10.10.10.0\"\n        set subnet 10.10.10.0 255.255.255.0\n    next\nend\nconfig firewall local-in-policy\n    edit 1\n        set intf \"port1\"\n        set srcaddr \"10.10.10.0\"\n        set dstaddr \"all\"\n        set service \"PING\"\n        set schedule \"always\"\n    next\nend\n\nImpact:\n\nLocal-in Policies are processed before \"trusted host\" configurations, so it is important to validate that management access will be maintained once the Local-in policies are put in place.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.4.6,800-171|3.4.7,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|MP-2,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|MP-2,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.1.10.6(j),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-2,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|MP-2,ITSG-33|MP-2a.,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.2.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NESA|T7.6.5,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS13c,NIAv2|SS15a,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|13.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config firewall local-in-policy",
+        "regex": ".*",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_31": {
+        "description": "check admin UI port not set to 80",
+        "context": "config system global",
+        "not_expect": "set[\\s]+admin-port[\\s]+80$"
+    },
+    "custom_item_32": {
+        "description": "check admin UI redirects to HTTPS",
+        "context": "config system global",
+        "expect": "set[\\s]+admin-https-redirect[\\s]+disable"
+    },
+    "custom_item_33": {
+        "description": "check that cert is in place",
+        "context": "config system global",
+        "expect": "set[\\s]+admin-server-cert[\\s]+\"self-sign\""
+    },
+    "custom_item_34": {
+        "description": "check admin UI port set to 443",
+        "context": "config system global",
+        "not_expect": "set[\\s]+admin-sport[\\s]+443$"
+    },
+    "custom_item_35": {
+        "description": "2.4.8 Virtual patching on the local-in management interface",
+        "info": "Allow virtual patching to be applied to traffic destined to the FortiGate by applying IPS signatures to the local in interface using local in policies. Attacks geared towards GUI and SSH management access, for example, can be mitigated using IPS signatures pushed from FortiGuard, thereby virtually patching these vulnerabilities.\n\nPatches require scheduling of downtime, which means there is some attack window from the time Fortinet announced the vulnerability to when patch is applied. To minimise the risk, virtual patching on GUI and SSH management access is needed.",
+        "solution": "On CLI:\n\nconfig firewall local-in-policy\n    editset virtual-patch enable\n    next\nend",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-171|3.12.2,800-171|3.14.1,800-53|CA-5,800-53|RA-1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|CA-5,800-53r5|RA-1,800-53r5|RA-5,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.4,CSCv8|7.4,CSCv8|16.2,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.GV-1,CSF|ID.GV-3,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|CA-5,ITSG-33|RA-1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS9,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config firewall local-in-policy",
+        "expect": "set[\\s]+virtual-patch[\\s]+enable"
+    },
+    "custom_item_36": {
+        "description": "2.5.2 Ensure \"Monitor Interfaces\" for High Availability devices is enabled",
+        "info": "Configure Interface Monitoring within High Availability settings. Interface Monitoring should be enabled on all critical interfaces.\n\nWith Interface Monitoring enabled on devices, failover can occur if there are physical media issues or issues with the specific port to which the FortiGate is connected.",
+        "solution": "To remediate from GUI:\n\n1. Go to System > HA.\n2. Under \"Monitor Interfaces\" select all applicable interfaces.\n3. Select \"OK\".\n\nTo validate from CLI:\n\nFGT1 # config system ha\nFGT1 (ha) # set monitor \"port6\" \"port7\"\nFGT1 (ha) # show ###To Review changes to monitored interfaces before applying\nconfig system ha\n    set group-name \"FGT-HA\"\n    set mode a-p\n    set password ENC enrwD467hJmO6j6YW/l6FEOa1YNVYdo8Z5mCcTDEKUFpOVXcNYnPBmQDGX//ViXk6TkwNH0il5aJr/fZY25lq+husndQHZVWp2LIlXmCv/n81U43nkZUWaIKvqkellGFbhv0/IHoOLzQPCsVcBbyrsgoprYMvh6w7F06+nRriBtMNQxpiTE+12xAHz7lA3EoYZzf8A==\n    set override disable\n    set monitor \"port6\" \"port7\"\nend\n\nImpact:\n\nNot configuring Interface Monitoring can directly impact services due to a failure to trigger a High Availability failover if an interface is impacted only on the primary device and is not being monitored. Without the Interface Monitoring enabled, failover would be limited to hardware, system, or power faults.",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|11.1,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config system ha[\\s]*$",
+        "expect": "set[\\s]+monitor[\\s]+\"@HA_MONITOR_PORT_1@\"[\\s]+\"@HA_MONITOR_PORT_2@\""
+    },
+    "custom_item_37": {
+        "description": "check that HA gateway is set",
+        "context": "edit .+",
+        "regex": "set[\\s]+gateway(6)?[\\s]+.+",
+        "expect": "@HA_GATEWAY@"
+    },
+    "custom_item_38": {
+        "description": "check that HA interface is set",
+        "context": "edit .+",
+        "regex": "set[\\s]+interface[\\s]+.+",
+        "expect": "@HA_INTERFACE@"
+    },
+    "custom_item_39": {
+        "description": "3.2 Ensure that policies do not use  \"ALL\" as Service",
+        "info": "Ensure that all security policies in effect clearly state which protocols / services they are allowing.\n\nThis is to make sure that the firewall do not allow traffic with unauthorized protocols/services by mistake.",
+        "solution": "This is an example showing how to modify policy with ID of 2 to change the service from \"ALL\" to FTP and SNMP.\n\nIn CLI:\n\nFGT1 # config firewall policy\nFGT1 (policy) # edit 2\nFGT1 (2) # set service \"FTP\" \"SNMP\"\nFGT1 (2) # end\nFGT1 #\n\nIn the GUI,\n\n1. Go to Policy & Objects.\n2. Click on Firewall Policy.\n3. Select the policy, click \"Edit\".\n4. In the Service section, click on it and select FTP and SNMP. Click OK.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|9.2,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set[\\s]+service[\\s]+",
+        "not_expect": "\"ALL\""
+    },
+    "custom_item_40": {
+        "description": "set default deny on inbound firewall",
+        "context": "edit @INBOUND_POLICY@",
+        "expect": "set action deny"
+    },
+    "custom_item_41": {
+        "description": "check that outbound policy denies access to TOR or botnet CNC",
+        "context": "edit @OUTBOUND_POLICY@",
+        "regex": "set internet-service-name",
+        "expect": "(\"Malicious-Malicious.Server\"|\"Tor-(Exit|Relay).Node\")"
+    },
+    "custom_item_42": {
+        "description": "check that inbound policy denies access to TOR or botnet CNC",
+        "context": "edit @INBOUND_POLICY@",
+        "regex": "set internet-service-src-name",
+        "expect": "(\"Malicious-Malicious.Server\"|\"Tor-(Exit|Relay).Node\")"
+    },
+    "custom_item_43": {
+        "description": "set default deny on outbound firewall",
+        "context": "edit @OUTBOUND_POLICY@",
+        "expect": "set action deny"
+    },
+    "custom_item_44": {
+        "description": "3.4 Ensure logging is enabled on all firewall policies",
+        "info": "Logging should be enabled for all firewall policies including the default implicit deny policy.\n\nFirewall policies should log for all traffic (both allow and deny policies). This enables SOC or security analyst to do further investigations on security incidents especially on threat hunting or incident response activities. Although there are many data sources that can provide DNS query logs (AD or EDR), this option should be enabled out of best practice and with assumption that no other data sources are available.",
+        "solution": "Review firewall policies and ensure that:\n\n -\n\nFor allowed policies, \"Log Allowed Traffic\" is set on \"All Sessions\" option.\n\n -\n\nFor denied policies, \"Log Violation Traffic\" is enabled.\n\nImpact:\n\nBy default, when creating firewall policies, a logging option is not enabled. Also, the default implicit deny policy is not logged. This creates a data gap in threat hunting or incident response activities.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.14.6,800-171|3.14.7,800-53|AU-1,800-53|AU-2,800-53|SI-4,800-53|SI-4(4),800-53r5|AU-1,800-53r5|AU-2,800-53r5|SI-4,800-53r5|SI-4(4),CN-L3|7.1.2.2(c),CN-L3|7.1.3.5(a),CN-L3|8.1.4.3(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|12.5,CSCv7|12.8,CSCv8|8.1,CSCv8|13.6,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.GV-1,CSF|ID.GV-3,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-1,ITSG-33|AU-2,ITSG-33|SI-4,ITSG-33|SI-4(4),LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|NS32,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.8,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,SWIFT-CSCv1|6.5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set logtraffic[\\s]",
+        "expect": "all"
+    },
+    "custom_item_45": {
+        "description": "4.1.2 Apply IPS Security Profile to Policies",
+        "info": "Ensuring that traffic traversing between networks on the FortiGate have an IPS security profile inspecting it.\n\nTraffic moving between \"interfaces\" on the FortiGate should have firewall policies applied with an IPS security profile applied.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure on all \"Allowed\" firewall policies to have an appropriate IPS security profile applied to policies.",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-53|RA-5,800-53r5|RA-5,CSCv7|12.7,CSCv8|7.5,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.7.1,PCI-DSSv3.2.1|6.1,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set ips-sensor",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_46": {
+        "description": "check that antivirus profile is set to sandbox mode",
+        "context": "edit .+",
+        "regex": "set fortisandbox-mode",
+        "expect": "inline"
+    },
+    "custom_item_47": {
+        "description": "check that antivirus profiles are explicitly defined",
+        "context": "config (http|ftp|imap|pop3|smtp|nntp|cifs)",
+        "regex": "set fortisandbox",
+        "expect": "block"
+    },
+    "custom_item_48": {
+        "description": "check that inline virus scanning is enabled",
+        "context": "config system fortiguard",
+        "regex": "set sandbox-inline-scan",
+        "expect": "enable"
+    },
+    "custom_item_49": {
+        "description": "4.3.2 Ensure DNS Filter logs all DNS queries and responses",
+        "info": "DNS filter should log all DNS queries and responses.\n\nDNS filter should log all DNS queries and responses (whether the DNS category is blocked, monitored, or allowed). This enables SOC or security analysts to do further investigations on security incidents, especially on threat hunting or incident response activities. Although there are many data sources that can provide DNS query logs (AD or EDR), this option should be enabled out of best practice and with the assumption that no other data source is available.",
+        "solution": "Review DNS Filter Security Profiles and validate that \"Log all DNS queries and responses\" is enabled.\n\nImpact:\n\nBy default, allowed DNS is not logged. This creates a data gap in threat hunting or incident response activities.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-2,800-53r5|AU-2,CN-L3|8.1.4.3(a),CSCv7|8.7,CSCv8|8.6,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "config dnsfilter profile",
+        "regex": "set log-all-domain",
+        "expect": "set log-all-domain enable"
+    },
+    "custom_item_50": {
+        "description": "4.3.3 Apply DNS Filter Security Profile to Policies",
+        "info": "Ensuring that traffic traversing to the Internet on the FortiGate has a DNS Filter security profile inspecting it.\n\nTraffic outbound to the Internet on the FortiGate should have firewall policies applied with an DNS Filter security profile applied.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure on \"Allowed\" firewall policies that handle traffic outbound to Internet to have an appropriate DNS Filter security profile applied to policies.",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|8.1,CSCv8|10.1,CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set dnsfilter-profile",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_51": {
+        "description": "4.4.1 Block high risk categories on Application Control",
+        "info": "Ensure FortiGate Application Control blocks high risk applications to reduce attack surface.\n\nHigh risk applications such as those in \"P2P\" and \"Proxy\" are known for spreading malware. Some of this traffic is encrypted and therefore is able to bypass network security inspection (for those without decryption implemented). Blocking these applications from running eliminates this risk.\n\nIf any application that falls under \"P2P\" and \"Proxy\" is required to be allowed based on an organization's policy, that specific application needs to be under \"Monitor\" mode in the \"Application and Filter Override\" configuration.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review Application Control Security Profiles and validate that \"P2P\" and \"Proxy\" category is blocked.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171|3.13.1,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53|SC-7(8),800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,800-53r5|SC-7(8),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.1.10.6(j),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSCv8|13.10,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,ITSG-33|SC-7(8),LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T4.5.4,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,NIAv2|SU4,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set category 2 6",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_52": {
+        "description": "4.4.3 Ensure all Application Control related traffic is logged",
+        "info": "Ensure no category is set to \"Allow\" on FortiGate Application Control.\n\nAny category that is set as \"Allow\" on Application Control will not be logged. This creates a visibility gap on security investigation. This includes \"Unknown Applications\" category.",
+        "solution": "On GUI:\n\n1. Go to \"Security Profiles\" > \"Application Control\".\n2. Select the relevant App Control profile.\n3. Change any categories with \"Allow\" action to \"Monitor\".\n\nImpact:\n\nVisibility gap, which affects incident forensics and response.",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53|SI-4(4),800-53r5|SI-4,800-53r5|SI-4(4),CN-L3|7.1.2.2(c),CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv8|13.6,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,ITSG-33|SI-4(4),LEVEL|1A,NESA|M1.2.2,NIAv2|NS32,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|6.5",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set unknown-application-log",
+        "expect": "enable"
+    },
+    "custom_item_53": {
+        "description": "4.4.4 Apply Application Control Security Profile to Policies",
+        "info": "Ensuring that traffic traversing between networks on the FortiGate have an Application Control security profile inspecting it.\n\nTraffic moving between \"interfaces\" on the FortiGate should have firewall policies applied with an Application Control security profile applied.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure on all \"Allowed\" firewall policies to have an appropriate Application Control security profile applied to policies.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|9.5,CSCv7|18.10,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit .+",
+        "regex": "set application-list",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_54": {
+        "description": "5.1.1 Enable Compromised Host Quarantine",
+        "info": "Default automation trigger configuration for when a high severity compromised host is detected.\n\nBy enabling this feature you protect your environment against compromised hosts. Default automation stitch to quarantine a high severity compromised host on FortiAPs, FortiSwitches, and FortiClient EMS.\n\nPlease note that this is only applicable if you have Fortinet's solution ecosystem (FortiGate with FortiAP, FortiSwitches, or FortiClient EMS).",
+        "solution": "GUI\n\nSecurity Fabric > Automation\n\nEdit and change Disabled to Enabled\n\nCLI\n\nconfig system automation-action\n    edit \"Quarantine on FortiSwitch + FortiAP\"\n        set description \"Default automation action configuration for quarantining a MAC address on FortiSwitches and FortiAPs.\"\n        set action-type quarantine\n    next\n    edit \"Quarantine FortiClient EMS Endpoint\"\n        set description \"Default automation action configuration for quarantining a FortiClient EMS endpoint device.\"\n        set action-type quarantine-forticlient\n    next\nend\nconfig system automation-trigger\n    edit \"Compromised Host - High\"\n        set description \"Default automation trigger configuration for when a high severity compromised host is detected.\"\n    next\nend\nconfig system automation-stitch\n    edit \"Compromised Host Quarantine\"\n        set description \"Default automation stitch to quarantine a high severity compromised host on FortiAPs, FortiSwitches, and FortiClient EMS.\"\n        set status enable\n        set trigger \"Compromised Host - High\"\n        config actions\n            edit 1\n                set action \"Quarantine on FortiSwitch + FortiAP\"\n            next\n            edit 2\n                set action \"Quarantine FortiClient EMS Endpoint\"\n            next\n        end\n    next\nend",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-171|3.1.12,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.5,800-171|3.14.6,800-171|3.14.7,800-53|AC-17,800-53|AC-17(1),800-53|CM-6,800-53|CM-7,800-53|SC-7,800-53|SI-4,800-53r5|AC-17,800-53r5|AC-17(1),800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-7,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.4.4(c),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CN-L3|8.1.10.6(i),CN-L3|8.1.10.6(j),CSCv7|8.1,CSCv7|8.3,CSCv8|13.5,CSCv8|13.9,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.AC-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-8,CSF|PR.PT-3,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-17,ITSG-33|AC-17(1),ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|SC-7,ITSG-33|SI-4,LEVEL|1A,NESA|M1.2.2,NESA|T4.5.4,NESA|T5.4.4,NESA|T5.4.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS15a,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|2.6,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15284",
+        "context": "edit \"Compromised Host Quarantine\"",
+        "expect": "set[\\s]+status[\\s]+enable"
+    },
+    "custom_item_55": {
+        "description": "check that fortianalyzer is set to reliable",
+        "context": "config log fortianalyzer setting",
+        "expect": "set[\\s]+reliable[\\s]+enable"
+    },
+    "custom_item_56": {
+        "description": "check that encryption algorithm is set to high",
+        "context": "config log fortianalyzer setting",
+        "expect": "set[\\s]+enc-algorithm[\\s]+high"
+    }
+}

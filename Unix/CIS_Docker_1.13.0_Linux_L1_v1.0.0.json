@@ -1,0 +1,134 @@
+{
+    "custom_item_1": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_2": {
+        "description": "1.1 Create a separate partition for containers",
+        "info": "All Docker containers and their data and metadata is stored under /var/lib/docker directory. By default, /var/lib/docker would be mounted under / or /var partitions based on availability.\n\nRationale:\n\nDocker depends on /var/lib/docker as the default directory where all Docker related files, including the images, are stored. This directory might fill up fast and soon Docker and the host could become unusable. So, it is advisable to create a separate partition (logical volume) for storing Docker files.",
+        "solution": "For new installations, create a separate partition for /var/lib/docker mount point.For systems that were previously installed, use the Logical Volume Manager (LVM) to create partitions.\n\nImpact:\n\nNone.\n\nDefault Value:\n\nBy default, /var/lib/docker would be mounted under / or /var partitions based on availability.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CSCv7|14,CSCv8|3.12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "file": "/etc/fstab",
+        "regex": "^[\\\\s]*.*[\\\\s]+/var/lib/docker[\\\\s]",
+        "expect": "^[\\\\s]*.*[\\\\s]+/var/lib/docker[\\\\s]"
+    },
+    "custom_item_3": {
+        "description": "1.3 Keep Docker up to date",
+        "info": "There are frequent releases for Docker software that address security vulnerabilities, product bugs and bring in new functionality. Keep a tab on these product updates and upgrade as frequently as when new security vulnerabilities are fixed or deemed correct for your organization.\n\nRationale:\n\nBy staying up to date on Docker updates, vulnerabilities in the Docker software can be mitigated. An educated attacker may exploit known vulnerabilities when attempting to attain access or elevate privileges. Not installing regular Docker updates may leave you with running vulnerable Docker software. It might lead to elevation privileges, unauthorized access or other security breaches. Keep a track of new releases and update as necessary.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Keep a track of Docker releases and update as necessary.\n\nImpact:\n\nNone.\n\nDefault Value:\n\nNot Applicable",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1M,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "/usr/bin/docker version",
+        "expect": ".*"
+    },
+    "custom_item_4": {
+        "description": "1.4 Only allow trusted users to control Docker daemon",
+        "info": "The Docker daemon currently requires 'root'privileges. A user added to the'docker' group gives him full 'root'access rights.\n\nRationale:\n\nDocker allows you to share a directory between the Docker host and a guest container without limiting the access rights of the container. This means that you can start a container and map the / directory on your host to the container. The container will then be able to alter your host file system without any restrictions. In simple terms, it means that you can attain elevated privileges with just being a member of the 'docker' group and then starting a container with mapped / directory on the host.",
+        "solution": "Remove any users from the 'docker' group that are not trusted. Additionally, do not create a mapping of sensitive directories on host to container volumes.\n\nImpact:\n\nRights to build and execute containers as normal user would be restricted.\n\nDefault Value:\n\nNot Applicable",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "/usr/bin/awk -F: \\'$1 ~ /docker/ {print $4}\\' /etc/group",
+        "expect": "@DOCKER_GROUP_USERS@"
+    },
+    "custom_item_5": {
+        "description": "1.5 Audit docker daemon",
+        "info": "Audit all Docker daemon activities.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit Docker daemon as well. Docker daemon runs with 'root' privileges. It is thus necessary to audit its activities and usage.",
+        "solution": "Add a rule for Docker daemon.\n\nFor example,\n\nAdd the line as below line in /etc/audit/audit.rules file:\n\n-w /usr/bin/docker -k docker\n\n\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\nDefault Value:\n\nBy default, Docker daemon is not audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep \\'/usr/bin/docker \\'",
+        "expect": "-w /usr/bin/docker -p rwxa -k docker"
+    },
+    "custom_item_6": {
+        "description": "1.6 Audit Docker files and directories - /var/lib/docker",
+        "info": "Audit /var/lib/docker.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /var/lib/docker is one such directory. It holds all the information about containers. It must be audited.",
+        "solution": "Add a rule for/var/lib/dockerdirectory.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /var/lib/docker -k docker\n\n\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /var/lib/docker",
+        "expect": "-w /var/lib/docker/ -p rwxa -k docker"
+    },
+    "custom_item_7": {
+        "description": "1.7 Audit Docker files and directories - /etc/docker",
+        "info": "Audit /etc/docker.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /etc/docker is one such directory. It holds various certificates and keys used for TLS communication between Docker daemon and Docker client. It must be audited.",
+        "solution": "Add a rule for/etc/dockerdirectory.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /etc/docker -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /etc/docker",
+        "expect": "-w /etc/docker/ -p rwxa -k docker"
+    },
+    "custom_item_8": {
+        "description": "1.8 Audit Docker files and directories - docker.service",
+        "info": "Audit docker.service,if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. docker.service is one such file. The docker.service file might be present if the daemon parameters have been changed by an administrator.It holds various parameters for Docker daemon. It must be audited, if applicable.",
+        "solution": "If the file exists, add a rule for it.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /usr/lib/systemd/system/docker.service -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file docker.service may not be available on the system.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /usr/lib/systemd/system/docker\\\\.service",
+        "expect": "-w /usr/lib/systemd/system/docker\\\\.service -p rwxa -k docker"
+    },
+    "custom_item_9": {
+        "description": "1.9 Audit Docker files and directories - docker.socket",
+        "info": "Audit docker.socket,if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. docker.socketis one such file. It holds various parameters for Docker daemon socket. It must be audited, if applicable.",
+        "solution": "If the file exists, add a rule for it.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /usr/lib/systemd/system/docker.socket -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file docker.socket may not be available on the system.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /usr/lib/systemd/system/docker\\\\.socket",
+        "expect": "-w /usr/lib/systemd/system/docker\\\\.socket -p rwxa -k docker"
+    },
+    "custom_item_10": {
+        "description": "1.10 Audit Docker files and directories - /etc/default/docker",
+        "info": "Audit /etc/default/docker, if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /etc/default/docker is one such file. It holds various parameters for Docker daemon. It must be audited, if applicable.",
+        "solution": "Add a rule for/etc/default/dockerfile.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /etc/default/docker -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file /etc/default/docker may not be available on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /etc/default/docker",
+        "expect": "-w /etc/default/docker[\\\\s]+"
+    },
+    "custom_item_11": {
+        "description": "1.11 Audit Docker files and directories - /etc/docker/daemon.json",
+        "info": "Audit /etc/docker/daemon.json, if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /etc/docker/daemon.json is one such file. It holds various parameters for Docker daemon. It must be audited, if applicable.",
+        "solution": "Add a rule for/etc/docker/daemon.jsonfile.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /etc/docker/daemon.json -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file /etc/docker/daemon.json may not be available on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /etc/docker/daemon\\\\.json",
+        "expect": "-w /etc/docker/daemon\\\\.json -p rwxa -k docker"
+    },
+    "custom_item_12": {
+        "description": "1.12 Audit Docker files and directories - /usr/bin/docker-containerd",
+        "info": "Audit /usr/bin/docker-containerd, if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /usr/bin/docker-containerdis one such file. Docker now relies on containerd and runCto spawn containers. It must be audited, if applicable.",
+        "solution": "Add a rule for/usr/bin/docker-containerdfile.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /usr/bin/docker-containerd -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file /usr/bin/docker-containerdmay not be available on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /usr/bin/docker-containerd",
+        "expect": "-w /usr/bin/docker-containerd -p rwxa -k docker"
+    },
+    "custom_item_13": {
+        "description": "1.13 Audit Docker files and directories - /usr/bin/docker-runc",
+        "info": "Audit /usr/bin/docker-runc, if applicable.\n\nRationale:\n\nApart from auditing your regular Linux file system and system calls, audit all Docker related files and directories. Docker daemon runs with 'root' privileges. Its behavior depends on some key files and directories. /usr/bin/docker-runcis one such file. Docker now relies on containerd and runCto spawn containers. It must be audited, if applicable.",
+        "solution": "Add a rule for/usr/bin/docker-runcfile.\n\nFor example,\n\nAdd the line as below in /etc/audit/audit.rules file:\n\n-w /usr/bin/docker-runc -k docker\n\nThen, restart the audit daemon. For example,\n\nservice auditd restart\n\nImpact:\n\nAuditing generates quite big log files. Ensure to rotate and archive them periodically. Also, create a separate partition of audit to avoid filling root file system.\n\n\nDefault Value:\n\nBy default, Docker related files and directories arenot audited.The file/usr/bin/docker-runcmay not be available on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "auditctl -l | grep /usr/bin/docker-runc",
+        "expect": "-w /usr/bin/docker-runc -p rwxa -k docker"
+    },
+    "custom_item_14": {
+        "description": "6.4 Avoid image sprawl",
+        "info": "Do not keep a large number of container images on the same host. Use only tagged images as appropriate.\n\nRationale:\n\nTagged images are useful to fall back from \"latest\" to a specific version of an image in production. Images with unused or old tags may contain vulnerabilities that might be exploited, if instantiated. Additionally, if you fail to remove unused images from the system and there are various such redundant and unused images, the host filesystem may become full and could lead to denial of service.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Keep the set of the images that you actually need and establish a workflow to remove old or stale images from the host. Additionally, use features such as pull-by-digest to get specific images from the registry.\n\nAdditionally, you can follow below set of steps to find out unused images on the system and delete them.\n\nStep 1Make a list of all image IDs that are currently instantiated by executing below command:\n\ndocker images --quiet | xargs docker inspect --format '{{ .Id }}: Image={{ .Config.Image }}'\n\nStep 2: List all the images present on the system by executing below command:\n\ndocker images\n\nStep 3: Compare the list of image IDs populated from Step 1 and Step 2 and find out images that are currently not being instantiated.\n\nStep 4: Decide if you want to keep the images that are not currently in use. If not delete them by executing below command:\n\ndocker rmi $IMAGE_ID\n\nImpact:\n\nNone\n\nDefault Value:\n\nImages and layered filesystems remain accessible on the host until the administrator removes all tags that refer to those images or layers.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "/usr/bin/docker images;echo \\' \\';for i in $(/usr/bin/docker images | /usr/bin/awk \\'$3 !~ /IMAGE/ { print $3}\\'); do result=NOT_INSTANTIATED; for j in $(/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Image }}\\'); do j=$(echo $j | sed -e \\'s/^[^:]*://\\'); image_id=$(echo $j|cut -c 1-12); if [ \"$i\" = \"$image_id\" ]; then result=INSTANTIATED; fi; done;echo $i\\' - >\\' $result;done",
+        "expect": ""
+    },
+    "custom_item_15": {
+        "description": "6.5 Avoid container sprawl",
+        "info": "Do not keep a large number of containers on the same host.\n\nRationale:\n\nThe flexibility of containers makes it easy to run multiple instances of applications and indirectly leads to Docker images that exist at varying security patch levels. It also means that you are consuming host resources that otherwise could have been used for running 'useful' containers. Having more than just the manageable number of containers on a particular host makes the situation vulnerable to mishandling, misconfiguration and fragmentation. Thus, avoid container sprawl and keep the number of containers on a host to a manageable total.",
+        "solution": "Periodically check your container inventory per host and clean up the stopped containers using the below command:\n\ndocker container prune\n\nImpact:\n\nIf you keep way too few number of containers per host, then perhaps you are not utilizing your host resources very adequately.\n\nDefault Value:\n\nBy default, Docker does not restrict the number of containers you may have on a host.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1M,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1476",
+        "cmd": "a=$(/usr/bin/docker info 2>/dev/null | grep \\'Containers\\' | cut -d\\' \\' -f 2); b=$(/usr/bin/docker ps -q | wc -l); c=$(($a - $b)); echo $c",
+        "expect": "(^[0-9]$|^1[0-9]$|^2[0-5]$)"
+    }
+}

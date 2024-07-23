@@ -1,0 +1,796 @@
+{
+    "custom_item_1": {
+        "description": "PGS9-00-000100 - PostgreSQL must be configured to prohibit or restrict the use of organization-defined functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.",
+        "info": "In order to prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols/services on information systems.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., email and web services); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the application must support the organizational requirements providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nDatabase Management Systems using ports, protocols, and services deemed unsafe are open to attack through those ports, protocols, and services. This can allow unauthorized access to the database and through the database to other components of the information system.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo change the listening port of the database, as the database administrator, change the following setting in postgresql.conf:\n\n$ sudo su - postgres\n$ vi $PGDATA/postgresql.conf\n\nChange the port parameter to the desired port.\n\nNext, restart the database:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl restart postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} restart\n\nNote: psql uses the default port 5432 by default. This can be changed by specifying the port with psql or by setting the PGPORT environment variable:\n\n$ psql -p 5432 -c 'SHOW port'\n$ export PGPORT=5432",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53|CM-7(1)(b),800-53r5|CM-7b.,800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-000382,CCI|CCI-001762,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,ITSG-33|CM-7(1),NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-214048r879588_rule,STIG-ID|PGS9-00-000100,STIG-Legacy|SV-87493,STIG-Legacy|V-72841,SWIFT-CSCv1|2.3,Vuln-ID|V-214048",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "show port;",
+        "sql_expect": "^(@PG_PORT@)$"
+    },
+    "custom_item_2": {
+        "description": "pgaudit loaded",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_3": {
+        "description": "pgaudit extension installed",
+        "sql_request": "select name, installed_version from pg_available_extensions where lower(name) = 'pgaudit';",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_4": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%e){4}"
+    },
+    "custom_item_5": {
+        "description": "log_error_verbosity",
+        "sql_request": "SHOW log_error_verbosity;",
+        "sql_expect": "default"
+    },
+    "custom_item_6": {
+        "description": "pgaudit.log_catalog",
+        "sql_request": "SHOW pgaudit.log_catalog;",
+        "sql_expect": "on"
+    },
+    "custom_item_7": {
+        "description": "pgaudit.log_level",
+        "sql_request": "SHOW pgaudit.log_level;",
+        "sql_expect": "log"
+    },
+    "custom_item_8": {
+        "description": "pgaudit.log_parameter",
+        "sql_request": "SHOW pgaudit.log_parameter;",
+        "sql_expect": "on"
+    },
+    "custom_item_9": {
+        "description": "pgaudit.log_statement_once",
+        "sql_request": "SHOW pgaudit.log_statement_once;",
+        "sql_expect": "off"
+    },
+    "custom_item_10": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*all,?|.*-misc,?){2}.*$"
+    },
+    "custom_item_11": {
+        "description": "PGS9-00-000300 - Security-relevant software updates to PostgreSQL must be installed within the time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
+        "info": "Security flaws with software applications, including database management systems, are discovered daily. Vendors are constantly updating and patching their products to address newly discovered security vulnerabilities. Organizations (including any contractor to the organization) are required to promptly install security-relevant software updates (e.g., patches, service packs, and hot fixes). Flaws discovered during security assessments, continuous monitoring, incident response activities, or information system error handling must also be addressed expeditiously.\n\nOrganization-defined time periods for updating security-relevant software may vary based on a variety of factors including, for example, the security category of the information system or the criticality of the update (i.e., severity of the vulnerability related to the discovered flaw).\n\nThis requirement will apply to software patch management solutions that are used to install patches across the enclave and also to applications themselves that are not part of that patch management solution. For example, many browsers today provide the capability to install their own patch software. Patch criticality, as well as system criticality, will vary. Therefore, the tactical situations regarding the patch management process will also vary. This means that the time period utilized must be a configurable parameter. Time frames for application of security-relevant software updates may be dependent upon the Information Assurance Vulnerability Management (IAVM) process.\n\nThe application will be configured to check for and install security-relevant software updates within an identified time period from the availability of the update. The specific time period will be defined by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Institute and adhere to policies and procedures to ensure that patches are consistently applied to PostgreSQL within the time allowed.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|I,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-214050r879827_rule,STIG-ID|PGS9-00-000300,STIG-Legacy|SV-87497,STIG-Legacy|V-72845,SWIFT-CSCv1|2.2,Vuln-ID|V-214050",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select version();",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_12": {
+        "description": "PGS9-00-000600 - PostgreSQL must provide non-privileged users with error messages that provide information necessary for corrective actions without revealing information that could be exploited by adversaries.",
+        "info": "Any PostgreSQL or associated application providing too much information in error messages on the screen or printout risks compromising the data and security of the system. The structure and content of error messages need to be carefully considered by the organization and development team.\n\nDatabases can inadvertently provide a wealth of information to an attacker through improperly handled error messages. In addition to sensitive business or personal information, database errors can provide host names, IP addresses, user names, and other system information not required for troubleshooting but very useful to someone targeting the system.\n\nCarefully consider the structure/content of error messages. The extent to which information systems are able to identify and handle error conditions is guided by organizational policy and operational requirements. Information that could be exploited by adversaries includes, for example, logon attempts with passwords entered by mistake as the username, mission/business information that can be derived from (if not stated explicitly by) information recorded, and personal information, such as account numbers, social security numbers, and credit card numbers.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nAs the database administrator, edit 'postgresql.conf':\n\n$ sudo su - postgres\n$ vi $PGDATA/postgresql.conf\n\nChange the client_min_messages parameter to be 'error':\n\nclient_min_messages = error\n\nReload the server with the new configuration (this just reloads settings currently in memory; it will not cause an interruption):\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-214053r879655_rule,STIG-ID|PGS9-00-000600,STIG-Legacy|SV-87503,STIG-Legacy|V-72851,Vuln-ID|V-214053",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select current_setting('client_min_messages');",
+        "sql_expect": "error"
+    },
+    "custom_item_13": {
+        "description": "system",
+        "sql_request": "SHOW max_connections;"
+    },
+    "custom_item_14": {
+        "description": "roles",
+        "sql_request": "SELECT rolname, rolconnlimit from pg_authid;",
+        "sql_expect": ".+"
+    },
+    "custom_item_15": {
+        "description": "PGS9-00-002400 - PostgreSQL must record time stamps, in audit records and application data, that can be mapped to Coordinated Universal Time (UTC, formerly GMT).",
+        "info": "If time stamps are not consistently applied and there is no common time reference, it is difficult to perform forensic analysis.\n\nTime stamps generated by PostgreSQL must include date and time. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo change log_timezone in postgresql.conf to use a different time zone for logs, as the database administrator (shown here as 'postgres'), run the following:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\nlog_timezone='UTC'\n\nNext, restart the database:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CAT|II,CCI|CCI-001890,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214069r879747_rule,STIG-ID|PGS9-00-002400,STIG-Legacy|SV-87539,STIG-Legacy|V-72887,TBA-FIISB|37.4,Vuln-ID|V-214069",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_timezone;",
+        "sql_expect": "UTC"
+    },
+    "custom_item_16": {
+        "description": "PGS9-00-003000 - PostgreSQL must maintain the confidentiality and integrity of information during reception.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during reception, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nThis requirement applies only to those applications that are either distributed or can allow access to data nonlocally. Use of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen receiving data, PostgreSQL, associated applications, and infrastructure must leverage protection mechanisms.\n\nFor more information on configuring PostgreSQL to use SSL, consult the following documentation:\nhttps://www.postgresql.org/docs/current/ssl-tcp.html\n\nPostgres provides native support for using SSL connections to encrypt client/server communications.  To enable the use of SSL, the postgres 'ssl' configuration parameter must be set to 'on' and the database instance needs to be configured to use a valid server certificate and private key installed on the server.  With SSL enabled, connections made to the database server will default to being encrypted.  However, it is possible for clients to override the default and attempt to establish an unencrypted connection. To prevent connections made from non-local hosts from being unencrypted, the postgres host-based authentication settings should be configured to only allow hostssl (i.e., encrypted) connections.  The hostssl connections can be further configured to require that the client present a valid (trusted) SSL certificate for a connection.",
+        "solution": "Implement protective measures against unauthorized disclosure and modification during reception.\n\nTo configure PostgreSQL to use SSL, see supplementary content APPENDIX-G for instructions on enabling SSL.",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002422,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214073r879813_rule,STIG-ID|PGS9-00-003000,STIG-Legacy|SV-87547,STIG-Legacy|V-72895,SWIFT-CSCv1|2.1,Vuln-ID|V-214073",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW ssl;",
+        "sql_expect": "on"
+    },
+    "custom_item_17": {
+        "description": "PGS9-00-003500 - PostgreSQL must include additional, more detailed, organization-defined information in the audit records for audit events identified by type, location, or subject.",
+        "info": "Information system auditing capability is critical for accurate forensic analysis. Reconstruction of harmful events or forensic analysis is not possible if audit records do not contain enough information. To support analysis, some types of events will need information to be logged that exceeds the basic requirements of event type, time stamps, location, source, outcome, and user identity. If additional information is not available, it could negatively impact forensic investigations into user actions or other malicious events.\n\nThe organization must determine what additional information is required for complete analysis of the audited events. The additional information required is dependent on the type of information (e.g., sensitivity of the data and the environment within which it resides). At a minimum, the organization must employ either full-text recording of privileged commands or the individual identities of users of shared accounts, or both. The organization must maintain audit trails in sufficient detail to reconstruct events to determine the cause and impact of compromise.\n\nExamples of detailed information the organization may require in audit records are full-text recording of privileged commands or the individual identities of shared account users.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure PostgreSQL audit settings to include all organization-defined detailed information in the audit records for audit events identified by type, location, or subject.\n\nUsing pgaudit PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3(1),800-53r5|AU-3(1),CAT|II,CCI|CCI-000135,CN-L3|7.1.3.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3(1),NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214077r879569_rule,STIG-ID|PGS9-00-003500,STIG-Legacy|SV-87555,STIG-Legacy|V-72903,SWIFT-CSCv1|6.4,Vuln-ID|V-214077",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select name, setting from pg_settings where name like 'log%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_18": {
+        "description": "PGS9-00-003600 - Execution of software modules (to include functions and trigger procedures) with elevated privileges must be restricted to necessary cases only.",
+        "info": "In certain situations, to provide required functionality, PostgreSQL needs to execute internal logic (stored procedures, functions, triggers, etc.) and/or external code modules with elevated privileges. However, if the privileges required for execution are at a higher level than the privileges assigned to organizational users invoking the functionality applications/programs, those users are indirectly provided with greater privileges than assigned by organizations.\n\nPrivilege elevation must be utilized only where necessary and protected from misuse.\n\nThis calls for inspection of application source code, which will require collaboration with the application developers. It is recognized that in many cases, the database administrator (DBA) is organizationally separate from the application developers, and may have limited, if any, access to source code. Nevertheless, protections of this type are so important to the secure operation of databases that they must not be ignored. At a minimum, the DBA must attempt to obtain assurances from the development organization that this issue has been addressed, and must document what has been discovered.",
+        "solution": "Determine where, when, how, and by what principals/subjects elevated privilege is needed.\n\nTo change a SECURITY DEFINER function to SECURITY INVOKER, as the database administrator (shown here as 'postgres'), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c 'ALTER FUNCTIONSECURITY INVOKER'",
+        "reference": "800-171|3.1.5,800-53|AC-6(8),800-53r5|AC-6(8),CAT|II,CCI|CCI-002233,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214078r879719_rule,STIG-ID|PGS9-00-003600,STIG-Legacy|SV-87557,STIG-Legacy|V-72905,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-214078",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SELECT nspname, proname, proargtypes, prosecdef, rolname, proconfig FROM pg_proc p JOIN pg_namespace n ON p.pronamespace = n.oid JOIN pg_authid a ON a.oid = p.proowner WHERE prosecdef OR NOT proconfig IS NULL;"
+    },
+    "custom_item_19": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_20": {
+        "description": "PGS9-00-003700 - When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner that reflects organizational and system objectives.",
+        "info": "A common vulnerability is unplanned behavior when invalid inputs are received. This requirement guards against adverse or unintended system behavior caused by invalid inputs, where information system responses to the invalid input may be disruptive or cause the system to fail into an unsafe state.\n\nThe behavior will be derived from the organizational and system requirements and includes, but is not limited to, notification of the appropriate personnel, creating an audit record, and rejecting invalid input.",
+        "solution": "Enable logging.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nAll errors and denials are logged if logging is enabled.",
+        "reference": "800-53|SI-10(3),800-53r5|SI-10(3),CAT|II,CCI|CCI-002754,CN-L3|8.1.4.4(d),DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NIAv2|SS6e,Rule-ID|SV-214079r879818_rule,STIG-ID|PGS9-00-003700,STIG-Legacy|SV-87559,STIG-Legacy|V-72907,Vuln-ID|V-214079",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_21": {
+        "description": "PGS9-00-003700 - When invalid inputs are received, PostgreSQL must behave in a predictable and documented manner that reflects organizational and system objectives.",
+        "info": "A common vulnerability is unplanned behavior when invalid inputs are received. This requirement guards against adverse or unintended system behavior caused by invalid inputs, where information system responses to the invalid input may be disruptive or cause the system to fail into an unsafe state.\n\nThe behavior will be derived from the organizational and system requirements and includes, but is not limited to, notification of the appropriate personnel, creating an audit record, and rejecting invalid input.",
+        "solution": "Enable logging.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nAll errors and denials are logged if logging is enabled.",
+        "reference": "800-53|SI-10(3),800-53r5|SI-10(3),CAT|II,CCI|CCI-002754,CN-L3|8.1.4.4(d),DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NIAv2|SS6e,Rule-ID|SV-214079r879818_rule,STIG-ID|PGS9-00-003700,STIG-Legacy|SV-87559,STIG-Legacy|V-72907,Vuln-ID|V-214079",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_22": {
+        "description": "log_destination",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "syslog"
+    },
+    "custom_item_23": {
+        "description": "syslog_facility",
+        "sql_request": "SHOW syslog_facility;",
+        "sql_expect": "local0"
+    },
+    "custom_item_24": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_25": {
+        "description": "PGS9-00-004100 - PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+        "info": "Without auditing the enforcement of access restrictions against changes to configuration, it would be difficult to identify attempted attacks and an audit trail would not be available for forensic investigation for after-the-fact actions.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Audit items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Enable logging.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-214082r879754_rule,STIG-ID|PGS9-00-004100,STIG-Legacy|SV-87565,STIG-Legacy|V-72913,Vuln-ID|V-214082",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_26": {
+        "description": "PGS9-00-004100 - PostgreSQL must produce audit records of its enforcement of access restrictions associated with changes to the configuration of PostgreSQL or database(s).",
+        "info": "Without auditing the enforcement of access restrictions against changes to configuration, it would be difficult to identify attempted attacks and an audit trail would not be available for forensic investigation for after-the-fact actions.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Audit items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Enable logging.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-214082r879754_rule,STIG-ID|PGS9-00-004100,STIG-Legacy|SV-87565,STIG-Legacy|V-72913,Vuln-ID|V-214082",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_27": {
+        "description": "PGS9-00-004400 - PostgreSQL must generate audit records when categorized information (e.g., classification levels/security levels) is accessed.",
+        "info": "Changes in categorized information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nUsing pgaudit the DBMS (PostgreSQL) can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log = 'ddl, write, role'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql- ${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql- ${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214085r879865_rule,STIG-ID|PGS9-00-004400,STIG-Legacy|SV-87571,STIG-Legacy|V-72919,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214085",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*write,?|.*role,?){3}.*$"
+    },
+    "custom_item_28": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_29": {
+        "description": "PGS9-00-004500 - PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.",
+        "info": "Changes to the security configuration must be tracked.\n\nThis requirement applies to situations where security data is retrieved or modified via data manipulation operations, as opposed to via specialized security functionality.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\n\nSELECT\nINSERT\nUPDATE\nDELETE\nEXECUTE\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access security objects occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214086r879863_rule,STIG-ID|PGS9-00-004500,STIG-Legacy|SV-87573,STIG-Legacy|V-72921,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214086",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_30": {
+        "description": "PGS9-00-004500 - PostgreSQL must generate audit records when unsuccessful attempts to access security objects occur.",
+        "info": "Changes to the security configuration must be tracked.\n\nThis requirement applies to situations where security data is retrieved or modified via data manipulation operations, as opposed to via specialized security functionality.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\n\nSELECT\nINSERT\nUPDATE\nDELETE\nEXECUTE\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access security objects occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214086r879863_rule,STIG-ID|PGS9-00-004500,STIG-Legacy|SV-87573,STIG-Legacy|V-72921,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214086",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_31": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_32": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%c){3}"
+    },
+    "custom_item_33": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_34": {
+        "description": "log_disconnection",
+        "sql_request": "SHOW log_disconnections;",
+        "sql_expect": "on"
+    },
+    "custom_item_35": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%c){3}"
+    },
+    "custom_item_36": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_37": {
+        "description": "PGS9-00-004800 - PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+        "info": "Changes in the database objects (tables, views, procedures, functions) that record and control permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized changes to the security subsystem could go undetected. The database could be severely compromised or rendered inoperative.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to modify security objects occur.\n\nUnsuccessful attempts to modifying security objects can be logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214089r879867_rule,STIG-ID|PGS9-00-004800,STIG-Legacy|SV-87579,STIG-Legacy|V-72927,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214089",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_38": {
+        "description": "PGS9-00-004800 - PostgreSQL must generate audit records when unsuccessful attempts to modify security objects occur.",
+        "info": "Changes in the database objects (tables, views, procedures, functions) that record and control permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized changes to the security subsystem could go undetected. The database could be severely compromised or rendered inoperative.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to modify security objects occur.\n\nUnsuccessful attempts to modifying security objects can be logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214089r879867_rule,STIG-ID|PGS9-00-004800,STIG-Legacy|SV-87579,STIG-Legacy|V-72927,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214089",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_39": {
+        "description": "PGS9-00-004900 - PostgreSQL must generate audit records when privileges/permissions are added.",
+        "info": "Changes in the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized elevation or restriction of privileges could go undetected. Elevated privileges give users access to information and functionality that they should not have; restricted privileges wrongly deny access to authorized users.\n\nIn an SQL environment, adding permissions is typically done via the GRANT command, or, in the negative, the REVOKE command.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nUsing pgaudit PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log = 'role'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214090r879866_rule,STIG-ID|PGS9-00-004900,STIG-Legacy|SV-87581,STIG-Legacy|V-72929,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214090",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "(^| |,)role( |,|$)"
+    },
+    "custom_item_40": {
+        "description": "PGS9-00-005000 - PostgreSQL must generate audit records when unsuccessful attempts to delete categorized information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categorized information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nAll errors and denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nUsing pgaudit PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log='ddl, role, read, write'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214091r879873_rule,STIG-ID|PGS9-00-005000,STIG-Legacy|SV-87583,STIG-Legacy|V-72931,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214091",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_41": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_42": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%c){4}"
+    },
+    "custom_item_43": {
+        "description": "PGS9-00-005200 - PostgreSQL must generate audit records when security objects are deleted.",
+        "info": "The removal of security objects from the database/PostgreSQL would seriously degrade a system's information assurance posture. If such an event occurs, it must be logged.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nUsing pgaudit PostgreSQL can be configured to audit these requests. See supplementary content APPENDIX-B for documentation on installing pgaudit.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log = 'ddl'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214093r879872_rule,STIG-ID|PGS9-00-005200,STIG-Legacy|SV-87591,STIG-Legacy|V-72939,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214093",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "(^| |,)ddl( |,|$)"
+    },
+    "custom_item_44": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_45": {
+        "description": "PGS9-00-005300 - PostgreSQL must generate audit records when unsuccessful attempts to retrieve privileges/permissions occur.",
+        "info": "Under some circumstances, it may be useful to monitor who/what is reading privilege/permission/role information. Therefore, it must be possible to configure auditing to do this. PostgreSQLs typically make such information available through views or functions.\n\nThis requirement addresses explicit requests for privilege/permission/role membership information. It does not refer to the implicit retrieval of privileges/permissions/role memberships that PostgreSQL continually performs to determine if any and every action on the database is permitted.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access privileges occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214094r879561_rule,STIG-ID|PGS9-00-005300,STIG-Legacy|SV-87593,STIG-Legacy|V-72941,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214094",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_46": {
+        "description": "PGS9-00-005300 - PostgreSQL must generate audit records when unsuccessful attempts to retrieve privileges/permissions occur.",
+        "info": "Under some circumstances, it may be useful to monitor who/what is reading privilege/permission/role information. Therefore, it must be possible to configure auditing to do this. PostgreSQLs typically make such information available through views or functions.\n\nThis requirement addresses explicit requests for privilege/permission/role membership information. It does not refer to the implicit retrieval of privileges/permissions/role memberships that PostgreSQL continually performs to determine if any and every action on the database is permitted.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access privileges occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214094r879561_rule,STIG-ID|PGS9-00-005300,STIG-Legacy|SV-87593,STIG-Legacy|V-72941,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214094",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_47": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_48": {
+        "description": "PGS9-00-005400 - PostgreSQL must generate audit records when unsuccessful attempts to delete privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn an SQL environment, deleting permissions is typically done via the REVOKE command.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to delete privileges occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214095r879870_rule,STIG-ID|PGS9-00-005400,STIG-Legacy|SV-87597,STIG-Legacy|V-72945,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214095",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_49": {
+        "description": "PGS9-00-005400 - PostgreSQL must generate audit records when unsuccessful attempts to delete privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn an SQL environment, deleting permissions is typically done via the REVOKE command.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to delete privileges occur.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214095r879870_rule,STIG-ID|PGS9-00-005400,STIG-Legacy|SV-87597,STIG-Legacy|V-72945,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214095",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_50": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_51": {
+        "description": "pgaudit.log_catalog",
+        "sql_request": "SHOW pgaudit.log_catalog;",
+        "sql_expect": "on"
+    },
+    "custom_item_52": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "(^| |,)read( |,|$)"
+    },
+    "custom_item_53": {
+        "description": "PGS9-00-005600 - PostgreSQL must generate audit records when unsuccessful attempts to modify categorized information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categorized information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nConfigure PostgreSQL to produce audit records when unsuccessful attempts to modify categories of information.\n\nTo ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging. All denials are logged when logging is enabled.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log='ddl, role, read, write'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214097r879869_rule,STIG-ID|PGS9-00-005600,STIG-Legacy|SV-87601,STIG-Legacy|V-72949,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214097",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_54": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_55": {
+        "description": "PGS9-00-005700 - PostgreSQL must generate audit records when unsuccessful accesses to objects occur.",
+        "info": "Without tracking all or selected types of access to all or selected objects (tables, views, procedures, functions, etc.), it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\n\nSELECT\nINSERT\nUPDATE\nDROP\nEXECUTE\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access objects occur.\n\nAll errors and denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214098r879878_rule,STIG-ID|PGS9-00-005700,STIG-Legacy|SV-87603,STIG-Legacy|V-72951,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214098",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_56": {
+        "description": "PGS9-00-005700 - PostgreSQL must generate audit records when unsuccessful accesses to objects occur.",
+        "info": "Without tracking all or selected types of access to all or selected objects (tables, views, procedures, functions, etc.), it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\n\nSELECT\nINSERT\nUPDATE\nDROP\nEXECUTE\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to access objects occur.\n\nAll errors and denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214098r879878_rule,STIG-ID|PGS9-00-005700,STIG-Legacy|SV-87603,STIG-Legacy|V-72951,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214098",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_57": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_58": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_59": {
+        "description": "PGS9-00-005900 - PostgreSQL must generate audit records when unsuccessful attempts to access categorized information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categorized information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nConfigure PostgreSQL to produce audit records when unsuccessful attempts to access categories of information.\n\nAll denials are logged if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nWith pgaudit installed the following configurations can be made:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameters (or edit existing parameters):\n\npgaudit.log = 'ddl, write, role'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214100r879865_rule,STIG-ID|PGS9-00-005900,STIG-Legacy|SV-87607,STIG-Legacy|V-72955,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214100",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*write,?|.*role,?){3}.*$"
+    },
+    "custom_item_60": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_61": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_62": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_63": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_64": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_65": {
+        "description": "log_disconnections",
+        "sql_request": "SHOW log_disconnections;",
+        "sql_expect": "on"
+    },
+    "custom_item_66": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%c){4}"
+    },
+    "custom_item_67": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_68": {
+        "description": "log_disconnections",
+        "sql_request": "SHOW log_disconnections;",
+        "sql_expect": "on"
+    },
+    "custom_item_69": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%c){4}"
+    },
+    "custom_item_70": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_71": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "(^| |,)role( |,|$)"
+    },
+    "custom_item_72": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_73": {
+        "description": "PGS9-00-006500 - PostgreSQL must generate audit records when unsuccessful attempts to execute privileged activities or other system-level access occur.",
+        "info": "Without tracking privileged activity, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nSystem documentation should include a definition of the functionality considered privileged.\n\nA privileged function in this context is any operation that modifies the structure of the database, its built-in logic, or its security settings. This would include all Data Definition Language (DDL) statements and all security-related statements. In an SQL environment, it encompasses, but is not necessarily limited to:\n\nCREATE\nALTER\nDROP\nGRANT\nREVOKE\n\nNote: That it is particularly important to audit, and tightly control, any action that weakens the implementation of this requirement itself, since the objective is to have a complete audit trail of all administrative activity.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to execute privileged SQL.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214106r879875_rule,STIG-ID|PGS9-00-006500,STIG-Legacy|SV-87621,STIG-Legacy|V-72969,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214106",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_74": {
+        "description": "PGS9-00-006500 - PostgreSQL must generate audit records when unsuccessful attempts to execute privileged activities or other system-level access occur.",
+        "info": "Without tracking privileged activity, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nSystem documentation should include a definition of the functionality considered privileged.\n\nA privileged function in this context is any operation that modifies the structure of the database, its built-in logic, or its security settings. This would include all Data Definition Language (DDL) statements and all security-related statements. In an SQL environment, it encompasses, but is not necessarily limited to:\n\nCREATE\nALTER\nDROP\nGRANT\nREVOKE\n\nNote: That it is particularly important to audit, and tightly control, any action that weakens the implementation of this requirement itself, since the objective is to have a complete audit trail of all administrative activity.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to execute privileged SQL.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214106r879875_rule,STIG-ID|PGS9-00-006500,STIG-Legacy|SV-87621,STIG-Legacy|V-72969,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214106",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_75": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_76": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_77": {
+        "description": "pgaudit.log_catalog",
+        "sql_request": "SHOW pgaudit.log_catalog;",
+        "sql_expect": "on"
+    },
+    "custom_item_78": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_79": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_80": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_81": {
+        "description": "PGS9-00-006800 - PostgreSQL must generate audit records when unsuccessful attempts to modify privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nModifying permissions is done via the GRANT and REVOKE commands.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to modify privileges occur.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214109r879866_rule,STIG-ID|PGS9-00-006800,STIG-Legacy|SV-87627,STIG-Legacy|V-72975,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214109",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_82": {
+        "description": "PGS9-00-006800 - PostgreSQL must generate audit records when unsuccessful attempts to modify privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nModifying permissions is done via the GRANT and REVOKE commands.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to modify privileges occur.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214109r879866_rule,STIG-ID|PGS9-00-006800,STIG-Legacy|SV-87627,STIG-Legacy|V-72975,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214109",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_83": {
+        "description": "Check log_destination is stderr",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "stderr"
+    },
+    "custom_item_84": {
+        "description": "PGS9-00-006900 - PostgreSQL must generate audit records when unsuccessful attempts to add privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn an SQL environment, adding permissions is typically done via the GRANT command, or, in the negative, the REVOKE command.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to add privileges occur.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214110r879866_rule,STIG-ID|PGS9-00-006900,STIG-Legacy|SV-87629,STIG-Legacy|V-72977,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214110",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW logging_collector;",
+        "sql_expect": "on"
+    },
+    "custom_item_85": {
+        "description": "PGS9-00-006900 - PostgreSQL must generate audit records when unsuccessful attempts to add privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn an SQL environment, adding permissions is typically done via the GRANT command, or, in the negative, the REVOKE command.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.",
+        "solution": "Configure PostgreSQL to produce audit records when unsuccessful attempts to add privileges occur.\n\nAll denials are logged by default if logging is enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214110r879866_rule,STIG-ID|PGS9-00-006900,STIG-Legacy|SV-87629,STIG-Legacy|V-72977,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-214110",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(syslog|stderr)$"
+    },
+    "custom_item_86": {
+        "description": "PGS9-00-007100 - PostgreSQL must produce audit records containing sufficient information to establish where the events occurred.",
+        "info": "Information system auditing capability is critical for accurate forensic analysis. Without establishing where events occurred, it is impossible to establish, correlate, and investigate the events relating to an incident.\n\nIn order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know where events occurred, such as application components, modules, session identifiers, filenames, host names, and functionality.\n\nAssociating information about where the event occurred within the application provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application.",
+        "solution": "Note: The following instructions use the PGDATA environment variable. See supplementary content APPENDIX-F for instructions on configuring PGDATA.\n\nTo check that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nFirst edit the postgresql.conf file as the database administrator (shown here as 'postgres'):\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nExtra parameters can be added to the setting log_line_prefix to log application related information:\n\n# %a = application name\n# %u = user name\n# %d = database name\n# %r = remote host and port\n# %p = process ID\n# %m = timestamp with milliseconds\n# %i = command tag\n# %s = session startup\n# %e = SQL state\n\nFor example:\n\nlog_line_prefix = '< %m %a %u %d %r %p %i %e %s>'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-9.5\n\n# INITD SERVER ONLY\n$ sudo service postgresql-9.5 reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000132,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214112r879565_rule,STIG-ID|PGS9-00-007100,STIG-Legacy|SV-87775,STIG-Legacy|V-73123,SWIFT-CSCv1|6.4,Vuln-ID|V-214112",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%s){4}"
+    },
+    "custom_item_87": {
+        "description": "PGS9-00-007200 - PostgreSQL must maintain the confidentiality and integrity of information during preparation for transmission.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during preparation for transmission, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nUse of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen transmitting data, PostgreSQL, associated applications, and infrastructure must leverage transmission protection mechanisms.\n\nFor more information on configuring PostgreSQL to use SSL, consult the following documentation:\nhttps://www.postgresql.org/docs/current/ssl-tcp.html\n\nPostgres provides native support for using SSL connections to encrypt client/server communications.  To enable the use of SSL, the postgres 'ssl' configuration parameter must be set to 'on' and the database instance needs to be configured to use a valid server certificate and private key installed on the server.  With SSL enabled, connections made to the database server will default to being encrypted.  However, it is possible for clients to override the default and attempt to establish an unencrypted connection. To prevent connections made from non-local hosts from being unencrypted, the postgres host-based authentication settings should be configured to only allow hostssl (i.e., encrypted) connections.  The hostssl connections can be further configured to require that the client present a valid (trusted) SSL certificate for a connection.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nImplement protective measures against unauthorized disclosure and modification during preparation for transmission.\n\nTo configure PostgreSQL to use SSL, as a database administrator (shown here as 'postgres'), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameter:\n\nssl = on\n\nTo change authentication requirements for the database, as the database administrator (shown here as 'postgres'), edit pg_hba.conf:\n\n$ sudo su - postgres\n\n$ vi ${PGDATA?}/pg_hba.conf\n\nEdit authentication requirements to the organizational requirements. See the official documentation for the complete list of options for authentication: http://www.postgresql.org/docs/current/static/auth-pg-hba-conf.html\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload\n\nFor more information on configuring PostgreSQL to use SSL, see supplementary content APPENDIX-G.",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214113r879812_rule,STIG-ID|PGS9-00-007200,STIG-Legacy|SV-87633,STIG-Legacy|V-72981,SWIFT-CSCv1|2.1,Vuln-ID|V-214113",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW ssl;",
+        "sql_expect": "on"
+    },
+    "custom_item_88": {
+        "description": "PGS9-00-007700 - PostgreSQL must generate time stamps, for audit records and application data, with a minimum granularity of one second.",
+        "info": "Without sufficient granularity of time stamps, it is not possible to adequately determine the chronological order of records.\n\nTime stamps generated by PostgreSQL must include date and time. Granularity of time measurements refers to the precision available in time stamp values. Granularity coarser than one second is not sufficient for audit trail purposes. Time stamp values are typically presented with three or more decimal places of seconds; however, the actual granularity may be coarser than the apparent precision. For example, PostgreSQL will always return at least millisecond timestamps but it can be truncated using EXTRACT functions: SELECT EXTRACT(MINUTE FROM TIMESTAMP '2001-02-16 20:38:40');.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nPostgreSQL will not log anything if logging is not enabled. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nIf logging is enabled the following configurations must be made to log events with time stamps:\n\nFirst, as the database administrator (shown here as 'postgres'), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd %m to log_line_prefix to enable time stamps with milliseconds:\n\nlog_line_prefix = '< %m >'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CAT|II,CCI|CCI-001889,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214115r879748_rule,STIG-ID|PGS9-00-007700,STIG-Legacy|SV-87637,STIG-Legacy|V-72985,TBA-FIISB|37.4,Vuln-ID|V-214115",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "%m"
+    },
+    "custom_item_89": {
+        "description": "PGS9-00-007800 - PostgreSQL must produce audit records containing sufficient information to establish the identity of any user/subject or process associated with the event.",
+        "info": "Information system auditing capability is critical for accurate forensic analysis. Without information that establishes the identity of the subjects (i.e., users or processes acting on behalf of users) associated with the events, security personnel cannot determine responsibility for the potentially harmful event.\n\nIdentifiers (if authenticated or otherwise known) include, but are not limited to, user database tables, primary key values, user names, or process identifiers.\n\n1) Linux's sudo and su feature enables a user (with sufficient OS privileges) to emulate another user, and it is the identity of the emulated user that is seen by PostgreSQL and logged in the audit trail. Therefore, care must be taken (outside of Postgresql) to restrict sudo/su to the minimum set of users necessary.\n\n2) PostgreSQL's SET ROLE feature enables a user (with sufficient PostgreSQL privileges) to emulate another user running statements under the permission set of the emulated user. In this case, it is the emulating user's identity, and not that of the emulated user, that gets logged in the audit trail. While this is definitely better than the other way around, ideally, both identities would be recorded.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nLogging must be enabled in order to capture the identity of any user/subject or process associated with an event. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nTo enable username, database name, process ID, remote host/port and application name in logging, as the database administrator (shown here as 'postgres'), edit the following in postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\nlog_line_prefix = '< %m %u %d %p %r %a >'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-001487,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214116r879568_rule,STIG-ID|PGS9-00-007800,STIG-Legacy|SV-87639,STIG-Legacy|V-72987,SWIFT-CSCv1|6.4,Vuln-ID|V-214116",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%p|.*%r|.*%a){6}"
+    },
+    "custom_item_90": {
+        "description": "PGS9-00-008100 - PostgreSQL must use NSA-approved cryptography to protect classified information in accordance with the data owners requirements.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The application must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nIt is the responsibility of the data owner to assess the cryptography requirements in light of applicable federal laws, Executive Orders, directives, policies, regulations, and standards.\n\nNSA-approved cryptography for classified networks is hardware based. This requirement addresses the compatibility of PostgreSQL with the encryption devices.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo configure PostgreSQL to use SSL, as a database administrator (shown here as 'postgres'), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameter:\n\nssl = on\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload\n\nFor more information on configuring PostgreSQL to use SSL, see supplementary content APPENDIX-G.\n\nDeploy NSA-approved encrypting devices to protect the server on the network.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-220321r879885_rule,STIG-ID|PGS9-00-008100,STIG-Legacy|SV-87643,STIG-Legacy|V-72991,Vuln-ID|V-220321",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW ssl;",
+        "sql_expect": "on"
+    },
+    "custom_item_91": {
+        "description": "PGS9-00-008300 - PostgreSQL must protect the confidentiality and integrity of all information at rest.",
+        "info": "This control is intended to address the confidentiality and integrity of information at rest in non-mobile devices and covers user information and system information. Information at rest refers to the state of information when it is located on a secondary storage device (e.g., disk drive, tape drive) within an organizational information system. Applications and application users generate information throughout the course of their application use.\n\nUser data generated, as well as application-specific configuration data, needs to be protected. Organizations may choose to employ different mechanisms to achieve confidentiality and integrity protections, as appropriate.\n\nIf the confidentiality and integrity of application data is not protected, the data will be open to compromise and unauthorized modification.",
+        "solution": "Apply appropriate controls to protect the confidentiality and integrity of data at rest in the database.\n\nThe pgcrypto module provides cryptographic functions for PostgreSQL. See supplementary content APPENDIX-E for documentation on installing pgcrypto.\n\nWith pgcrypto installed, it is possible to insert encrypted data into the database:\n\nINSERT INTO accounts(username, password) VALUES ('bob', crypt('a_secure_password', gen_salt('xdes')));",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|I,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214120r879642_rule,STIG-ID|PGS9-00-008300,STIG-Legacy|SV-87647,STIG-Legacy|V-72995,Vuln-ID|V-214120",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select name, installed_version from pg_available_extensions where lower(name) = 'pgcrypto';",
+        "sql_expect": "pgcrypto"
+    },
+    "custom_item_92": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_93": {
+        "description": "log_destination",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "^(stderr|syslog)$"
+    },
+    "custom_item_94": {
+        "description": "PGS9-00-008700 - PostgreSQL must implement cryptographic mechanisms to prevent unauthorized modification of organization-defined information at rest (to include, at a minimum, PII and classified information) on organization-defined information system components.",
+        "info": "PostgreSQLs handling data requiring 'data at rest' protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. These cryptographic mechanisms may be native to PostgreSQL or implemented via additional software or operating system/file system settings, as appropriate to the situation.\n\nSelection of a cryptographic mechanism is based on the need to protect the integrity of organizational information. The strength of the mechanism is commensurate with the security category and/or classification of the information. Organizations have the flexibility to either encrypt all information on storage devices (i.e., full disk encryption) or encrypt specific data structures (e.g., files, records, or fields).\n\nThe decision whether and what to encrypt rests with the data owner and is also influenced by the physical measures taken to secure the equipment and media on which the information resides.",
+        "solution": "Configure PostgreSQL, operating system/file system, and additional software as relevant, to provide the required level of cryptographic protection.\n\nThe pgcrypto module provides cryptographic functions for PostgreSQL. See supplementary content APPENDIX-E for documentation on installing pgcrypto.\n\nWith pgcrypto installed, it's possible to insert encrypted data into the database:\n\nINSERT INTO accounts(username, password) VALUES ('bob', crypt('a_secure_password', gen_salt('md5')));",
+        "reference": "800-171|3.13.16,800-53|SC-28(1),800-53r5|SC-28(1),CAT|II,CCI|CCI-002475,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28(1),PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214124r879799_rule,STIG-ID|PGS9-00-008700,STIG-Legacy|SV-87655,STIG-Legacy|V-73003,TBA-FIISB|28.1,Vuln-ID|V-214124",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select name, installed_version from pg_available_extensions where lower(name) = 'pgcrypto';",
+        "sql_expect": "pgcrypto"
+    },
+    "custom_item_95": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "%r"
+    },
+    "custom_item_96": {
+        "description": "log_hostname",
+        "sql_request": "SHOW log_hostname;",
+        "sql_expect": "on"
+    },
+    "custom_item_97": {
+        "description": "PGS9-00-008900 - Unused database components, PostgreSQL software, and database objects must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nPostgreSQL must adhere to the principles of least functionality by providing only essential capabilities.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To remove extensions, use the following commands:\n\n$ sudo su - postgres\n$ psql -c 'DROP EXTENSION'\n\nNote: It is recommended that plpgsql not be removed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214126r879587_rule,STIG-ID|PGS9-00-008900,STIG-Legacy|SV-87659,STIG-Legacy|V-73007,SWIFT-CSCv1|2.3,Vuln-ID|V-214126",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select extname, extversion from pg_extension where extname != 'plpgsql'",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_98": {
+        "description": "PGS9-00-009100 - Access to external executables must be disabled or restricted.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nApplications must adhere to the principles of least functionality by providing only essential capabilities.\n\nPostgreSQLs may spawn additional external processes to execute procedures that are defined in PostgreSQL but stored in external host files (external procedures). The spawned process used to execute the external procedure may operate within a different OS security context than PostgreSQL and provide unauthorized access to the host system.",
+        "solution": "To remove superuser from a role, as the database administrator (shown here as 'postgres'), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c 'ALTER ROLEWITH NOSUPERUSER'\n\nTo remove extensions from PostgreSQL, as the database administrator (shown here as 'postgres'), run the following SQL:\n\n$ sudo su - postgres\n$ psql -c 'DROP EXTENSION extension_name'",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214127r879587_rule,STIG-ID|PGS9-00-009100,STIG-Legacy|SV-87661,STIG-Legacy|V-73009,SWIFT-CSCv1|2.3,Vuln-ID|V-214127",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select name, installed_version, comment from pg_available_extensions where installed_version IS NOT NULL;",
+        "sql_expect": "^(pgcrypto|pgaudit|plpgsql)$"
+    },
+    "custom_item_99": {
+        "description": "password_encryption",
+        "sql_request": "SHOW password_encryption;",
+        "sql_expect": "(md5|scram-sha-256)"
+    },
+    "custom_item_100": {
+        "description": "pg_shadow",
+        "sql_request": "SELECT usename, passwd FROM pg_shadow WHERE passwd IS NOT NULL;",
+        "sql_expect": ".+"
+    },
+    "custom_item_101": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_102": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%a|.*%u|.*%d|.*%r|.*%p){6}"
+    },
+    "custom_item_103": {
+        "description": "ssl_ca_file",
+        "sql_request": "SHOW ssl_ca_file;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_104": {
+        "description": "ssl_cert_file",
+        "sql_request": "SHOW ssl_cert_file;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_105": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_106": {
+        "description": "log_disconnections",
+        "sql_request": "SHOW log_disconnections;",
+        "sql_expect": "on"
+    },
+    "custom_item_107": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%d|.*%c){4}"
+    },
+    "custom_item_108": {
+        "description": "PGS9-00-010500 - PostgreSQL must implement cryptographic mechanisms preventing the unauthorized disclosure of organization-defined information at rest on organization-defined information system components.",
+        "info": "PostgreSQLs handling data requiring 'data at rest' protections must employ cryptographic mechanisms to prevent unauthorized disclosure and modification of the information at rest. These cryptographic mechanisms may be native to PostgreSQL or implemented via additional software or operating system/file system settings, as appropriate to the situation.\n\nSelection of a cryptographic mechanism is based on the need to protect the integrity of organizational information. The strength of the mechanism is commensurate with the security category and/or classification of the information. Organizations have the flexibility to either encrypt all information on storage devices (i.e., full disk encryption) or encrypt specific data structures (e.g., files, records, or fields).\n\nThe decision whether and what to encrypt rests with the data owner and is also influenced by the physical measures taken to secure the equipment and media on which the information resides.",
+        "solution": "Configure PostgreSQL, operating system/file system, and additional software as relevant, to provide the required level of cryptographic protection for information requiring cryptographic protection against disclosure.\n\nSecure the premises, equipment, and media to provide the required level of physical protection.\n\nThe pgcrypto module provides cryptographic functions for PostgreSQL. See supplementary content APPENDIX-E for documentation on installing pgcrypto.\n\nWith pgcrypto installed, it is possible to insert encrypted data into the database:\n\nINSERT INTO accounts(username, password) VALUES ('bob', crypt('a_secure_password', gen_salt('md5')));",
+        "reference": "800-171|3.13.16,800-53|SC-28(1),800-53r5|SC-28(1),CAT|II,CCI|CCI-002476,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28(1),PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214139r879800_rule,STIG-ID|PGS9-00-010500,STIG-Legacy|SV-87687,STIG-Legacy|V-73035,TBA-FIISB|28.1,Vuln-ID|V-214139",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "select name, installed_version from pg_available_extensions where lower(name) = 'pgcrypto';",
+        "sql_expect": "pgcrypto"
+    },
+    "custom_item_109": {
+        "description": "tcp_keepalives_idle",
+        "sql_request": "SHOW tcp_keepalives_idle;"
+    },
+    "custom_item_110": {
+        "description": "tcp_keepalives_interval",
+        "sql_request": "SHOW tcp_keepalives_interval;"
+    },
+    "custom_item_111": {
+        "description": "tcp_keepalives_count",
+        "sql_request": "SHOW tcp_keepalives_count;"
+    },
+    "custom_item_112": {
+        "description": "statement_timeout",
+        "sql_request": "SHOW statement_timeout;"
+    },
+    "custom_item_113": {
+        "description": "PGS9-00-011100 - PostgreSQL must produce audit records containing time stamps to establish when the events occurred.",
+        "info": "Information system auditing capability is critical for accurate forensic analysis. Without establishing when events occurred, it is impossible to establish, correlate, and investigate the events relating to an incident.\n\nIn order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know the date and time when events occurred.\n\nAssociating the date and time with detected events in the application and audit logs provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured application.\n\nDatabase software is capable of a range of actions on data stored within the database. It is important, for accurate forensic analysis, to know exactly when specific actions were performed. This requires the date and time an audit record is referring to. If date and time information is not recorded and stored with the audit record, the record itself is of very limited use.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nLogging must be enabled in order to capture timestamps. To ensure that logging is enabled, review supplementary content APPENDIX-C for instructions on enabling logging.\n\nIf logging is enabled the following configurations must be made to log events with timestamps:\n\nFirst, as the database administrator (shown here as 'postgres'), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd %m to log_line_prefix to enable timestamps with milliseconds:\n\nlog_line_prefix = '< %m >'\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214142r879564_rule,STIG-ID|PGS9-00-011100,STIG-Legacy|SV-87693,STIG-Legacy|V-73041,SWIFT-CSCv1|6.4,Vuln-ID|V-214142",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "%m"
+    },
+    "custom_item_114": {
+        "description": "syslog_facility",
+        "sql_request": "SHOW syslog_facility;",
+        "sql_expect": "local0"
+    },
+    "custom_item_115": {
+        "description": "log_destination",
+        "sql_request": "SHOW log_destination;",
+        "sql_expect": "syslog"
+    },
+    "custom_item_116": {
+        "description": "PGS9-00-011400 - PostgreSQL must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+        "info": "One class of man-in-the-middle, or session hijacking, attack involves the adversary guessing at valid session identifiers based on patterns in identifiers already known.\n\nThe preferred technique for thwarting guesses at Session IDs is the generation of unique session identifiers using a FIPS 140-2 or 140-3 approved random number generator.\n\nHowever, it is recognized that available PostgreSQL products do not all implement the preferred technique yet may have other protections against session hijacking. Therefore, other techniques are acceptable, provided they are demonstrated to be effective.",
+        "solution": "Note: The following instructions use the PGDATA and PGVER environment variables. See supplementary content APPENDIX-F for instructions on configuring PGDATA and APPENDIX-H for PGVER.\n\nTo configure PostgreSQL to use SSL, as a database owner (shown here as 'postgres'), edit postgresql.conf:\n\n$ sudo su - postgres\n$ vi ${PGDATA?}/postgresql.conf\n\nAdd the following parameter:\n\nssl = on\n\nNow, as the system administrator, reload the server with the new configuration:\n\n# SYSTEMD SERVER ONLY\n$ sudo systemctl reload postgresql-${PGVER?}\n\n# INITD SERVER ONLY\n$ sudo service postgresql-${PGVER?} reload\n\nFor more information on configuring PostgreSQL to use SSL, see supplementary content APPENDIX-G.\n\nFor further SSL configurations, see the official documentation: https://www.postgresql.org/docs/current/static/ssl-tcp.html",
+        "reference": "800-171|3.13.15,800-53|SC-23(3),800-53r5|SC-23(3),CAT|II,CCI|CCI-001188,DISA_Benchmark|PostgreSQL_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23(3),NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-214145r879639_rule,STIG-ID|PGS9-00-011400,STIG-Legacy|SV-87699,STIG-Legacy|V-73047,Vuln-ID|V-214145",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_PGS_SQL_9-x_V2R4_STIG.zip",
+        "sql_request": "SHOW ssl;",
+        "sql_expect": "on"
+    },
+    "custom_item_117": {
+        "description": "shared_preload_libraries",
+        "sql_request": "SHOW shared_preload_libraries;",
+        "sql_expect": "pgaudit"
+    },
+    "custom_item_118": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_119": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_120": {
+        "description": "log_line_prefix",
+        "sql_request": "SHOW log_line_prefix;",
+        "sql_expect": "(.*%m|.*%u|.*%c){3}"
+    },
+    "custom_item_121": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    },
+    "custom_item_122": {
+        "description": "log_connections",
+        "sql_request": "SHOW log_connections;",
+        "sql_expect": "on"
+    },
+    "custom_item_123": {
+        "description": "log_disconnections",
+        "sql_request": "SHOW log_disconnections;",
+        "sql_expect": "on"
+    },
+    "custom_item_124": {
+        "description": "pgaudit.log",
+        "sql_request": "SHOW pgaudit.log;",
+        "sql_expect": "^(.*ddl,?|.*read,?|.*write,?|.*role,?){4}.*$"
+    }
+}

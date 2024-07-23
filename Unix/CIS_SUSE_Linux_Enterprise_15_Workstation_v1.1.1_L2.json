@@ -1,0 +1,1075 @@
+{
+    "custom_item_1": {
+        "description": "SUSE Linux 15 is installed - VERSION",
+        "file": "/etc/os-release",
+        "regex": "^[\\\\s]*VERSION[\\\\s]*=",
+        "expect": "^[\\\\s]*VERSION[\\\\s]*=\"[\\\\s]*@PLATFORM_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "SUSE Linux 15 is installed - NAME",
+        "file": "/etc/os-release",
+        "regex": "^[\\\\s]*NAME[\\\\s]*=",
+        "expect": "^[\\\\s]*NAME[\\\\s]*=\"[\\\\s]*SLES[\\\\s]*\"$"
+    },
+    "custom_item_3": {
+        "description": "1.1.10 Ensure separate partition exists for /var",
+        "info": "The /var directory is used by daemons and other system services to temporarily store dynamic data. Some directories created by these processes may be world-writable.\n\nNote: When modifying /var it is advisable to bring the system to emergency mode (so auditd is not running), rename the existing directory, mount the new file system, and migrate the data over before returning to multiuser mode.\n\nSince the /var directory may contain world-writable files and directories, there is a risk of resource exhaustion if it is not bound to a separate partition.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/findmnt -kn /var",
+        "expect": "^[\\\\s]*/var[\\\\s]+"
+    },
+    "custom_item_4": {
+        "description": "lsmod - squashfs",
+        "cmd": "/sbin/lsmod | grep squashfs | /bin/awk \\'{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_5": {
+        "description": "modprobe - squashfs",
+        "cmd": "/sbin/modprobe -n -v squashfs | /bin/grep -E '(squashfs|install)' | /bin/awk '{print} END {if (NR == 0) print \"fail\"}'",
+        "expect": "^install /bin/true$"
+    },
+    "custom_item_6": {
+        "description": "1.1.11 Ensure separate partition exists for /var/tmp",
+        "info": "The /var/tmp directory is a world-writable directory used for temporary storage by all users and some applications and is intended for temporary files that are preserved across reboots.\n\nNote: tmpfs should not be used for /var/tmp/ tmpfs is a temporary filesystem that resides in memory and/or swap partition(s). Files in tmpfs are automatically cleared at each bootup.\n\nSince the /var/tmp directory is intended to be world-writable, there is a risk of resource exhaustion if it is not bound to a separate partition. In addition, making /var/tmp its own file system allows an administrator to set the noexec option on the mount, making /var/tmp useless for an attacker to install executable code. It would also prevent an attacker from establishing a hardlink to a system setuid program and wait for it to be updated. Once the program was updated, the hardlink would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/tmp\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/findmnt --kernel /var/tmp",
+        "expect": "^[\\\\s]*/var/tmp[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_7": {
+        "description": "mount /boot/efi",
+        "cmd": "/bin/mount | /bin/grep 'on /boot/efi'",
+        "expect": "type (v)?fat"
+    },
+    "custom_item_8": {
+        "description": "1.1.1.3 Ensure mounting of FAT filesystems is limited",
+        "info": "The FAT filesystem format is primarily used on older windows systems and portable USB drives or flash modules. It comes in three types FAT12 FAT16 and FAT32 all of which are supported by the vfat kernel module.\n\nRemoving support for unneeded filesystem types reduces the local attack surface of the system. If this filesystem type is not needed, disable it.\n\nNotes:\n\n -\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\n -\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit or create a file in the /etc/modprobe.d/ directory ending inconf and add the following lines:\n\nExample: vim /etc/modprobe.d/fat.conf\n\ninstall fat /bin/true\ninstall vfat /bin/true\ninstall msdos /bin/true\n\nRun the following commands to unload the msdos vfat and fat modules:\n\n# modprobe -r msdos\n# modprobe -r vfat\n# modprobe -r fat\n\nImpact:\n\nThe FAT filesystem format is used by UEFI systems for the EFI boot partition. Disabling the vfat module can prevent boot on UEFI systems.\n\nFAT filesystems are often used on portable USB sticks and other flash media which are commonly used to transfer files between workstations, removing VFAT support may prevent the ability to transfer files in this way.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/usr/bin/grep -E -i '^[^#]*\\\\svfat\\\\s' /etc/fstab | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_9": {
+        "description": "lsmod - msdos",
+        "cmd": "/sbin/lsmod | /bin/grep -E 'msdos' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_10": {
+        "description": "lsmod - vfat",
+        "cmd": "/sbin/lsmod | /bin/grep -E 'vfat' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_11": {
+        "description": "modprobe - msdos",
+        "cmd": "/sbin/modprobe -n -v msdos | /bin/grep -E '(msdos|install)' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^install /bin/true$"
+    },
+    "custom_item_12": {
+        "description": "modprobe - vfat",
+        "cmd": "/sbin/modprobe -n -v vfat | /bin/grep -E '(vfat|install)' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^install /bin/true$"
+    },
+    "custom_item_13": {
+        "description": "lsmod - fat",
+        "cmd": "/sbin/lsmod | /bin/grep -E 'fat' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_14": {
+        "description": "modprobe - fat",
+        "cmd": "/sbin/modprobe -n -v fat | /bin/grep -E '(fat|install)' | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"}\\'",
+        "expect": "^install /bin/true$"
+    },
+    "custom_item_15": {
+        "description": "1.1.15 Ensure separate partition exists for /var/log",
+        "info": "The /var/log directory is used by system services to store log data.\n\nThere are two important reasons to ensure that system logs are stored on a separate partition: protection against resource exhaustion (since logs can grow quite large) and protection of audit data.\n\nNote: When modifying /var/log it is advisable to bring the system to emergency mode (so auditd is not running), rename the existing directory, mount the new file system, and migrate the data over before returning to multiuser mode.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/log\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|AU-4,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|AU-4,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|6.4,CSCv8|4.1,CSCv8|8.3,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-4,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.3.1,NESA|T3.4.1,NESA|T3.6.2,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/findmnt --kernel /var/log",
+        "expect": "^[\\\\s]*/var/log[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_16": {
+        "description": "1.1.16 Ensure separate partition exists for /var/log/audit",
+        "info": "The auditing daemon, auditd stores log data in the /var/log/audit directory.\n\nNote: When modifying /var/log/audit it is advisable to bring the system to emergency mode (so auditd is not running), rename the existing directory, mount the new file system, and migrate the data over before returning to multiuser mode.\n\nThere are two important reasons to ensure that data gathered by auditd is stored on a separate partition: protection against resource exhaustion (since the audit.log file can grow quite large) and protection of audit data. The audit daemon calculates how much free space is left and performs actions based on the results. If other processes (such as syslog ) consume space in the same partition as auditd it may not perform as desired.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/log/audit\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|AU-4,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|AU-4,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|6.4,CSCv8|4.1,CSCv8|8.3,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-4,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.3.1,NESA|T3.4.1,NESA|T3.6.2,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/findmnt --kernel /var/log/audit",
+        "expect": "^[\\\\s]*/var/log/audit[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_17": {
+        "description": "1.1.17 Ensure separate partition exists for /home",
+        "info": "The /home directory is used to support disk storage needs of local users.\n\nIf the system is intended to support local users, create a separate partition for the /home directory to protect against resource exhaustion and restrict the type of files that can be stored under /home",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /home\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/findmnt --kernel /home",
+        "expect": "^[\\\\s]*/home[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_18": {
+        "description": "1.1.23 Disable Automounting",
+        "info": "autofs allows automatic mounting of devices, typically including CD/DVDs and USB drives.\n\nNotes:\n\n -\n\nAdditional methods of disabling a service exist. Consult your distribution documentation for appropriate methods.\n\n -\n\nThis control should align with the tolerance of the use of portable drives and optical media in the organization.\n\n -\n\nOn a server requiring an admin to manually mount media can be part of defense-in-depth to reduce the risk of unapproved software or information being introduced or proprietary software or information being exfiltrated.\n\n -\n\nIf admins commonly use flash drives and Server access has sufficient physical controls, requiring manual mounting may not increase security.\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in system even if they lacked permissions to mount it themselves.",
+        "solution": "Run the following command to mask autofs :\n\n# systemctl --now mask autofs\n\nImpact:\n\nThe use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations is considered adequate there is little value add in turning off automounting.",
+        "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|8.4,CSCv7|8.5,CSCv8|10.3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|2A,NESA|T1.4.1",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/systemctl is-enabled autofs",
+        "expect": "(disabled|masked|Failed to get unit file state for autofs.service)"
+    },
+    "custom_item_19": {
+        "description": "apparmor_status - processes are unconfined",
+        "cmd": "/usr/sbin/apparmor_status",
+        "expect": "^[\\\\s]*0[\\\\s]+processes[\\\\s]+are[\\\\s]+unconfined"
+    },
+    "custom_item_20": {
+        "description": "apparmor_status - profiles are in complain mode",
+        "cmd": "/usr/sbin/apparmor_status",
+        "expect": "^[\\\\s]*0[\\\\s]+profiles[\\\\s]+are[\\\\s]+in[\\\\s]+complain[\\\\s]+mode.?$"
+    },
+    "custom_item_21": {
+        "description": "apparmor_status - profiles are loaded",
+        "cmd": "/usr/sbin/apparmor_status",
+        "expect": "^[\\\\s]*[1-9][0-9]*[\\\\s]+profiles[\\\\s]+are[\\\\s]+loaded"
+    },
+    "custom_item_22": {
+        "description": "rpm check avahi-autoipd",
+        "rpm": "avahi-autoipd-0.0.0-0",
+        "operator": "lte"
+    },
+    "custom_item_23": {
+        "description": "avahi",
+        "rpm": "avahi-0.0.0-0",
+        "operator": "lte"
+    },
+    "custom_item_24": {
+        "description": "grub.cfg - ipv6.disable",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*linux",
+        "expect": "ipv6.disable=1"
+    },
+    "custom_item_25": {
+        "description": "sysctl net.ipv6.conf.all.disable_ipv6",
+        "cmd": "/sbin/sysctl net.ipv6.conf.all.disable_ipv6",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.all\\\\.disable_ipv6[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "description": "sysctl.conf sysctl.d net.ipv6.conf.all.disable_ipv6",
+        "file": "/etc/sysctl.conf /etc/sysctl.d/*.conf",
+        "regex": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.all\\\\.disable_ipv6",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.all\\\\.disable_ipv6[\\\\s]*=[\\\\s]*1[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_27": {
+        "description": "sysctl net.ipv6.conf.default.disable_ipv6",
+        "cmd": "/sbin/sysctl net.ipv6.conf.default.disable_ipv6",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.default\\\\.disable_ipv6[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_28": {
+        "description": "sysctl.conf sysctl.d net.ipv6.conf.default.disable_ipv6",
+        "file": "/etc/sysctl.conf /etc/sysctl.d/*.conf",
+        "regex": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.default\\\\.disable_ipv6",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.default\\\\.disable_ipv6[\\\\s]*=[\\\\s]*1[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_29": {
+        "description": "ip link show up",
+        "cmd": "/sbin/ip link show up",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_30": {
+        "description": "iw list",
+        "cmd": "/usr/sbin/iw list | /bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_31": {
+        "system": "Linux",
+        "description": "modprobe - dccp",
+        "cmd": "/sbin/modprobe -n -v dccp",
+        "expect": "(install /bin/true|FATAL: Module dccp not found)"
+    },
+    "custom_item_32": {
+        "system": "Linux",
+        "description": "lsmod - dccp",
+        "cmd": "/sbin/lsmod | /bin/grep dccp | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_33": {
+        "description": "lsmod",
+        "cmd": "/sbin/lsmod | /bin/grep sctp | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_34": {
+        "description": "modprobe",
+        "cmd": "/sbin/modprobe -n -v sctp",
+        "expect": "install /bin/(true|false)"
+    },
+    "custom_item_35": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_36": {
+        "description": "auditctl - open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_37": {
+        "description": "auditctl - b64 open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_38": {
+        "description": "rules.d - open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_39": {
+        "description": "rules.d - creat open openat truncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_40": {
+        "description": "rules.d - creat open openat truncate ftruncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_41": {
+        "description": "rules.d - creat open openat truncate ftruncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_42": {
+        "description": "rules.d - open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_43": {
+        "description": "rules.d - creat open openat truncate ftruncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_44": {
+        "description": "auditctl - open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_45": {
+        "description": "rules.d - open creat truncate ftruncate openat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(open[,\\\\s]|creat[,\\\\s]|truncate[,\\\\s]|ftruncate[,\\\\s]|openat[,\\\\s])-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_46": {
+        "description": "rules.d - creat open openat truncate ftruncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EPERM\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_47": {
+        "description": "rules.d - creat open openat truncate ftruncate",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4))(-S\\\\s+creat\\\\s+|-S\\\\s+open\\\\s+|-S\\\\s+openat\\\\s+|-S\\\\s+truncate\\\\s+|-S\\\\s+ftruncate\\\\s+)-F\\\\s+exit=-EACCES\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_48": {
+        "description": "4.1.1.1 Ensure auditd is installed",
+        "info": "auditd is the userspace component to the Linux Auditing System. It's responsible for writing audit records to the disk\n\nThe capturing of system events provides system administrators with information to allow them to determine if unauthorized access to their system is occurring.",
+        "solution": "Run the following command to Install auditd\n\n# zypper install audit",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "rpm": "audit-0.0.0-0",
+        "operator": "gt"
+    },
+    "custom_item_49": {
+        "description": "auditctl",
+        "cmd": "RUNNING=$(/sbin/auditctl -l); [ -n \"${RUNNING}\" ] && for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \"noexec|nosuid\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \"${PARTITION}\" -xdev -perm /6000 -type f); do printf -- \"${RUNNING}\" | /bin/grep -q \"${PRIVILEGED}\" && printf \"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\" || printf \"Warning: '${PRIVILEGED}' not found in running configuration.\\\\n\"; done; done | /bin/awk '{print} END { if ($1 ~ \"Warning\") print \"Fail - Warnings found\"; else print \"Pass - No warning entries found\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_50": {
+        "description": "/etc/audit/rules.d",
+        "cmd": "for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \"noexec|nosuid\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \"${PARTITION}\" -xdev -perm /6000 -type f); do /bin/grep -qr \"${PRIVILEGED}\" /etc/audit/rules.d && printf \"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\" || printf \"Warning: '${PRIVILEGED}' not found in on disk configuration.\\\\n\"; done; done | /bin/awk '{print} END { if ($1 ~ \"Warning\") print \"Fail - Warnings found\"; else print \"Pass - No warning entries found\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_51": {
+        "description": "systemctl is-enabled auditd",
+        "cmd": "/bin/systemctl is-enabled auditd | /bin/awk '{print} END {if(NR==0) print \"disabled\" }'",
+        "expect": "^enabled$"
+    },
+    "custom_item_52": {
+        "description": "systemctl status auditd",
+        "cmd": "/bin/systemctl status auditd | /bin/grep '^\\\\s*Active' | /bin/awk '{print} END {if(NR==0) print \"not running\" }'",
+        "expect": "^[\\\\s]*Active[\\\\s]*:[\\\\s]*active[\\\\s]*\\\\(running\\\\)"
+    },
+    "custom_item_53": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_54": {
+        "description": "auditctl - b32 mount",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_55": {
+        "description": "auditctl - b64 mount",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_56": {
+        "description": "rules.d - b32 mount",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "expect": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "min_occurrences": "1"
+    },
+    "custom_item_57": {
+        "description": "rules.d - b64 mount",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "expect": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "min_occurrences": "1"
+    },
+    "custom_item_58": {
+        "description": "auditctl - b32 mount",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_59": {
+        "description": "rules.d - b32 mount",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "expect": "^[\\\\s]*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+mount\\\\s+-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$",
+        "min_occurrences": "1"
+    },
+    "custom_item_60": {
+        "description": "4.1.1.3 Ensure auditing for processes that start prior to auditd is enabled",
+        "info": "Configure grub so that processes that are capable of being audited can be audited even if they start up prior to auditd startup.\n\nAudit events need to be captured on processes that start up prior to auditd so that potential malicious activity cannot go undetected.\n\nNote: This recommendation is designed around the grub2 bootloader, if LILO or another bootloader is in use in your environment enact equivalent settings.",
+        "solution": "Edit /etc/default/grub and add audit=1 to GRUB_CMDLINE_LINUX :\n\nGRUB_CMDLINE_LINUX=\"audit=1\"\n\nRun the following command to update the grub2 configuration:\n\n# grub2-mkconfig -o /boot/grub2/grub.cfg",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*linux.*",
+        "expect": "(?i)[\\\\s]*audit=1\\\\b"
+    },
+    "custom_item_61": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_62": {
+        "description": "auditctl unlink rename unlinkat renameat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_63": {
+        "description": "rules.d - b64 unlink unlinkat rename renameat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_64": {
+        "description": "rules.d - b32 unlink unlinkat rename renameat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_65": {
+        "description": "auditctl - b32 unlink rename unlinkat renameat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_66": {
+        "description": "rules.d - b32 unlink unlinkat rename renameat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+unlink\\\\s+|-S\\\\s+unlinkat\\\\s+|-S\\\\s+rename\\\\s+|-S\\\\s+renameat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_67": {
+        "description": "auditctl - b32 unlink rename unlinkat renameat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(unlink[,\\\\s]|rename[,\\\\s]|unlinkat[,\\\\s]|renameat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_68": {
+        "description": "auditctl - /etc/sudoers",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/etc/sudoers\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_69": {
+        "description": "rules.d - /etc/sudoers.d/",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/sudoers.d/? -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/sudoers.d/? -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_70": {
+        "description": "auditctl - /etc/sudoers.d",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/etc/sudoers.d/?\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_71": {
+        "description": "rules.d - /etc/sudoers",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/sudoers -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/sudoers -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_72": {
+        "description": "sudo log",
+        "cmd": "SUDO_LOG_FILE_ESCAPED=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\"//g' -e 's|/|\\\\\\\\/|g'); [ -n \"${SUDO_LOG_FILE_ESCAPED}\" ] && awk \"/^ *-w/ &&/\"${SUDO_LOG_FILE_ESCAPED}\"/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_73": {
+        "description": "auditctl sudo log",
+        "cmd": "SUDO_LOG_FILE_ESCAPED=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\"//g' -e 's|/|\\\\\\\\/|g'); [ -n \"${SUDO_LOG_FILE_ESCAPED}\" ] && auditctl -l | /bin/awk \"/^ *-w/ &&/\"${SUDO_LOG_FILE_ESCAPED}\"/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_74": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_75": {
+        "description": "auditctl - /sbin/rmmod",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/rmmod\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_76": {
+        "description": "auditctl - /sbin/insmod",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/insmod\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_77": {
+        "description": "auditctl - b64 init_module,delete_module",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?:init_module,delete_module|delete_module,init_module)\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_78": {
+        "description": "auditctl - /sbin/modprobe",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/modprobe\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_79": {
+        "description": "rules.d - /sbin/insmod",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/insmod -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/insmod -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_80": {
+        "description": "rules.d - b64 init_module,delete_module",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b64 (-S init_module -S delete_module|-S delete_module -S init_module) -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b64 (-S init_module -S delete_module|-S delete_module -S init_module) -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_81": {
+        "description": "rules.d - /sbin/rmmod",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/rmmod -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/rmmod -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_82": {
+        "description": "rules.d - /sbin/modprobe",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/modprobe -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/modprobe -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_83": {
+        "description": "auditctl - /sbin/rmmod",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/rmmod\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_84": {
+        "description": "auditctl - /sbin/insmod",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/insmod\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_85": {
+        "description": "auditctl - /sbin/modprobe",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/sbin/modprobe\\\\s+-p\\\\s+x\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_86": {
+        "description": "auditctl - init_module,delete_module",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?:init_module,delete_module|delete_module,init_module)\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_87": {
+        "description": "rules.d - init_module delete_module",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b32 (-S init_module -S delete_module|-S delete_module -S init_module) -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b32 (-S init_module -S delete_module|-S delete_module -S init_module) -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_88": {
+        "description": "rules.d - /sbin/insmod",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/insmod -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/insmod -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_89": {
+        "description": "rules.d - /sbin/rmmod",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/rmmod -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/rmmod -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_90": {
+        "description": "rules.d - /sbin/modprobe",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /sbin/modprobe -p x -k \\\\S+",
+        "expect": "^[\\\\s]*-w /sbin/modprobe -p x -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_91": {
+        "description": "4.1.17 Ensure the audit configuration is immutable",
+        "info": "Set system audit so that audit rules cannot be modified with auditctl Setting the flag \"-e 2\" forces audit to be put in immutable mode. Audit changes can only be made on system reboot.\n\nNote: This setting will require the system to be rebooted to update the active auditd configuration settings.\n\nIn immutable mode, unauthorized users cannot execute changes to the audit system to potentially hide malicious activity and then put the audit rules back. Users would most likely notice a system reboot and that could alert administrators of an attempt to make unauthorized audit changes.",
+        "solution": "Edit or create the file /etc/audit/rules.d/99-finalize.rules and add the following line at the end of the file:\n\n-e 2",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|6.2,CSCv7|6.3,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/grep '^\\s*[^#]' /etc/audit/audit.rules | tail -1",
+        "expect": "^[\\\\s]*-e[\\\\s]+2[\\\\s]*$"
+    },
+    "custom_item_92": {
+        "description": "4.1.2.1 Ensure audit log storage size is configured",
+        "info": "Configure the maximum size of the audit log file. Once the log reaches the maximum size, it will be rotated and a new log file will be started.\n\nNotes:\n\n -\n\nThe max_log_file parameter is measured in megabytes.\n\n -\n\nOther methods of log rotation may be appropriate based on site policy. One example is time-based rotation strategies which don't have native support in auditd configurations. Manual audit of custom configurations should be evaluated for effectiveness and completeness.\n\nIt is important that an appropriate size is determined for log files so that they do not impact the system and audit data is not lost.",
+        "solution": "Set the following parameter in /etc/audit/auditd.conf in accordance with site policy:\n\nmax_log_file =",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*(?i)max_log_file(?-i)[\\\\s]*=",
+        "expect": "^[\\\\s]*(?i)max_log_file(?-i)[\\\\s]*=[\\\\s]*@MAX_AUDIT_LOG_FILE_SIZE@[\\\\s]*$"
+    },
+    "custom_item_93": {
+        "description": "4.1.2.2 Ensure audit logs are not automatically deleted",
+        "info": "The max_log_file_action setting determines how to handle the audit log file reaching the max file size. A value of keep_logs will rotate the logs but never delete old logs.\n\nIn high security contexts, the benefits of maintaining a long audit history exceed the cost of storing the audit history.",
+        "solution": "Set the following parameter in /etc/audit/auditd.conf:\n\nmax_log_file_action = keep_logs",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.2,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*max_log_file_action[\\\\s]*=",
+        "expect": "^[\\\\s]*max_log_file_action[\\\\s]*=[\\\\s]*(?i)keep_logs(?-i)[\\\\s]*$"
+    },
+    "custom_item_94": {
+        "description": "auditd.conf - action_mail_acct",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "(?i)^[\\\\s]*action_mail_acct[\\\\s]*=",
+        "expect": "(?i)^[\\\\s]*action_mail_acct[\\\\s]*=[\\\\s]*root[\\\\s]*$"
+    },
+    "custom_item_95": {
+        "description": "auditd.conf - admin_space_left_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "(?i)^[\\\\s]*admin_space_left_action[\\\\s]*=",
+        "expect": "(?i)^[\\\\s]*admin_space_left_action[\\\\s]*=[\\\\s]*halt[\\\\s]*$"
+    },
+    "custom_item_96": {
+        "description": "auditd.conf - space_left_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "(?i)^[\\\\s]*space_left_action[\\\\s]*=",
+        "expect": "(?i)^[\\\\s]*space_left_action[\\\\s]*=[\\\\s]*email[\\\\s]*$"
+    },
+    "custom_item_97": {
+        "description": "grub.cfg - audit_backlog_limit",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*linux",
+        "expect": "audit_backlog_limit=(819[2-9]|8[2-9][0-9]{2}|9[0-9]{3}|[1-9][0-9]{4,}).*[\\\\s]*$"
+    },
+    "custom_item_98": {
+        "description": "grub.cfg - audit_backlog_limit",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*linux",
+        "expect": "audit_backlog_limit=\\\\d+"
+    },
+    "custom_item_99": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_100": {
+        "description": "rules.d /etc/localtime",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/localtime -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/localtime -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_101": {
+        "description": "rules.d b64 clock_settime",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b64 -S clock_settime -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b64 -S clock_settime -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_102": {
+        "description": "auditctl b64 adjtimex settimeofday",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a (always,exit|exit,always) -F arch=b64 -S (adjtimex,settimeofday|settimeofday,adjtimex) -F key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_103": {
+        "description": "auditctl b32 stime settimeofday adjtimex",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(stime|settimeofday|adjtimex),(?!\\\\2)(stime|settimeofday|adjtimex),(?!(\\\\2|\\\\3))(stime|settimeofday|adjtimex)\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_104": {
+        "description": "auditctl b64 clock_settime",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+clock_settime\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_105": {
+        "description": "auditctl b32 clock_settime",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+clock_settime\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_106": {
+        "description": "rules.d b32 adjtimex settimeofday time",
+        "cmd": "/bin/grep -P -s -- \"-a (always,exit|exit,always) -F arch=b32(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime)(?!\\\\2)(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime)(?!(\\\\2|\\\\3))(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime) -k \\\\S+\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_107": {
+        "description": "rules.d b64 adjtimex settimeofday",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b64 (-S\\\\s+adjtimex\\\\s+-S\\\\s+settimeofday|-S\\\\s+settimeofday\\\\s+-S\\\\s+adjtimex) -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b64 (-S\\\\s+adjtimex\\\\s+-S\\\\s+settimeofday|-S\\\\s+settimeofday\\\\s+-S\\\\s+adjtimex) -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_108": {
+        "description": "auditctl /etc/localtime",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/localtime\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_109": {
+        "description": "rules.d b32 clock_settime",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b32 -S clock_settime -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b32 -S clock_settime -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_110": {
+        "description": "rules.d /etc/localtime",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/localtime -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/localtime -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_111": {
+        "description": "auditctl b32 stime settimeofday adjtimex",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(stime|settimeofday|adjtimex),(?!\\\\2)(stime|settimeofday|adjtimex),(?!(\\\\2|\\\\3))(stime|settimeofday|adjtimex)\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_112": {
+        "description": "auditctl b32 clock_settime",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+clock_settime\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_113": {
+        "description": "rules.d b32 adjtimex settimeofday time",
+        "cmd": "/bin/grep -P -s -- \"-a (always,exit|exit,always) -F arch=b32(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime)(?!\\\\2)(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime)(?!(\\\\2|\\\\3))(\\\\s+-S\\\\s+adjtimex|\\\\s+-S\\\\s+settimeofday|\\\\s+-S\\\\s+stime) -k \\\\S+\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_114": {
+        "description": "auditctl /etc/localtime",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/localtime\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_115": {
+        "description": "rules.d b32 clock_settime",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-a always,exit -F arch=b32 -S clock_settime -k \\\\S+",
+        "expect": "^[\\\\s]*-a always,exit -F arch=b32 -S clock_settime -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_116": {
+        "description": "auditctl - /etc/shadow",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/shadow\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_117": {
+        "description": "rules.d - /etc/security/opasswd",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/security/opasswd -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/security/opasswd -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_118": {
+        "description": "rules.d - /etc/group",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/group -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/group -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_119": {
+        "description": "auditctl - /etc/group",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/group\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_120": {
+        "description": "auditctl - /etc/passwd",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/passwd\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_121": {
+        "description": "rules.d - /etc/passwd",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/passwd -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/passwd -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_122": {
+        "description": "auditctl - /etc/security/opasswd",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w\\\\s+/etc/security/opasswd\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_123": {
+        "description": "rules.d - /etc/shadow",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/shadow -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/shadow -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_124": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_125": {
+        "description": "auditctl - issue",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /(etc|run)/issue -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_126": {
+        "description": "rules.d - issue",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /(etc|run)/issue -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /(etc|run)/issue -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_127": {
+        "description": "auditctl - /etc/hosts",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/hosts -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_128": {
+        "description": "rules.d - sethostname setdomainname",
+        "cmd": "/bin/grep -P -s -- \"-a always,exit -F arch=b64(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname)(?!\\\\1)(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname) -k \\\\S+\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_129": {
+        "description": "rules.d - sethostname setdomainname",
+        "cmd": "/bin/grep -P -s -- \"-a always,exit -F arch=b32(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname)(?!\\\\1)(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname) -k \\\\S+\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_130": {
+        "description": "auditctl - /etc/issue.net",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/issue.net -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_131": {
+        "description": "auditctl - sethostname,setdomainname|setdomainname,sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(sethostname,setdomainname|setdomainname,sethostname)\\\\s+-F\\\\s+key=\\\\S+\\\\b *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_132": {
+        "description": "rules.d - /etc/sysconfig/network",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/sysconfig/network -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/sysconfig/network -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_133": {
+        "description": "rules.d - /etc/hosts",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/hosts -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/hosts -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_134": {
+        "description": "auditctl - setdomainname,sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(sethostname,setdomainname|setdomainname,sethostname)\\\\s+-F\\\\s+key=\\\\S+\\\\b *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_135": {
+        "description": "auditctl - /etc/sysconfig/network",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/sysconfig/network -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_136": {
+        "description": "rules.d - /etc/issue.net",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/issue.net -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/issue.net -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_137": {
+        "description": "auditctl - issue",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /(etc|run)/issue -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_138": {
+        "description": "rules.d - issue",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /(etc|run)/issue -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /(etc|run)/issue -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_139": {
+        "description": "auditctl - /etc/hosts",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/hosts -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_140": {
+        "description": "rules.d - sethostname setdomainname",
+        "cmd": "/bin/grep -P -s -- \"-a always,exit -F arch=b32(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname)(?!\\\\1)(\\\\s+-S\\\\s+sethostname|\\\\s+-S\\\\s+setdomainname) -k \\\\S+\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_141": {
+        "description": "auditctl - /etc/issue.net",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/issue.net -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_142": {
+        "description": "auditctl - sethostname,setdomainname|setdomainname,sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(sethostname,setdomainname|setdomainname,sethostname)\\\\s+-F\\\\s+key=\\\\S+\\\\b *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_143": {
+        "description": "rules.d - /etc/sysconfig/network",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/sysconfig/network -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/sysconfig/network -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_144": {
+        "description": "rules.d - /etc/hosts",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/hosts -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/hosts -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_145": {
+        "description": "auditctl - /etc/sysconfig/network",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /etc/sysconfig/network -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_146": {
+        "description": "rules.d - /etc/issue.net",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/issue.net -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/issue.net -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_147": {
+        "description": "rules.d - /usr/share/selinux/",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /usr/share/selinux/? -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /usr/share/selinux/? -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_148": {
+        "description": "auditctl - /usr/share/selinux/",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/usr/share/selinux/?\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+\\\\s*$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_149": {
+        "description": "auditctl - /etc/selinux/",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/etc/selinux/?\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+\\\\s*$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_150": {
+        "description": "rules.d - /etc/selinux/",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /etc/selinux/? -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /etc/selinux/? -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_151": {
+        "description": "rules.d - /var/log/tallylog",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/log/tallylog -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/log/tallylog -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_152": {
+        "description": "auditctl - /var/log/lastlog",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/var/log/lastlog\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_153": {
+        "description": "rules.d - /var/log/faillog",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/log/faillog -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/log/faillog -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_154": {
+        "description": "ules.d - /var/log/lastlog",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/log/lastlog -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/log/lastlog -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_155": {
+        "description": "auditctl - /var/log/faillog",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/var/log/faillog\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_156": {
+        "description": "auditctl - /var/log/tallylog",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-w\\\\s+/var/log/tallylog\\\\s+-p\\\\s+wa\\\\s+-k\\\\s+\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_157": {
+        "description": "auditctl - /var/run/utmp",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /var/run/utmp -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_158": {
+        "description": "auditctl - /var/log/btmp",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /var/log/btmp -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_159": {
+        "description": "rules.d - /var/run/utmp",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/run/utmp -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/run/utmp -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_160": {
+        "description": "auditctl - /var/log/wtmp",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^-w /var/log/wtmp -p wa -k \\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_161": {
+        "description": "rules.d - /var/log/wtmp",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/log/wtmp -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/log/wtmp -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_162": {
+        "description": "rules.d - /var/log/btmp",
+        "file": "/etc/audit/rules.d/*.rules",
+        "regex": "^[\\\\s]*-w /var/log/btmp -p wa -k \\\\S+",
+        "expect": "^[\\\\s]*-w /var/log/btmp -p wa -k \\\\S+",
+        "min_occurrences": "1"
+    },
+    "custom_item_163": {
+        "description": "check if 64 bit",
+        "cmd": "/bin/uname -m",
+        "expect": "^x86_64$"
+    },
+    "custom_item_164": {
+        "description": "rules.d - chown fchown fchownat lchown",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_165": {
+        "description": "rules.d - setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_166": {
+        "description": "auditctl - b64 chmod fchmod fchmodat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\2))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_167": {
+        "description": "rules.d - b32 chmod fchmod fchmodat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\2))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_168": {
+        "description": "auditctl - b64 chown fchown lchown fchownat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(chown[,\\\\s]|fchown[,\\\\s]|lchown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(chown[,\\\\s]|fchown[,\\\\s]|lchown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(chown[,\\\\s]|fchown[,\\\\s]|lchown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(chown[,\\\\s]|fchown[,\\\\s]|lchown[,\\\\s]|fchownat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_169": {
+        "description": "auditctl - b64 setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_170": {
+        "description": "auditctl - b32 lchown fchown chown fchownat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_171": {
+        "description": "auditctl - setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_172": {
+        "description": "auditctl - b32 chmod fchmod fchmodat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\2))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_173": {
+        "description": "rules.d - chmod fchmod fchmodat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\2))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_174": {
+        "description": "rules.d - chown fchown fchownat lchown",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b64\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_175": {
+        "description": "rules.d - setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_176": {
+        "description": "rules.d - chown fchown fchownat lchown",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3))(-S\\\\s+chown\\\\s+|-S\\\\s+fchown\\\\s+|-S\\\\s+fchownat\\\\s+|-S\\\\s+lchown\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_177": {
+        "description": "rules.d - b32 chmod fchmod fchmodat",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\3))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)(?!(?:\\\\1|\\\\2))(-S\\\\s+chmod\\\\s+|-S\\\\s+fchmod\\\\s+|-S\\\\s+fchmodat\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_178": {
+        "description": "auditctl - b32 lchown fchown chown fchownat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3))(lchown[,\\\\s]|fchown[,\\\\s]|chown[,\\\\s]|fchownat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_179": {
+        "description": "auditctl - setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(setxattr[,\\\\s]|lsetxattr[,\\\\s]|fsetxattr[,\\\\s]|removexattr[,\\\\s]|lremovexattr[,\\\\s]|fremovexattr[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_180": {
+        "description": "auditctl - b32 chmod fchmod fchmodat",
+        "cmd": "/sbin/auditctl -l | /bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+-S\\\\s+(?!(?:\\\\2|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\3))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])(?!(?:\\\\1|\\\\2))(chmod[,\\\\s]|fchmod[,\\\\s]|fchmodat[,\\\\s])-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=-1\\\\s+-F\\\\s+key=\\\\S+ *$\" | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_181": {
+        "description": "rules.d - setxattr lsetxattr fsetxattr removexattr lremovexattr fremovexattr",
+        "cmd": "/bin/grep -P -s -- \"^\\\\s*-a\\\\s+(?:always,exit|exit,always)\\\\s+-F\\\\s+arch=b32\\\\s+(?!(?:\\\\2|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\3|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\4|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\5|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\6))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)(?!(?:\\\\1|\\\\2|\\\\3|\\\\4|\\\\5))(-S\\\\s+setxattr\\\\s+|-S\\\\s+lsetxattr\\\\s+|-S\\\\s+fsetxattr\\\\s+|-S\\\\s+removexattr\\\\s+|-S\\\\s+lremovexattr\\\\s+|-S\\\\s+fremovexattr\\\\s+)-F\\\\s+auid>=1000\\\\s+-F\\\\s+auid!=4294967295\\\\s+-k\\\\s+\\\\S+ *$\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR > 0 ) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_182": {
+        "description": "openssh-server is installed",
+        "rpm": "openssh-server-0.0.0-0",
+        "operator": "gt"
+    },
+    "custom_item_183": {
+        "description": "5.2.20 Ensure SSH AllowTcpForwarding is disabled",
+        "info": "SSH port forwarding is a mechanism in SSH for tunneling application ports from the client to the server, or servers to clients. It can be used for adding encryption to legacy applications, going through firewalls, and some system administrators and IT professionals use it for opening backdoors into the internal network from their home machines\n\nLeaving port forwarding enabled can expose the organization to security risks and back-doors.\n\nSSH connections are protected with strong encryption. This makes their contents invisible to most deployed network monitoring and traffic filtering solutions. This invisibility carries considerable risk potential if it is used for malicious purposes such as data exfiltration. Cybercriminals or malware could exploit SSH to hide their unauthorized communications, or to exfiltrate stolen data from the target network",
+        "solution": "Edit the /etc/ssh/sshd_config file to set the parameter as follows:\n\nAllowTcpForwarding no\n\nImpact:\n\nSSH tunnels are widely used in many corporate environments that employ mainframe systems as their application backends. In those environments the applications themselves may have very limited native support for security. By utilizing tunneling, compliance with SOX, HIPAA, PCI-DSS, and other standards can be achieved without having to modify the applications.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|9.2,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "#!/bin/bash\n  {\n  ports=$(/bin/grep -s -P \"^(Port|Match)\" /etc/ssh/sshd_config /etc/sshd_config.d/*.conf | /bin/grep -P -o \"(Port|LocalPort)[\\\\s]+[\\\\d]+\" | /bin/awk '{print $2}; END {if (NR == 0) print \"22\"}' | /usr/bin/uniq); for port in ${ports[@]}; do /usr/sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /bin/awk '{print $1}')\" -C lport=$port | echo \"port $port: $(/bin/grep -i ^allowtcpforwarding)\"; done | /bin/awk 'BEGIN {f=0} /allowtcpforwarding/i { if ($NF == \"yes\") f++; print $0} END {if (NR == 0) print \"Fail: no results returned\"; else if (f > 0) print \"Fail\"; else print \"Pass\" }'\n  }",
+        "expect": "^Pass$"
+    },
+    "custom_item_184": {
+        "description": "6.1.1 Audit system file permissions",
+        "info": "The RPM package manager has a number of useful options. One of these, the -V option, can be used to verify that system packages are correctly installed. The V option can be used to verify a particular package or to verify all system packages. If no output is returned, the package is installed correctly. The following table describes the meaning of output from the verify option:\n\nCode Meaning\nS File size differs.\nM File mode differs (includes permissions and file type).\n5 The MD5 checksum differs.\nD The major and minor version numbers differ on a device file.\nL A mismatch occurs in a link.\nU The file ownership differs.\nG The file group owner differs.\nT The file time (mtime) differs.\n\nThe rpm -qf command can be used to determine which package a particular file belongs to. For example the following commands determines which package the /etc/ssh/sshd_config file belongs to:\n\n# rpm -qf /etc/ssh/sshd_config\n\nopenssh-7.9p1-6.14.1.x86_64\n\nTo verify the settings for the package that controls the /etc/ssh/sshd_config file, run the following:\n\n# rpm -V openssh-7.9p1-6.14.1.x86_64\n\nS.5....T. c /etc/ssh/sshd_config\n\nNote: You can feed the output of the rpm -qf command to the rpm -V command:\n\n# rpm -V $(rpm -qf /etc/ssh/sshd_config)\n\nS.5....T. c /etc/ssh/sshd_config\n\nNotes:\n\n -\n\nSince packages and important files may change with new updates and releases, it is recommended to verify everything, not just a finite list of files. This can be a time consuming task and results may depend on site policy therefore it is not a scorable benchmark item, but is provided for those interested in additional security measures.\n\n -\n\nSome of the recommendations of this benchmark alter the state of files audited by this recommendation. The audit command will alert for all changes to a file permissions even if the new state is more secure than the default.\n\nIt is important to confirm that packaged system files and directories are maintained with the permissions they were intended to have from the OS distributor or in accordance with local site policy.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Investigate the results to ensure any discrepancies found are understood and support proper secure operation of the system.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3682",
+        "cmd": "/bin/rpm -Va --nomtime --nosize --nomd5 --nolinkto | /bin/grep -vw c | /bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none$"
+    }
+}

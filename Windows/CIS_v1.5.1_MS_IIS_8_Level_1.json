@@ -1,0 +1,585 @@
+{
+    "custom_item_1": {
+        "description": "Verify IIS is installed.",
+        "value_data": "HKLM\\Software\\Microsoft\\Inetstp"
+    },
+    "custom_item_2": {
+        "description": "Verify IIS 8.0 or 8.5 installed.",
+        "value_data": "@IIS_VERSION@",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp",
+        "reg_item": "VersionString"
+    },
+    "custom_item_3": {
+        "description": "Windows Server 2012 or 2012 R2 installed",
+        "value_data": "@WINDOWS_VERSION@",
+        "reg_key": "HKLM\\Software\\Microsoft\\Windows Nt\\Currentversion",
+        "reg_item": "ProductName"
+    },
+    "custom_item_4": {
+        "description": "1.1 Ensure web content is on non-system partition",
+        "info": "Web resources published through IIS are mapped, via Virtual Directories, to physical locations on disk. It is recommended to map all Virtual Directories to a non-system disk volume.\n\nRationale:\n\nIsolating web content from system files may reduce the probability of:\n\nWeb sites/applications exhausting system disk space\n\nFile IO vulnerability in the web site/application from affecting the confidentiality and/or integrity of system files",
+        "solution": "Browse to web content in C:\\\\inetpub\\\\wwwroot\\\\\n\nCopy or cut content onto a dedicated and restricted web folder on a non-system drive such as D:\\\\webroot\\\\\n\nChange mappings for any applications or Virtual Directories to reflect the new location\n\nTo change the mapping for the application named app1 which resides under the Default Web Site, open IIS Manager:\n\nExpand the server node\n\nExpand Sites\n\nExpand Default Web Site\n\nClick on app1\n\nIn the Actions pane, select Basic Settings\n\nIn the Physical path text box, put the new location of the application, D:\\\\wwwroot\\\\app1 in the example above",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "physicalPath:(\\%SystemDrive\\%|C:)",
+        "appcmd_args": "list vdir"
+    },
+    "custom_item_5": {
+        "description": "1.2 Ensure 'host headers' are on all sites",
+        "info": "Host headers provide the ability to host multiple websites on the same IP address and port. It is recommended that host headers be configured for all sites.\n\nRationale:\n\nRequiring a Host header for all sites may reduce the probability of:\n\nDNS rebinding attacks successfully compromising or abusing site data or functionality\n\nIP-based scans successfully identifying or interacting with a target application hosted on IIS",
+        "solution": "Obtain a listing of all sites by using the following appcmd.exe command:\n\n%systemroot%\\system32\\inetsrv\\appcmd list sites\n\nPerform the following in IIS Manager to configure host headers for the Default Web Site:\n\nOpen IIS Manager\n\nIn the Connections pane expand the Sites node and select Default Web Site\n\nIn the Actions pane click Bindings\n\nIn the Site Bindings dialog box, select the binding for which host headers are going to be configured, Port 80 in this example\n\nClick Edit\n\nUnder host name, enter the sites FQDN, such asClick OK, then Close\n\nNote: Requiring a host header may impair site functionality for HTTP/1.0 clients.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "\\(id:[0-9]*,bindings:.*https*/[0-9\\.\\*]+:[0-9]*:,.*state:[A-Za-z]*\\)",
+        "appcmd_args": "list sites"
+    },
+    "custom_item_6": {
+        "description": "1.3 Ensure 'directory browsing' is set to disabled",
+        "info": "Directory browsing allows the contents of a directory to be displayed upon request from a web client. If directory browsing is enabled for a directory in Internet Information Services, users receive a page that lists the contents of the directory when the following two conditions are met:\n\nNo specific file is requested in the URL\n\nThe Default Documents feature is disabled in IIS, or if it is enabled, IIS is unable to locate a file in the directory that matches a name specified in the IIS default document list\n\nIt is recommended that directory browsing be disabled.\n\nRationale:\n\nEnsuring that directory browsing is disabled may reduce the probability of disclosing sensitive content that is inadvertently accessible via IIS.",
+        "solution": "Directory Browsing can be set by using the UI, running appcmd.exe commands, by editing configuration files directly, or by writing WMI scripts. To disable directory browsing at the server level using an appcmd.exe command:\n\n%systemroot%\\system32\\inetsrv\\appcmd set config /section:directoryBrowse /enabled:false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "false",
+        "appcmd_args": "list config /section:directoryBrowse /text:enabled"
+    },
+    "custom_item_7": {
+        "description": "1.4 Ensure 'application pool identity' is configured for all application pools",
+        "info": "Application Pool Identities are the actual users/authorities that will run the worker process - w3wp.exe. Assigning the correct user authority will help ensure that applications can function properly, while not giving overly permissive permissions on the system. These identities can further be used in ACLs to protect system content. It is recommended that each Application Pool run under a unique identity.\n\nIIS has additional built-in least privilege identities intended for use by Application Pools. It is recommended that the default Application Pool Identity be changed to a least privilege principle other than Network Service. Furthermore, it is recommended that all application pool identities be assigned a unique least privilege principal.\n\nTo achieve isolation in IIS, application pools can be run as separate identities. IIS can be configured to automatically use the application pool identity if no anonymous user account is configured for a Web site. This can greatly reduce the number of accounts needed for Web sites and make management of the accounts easier. It is recommended the Application Pool Identity be set as the Anonymous User Identity.\n\nThe name of the Application Pool account corresponds to the name of the Application Pool. Application Pool Identities were introduced in Windows Server 2008 SP2. It is recommended that Application Pools be set to run as ApplicationPoolIdentity unless there is an underlying reason that the application pool needs to run as a specified end user account. One example where this is needed is for web farms using Kerberos authentication.\n\nRationale:\n\nSetting Application Pools to use unique least privilege identities such as ApplicationPoolIdentity reduces the potential harm the identity could cause should the application ever become compromised.\n\nAdditionally, it will simplify application pools configuration and account management.",
+        "solution": "The default Application Pool identity may be set for an application using the IIS Manager GUI, using AppCmd.exe commands in a command-line window, directly editing the configuration files, or by writing WMI scripts. Perform the following to change the default identity to the built-in ApplicationPoolIdentity in the IIS Manager GUI:\n\nOpen the IIS Manager GUI\n\nIn the connections pane, expand the server node and click Application Pools\n\nOn the Application Pools page, select the DefaultAppPool, and then click Advanced Settings in the Actions pane\n\nFor the Identity property, click the '...' button to open the Application Pool Identity dialog box\n\nSelect the Built-in account option choose ApplicationPoolIdentity from the list, or input a unique application user created for this purpose\n\nRestart IIS\n\nTo change the ApplicationPool identity to the built-in ApplicationPoolIdentity using AppCmd.exe, run the following from a command prompt:\n\n%systemroot%\\system32\\inetsrv\\appcmd set config /section:applicationPools /[name=''].processModel.identityType:ApplicationPoolIdentity\n\nThe example code above will set just the DefaultAppPool. Run this command for each configured Application Pool. Additionally, ApplicationPoolIdentity can be made the default for all Application Pools by using the Set Application Pool Defaults action on the Application Pools node.\n\nIf using a custom defined Windows user such as a dedicated service account, that user will need to be a member of the IIS_IUSRS group. The IIS_IUSRS group has access to all the necessary file and system resources so that an account, when added to this group, can seamlessly act as an application pool identity.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^(ApplicationPoolIdentity|SpecificUser)[\\s]*$",
+        "appcmd_args": "list config /section:applicationpools /text:[name='{}'].processModel.identityType",
+        "appcmd_list": "list AppPools"
+    },
+    "custom_item_8": {
+        "description": "1.5 Ensure 'unique application pools' is set for sites",
+        "info": "IIS introduced a new security feature called Application Pool Identities that allows Application Pools to be run under unique accounts without the need to create and manage local or domain accounts. It is recommended that all Sites run under unique, dedicated Application Pools.\n\nRationale:\n\nBy setting sites to run under unique Application Pools, resource-intensive applications can be assigned to their own application pools which could improve server and application performance. In addition, it can help maintain application availability: if an application in one pool fails, applications in other pools are not affected. Last, isolating applications helps mitigate the potential risk of one application being allowed access to the resources of another application. It is also recommended to stop any application pool that is not in use or was created by an installation such as .Net 4.0.",
+        "solution": "Open IIS Manager\n\nOpen the Sites node underneath the machine node\n\nSelect the Site to be changed\n\nIn the Actions pane, select Basic Settings\n\nClick the Select... box next to the Application Pool text box\n\nSelect the desired Application Pool\n\nOnce selected, click OK",
+        "reference": "800-53|SC-39,800-53r5|SC-39,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^[\\s]*([2-9]|[1-9][0-9]+)[\\s]*",
+        "powershell_args": "& $Env:SystemRoot/System32/InetSrv/appcmd.exe list apps | Select-String -Pattern '/. \\(applicationPool' | % { $_.ToString().Split(':')[1].Trim(')') } | Group-Object | Format-Table Count,Name"
+    },
+    "custom_item_9": {
+        "description": "Confirm applicationHost.config is available in standard location.",
+        "value_data": "%systemroot%\\system32\\inetsrv\\config\\applicationHost.config"
+    },
+    "custom_item_10": {
+        "description": "1.6 Ensure 'application pool identity' is configured for anonymous user identity",
+        "info": "To achieve isolation in IIS, application pools can be run as separate identities. IIS can be configured to automatically use the application pool identity if no anonymous user account is configured for a Web site. This can greatly reduce the number of accounts needed for Web sites and make management of the accounts easier. It is recommended the Application Pool Identity be set as the Anonymous User Identity.\n\nRationale:\n\nConfiguring the anonymous user identity to use the application pool identity will help ensure site isolation - provided sites are set to use the application pool identity. Since a unique principal will run each application pool, it will ensure the identity is least privilege. Additionally, it will simplify Site management.",
+        "solution": "The Anonymous User Identity can be set to Application Pool Identity by using the IIS Manager GUI, using AppCmd.exe commands in a command-line window, directly editing the configuration files, or by writing WMI scripts. Perform the following to set the username attribute of the anonymousAuthentication node in the IIS Manager GUI:\n\nOpen the IIS Manager GUI and navigate to the desired server, site, or application\n\nIn Features View, find and double-click the Authentication icon\n\nSelect the Anonymous Authentication option and in the Actions pane select Edit...\n\nChoose Application pool identity in the modal window and then press the OK button\n\nTo use AppCmd.exe to configure anonymousAuthentication at the server level, the command would look like this:\n\n%systemroot%\\system32\\inetsrv\\appcmd set config -section:anonymousAuthentication /username:'' --password",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "%systemroot%\\system32\\inetsrv\\config\\applicationHost.config"
+    },
+    "custom_item_11": {
+        "description": "2.1 Ensure 'global authorization rule' is set to restrict access",
+        "info": "IIS introduced URL Authorization, which allows the addition of Authorization rules to the actual URL, instead of the underlying file system resource, as a way to protect it. Authorization rules can be configured at the server, web site, folder (including Virtual Directories), or file level. The native URL Authorization module applies to all requests, whether they are .NET managed or other types of files (e.g. static files or ASP files). It is recommended that URL Authorization be configured to only grant access to the necessary security principals.\n\nRationale:\n\nConfiguring a global Authorization rule that restricts access will ensure inheritance of the settings down through the hierarchy of web directories; if that content is copied elsewhere, the authorization rules flow with it. This will ensure access to current and future content is only granted to the appropriate principals, mitigating risk of accidental or unauthorized access.",
+        "solution": "To configure URL Authorization at the server level using IIS Manager:\n\nConnect to Internet Information Services (IIS Manager)\n\nSelect the server\n\nSelect Authorization Rules\n\nRemove the 'Allow All Users' rule\n\nClick Add Allow Rule...\n\nAllow access to the user(s), user groups, or roles that are authorized across all of the web sites and applications (e.g. the Administratorsgroup)",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1M,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "",
+        "appcmd_args": "list config /section:system.web/authorization"
+    },
+    "custom_item_12": {
+        "description": "Check IIS for Anonymous authentication",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webserver/security/authentication/anonymousAuthentication /text:enabled"
+    },
+    "custom_item_13": {
+        "description": "Check IIS for Forms authentication",
+        "value_data": "Forms",
+        "appcmd_args": "list config /section:system.web/authentication /text:mode"
+    },
+    "custom_item_14": {
+        "description": "Applications",
+        "value_data": ".*failed.*",
+        "powershell_args": "function testAuth { param($p) $path='IIS:Sites\\'+$p; If (((Get-WebConfigurationProperty -PSPath $path -filter /system.webServer/security/authentication/anonymousAuthentication -name enabled | Where {$_.Value -eq 'True'} | measure).Count -gt 0) -and ((Get-WebConfiguration -PSPath $path -filter /system.web/authentication).mode -ne 'Forms')) { $p + ': failed' } else { $p + ': success' } } ; Get-Website | foreach { $site = $_.Name ; testAuth($site) ; Get-WebApplication -Site $site | foreach { $app = $_.Path ; testAuth($site+$app) } }"
+    },
+    "custom_item_15": {
+        "description": "Verify .net extensibility is installed - NetFxExtensibility45",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "NetFxExtensibility45"
+    },
+    "custom_item_16": {
+        "description": "Verify .net extensibility is installed - ASPNET45",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "ASPNET45"
+    },
+    "custom_item_17": {
+        "description": "Default",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.web/authentication /text:forms.requireSSL"
+    },
+    "custom_item_18": {
+        "description": "Applications",
+        "value_data": ".*failed.*",
+        "powershell_args": "function testAuth { param($p) $path='IIS:Sites\\'+$p; If (((Get-WebConfigurationProperty -PSPath $path -filter /system.web/authentication/forms -name requireSSL).Value -eq $False) -and (((Get-WebConfiguration -PSPath $path -filter /system.web/authentication).mode) -eq 'Forms')) { $p + ': failed' } else { $p + ': success' } } ; Get-Website | foreach { $site = $_.Name ; testAuth($site) ; Get-WebApplication -Site $site | foreach { $app = $_.Path ; testAuth($site+$app) } }"
+    },
+    "custom_item_19": {
+        "description": "Default",
+        "value_data": "All",
+        "appcmd_args": "list config /section:system.web/authentication /text:forms.protection"
+    },
+    "custom_item_20": {
+        "description": "Applications",
+        "value_data": "All",
+        "appcmd_args": "list config {} /section:system.web/authentication /text:forms.protection",
+        "appcmd_filter": "list config {} /section:system.web/authentication /text:mode",
+        "appcmd_filter_value": "Forms",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_21": {
+        "description": "Verify basic authentication is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "BasicAuthentication"
+    },
+    "custom_item_22": {
+        "description": "2.6 Ensure transport layer security for 'basic authentication' is configured",
+        "info": "Basic Authentication can pass credentials across the network in clear text. It is therefore imperative that the traffic between client and server be encrypted, especially in cases where the site is publicly accessible and is recommended that TLS be configured and required for any Site or Application using Basic Authentication.\n\nRationale:\n\nCredentials sent in clear text can be easily intercepted by malicious code or persons. Enforcing the use of Transport Layer Security will help mitigate the chances of hijacked credentials.",
+        "solution": "To protect Basic Authentication with transport layer security:\n\nOpen IIS Manager\n\nIn the Connections pane on the left, select the server to be configured\n\nIn the Connections pane, expand the server, then expand Sites and select the site to be configured\n\nIn the Actions pane, click Bindings; the Site Bindings dialog appears\n\nIf an HTTPS binding is available, click Close and see below 'To require SSL'\n\nIf no HTTPS binding is visible, perform the following steps\n\nTo add an HTTPS binding:\n\nIn the Site Bindings dialog, click Add; the Add Site Binding dialog appears\n\nUnder Type, select https\n\nUnder SSL certificate, select an X.509 certificate\n\nClick OK, then close\n\nTo require SSL:\n\nIn Features View, double-click SSL Settings\n\nOn the SSL Settings page, select Require SSL.\n\nIn the Actions pane, click Apply",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),LEVEL|1A,NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^Ssl(,.*|)[\\s]*$",
+        "appcmd_args": "list config {} /section:system.webServer/security/access /text:sslFlags",
+        "appcmd_filter": "list config {} /section:system.webServer/security/authentication/basicAuthentication /text:enabled",
+        "appcmd_filter_value": "true",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_23": {
+        "description": "Default",
+        "value_data": "Clear",
+        "appcmd_args": "list config /section:system.web/authentication /text:forms.credentials.passwordFormat"
+    },
+    "custom_item_24": {
+        "description": "Applications",
+        "value_data": "Clear",
+        "appcmd_args": "list config {} /section:system.web/authentication /text:forms.credentials.passwordFormat",
+        "appcmd_filter": "list config {} /section:system.web/authentication /text:mode",
+        "appcmd_filter_value": "Forms",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_25": {
+        "description": "Verify .net extensibility is installed - ASPNET45",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "ASPNET45"
+    },
+    "custom_item_26": {
+        "description": "Verify .net extensibility is installed - NetFxExtensibility45",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "NetFxExtensibility45"
+    },
+    "custom_item_27": {
+        "description": "3.1 Ensure 'deployment method retail' is set",
+        "info": "Theswitch is intended for use by production IIS servers. This switch is used to help applications run with the best possible performance and least possible security information leakages by disabling the application's ability to generate trace output on a page, disabling the ability to display detailed error messages to end users, and disabling the debug switch. Often times, switches and options that are developer-focused, such as failed request tracing and debugging, are enabled during active development. It is recommended that the deployment method on any production server be set to retail.\n\nRationale:\n\nUtilizing the switch specifically intended for production IIS servers will eliminate the risk of vital application and system information leakages that would otherwise occur if tracing or debug were to be left enabled, or customErrors were to be left off.",
+        "solution": "Open the machine.config file located in: %systemroot%\\\\Microsoft.NET\\\\Framework\\\\\\\\CONFIG\n\nAdd the linewithin thesection\n\nIf systems are 64-bit, do the same for the machine.config located in: %systemroot%\\\\Microsoft.NET\\\\Framework\\\\\\\\CONFIG",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.web/deployment /text:retail"
+    },
+    "custom_item_28": {
+        "description": "Default",
+        "value_data": "DetailedLocalOnly",
+        "appcmd_args": "list config /section:system.webServer/httpErrors /text:errorMode"
+    },
+    "custom_item_29": {
+        "description": "Applications",
+        "value_data": "DetailedLocalOnly",
+        "appcmd_args": "list config {} /section:system.webServer/httpErrors /text:errorMode",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_30": {
+        "description": "Default",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.web/httpCookies /text:httpOnlyCookies"
+    },
+    "custom_item_31": {
+        "description": "Applications",
+        "value_data": "true",
+        "appcmd_args": "list config {} /section:system.web/httpCookies /text:httpOnlyCookies",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_32": {
+        "description": "Default",
+        "value_data": "^(HMACSHA256|HMACSHA512)[\\s]*$",
+        "appcmd_args": "list config /section:machineKey /text:validation"
+    },
+    "custom_item_33": {
+        "description": "Applications",
+        "value_data": ".*failed.*",
+        "powershell_args": "function testMK { param($p) $path='IIS:Sites\\'+$p; $v=(Get-WebConfigurationProperty -PSPath $path -filter /system.web/machinekey -name validation); If (($v -eq 'HMACSHA256') -or ($v -eq 'HMACSHA512')) { $p+' ('+$v+'): passed' } else { $p+' ('+$v+'): failed' } }; Get-Website | foreach { $site=$_.Name; testMK($site); Get-WebApplication -Site $site | foreach { $app=$_.Path; testMK($site+$app) } }"
+    },
+    "custom_item_34": {
+        "description": "Verify .Net 2.0 is installed",
+        "value_data": "HKLM\\Software\\Microsoft\\Net Framework Setup\\Ndp\\V2.0.50727"
+    },
+    "custom_item_35": {
+        "description": "Verify asp.net is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Net Framework Setup\\Ndp\\V2.0.50727",
+        "reg_item": "Install"
+    },
+    "custom_item_36": {
+        "description": "Default",
+        "value_data": "^(Medium|Low|Minimal)[\\s]*$",
+        "appcmd_args": "list config /section:trust /text:level"
+    },
+    "custom_item_37": {
+        "description": "Applications",
+        "value_data": "^(Medium|Low|Minimal)[\\s]*$",
+        "appcmd_args": "list config {} /section:trust /text:level",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_38": {
+        "description": "Default",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webServer/security/requestFiltering /text:allowDoubleEscaping"
+    },
+    "custom_item_39": {
+        "description": "Applications",
+        "value_data": "false",
+        "appcmd_args": "list config {} /section:system.webServer/security/requestFiltering /text:allowDoubleEscaping",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_40": {
+        "description": "Default",
+        "value_data": "",
+        "appcmd_args": "list config /section:system.webServer/security/requestFiltering /xml:*"
+    },
+    "custom_item_41": {
+        "description": "Applications",
+        "value_data": "",
+        "appcmd_args": "list config /section:system.webServer/security/requestFiltering /xml:*",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_42": {
+        "description": "Default",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webServer/security/requestFiltering /text:fileExtensions.allowUnlisted"
+    },
+    "custom_item_43": {
+        "description": "Applications",
+        "value_data": "false",
+        "appcmd_args": "list config {} /section:system.webServer/security/requestFiltering /text:fileExtensions.allowUnlisted",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_44": {
+        "description": "Default",
+        "value_data": "Write.*[\\s]*(Execute|Script).*[\\s]*$",
+        "appcmd_args": "list config /section:system.webServer/handlers /text:accessPolicy"
+    },
+    "custom_item_45": {
+        "description": "Applications",
+        "value_data": "Write.*[\\s]*(Execute|Script).*[\\s]*$",
+        "appcmd_args": "list config {} /section:system.webServer/handlers /text:accessPolicy",
+        "appcmd_list": "list apps"
+    },
+    "custom_item_46": {
+        "description": "4.9 Ensure 'notListedIsapisAllowed' is set to false",
+        "info": "The notListedIsapisAllowed attribute is a server-level setting that is located in the ApplicationHost.config file in theelement of thesection under. This element ensures that malicious users cannot copy unauthorized ISAPI binaries to the Web server and then run them. It is recommended that notListedIsapisAllowed be set to false.\n\nRationale:\n\nRestricting this attribute to false will help prevent potentially malicious ISAPI extensions from being run.",
+        "solution": "To use IIS Manager to set the notListedIsapisAllowed attribute to false:\n\nOpen IIS Manager as Administrator\n\nIn the Connections pane on the left, select server to be configured\n\nIn Features View, select ISAPI and CGI Restrictions; in the Actions pane, select Open Feature\n\nIn the Actions pane, select Edit Feature Settings\n\nIn the Edit ISAPI and CGI Restrictions Settings dialog, clear the Allow unspecified ISAPI modules check box, if checked\n\nClick OK\n\nTo set this Request Filter using an AppCmd.exe command, run the following command at an elevated command prompt:\n\n%systemroot%\\system32\\inetsrv\\appcmd.exe set config  -section:system.webServer/security/isapiCgiRestriction /notListedIsapisAllowed:false",
+        "reference": "800-171|3.13.13,800-53|SC-18b.,800-53r5|SC-18b.,CSF|DE.CM-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-18b.,LEVEL|1A,NIAv2|NS26a,NIAv2|NS26d,QCSC-v1|3.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webServer/security/isapiCgiRestriction /text:notListedIsapisAllowed"
+    },
+    "custom_item_47": {
+        "description": "4.10 Ensure 'notListedCgisAllowed' is set to false",
+        "info": "The notListedCgisAllowed attribute is a server-level setting that is located in the ApplicationHost.config file in theelement of thesection under. This element ensures that malicious users cannot copy unauthorized CGI binaries to the Web server and then run them. It is recommended that notListedCgisAllowed be set to false.\n\nRationale:\n\nRestricting this attribute to false will help prevent unlisted CGI extensions, including potentially malicious CGI scripts from being run.",
+        "solution": "To set the notListedCgisAllowed attribute to false using IIS Manager:\n\nOpen IIS Manager as Administrator\n\nIn the Connections pane on the left, select the server to configure\n\nIn Features View, select ISAPI and CGI Restrictions; in the Actions pane, select Open Feature\n\nIn the Actions pane, select Edit Feature Settings\n\nIn the Edit ISAPI and CGI Restrictions Settings dialog, clear the Allow unspecified CGI modules check box\n\nClick OK\n\nTo set this Request Filter using an AppCmd.exe command, run the following command at an elevated command prompt:\n\n%systemroot%\\system32\\inetsrv\\appcmd.exe set config  -section:system.webServer/security/isapiCgiRestriction /notListedCgisAllowed:false",
+        "reference": "800-171|3.13.13,800-53|SC-18b.,800-53r5|SC-18b.,CSF|DE.CM-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-18b.,LEVEL|1A,NIAv2|NS26a,NIAv2|NS26d,QCSC-v1|3.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webServer/security/isapiCgiRestriction /text:notListedCgisAllowed"
+    },
+    "custom_item_48": {
+        "description": "If deny by concurrent requests, then confirm Blocking",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/security/dynamicIpSecurity /text:denyByConcurrentRequests.enabled"
+    },
+    "custom_item_49": {
+        "description": "If deny by request rate, then confirm Blocking",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/security/dynamicIpSecurity /text:denyByRequestRate.enabled"
+    },
+    "custom_item_50": {
+        "description": "4.11 Ensure 'Dynamic IP Address Restrictions' is enabled",
+        "info": "IIS Dynamic IP Address Restrictions capability can be used to thwart DDos attacks. This is complimentary to the IP Addresses and Domain names Restrictions lists that can be manually maintained within IIS. In contrast, Dynamic IP address filtering allows administrators to configure the server to block access for IPs that exceed the specified request threshold. The default action Deny action for restrictions is to return a Forbidden response to the client.\n\nRationale:\n\nDynamic IP address filtering allows administrators to configure the server to block access for IPs that exceed the specified number of requests or requests frequency. Ensure that you receive the Forbidden page once the block has been enforced.",
+        "solution": "1. Open IIS Manager.\n2. Open the IP Address and Domain Restrictions feature.\n3. Click Edit Dynamic Restrictions Settings..\n4. Check the Deny IP Address based on the number of concurrent requests and the Deny IP Address based on the number of requests over a period of time boxes. The values can be tweaked as needed for your specific environment.\n\nDefault Value:\n\nBy default Dynamic IP Restrictions are not enabled.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1M,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.webServer/security/dynamicIpSecurity /text:enableLoggingOnlyMode"
+    },
+    "custom_item_51": {
+        "description": "Verify IP Security is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "IPSecurity"
+    },
+    "custom_item_52": {
+        "description": "Deny By Conccurent Requests",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/security/dynamicIpSecurity /text:denyByConcurrentRequests.enabled"
+    },
+    "custom_item_53": {
+        "description": "Deny By Request Rate",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/security/dynamicIpSecurity /text:denyByRequestRate.enabled"
+    },
+    "custom_item_54": {
+        "description": "5.1 Ensure Default IIS web log location is moved",
+        "info": "IIS will log relatively detailed information on every request. These logs are usually the first item looked at in a security response, and can be the most valuable. Malicious users are aware of this, and will often try to remove evidence of their activities. It is therefore recommended that the default location for IIS log files be changed to a restricted, non-system drive.\n\nRationale:\n\nMoving IIS logging to a restricted, non-system drive will help mitigate the risk of logs being maliciously altered, removed, or lost in the event of system drive failure(s).",
+        "solution": "Moving the default log location can be easily accomplished using the Logging feature in the IIS Management UI or AppCmd.exe. To change to D:\\LogFiles using AppCmd.exe:\n\n%systemroot%\\system32\\inetsrv\\appcmd set config -section:sites -siteDefaults.logfile.directory:'D:\\LogFiles'\n\nMoving log file stores to a non-system drive or partition separate from where web applications run and/or content is served is preferred. Additionally, folder-level NTFS permissions should be set as restrictive as possible; Administrators and SYSTEM are typically the only principals requiring access.\n\nWhile standard IIS logs can be moved and edited using IIS Manager, additional management tool add-ons are required in order to manage logs generated by other IIS features, such as Request Filtering and IIS Advanced Logging. These add-ons can be obtained using the Web Platform Installer or from Microsoft's site. The HTTPErr logging location can be changed by adding a registry key.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,LEVEL|1A,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^(\\%SystemDrive\\%|C:)",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.directory"
+    },
+    "custom_item_55": {
+        "description": "Verify Advanced Logging IIS Extensions is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Iis Extensions\\Advanced Logging",
+        "reg_item": "Install"
+    },
+    "custom_item_56": {
+        "description": "5.2 Ensure Advanced IIS logging is enabled",
+        "info": "IIS Advanced Logging is a module which provides flexibility in logging requests and client data. It provides controls that allow businesses to specify what fields are important, easily add additional fields, and provide policies pertaining to log file rollover and Request Filtering. HTTP request/response headers, server variables, and client-side fields can be easily logged with minor configuration in the IIS management console. It is recommended that Advanced Logging be enabled, and the fields which could be of value to the type of business or application in the event of a security incident, be identified and logged.\n\nRationale:\n\nMany of the fields available in Advanced Logging many can provide extensive, real-time data and details not otherwise obtainable. Developers and security professionals can use this information to identify and remediate application vulnerabilities/attack patterns.",
+        "solution": "IIS Advanced Logging can be configured for servers, Web sites, and directories in IIS Manager. To enable Advanced Logging using the UI:\n\nOpen Internet Information Services (IIS) Manager\n\nClick the server in the Connections pane\n\nDouble-click the Advanced Logging icon on the Home page\n\nClick Enable Advanced Logging in the Actions pane\n\nThe fields that will be logged need to be configured using the Edit Logging Fields action. As with IIS's standard log files, their location should be changed.\nNote: There may be performance considerations depending on the extent of the configuration. Advanced logging requires installation using Web Platform Installer or manually form the download link in the References section.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/advancedLogging/server /text:enabled"
+    },
+    "custom_item_57": {
+        "description": "Verify version of IIS 8.5 installed.",
+        "value_data": "^Version 8\\.5[\\s]*$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp",
+        "reg_item": "VersionString"
+    },
+    "custom_item_58": {
+        "description": "Verify log format is W3c",
+        "value_data": "W3C",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logFormat"
+    },
+    "custom_item_59": {
+        "description": "5.3 Ensure 'ETW Logging' is enabled - Default ETW",
+        "info": "IIS introduces a new logging method. Administrators can now send logging information to Event Tracing for Windows (ETW).\n\nIIS flushes log information to disk, therefore prior to IIS, administrators do not have access to real-time logging information. Text-based log files can also be difficult and time consuming to process. By enabling ETW, administrators have access to use standard query tools for viewing real-time logging information.",
+        "solution": "To configure ETW logging:\n 1. Open IIS Manager\n 2. Select the server or site to enable ETW\n 3. Select Logging.\n 4. Ensure Log file format is W3C.\n 5. Select Both log file and ETW event\n 6. Save your settings.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv6|6.2,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1NS,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^.*ETW.*[\\s]*$",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logTargetW3C"
+    },
+    "custom_item_60": {
+        "description": "5.3 Ensure 'ETW Logging' is enabled - Default W3C",
+        "info": "IIS introduces a new logging method. Administrators can now send logging information to Event Tracing for Windows (ETW).\n\nIIS flushes log information to disk, therefore prior to IIS, administrators do not have access to real-time logging information. Text-based log files can also be difficult and time consuming to process. By enabling ETW, administrators have access to use standard query tools for viewing real-time logging information.",
+        "solution": "To configure ETW logging:\n 1. Open IIS Manager\n 2. Select the server or site to enable ETW\n 3. Select Logging.\n 4. Ensure Log file format is W3C.\n 5. Select Both log file and ETW event\n 6. Save your settings.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv6|6.2,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1NS,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "W3C",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logFormat"
+    },
+    "custom_item_61": {
+        "description": "5.3 Ensure 'ETW Logging' is enabled - Sites logFormat W3C",
+        "info": "IIS introduces a new logging method. Administrators can now send logging information to Event Tracing for Windows (ETW).\n\nIIS flushes log information to disk, therefore prior to IIS, administrators do not have access to real-time logging information. Text-based log files can also be difficult and time consuming to process. By enabling ETW, administrators have access to use standard query tools for viewing real-time logging information.",
+        "solution": "To configure ETW logging:\n 1. Open IIS Manager\n 2. Select the server or site to enable ETW\n 3. Select Logging.\n 4. Ensure Log file format is W3C.\n 5. Select Both log file and ETW event\n 6. Save your settings.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv6|6.2,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1NS,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "W3C",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logFormat",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_62": {
+        "description": "5.3 Ensure 'ETW Logging' is enabled - Sites logFormat W3C with ETW target",
+        "info": "IIS introduces a new logging method. Administrators can now send logging information to Event Tracing for Windows (ETW).\n\nIIS flushes log information to disk, therefore prior to IIS, administrators do not have access to real-time logging information. Text-based log files can also be difficult and time consuming to process. By enabling ETW, administrators have access to use standard query tools for viewing real-time logging information.",
+        "solution": "To configure ETW logging:\n 1. Open IIS Manager\n 2. Select the server or site to enable ETW\n 3. Select Logging.\n 4. Ensure Log file format is W3C.\n 5. Select Both log file and ETW event\n 6. Save your settings.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv6|6.2,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1NS,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "^.*ETW.*[\\s]*$",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logTargetW3C",
+        "appcmd_filter": "list config /section:system.applicationHost/sites /text:[name='{}'].logfile.logFormat",
+        "appcmd_filter_value": "W3C",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_63": {
+        "description": "Verify FTP service is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "FTPSvc"
+    },
+    "custom_item_64": {
+        "description": "Control Channel Default",
+        "value_data": "SslRequire",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.ftpServer.security.ssl.controlChannelPolicy"
+    },
+    "custom_item_65": {
+        "description": "Data Channel Default",
+        "value_data": "SslRequire",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.ftpServer.security.ssl.dataChannelPolicy",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_66": {
+        "description": "Control Channel Sites",
+        "value_data": "SslRequire",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].ftpServer.security.ssl.controlChannelPolicy",
+        "appcmd_filter": "list config /section:system.applicationHost/sites /text:[name='{}'].bindings.[protocol='ftp'].protocol",
+        "appcmd_filter_value": "ftp",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_67": {
+        "description": "Data Channel Sites",
+        "value_data": "SslRequire",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].ftpServer.security.ssl.dataChannelPolicy",
+        "appcmd_filter": "list config /section:system.applicationHost/sites /text:[name='{}'].bindings.[protocol='ftp'].protocol",
+        "appcmd_filter_value": "ftp",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_68": {
+        "description": "Verify FTP service is installed",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp\\Components",
+        "reg_item": "FTPSvc"
+    },
+    "custom_item_69": {
+        "description": "6.2 Ensure FTP Logon attempt restrictions is enabled - Deny By Failure Enabled",
+        "info": "IIS introduced a built-in network security feature to automatically block brute force FTP attacks. This can be used to mitigate a malicious client from attempting a brute-force attack on a discovered account, such as the local administrator account.\n\nRationale:\n\nSuccessful brute force FTP attacks can allow an otherwise unauthorized user to make changes to data that should not be made. This could allow the unauthorized user to modify website code by uploading malicious software or even changing functionality for items such as online payments.",
+        "solution": "1. Open IIS Manager\n2. At the server level, open the FTP Logon Attempt Restrictions feature.\n3. Check Enable FTP Logon Attempt Restrictions and enter the maximum number of failed attempts and the time period. Enable Deny IP addresses based on the number of failed login attempts.\n4. Click Apply\n\nDefault Value:\n\nBy default, this feature is not enabled when FTP is installed.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1M,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.ftpServer/security/authentication /text:denyByFailure.enabled"
+    },
+    "custom_item_70": {
+        "description": "Check deny IP address",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.ftpServer/security/authentication /text:denyByFailure.enabled"
+    },
+    "custom_item_71": {
+        "description": "6.2 Ensure FTP Logon attempt restrictions is enabled - Deny IP Address",
+        "info": "IIS introduced a built-in network security feature to automatically block brute force FTP attacks. This can be used to mitigate a malicious client from attempting a brute-force attack on a discovered account, such as the local administrator account.\n\nRationale:\n\nSuccessful brute force FTP attacks can allow an otherwise unauthorized user to make changes to data that should not be made. This could allow the unauthorized user to modify website code by uploading malicious software or even changing functionality for items such as online payments.",
+        "solution": "1. Open IIS Manager\n2. At the server level, open the FTP Logon Attempt Restrictions feature.\n3. Check Enable FTP Logon Attempt Restrictions and enter the maximum number of failed attempts and the time period. Enable Deny IP addresses based on the number of failed login attempts.\n4. Click Apply\n\nDefault Value:\n\nBy default, this feature is not enabled when FTP is installed.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1M,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "value_data": "false",
+        "appcmd_args": "list config /section:system.ftpServer/security/authentication /text:denyByFailure.loggingOnlyMode"
+    },
+    "custom_item_72": {
+        "description": "SSL 2.0 key exists",
+        "value_data": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Ssl 2.0"
+    },
+    "custom_item_73": {
+        "description": "7.2 Ensure SSLv2 is disabled",
+        "info": "This protocol is not considered cryptographically secure. Disabling it is recommended. This protocol is disabled by default if the registry key is not present. A reboot is required for these changes to be reflected.\n\nRationale:\n\nDisabling weak protocols will help ensure the confidentiality and integrity of in-transit data.",
+        "solution": "Perform the following to disable SSL 2.0:\n1. If the following key is not present, SSL 2.0 is disabled. You can delete the key to disable the protocol. If you delete the key, steps 2 and 3 are not necessary.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 2.0\n\nIf the key exists, set it to 0.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 2.0\\Server\\Enabled\n\nDefault Value:\n\nEnabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Ssl 2.0\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_74": {
+        "description": "7.3 Ensure SSLv3 is disabled",
+        "info": "This protocol is not considered cryptographically secure. Disabling it is recommended.\n\nRationale:\n\nDisabling weak protocols will help ensure the confidentiality and integrity of in-transit data.",
+        "solution": "Perform the following to disable SSL 3.0:\n1. Set the following keyto 0.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\SSL 3.0\\Server\\Enabled\n\nDefault Value:\n\nEnabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Ssl 3.0\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_75": {
+        "description": "7.5 Ensure TLS 1.1 is enabled",
+        "info": "Enabling TLS 1.1 is required for backward compatibility.\n\nRationale:\n\nThis item is Not Scored for the following reasons:\n\nEnabling TLS 1.2 is recommended.\n\nThis protocol does not suffer from known practical attacks.",
+        "solution": "Set the following registry locations to enable TLS 1.1. Set Enabled to 1.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Protocols\\TLS 1.1\\Server\\Enabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1M,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.1\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_76": {
+        "description": "Protocols TLS 1.2 key exists",
+        "value_data": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.2"
+    },
+    "custom_item_77": {
+        "description": "7.6 Ensure TLS 1.2 is enabled",
+        "info": "TLS 1.2 is the most recent and mature protocol for protecting the confidentiality and integrity of HTTP traffic. Enabling TLS 1.2 is recommended. This protocol is enabled by default if the registry key is not present. As with any registry changes, a reboot is required for changes to take effect.\n\nRationale:\n\nEnabling this protocol will help ensure the confidentiality and integrity of data in transit.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.2\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_78": {
+        "description": "7.7 Ensure NULL Cipher Suites is disabled",
+        "info": "The NULL cipher does not provide data confidentiality or integrity. It is recommended that the NULL cipher be disabled.\n\nRationale:\n\nBy disabling the NULL cipher, there is a better chance of maintaining data confidentiality and integrity.",
+        "solution": "To disable the NULL cipher, ensure the following key is absent. If the key is present, ensure it is set to 0.\n\nHKLM System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\NULL\\Enabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Null",
+        "reg_item": "Enabled"
+    },
+    "custom_item_79": {
+        "description": "7.8 Ensure DES Cipher Suites is disabled",
+        "info": "DES is a weak symmetric-key cipher. It is recommended that it be disabled.\n\nRationale:\n\nBy disabling DES, there is a better chance of maintaining data confidentiality and integrity.",
+        "solution": "To disable DES 56/56, ensure the following key is absent. If the key is present, ensure it is set to 0.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\DES 56/56\\Enabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Des 56/56",
+        "reg_item": "Enabled"
+    },
+    "custom_item_80": {
+        "description": "RC2 40/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc2 40/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_81": {
+        "description": "RC2 56/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc2 56/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_82": {
+        "description": "RC4 40/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc4 40/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_83": {
+        "description": "RC4 56/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc4 56/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_84": {
+        "description": "RC4 64/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc4 64/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_85": {
+        "description": "RC4 128/128",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Rc4 128/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_86": {
+        "description": "7.11 Ensure Triple DES Cipher Suite is configured",
+        "info": "Enabling Triple DES Cipher Suites may be required for client compatibility. Enable or disable this cipher suite accordingly.\n\nRationale:\n\nThis item is Not Scored for the following reasons:\n\nEnabling AES 256/256 is recommended.\n\nThis cipher does not suffer from known practical attacks.",
+        "solution": "To enable Triple DES 168/168, ensure the following key is not present or is set to 0xFFFFFFFF.\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\Triple DES 168/168\\Enabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1M,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Triple Des 168/168",
+        "reg_item": "Enabled"
+    },
+    "custom_item_87": {
+        "description": "7.12 Ensure AES 128/128 Cipher Suite is configured",
+        "info": "Enabling AES 128/128 may be required for client compatibility. Enable or disable this cipher suite accordingly.\n\nRationale:\n\nThis item is Not Scored for the following reasons:\n\nEnabling AES 256/256 is recommended.\n\nThis cipher does not suffer from known practical attacks.",
+        "solution": "To enable the AES 128/128 cipher, ensure the following key is set to 0xFFFFFFFF:\n\nHKLM\\System\\CurrentControlSet\\Control\\SecurityProviders\\SCHANNEL\\Ciphers\\AES 128/128\\Enabled",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1M,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Aes 128/128",
+        "reg_item": "Enabled"
+    },
+    "custom_item_88": {
+        "description": "Ciphers\\AES 256/256 Exists",
+        "value_data": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Aes 256/256"
+    },
+    "custom_item_89": {
+        "description": "7.13 Ensure AES 256/256 Cipher Suite is enabled - Enabled",
+        "info": "AES 256/256 is the most recent and mature cipher suite for protecting the confidentiality and integrity of HTTP traffic. Enabling AES 256/256 is recommended. This is enabled by default on Server 2012 and 2012 R2.\n\nRationale:\n\nEnabling this cipher will help ensure the confidentiality and integrity of data in transit.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14293",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Ciphers\\Aes 256/256",
+        "reg_item": "Enabled"
+    }
+}

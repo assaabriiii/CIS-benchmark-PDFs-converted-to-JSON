@@ -1,0 +1,476 @@
+{
+    "custom_item_1": {
+        "description": "1.4 Ensure that the Forged Transmits policy is set to reject",
+        "info": "Ensure that the Forged Transmits policy is set to reject.\n\n*Rationale*\n\nIf the virtual machine operating system changes the MAC address, the operating system can\nsend frames with an impersonated source MAC address at any time. This allows an\noperating system to stage malicious attacks on the devices in a network by impersonating a\nnetwork adaptor authorized by the receiving network. Forged transmissions should be set\nto accept by default. This means the dvPortgroup does not compare the source and\neffective MAC addresses. To protect against MAC address impersonation, all virtual\nswitches should have forged transmissions set to reject.",
+        "solution": "1. Configure by using the vSphere Web Client to connect to the vCenter Server and as administrator-\n2. Go to Home > Networking.\n3. Select each VDS and edit each dvPortgroup connected to active VM's requiring securing.\n4. Edit Settings for each PortGroup under Security.\n5. Set the Forged transmits value to 'Reject'\n\nImpact-This will prevent VMs from changing their effective MAC address. This will affect\napplications that require this functionality. An example of an application like this is\nMicrosoft Clustering, which requires systems to effectively share a MAC address. This will\nalso affect how a layer 2 bridge will operate. This will also affect applications that require a\nspecific MAC address for licensing. An exception should be made for the dvPortgroups that\nthese applications are connected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "forgedTransmits =",
+        "expect": "forgedTransmits = FALSE$"
+    },
+    "custom_item_2": {
+        "description": "2.1 Configure NTP time synchronization",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vcli.examples.doc/cli_manage_networks.11.9.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the NTP Settings for all hosts\n# If an internal NTP server is used replace pool.ntp.org with\n# the IP address of the internal NTP server\n$NTPServers = 'pool.ntp.org', 'pool2.ntp.org' Get-VMHost | Add-VmHostNtpServer $NTPServers\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSCv6|6.1,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,LEVEL|1S,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "NTP Server : ",
+        "expect": "NTP Server : @NTP_SERVER@$"
+    },
+    "custom_item_3": {
+        "description": "2.6 Ensure proper SNMP configuration",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : ",
+        "expect": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : TRUE$"
+    },
+    "custom_item_4": {
+        "description": "2.6 Ensure proper SNMP configuration- 'community name public does not exist'",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.monitoring.doc/GUID-8EF36D7D-59B6-4C74-B1AA-4A9D18AB6250.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Update the host SNMP Configuration (single host connection required)\nGet-VmHostSNMP | Set-VMHostSNMP -Enabled-$true -ReadOnlyCommunity ''\n\nNotes-. SNMP must be configured on each ESXi host. SNMP settings can be configured using Host Profiles",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|1S,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.[0-9]+\\.community : ",
+        "not_expect": "snmp\\.receiver\\.[0-9]+\\.community : [Pp][Uu][Bb][Ll][Ii][Cc]"
+    },
+    "custom_item_5": {
+        "description": "2.6 Ensure proper SNMP configuration- 'community name private does not exist'",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.monitoring.doc/GUID-8EF36D7D-59B6-4C74-B1AA-4A9D18AB6250.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Update the host SNMP Configuration (single host connection required)\nGet-VmHostSNMP | Set-VMHostSNMP -Enabled-$true -ReadOnlyCommunity ''\nNotes-. SNMP must be configured on each ESXi host. SNMP settings can be configured using Host Profiles",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|1S,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.[0-9]+\\.community : ",
+        "not_expect": "snmp\\.receiver\\.[0-9]+\\.community : [Pp][Rr][Ii][Vv][Aa][Tt][Ee]"
+    },
+    "custom_item_6": {
+        "description": "2.7 Prevent unintended use of dvfilter network APIs",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.ext_solutions.doc/GUID-6013E15D-92CE-4970-953C-ACCB36ADA8AD.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set Net.DVFilterBindIpAddress to null on all hosts\nGet-VMHost HOST1 | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name Net.DVFilterBindIpAddress -Value '' }\n\nImpact-This will prevent a dvfilter-based network security appliance such as a firewall from\nfunctioning if not configured correctly.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Net\\.DVFilterBindIpAddress : ",
+        "expect": "Net\\.DVFilterBindIpAddress : NOT configured"
+    },
+    "custom_item_7": {
+        "description": "3.3 Configure persistent logging for all ESXi host",
+        "info": "http://kb.vmware.com/kb/1033696\\n",
+        "solution": "Perform the following-1. Logon to the ESXi shell.\n2. Run 'ls -al /' to verify/scratch is not linked to/tmp/scratch.\n3. If/scratch is linked to/tmp/scratch change it to a persistent datastore.\n4. Identify the datastore path where you want to place scratch.\n5. Login to the vSphere web client.\n6. Navigating to the host.\n7. Select 'Manage' -> 'Advanced System Settings'.\n8. Enter Syslog.global.LogDir in the filter.\n9. Set the Syslog.global.LogDir to the desired datastore path.Alternatively, run the following PowerCLI command-# Set Syslog.global.logDir for each host\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name Syslog.global.logDir -Value '' }\n\nNote- the Syslog.global.LogDir must be set for each host. The host syslog parameters can also be configured using the vCLI or PowerCLI, or using an API client.\n\nImpact-Additional disk space will be required to store log files.\n\nDefault Value-When booting from a local disk- YESWhen booting from USB/SD- NOWhen using Auto Deploy Stateless Installs- NO",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12,800-53r5|AU-12,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12,LEVEL|1S,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Syslog\\.global\\.logDir : ",
+        "expect": "Syslog\\.global\\.logDir : @LOG_DIR@$"
+    },
+    "custom_item_8": {
+        "description": "3.4 Configure remote logging for ESXi hosts",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.install.doc/GUID-471EFE67-9035-473E-8217-6B67E493A518.html\\n",
+        "solution": "Perform the following-1. Install/Enable a syslog host (i.e vSphere Syslog Collector).\n2. From the vSphere web client select the host and click 'Manage' -> 'Advanced Sytem\nSettings'\n3. Enter Syslog.global.logHost in the filter.\n4. Set the Syslog.global.logHost to the hostname of your syslog server.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set Syslog.global.logHost for each host\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nSyslog.global.logHost -Value '' }\nNote- When setting a remote log host it is also recommended to set the\n'Syslog.global.logDirUnique' to true. You must configure the syslog settings for each host.\nThe host syslog parameters can also be configured using the vCLI or PowerCLI, or using an\nAPI client.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|1S,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Syslog\\.global\\.logHost : ",
+        "expect": "Syslog\\.global\\.logHost : @LOG_HOST@$"
+    },
+    "custom_item_9": {
+        "description": "4.2 Ensure the vpxuser account's password is automatically changed every 10 or fewer days",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-96210743-0C17-4AE9-89FC-76778EC9D06E.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the vCenter Password Expiration Value to 10\nGet-AdvancedSetting -Entity $defaultVIServer -Name 'VirtualCenter.VimPasswordExpirationInDays' | Set-AdvancedSetting -Value 10\n\nImpact-The password aging policy must not be shorter than the interval that is set to automatically\nchange the vpxuser password, otherwise vCenter might get locked out of an ESXi host.\n\nDefault Value-Password automatically changes every 30 days.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),LEVEL|1S,NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "config\\.VirtualCenter\\.VimPasswordExpirationInDays : ",
+        "expect": "config\\.VirtualCenter\\.VimPasswordExpirationInDays : (10|[1-9])$"
+    },
+    "custom_item_10": {
+        "description": "4.4 Use Active Directory for local user authentication - Review Domain",
+        "info": "http://kb.vmware.com/kb/1025569\\n",
+        "solution": "From the vSphere Web Client-\n1. Select the host and go to 'Manage' -> 'Authentication Services' and click the 'Join\nDomain' button.\n2. Provide the domain name along with the user credentials for an AD user that has the\nrights to join computers to the domain.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Join the ESXI Host to the Domain\nGet-VMHost HOST1 | Get-VMHostAuthentication | Set-VMHostAuthentication -Domain domain.local -User Administrator -Password Passw0rd -JoinDomainNotes-1. Host Profiles can be used to automate adding hosts to an AD domain.\n2. Consider using the vSphere Authentication proxy to avoid transmitting AD\ncredentials over the network.\n3. If the AD group 'ESX Admins' (default) is created all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi\nhosts the domain.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,LEVEL|1S,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_11": {
+        "description": "4.4 Use Active Directory for local user authentication - Enabled = 'true'",
+        "info": "http://kb.vmware.com/kb/1025569\\n",
+        "solution": "From the vSphere Web Client-\n1. Select the host and go to 'Manage' -> 'Authentication Services' and click the 'Join Domain' button.\n2. Provide the domain name along with the user credentials for an AD user that has the\nrights to join computers to the domain.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Join the ESXI Host to the Domain\nGet-VMHost HOST1 | Get-VMHostAuthentication | Set-VMHostAuthentication -Domain\ndomain.local -User Administrator -Password Passw0rd -JoinDomainNotes-1. Host Profiles can be used to automate adding hosts to an AD domain.\n2. Consider using the vSphere Authentication proxy to avoid transmitting AD\ncredentials over the network.\n3. If the AD group 'ESX Admins' (default) is created all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi\nhosts the domain.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,LEVEL|1S,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Enabled",
+        "expect": "Enabled : true"
+    },
+    "custom_item_12": {
+        "description": "4.5 Verify Active Directory group membership for the 'ESX Admins' group",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.wssdk.apiref.doc/vim.host.AuthenticationManager.html\\n",
+        "solution": "1. Verify the setting of the esxAdminsGroup attribute ('ESX Admins' by default).\n2. Check the list of members for that Microsoft Active Directory group.\n3. Remove any unauthorized users from that group.\n\nImpact-Coordination between vSphere admins and Active Directory admins is needed.\n\nDefault Value-The AD group used by vSphere is defined by the esxAdminsGroup attribute. By default, this attribute is set to 'ESX Admins'",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1NS,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Config\\.HostAgent\\.plugins\\.hostsvc\\.esxAdminsGroup : ",
+        "not_expect": "ESX Admins$"
+    },
+    "custom_item_13": {
+        "description": "5.2 Disable ESXi Shell unless needed for diagnostics or troubleshooting",
+        "info": "http://kb.vmware.com/kb/2004746\\n",
+        "solution": "Perform the following-1. From the vSphere web client select the host.\n2. Select 'Manage' -> 'Security Profile'.\n3. Scroll down to 'Services'.\n4. Click 'Edit...'.\n5. Select 'ESXi Shell'.\n6. Click 'Stop'.\n7. Change the Startup Policy 'Start and Stop Manually'Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set ESXi Shell to start manually rather than automatic for all hosts\nGet-VMHost | Get-VMHostService | Where { $_.key -eq 'TSM' } | Set-VMHostService - Policy Off\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "ESXi Shell : running =",
+        "expect": "ESXi Shell : running = FALSE$"
+    },
+    "custom_item_14": {
+        "description": "5.3 Disable SSH",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-12E27BF3-3769-4665-8769-DA76C2BC9FFE.html\\n",
+        "solution": "Perform the following-1. From the vSphere web client select the host.\n2. Select 'Manage' -> 'Security Profile'.\n3. Scroll down to 'Services'.\n4. Click 'Edit...'.\n5. Select 'SSH'.\n6. Click 'Stop'.\n7. Change the Startup Policy 'to Start and Stop Manually'.Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set SSH to start manually rather than automatic for all hosts\nGet-VMHost | Get-VMHostService | Where { $_.key -eq 'TSM-SSH' } | Set-VMHostService - Policy Off\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "SSH : running = ",
+        "expect": "SSH : running = FALSE$"
+    },
+    "custom_item_15": {
+        "description": "5.6 Set a timeout to automatically terminate idle ESXi Shell and SSH sessions",
+        "info": "http://kb.vmware.com/kb/2004746\\n",
+        "solution": "From the vSphere web client-1. Select the host.\n2. Click 'Manage' -> 'Advanced System Settings'.\n3. Type ESXiShellInteractiveTimeOut in the filter.\n4. Set the attribute to the desired value.Note- A value of 0 disables the ESXi ShellInteractiveTimeOut.Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set Remove UserVars.ESXiShellInteractiveTimeOut to 300 on all hosts\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name UserVars.ESXiShellInteractiveTimeOut -Value 300 }\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv6|16.4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|1S,NIAv2|NS49",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "UserVars\\.ESXiShellInteractiveTimeOut : ",
+        "expect": "UserVars\\.ESXiShellInteractiveTimeOut : @SHELL_SESSION_TIMEOUT@$"
+    },
+    "custom_item_16": {
+        "description": "5.8 Set DCUI.Access to allow trusted users to override lockdown mode",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-D92BB375-9F94-449E-838E-51086C43CF80.html\\n",
+        "solution": "To implement the recommended configuration state, run the following ESXi shell\ncommand-vim-cmd hostsvc/advopt/update DCUI.Access string [USERS]\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.2,800-171|3.1.15,800-53|AC-17(4),800-53r5|AC-17(4),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSCv6|5.1,CSF|PR.AC-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(4),LEVEL|1NS,NESA|T5.4.5,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "DCUI\\.Access : ",
+        "expect": "DCUI\\.Access : @DCUI_ACCESS@$"
+    },
+    "custom_item_17": {
+        "description": "6.1 Enable bidirectional CHAP authentication for iSCSI traffic",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.storage.doc/GUID-AC65D747-728F-4109-96DD-49B433E2F266.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the Chap settings for the Iscsi Adapter\nGet-VMHost | Get-VMHostHba | Where {$_.Type -eq 'Iscsi'} | Set-VMHostHba # Use desired parameters here\n\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),LEVEL|1S,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "chapAuthEnabled : ",
+        "not_expect": "chapAuthEnabled : FALSE$"
+    },
+    "custom_item_18": {
+        "description": "7.1.2 Ensure that the MAC Address Change policy is set to reject",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.wssdk.apiref.doc/vim.host.NetworkPolicy.SecurityPolicy.html\\n",
+        "solution": "1. Configure by using the vSphere Client to connect to the vCenter Server and logging in as an administrator.\n2. Go to 'Home > Inventory > Networking'.\n3. Select each dvPortgroup connected to active VMs requiring securing.\n4. Go to tab 'Summary > Edit Settings > Policies > Security'.\n5. Set 'Mac Address Changes' = 'Reject'\n\nImpact-This will prevent VMs from changing their effective MAC address. It will affect applications\nthat require this functionality. An example of an application like this is Microsoft Clustering,\nwhich requires systems to effectively share a MAC address. This will also affect how a layer\n2 bridge will operate. This will also affect applications that require a specific MAC address\nfor licensing. An exception should be made for the dvPortgroups that these applications are\nconnected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "macChanges =",
+        "expect": "macChanges = FALSE$"
+    },
+    "custom_item_19": {
+        "description": "7.1.3 Ensure that the Promiscuous Mode policy is set to reject",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.wssdk.apiref.doc/vim.host.NetworkPolicy.SecurityPolicy.html\\n",
+        "solution": "1. Verify by using the vSphere Client to connect to the vCenter Server and logging in as\nan administrator.\n2. Go to 'Home > Inventory > Networking'.\n3. Select each dvPortgroup connected to active VMs requiring securing.\n4. Go to tab 'Summary > Edit Settings > Policies > Security'.\n5. Configure 'Promiscuous Mode' = 'Reject'\n\nImpact-Security devices that require the ability to see all packets on a vSwitch will not operate\nproperly if the Promiscuous Mode parameter is set to Reject.\n\nDefault Value-Promiscuous mode is disabled by default. This is the prescribed setting.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "allowPromiscuous =",
+        "expect": "allowPromiscuous = FALSE$"
+    },
+    "custom_item_20": {
+        "description": "7.2.2 Ensure that port groups are not configured to VLAN 4095 except for Virtual Guest Tagging (VGT)",
+        "info": "Don't use VLAN 4095 except for Virtual Guest Tagging (VGT).\n\n*Rationale*\n\nWhen a port group is set to VLAN 4095, this activates VGT mode. In this mode, the vSwitch\npasses all network frames to the guest VM without modifying the VLAN tags, leaving it up\nto the guest to deal with them. VLAN 4095 should be used only if the guest has been\nspecifically configured to manage VLAN tags itself. If VGT is enabled inappropriately, it\nmight cause denial of service or allow a guest VM to interact with traffic on an\nunauthorized VLAN.",
+        "solution": "VLAN ID setting on all port groups should not be set to 4095 unless VGT is required.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "() - vlanId =- vlanId = NOT configured",
+        "regex": "vlanId =",
+        "not_expect": "vlanId = (4095|NOT configured)$"
+    },
+    "custom_item_21": {
+        "description": "7.3.1 Ensure that the vSwitch Forged Transmits policy is set to reject",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.networking.doc/GUID-74E2059A-CC5E-4B06-81B5-3881C80E46CE.html\\n",
+        "solution": "Verify by using the vSphere Client to connect to the vCenter Server and as administrator-1. Go to 'Home > Inventory > Hosts and clusters'.\n2. Select each ESXi host with active virtual switches connected to active VM's requiring\nsecuring.\n3. Go to tab 'Configuration > Network > vSwitch(?) > Properties > Ports > vSwitch >\nDefault Policies > Security'\n4. Set 'Forged Transmits' to 'Reject'. Additionally, the following ESXi shell command may be used-# esxcli network vswitch standard policy security set -v vSwitch2 -f false\n\nImpact-This will prevent VMs from changing their effective MAC address. This will affect\napplications that require this functionality. An example of an application like this is\nMicrosoft Clustering, which requires systems to effectively share a MAC address. This will\nalso affect how a layer 2 bridge will operate. This will also affect applications that require a\nspecific MAC address for licensing. An exception should be made for the port groups that\nthese applications are connected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "forgedTransmits =",
+        "expect": "forgedTransmits = FALSE$"
+    },
+    "custom_item_22": {
+        "description": "7.3.2 Ensure that the vSwitch MAC Address Change policy is set to reject",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.networking.doc/GUID-74E2059A-CC5E-4B06-81B5-3881C80E46CE.html\\n",
+        "solution": "Using the vSphere Client, connect to the vCenter Server and as administrator-1. Go to 'Home > Inventory > Hosts and clusters'.\n2. Select each ESXi host with active virtual switches connected to active VM's requiring\nsecuring.\n3. Go to tab 'Configuration > Network > vSwitch(?) > Properties > Ports > vSwitch >\nDefault Policies > Security'\n4. Set 'Mac Address Changes' to 'Reject'.Additionally, perform the following to implement the recommended configuration state\nusing the ESXi shell-# esxcli network vswitch standard policy security set -v vSwitch2 -m false\n\nImpact-This will prevent VMs from changing their effective MAC address. It will affect applications\nthat require this functionality. An example of an application like this is Microsoft Clustering,\nwhich requires systems to effectively share a MAC address. This will also affect how a layer\n2 bridge will operate. This will also affect applications that require a specific MAC address\nfor licensing. An exception should be made for the port groups that these applications are\nconnected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "macChanges =",
+        "expect": "macChanges = FALSE$"
+    },
+    "custom_item_23": {
+        "description": "7.3.3 Ensure that the vSwitch Promiscuous Mode policy is set to reject",
+        "info": "http://kb.vmware.com/kb/1004099\\n",
+        "solution": "Using the vSphere Client, connect to the vCenter Server and as administrator-1. Go to 'Home > Inventory > Hosts and clusters'.\n2. Select each ESXi host with active virtual switches connected to active VM's requiring\nsecuring.\n3. Go to tab 'Configuration > Network > vSwitch name > Properties > Ports > vSwitch >\nDefault Policies > Security'\n4. Set 'Promiscuous Mode' = 'Reject'Additionally, perform the following to implement the recommended configuration state via\nthe ESXi shell-# esxcli network vswitch standard policy security set -v vSwitch2 -p false\n\nImpact-Security devices that require the ability to see all packets on a vSwitch will not operate\nproperly if the Promiscuous Mode parameter is set to Reject.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "() - allowPromiscuous =- allowPromiscuous = NOT configured",
+        "regex": "allowPromiscuous =",
+        "not_expect": "allowPromiscuous = (TRUE|NOT configured)$"
+    },
+    "custom_item_24": {
+        "description": "8.1.1 Disable VM communication through VMCI",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.ICbase/PDF/ws8x_esx51_vmci_sockets.pdf",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'vmci0.unrestricted' -value $false\n\nImpact-Virtual machines will be unable to communicate using VMCI technology.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(21),800-53r5|SC-7(21),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|1S,NESA|T4.5.3,NIAv2|VL6,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "vmci0\\.unrestricted : ",
+        "expect": "vmci0\\.unrestricted : FALSE$"
+    },
+    "custom_item_25": {
+        "description": "8.1.2 Limit informational messages from the VM to the VMX file",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'tools.setInfo.sizeLimit' -value 1048576\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "() - tools.setInfo.sizeLimit :() - tools.setInfo.sizeLimit :() - tools.setInfo.sizeLimit : NOT configured() - tools.setInfo.sizeLimit : NOT configured",
+        "regex": "tools\\.setInfo\\.sizeLimit : ",
+        "not_expect": "tools\\.setInfo\\.sizeLimit : (^(?!1048576$)\\d+$|NOT Configured)"
+    },
+    "custom_item_26": {
+        "description": "8.1.3 Limit sharing of console connections",
+        "info": "http://kb.vmware.com/kb/2015407\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'RemoteDisplay.maxConnections' -value 1\n\nImpact-Only one remote console connection to the VM will be permitted. Other attempts will be\nrejected until the first session disconnects.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "RemoteDisplay\\.maxConnections : ",
+        "expect": "RemoteDisplay\\.maxConnections : 1$"
+    },
+    "custom_item_27": {
+        "description": "8.2.1 Disconnect unauthorized devices - Floppy Devices",
+        "info": "Any enabled or connected device represents a potential attack channel. Users and\nprocesses without privileges on a virtual machine can connect or disconnect hardware\ndevices, such as network adapters and CD-ROM drives. Attackers can use this capability to\nbreach virtual machine security. Removing unnecessary hardware devices can help prevent\nattacks.\n\n*Rationale*\n\nBesides disabling unnecessary virtual devices from within the virtual machine, you should\nensure that no device is connected to a virtual machine if it is not required to be there. For\nexample, serial and parallel ports are rarely used for virtual machines in a datacenter\nenvironment, and CD/DVD drives are usually connected only temporarily during software\ninstallation. For less commonly used devices that are not required, either the parameter\nshould not be present or its value must be FALSE.NOTE- The parameters listed are not sufficient to ensure that a device is usable; other\nparameters are required to indicate specifically how each device is instantiated. Any\nenabled or connected device represents another potential attack channel.\n\nhttp://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-822B2ED3-D8D2-4F57-8335-CA46E915A729.html\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-\n# Remove all Floppy drives attached to VMs\nGet-VM | Get-FloppyDrive | Remove-FloppyDrive\n\nImpact-Virtual machine will need to be powered off to reverse change if any of these devices are\nneeded at a later time.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|1S,NESA|T1.4.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_28": {
+        "description": "8.2.2 Disconnect unauthorized devices - CD/DVD Devices",
+        "info": "Any enabled or connected device represents a potential attack channel. Users and\nprocesses without privileges on a virtual machine can connect or disconnect hardware\ndevices, such as network adapters and CD-ROM drives. Attackers can use this capability to\nbreach virtual machine security. Removing unnecessary hardware devices can help prevent\nattacks.\n\n*Rationale*\n\nBesides disabling unnecessary virtual devices from within the virtual machine, you should\nensure that no device is connected to a virtual machine if it is not required to be there. For\nexample, serial and parallel ports are rarely used for virtual machines in a datacenter\nenvironment, and CD/DVD drives are usually connected only temporarily during software\ninstallation. For less commonly used devices that are not required, either the parameter\nshould not be present or its value must be FALSE.NOTE- The parameters listed are not sufficient to ensure that a device is usable; other\nparameters are required to indicate specifically how each device is instantiated. Any\nenabled or connected device represents another potential attack channel.\n\nhttp://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-822B2ED3-D8D2-4F57-8335-CA46E915A729.html\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Remove all CD/DVD Drives attached to VMs\nGet-VM | Get-CDDrive | Remove-CDDrive\n\nImpact-Virtual machine will need to be powered off to reverse change if any of these devices are\nneeded at a later time.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_29": {
+        "description": "8.2.3 Disconnect unauthorized devices - Parallel Devices",
+        "info": "Any enabled or connected device represents a potential attack channel. Users and\nprocesses without privileges on a virtual machine can connect or disconnect hardware\ndevices, such as network adapters and CD-ROM drives. Attackers can use this capability to\nbreach virtual machine security. Removing unnecessary hardware devices can help prevent\nattacks.\n\n\n*Rationale*\n\nBesides disabling unnecessary virtual devices from within the virtual machine, you should\nensure that no device is connected to a virtual machine if it is not required to be there. For\nexample, serial and parallel ports are rarely used for virtual machines in a datacenter\nenvironment, and CD/DVD drives are usually connected only temporarily during software\ninstallation. For less commonly used devices that are not required, either the parameter\nshould not be present or its value must be FALSE.\n\nNOTE- The parameters listed are not sufficient to ensure that a device is usable; other\nparameters are required to indicate specifically how each device is instantiated. Any\nenabled or connected device represents another potential attack channel.\n\nhttp://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-822B2ED3-D8D2-4F57-8335-CA46E915A729.html\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# In this Example you will need to add the functions from this post-\nhttp-//blogs.vmware.com/vipowershell/2012/05/working-with-vm-devices-in-powercli.html\n# Remove all Parallel Ports attached to VMs\nGet-VM | Get-ParallelPort | Remove-ParallelPort\n\nImpact-Virtual machine will need to be powered off to reverse change if any of these devices are\nneeded at a later time.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_30": {
+        "description": "8.2.4 Disconnect unauthorized devices - Serial Devices",
+        "info": "Any enabled or connected device represents a potential attack channel. Users and\nprocesses without privileges on a virtual machine can connect or disconnect hardware\ndevices, such as network adapters and CD-ROM drives. Attackers can use this capability to\nbreach virtual machine security. Removing unnecessary hardware devices can help prevent\nattacks.\n\n*Rationale*\n\nBesides disabling unnecessary virtual devices from within the virtual machine, you should\nensure that no device is connected to a virtual machine if it is not required to be there. For\nexample, serial and parallel ports are rarely used for virtual machines in a datacenter\nenvironment, and CD/DVD drives are usually connected only temporarily during software\ninstallation. For less commonly used devices that are not required, either the parameter\nshould not be present or its value must be FALSE.\n\nNOTE- The parameters listed are not sufficient to ensure that a device is usable; other\nparameters are required to indicate specifically how each device is instantiated. Any\nenabled or connected device represents another potential attack channel.\n\nhttp://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-822B2ED3-D8D2-4F57-8335-CA46E915A729.html\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "\nTo implement the recommended configuration state, run the following PowerCLI\ncommand-# In this Example you will need to add the functions from this post-\nhttp-//blogs.vmware.com/vipowershell/2012/05/working-with-vm-devices-in-powercli.html\n# Remove all Serial Ports attached to VMs\nGet-VM | Get-SerialPort | Remove-SerialPort\n\nImpact-Virtual machine will need to be powered off to reverse change if any of these devices are\nneeded at a later time.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_31": {
+        "description": "8.2.5 Disconnect unauthorized devices - USB Devices",
+        "info": "Any enabled or connected device represents a potential attack channel. Users and\nprocesses without privileges on a virtual machine can connect or disconnect hardware\ndevices, such as network adapters and CD-ROM drives. Attackers can use this capability to\nbreach virtual machine security. Removing unnecessary hardware devices can help prevent\nattacks.\n\n*Rationale*\n\nBesides disabling unnecessary virtual devices from within the virtual machine, you should\nensure that no device is connected to a virtual machine if it is not required to be there. For\nexample, serial and parallel ports are rarely used for virtual machines in a datacenter\nenvironment, and CD/DVD drives are usually connected only temporarily during software\ninstallation. For less commonly used devices that are not required, either the parameter\nshould not be present or its value must be FALSE.\nNOTE- The parameters listed are not sufficient to ensure that a device is usable; other\nparameters are required to indicate specifically how each device is instantiated. Any\nenabled or connected device represents another potential attack channel.\n\nhttp://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-822B2ED3-D8D2-4F57-8335-CA46E915A729.html\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Remove all USB Devices attached to VMs\nGet-VM | Get-USBDevice | Remove-USBDevice\n\nImpact-Virtual machine will need to be powered off to reverse change if any of these devices are\nneeded at a later time.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|1S,NESA|T1.4.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": ""
+    },
+    "custom_item_32": {
+        "description": "8.2.6 Prevent unauthorized removal, connection, and modification of devices",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.device.edit.disable' -value $true\n\nImpact-Device interaction is blocked inside the guest OS using VMware tools.\n\nDefault Value-\nThe prescribed state is not the default state.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.device\\.edit\\.disable : ",
+        "expect": "isolation\\.device\\.edit\\.disable : TRUE$"
+    },
+    "custom_item_33": {
+        "description": "8.4.1 Control access to VMs through the dvfilter network APIs",
+        "info": "http://kb.vmware.com/kb/1028151",
+        "solution": "If a VM is supposed to be protected-. Configure the following in its VMX file- ethernet0.filter1.name = dv-\nfilter1 where ethernet0 is the network adapter interface of the virtual machine\nthat is to be protected, filter1 is the number of the filter that is being used, and dv-\nfilter1 is the name of the particular data path kernel module that is protecting the\nVM.\n. Ensure that the name of the data path kernel is set correctly.If a VM is not supposed to be protected-. Remove the following from its VMX file- ethernet0.filter1.name = dv-\nfilter1 where ethernet0 is the network adapter interface of the virtual machine\nthat is to be protected, filter1 is the number of the filter that is being used, and dv-\nfilter1 is the name of the particular data path kernel module that is protecting the\nVM.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nvmsafe API.Incorrectly configuring this option can prevent VMs from connecting to the network.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1NS,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "ethernet[0-9]+\\\\.filter[0-9]+\\\\.name :",
+        "expect": "ethernet[0-9]+\\\\.filter[0-9]+\\\\.name : NOT configured"
+    },
+    "custom_item_34": {
+        "description": "8.4.2 Control VMsafe Agent Address",
+        "info": "http://www.vmware.com/files/xls/hardeningguide-vsphere5-1-ga-release-public.xlsx\\n",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and verify that vmsafe.agentAddress is not present.If it is being protected by a VMsafe CPU/Memory product then make sure this is set to the\ncorrect value\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nVMsafe API.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.agentAddress : ",
+        "expect": "vmsafe\\.agentAddress : @AGENT_ADDRESS@$"
+    },
+    "custom_item_35": {
+        "description": "8.4.3 Control VMsafe Agent Port",
+        "info": "NOTE: Update AGENT_PORT with the appropriate value for the local environment.",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and verify that vmsafe.agentPort is not present.If it is being protect by a VMsafe CPU/Memory product, make sure vmsafe.agentPort is set\nto the correct value.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use VMsafe API.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.agentPort : ",
+        "expect": "vmsafe\\.agentPort : @AGENT_PORT@$"
+    },
+    "custom_item_36": {
+        "description": "8.4.4 Control VMsafe Agent Configuration",
+        "info": "http://www.vmware.com/files/xls/hardeningguide-vsphere5-1-ga-release-public.xlsx\\n",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and set vmsafe.enable to FALSE.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use vmsafe API.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.enable : ",
+        "expect": "vmsafe\\.enable : FALSE$"
+    },
+    "custom_item_37": {
+        "description": "8.4.25 Disable VM Console Copy operations",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "\nTo implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.copy.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.copy\\.disable : ",
+        "expect": "isolation\\.tools\\.copy\\.disable : TRUE$"
+    },
+    "custom_item_38": {
+        "description": "8.4.26 Disable VM Console Drag and Drop operations",
+        "info": "http://pubs.vmware.com/vsphere-50/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.dnd.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.dnd\\.disable : ",
+        "expect": "isolation\\.tools\\.dnd\\.disable : TRUE$"
+    },
+    "custom_item_39": {
+        "description": "8.4.27 Disable VM Console and Paste GUI Options",
+        "info": "http://pubs.vmware.com/vsphere-50/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.setGUIOptions.enable' -value $false\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "() - isolation.tools.setGUIOptions.enable :() - isolation.tools.setGUIOptions.enable :() - isolation.tools.setGUIOptions.enable : NOT configured() - isolation.tools.setGUIOptions.enable : NOT configured",
+        "regex": "isolation\\.tools\\.setGUIOptions\\.enable : ",
+        "not_expect": "isolation\\.tools\\.setGUIOptions\\.enable : (TRUE|NOT configured)$"
+    },
+    "custom_item_40": {
+        "description": "8.4.28 Disable VM Console Paste operations",
+        "info": "http://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.paste.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.paste\\.disable : ",
+        "expect": "isolation\\.tools\\.paste\\.disable : TRUE$"
+    },
+    "custom_item_41": {
+        "description": "8.5.1 Prevent virtual machines from taking over resources - CPU Share Level",
+        "info": "http://pubs.vmware.com/vsphere-50/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-50-resource-management-guide.pdf\\n",
+        "solution": "Use shares or reservations to guarantee resources to critical VMs.\nUse limits to constrain resource consumption by virtual machines that have a\ngreater risk of being exploited or attacked, or that run applications that are known\nto have the potential to greatly consume resources.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1NS,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "CPU Share Level : ",
+        "expect": "CPU Share Level : @CPU_SHARE_LEVEL@$"
+    },
+    "custom_item_42": {
+        "description": "8.5.1 Prevent virtual machines from taking over resources - Num Mem Shares",
+        "info": "http://pubs.vmware.com/vsphere-50/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-50-resource-management-guide.pdf\\n",
+        "solution": ". Use shares or reservations to guarantee resources to critical VMs.\nUse limits to constrain resource consumption by virtual machines that have a\ngreater risk of being exploited or attacked, or that run applications that are known\nto have the potential to greatly consume resources.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1NS,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Num Mem Shares : ",
+        "expect": "Num Mem Shares : @NUM_MEM_SHARES@$"
+    },
+    "custom_item_43": {
+        "description": "8.5.1 Prevent virtual machines from taking over resources - Mem Share Level",
+        "info": "http://pubs.vmware.com/vsphere-50/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-50-resource-management-guide.pdf\\n",
+        "solution": "Use shares or reservations to guarantee resources to critical VMs.\nUse limits to constrain resource consumption by virtual machines that have a\ngreater risk of being exploited or attacked, or that run applications that are known\nto have the potential to greatly consume resources.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1NS,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Mem Share Level : ",
+        "expect": "Mem Share Level : @MEM_SHARE_LEVEL@$"
+    },
+    "custom_item_44": {
+        "description": "8.6.1 Avoid using nonpersistent disks",
+        "info": "https://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.vm_admin.doc/GUID-81629CAB-72FA-42F0-9F86-F8FD0DE39E57.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-#Alter the parameters for the following cmdlet to set the VM Disk Type-\nGet-VM | Get-HardDisk | Set-HardDisk\n\nImpact-Won't be able to make use of nonpersistent mode, which allows rollback to a known state when rebooting the VM.\n\nDefault Value-The default mode is the correct mode.",
+        "reference": "800-53|AU-11,800-53r5|AU-11,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,LEVEL|1S,NESA|M5.2.3,NESA|T3.6.2,NIAv2|SM7,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "Virtual Disk Mode : ",
+        "expect": "Virtual Disk Mode : persistent$"
+    },
+    "custom_item_45": {
+        "description": "8.7.1 Disable VMware Tools auto install",
+        "info": "https://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-65BCA561-5A03-4D17-A663-46A0C50CE6A7.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.autoInstall.disable' -value $true\n\nImpact-This option disables tools auto install via the hypervisor. It is recommended that VMware\ntools installs and upgrades be handled through other means (For example- a devops tool\nsuch as ansible, chef, puppet, or saltstack).\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.autoInstall\\.disable : ",
+        "expect": "isolation\\.tools\\.autoInstall\\.disable : TRUE$"
+    },
+    "custom_item_46": {
+        "description": "8.7.2 Disable VIX messages from the VM",
+        "info": "https://pubs.vmware.com/vsphere-51/topic/com.vmware.vddk.pg.doc/vddkTasks.8.7.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.vixMessage.disable' -value $true\n\nImpact-Guest will no longer be able to send messages via VIX API.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.vixMessage\\.disable : ",
+        "expect": "isolation\\.tools\\.vixMessage\\.disable : TRUE$"
+    },
+    "custom_item_47": {
+        "description": "8.7.3 Do not send host information to guests",
+        "info": "https://pubs.vmware.com/vsphere-51/topic/com.vmware.vsphere.security.doc/GUID-2CF880DA-2435-4201-9AFB-A16A11951A2D.html\\n",
+        "solution": "\nTo implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'tools.guestlib.enableHostInfo' -value $false\n\nImpact-Unable to retrieve performance information about the host from inside the guest, there are\ntimes when this can be useful for troubleshooting.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "tools\\.guestlib\\.enableHostInfo : ",
+        "expect": "tools\\.guestlib\\.enableHostInfo : FALSE$"
+    },
+    "custom_item_48": {
+        "description": "8.7.4 Limit number of VM log files",
+        "info": "https://pubs.vmware.com/vsphere-51/topic/com.vmware.vmtools.install.doc/GUID-685722FA-9009-439C-9142-18A9E7C592EA.html\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'log.keepOld' -value '10'\n\nImpact-A more extreme strategy is to disable logging altogether for the virtual machine. Disabling\nlogging makes troubleshooting challenging and support difficult. Do not consider disabling\nlogging unless the log file rotation approach proves insufficient.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv6|6.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "log\\.keepOld : ",
+        "expect": "log\\.keepOld : 10$"
+    },
+    "custom_item_49": {
+        "description": "8.7.5 Limit VM log file size",
+        "info": "http://kb.vmware.com/kb/8182749\\n",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'log.rotateSize' -value '100000'\n\nImpact-A more extreme strategy is to disable logging altogether for the virtual machine. Disabling\nlogging makes troubleshooting challenging and support difficult. Do not consider disabling\nlogging unless the log file rotation approach proves insufficient.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv6|6.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/902",
+        "xsl_stmt": "",
+        "regex": "log\\.rotateSize : ",
+        "expect": "log\\.rotateSize : 100000$"
+    }
+}

@@ -1,0 +1,381 @@
+{
+    "custom_item_1": {
+        "description": "Firefox is installed",
+        "value_data": "HKLM\\Software\\Mozilla\\Mozilla Firefox"
+    },
+    "custom_item_2": {
+        "description": "Firefox ESR is installed",
+        "value_data": "HKLM\\Software\\Mozilla\\Mozilla Firefox ESR"
+    },
+    "custom_item_3": {
+        "description": "1.1 Create local-settings.js file - general.config.filename",
+        "info": "The local-settings.js file is used by Firefox to reference and load the mozilla.cfg file which contains all the locked preferences.\nLoading a custom configuration file is a primary mechanism for setting and enforcing security requirements within Firefox.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@LOCKING_FILE@"
+    },
+    "custom_item_4": {
+        "description": "1.1 Create local-settings.js file - general.config.obscure",
+        "info": "The local-settings.js file is used by Firefox to reference and load the mozilla.cfg file which contains all the locked preferences.\nLoading a custom configuration file is a primary mechanism for setting and enforcing security requirements within Firefox.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@LOCKING_FILE@"
+    },
+    "custom_item_5": {
+        "description": "1.2 Set permissions on local-settings.js",
+        "info": "Set permissions on local-settings.js so that it can only be modified or deleted by an Administrator.\nAny users with the ability to modify the local-settings.js file can bypass all security configurations by changing the file or deleting it.",
+        "solution": "Deny non-administrators the ability to write to local-settings.js.",
+        "reference": "800-171|3.1.5,800-53|AC-6(7)(b),800-53r5|AC-6(7)(b),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.5,ITSG-33|AC-6,LEVEL|1A,NESA|M1.1.3,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": ".*\\\\Administrators:\\(I\\)\\(F\\).*",
+        "powershell_args": "$f=$env:SystemRoot + '@LOCKING_FILE@';icacls $f;"
+    },
+    "custom_item_6": {
+        "description": "1.3 Create mozilla.cfg file",
+        "info": "The mozilla.cfg file is used by Firefox to configure all the locked preferences.\nLoading a custom configuration file is a primary mechanism for setting and enforcing security requirements in Firefox.",
+        "solution": "Perform the following procedure:\n\n* Navigate to the Firefox installation directory and create a file called mozilla.cfg.\n\n* The first line of the file must be a comment:\n\n  //",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_7": {
+        "description": "1.4 Set permissions on mozilla.cfg",
+        "info": "Set permissions on mozilla.cfg so that it can only be modified or deleted by an Administrator.\nAny users with the ability to modify the mozilla.cfg file can bypass all security configurations by changing the file or deleting it.",
+        "solution": "Deny non-administrators the ability to write to mozilla.cfg.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": ".*\\\\Administrators:\\(I\\)\\(F\\).*",
+        "powershell_args": "$f=$env:SystemRoot + '@MOZILLA_CONFIG@';icacls $f;"
+    },
+    "custom_item_8": {
+        "description": "1.5 Protect Firefox Binaries",
+        "info": "Ensure that Firefox is installed and owned by an administrative account in order to protect the binaries and to prevent users from circumventing security settings.\nWhen Firefox is installed by an ordinary user, the software in installed into the user's profile / home directory. This avoids the requirement for administrative access during installation and upgrades, but also allows users to circumvent security settings defined in settings.js and mozilla.cfg files. Having the installation owned by an administrative user can also protect binary and configuration files from malware that is executed in an ordinary user's browser.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Install Firefox into a shared location that can be accessed by users but modified only by Administrators.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1M,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "",
+        "powershell_args": "Get-ChildItem -Path C:\\ -Filter firefox.exe -Recurse -ErrorAction SilentlyContinue -Force"
+    },
+    "custom_item_9": {
+        "description": "2.1 Enable Automatic Updates - app.update.enabled",
+        "info": "This feature configures Firefox to automatically download and install updates as they are made available.\nSecurity updates ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_10": {
+        "description": "2.1 Enable Automatic Updates - app.update.auto",
+        "info": "This feature configures Firefox to automatically download and install updates as they are made available.\nSecurity updates ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_11": {
+        "description": "2.1 Enable Automatic Updates - app.update.staging.enabled",
+        "info": "This feature configures Firefox to automatically download and install updates as they are made available.\nSecurity updates ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_12": {
+        "description": "2.2 Enable Auto-Notification of Outdated Plugins",
+        "info": "This feature automatically detects when installed plugins are out of date and notifies the users to update the plugins.\nOutdated plugins can be vulnerable or unstable, and can be exploited by malicious websites.",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4(5),800-53r5|SI-4(5),CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-7,CSF|DE.DP-2,CSF|ID.RA-1,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4(5),LEVEL|1A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.2.5",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_13": {
+        "description": "2.3 Enable Information Bar for Outdated Plugins",
+        "info": "This feature automatically shows an information bar when installed Plugins are out of date and notifies the users to update the plugins.\nOutdated plugins can be vulnerable or unstable, and can be exploited by malicious websites.",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4(5),800-53r5|SI-4(5),CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-7,CSF|DE.DP-2,CSF|ID.RA-1,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4(5),LEVEL|1A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.2.5",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_14": {
+        "description": "2.4 Set Update Interval Time Checks",
+        "info": "This configuration sets the amount of time the system waits in between each check for updates.\nFrequent checks for updates will mitigate the risk that a system is left vulnerable to known risks for an extended period of time.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_15": {
+        "description": "2.5 Set Update Wait Time Prompt",
+        "info": "This setting determines the amount of time, in seconds, which the system will wait before displaying the Software Update dialogue box (after an unobtrusive alert has already been shown).\nEncouraging the user to update software as soon as possible mitigates the risk that a system will be left vulnerable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_16": {
+        "description": "2.6 Ensure Update-related UI Components are Displayed",
+        "info": "This setting dictates whether the Firefox Update service will notify the user when update related events occur, such as updates being available or downloaded. It is recommended that updated-related notifications be displayed.\nEnsuring users are aware of update-related events may reduce the amount of time Firefox remains unpatched.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_17": {
+        "description": "2.7 Set Search Provider Update Behavior",
+        "info": "This feature dictates whether Firefox will update installed search providers. Search providers allow the user to search directly from the 'Search bar' which is adjacent to the URL bar.\nSoftware updates help ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_18": {
+        "description": "3.3 Disable NTLM v1",
+        "info": "This feature NT Lan Manager (NTLM) v1 protocol to be used for authentication to resources that request this authentication type.\nNTLM v1 contains cryptographic weaknesses that can be easily exploited to obtain user credentials.",
+        "reference": "800-171|3.5.2,800-53|IA-5(6),800-53r5|IA-5(6),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(6),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5.4,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_19": {
+        "description": "3.4 Enable Warning For 'Phishy' URLs",
+        "info": "It is possible to disguise a website's true location by making use of username/password syntax within the URL (known as 'phishy URLs'). This setting will display a warning message whenever a user clicks a link to a phishy URL.\nThis setting will help protect the browser against phishing.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_20": {
+        "description": "3.6 Set File URI Origin Policy",
+        "info": "This feature determines the restrictions placed on the scripts and links loaded into the browser from local HTML files.\nApplying the same origin policy to local files will help mitigate the risk of unauthorized access to sensitive information.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_21": {
+        "description": "3.7 Disable Cloud Sync",
+        "info": "Firefox allows users to sync preferences and settings, including saved credentials, to cloud-based servers in order to retrieve them from other computers. This setting determines whether cloud sync in enabled.\nDisable cloud sync in order to ensure that personal data and credentials are not compromised.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_22": {
+        "description": "3.8 Disable WebRTC - media.peerconnection.enabled",
+        "info": "These settings determine whether WebRTC (Web Real Time Communications) is allowed. WebRTC is used for peer to peer communication such as file sharing or video calls.\nWebRTC can expose private information such as internal IP addresses and computer settings.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_23": {
+        "description": "3.8 Disable WebRTC - media.peerconnection.use_document_iceservers",
+        "info": "These settings determine whether WebRTC (Web Real Time Communications) is allowed. WebRTC is used for peer to peer communication such as file sharing or video calls.\nWebRTC can expose private information such as internal IP addresses and computer settings.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_24": {
+        "description": "4.2 Set Security TLS Version Maximum",
+        "info": "This feature sets the maximum required protocol version.\nSetting TLS 1.2 as the maximum authorized protocol version mitigates the risk of using an insecure connection.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_25": {
+        "description": "4.3 Set Security TLS Version Minimum",
+        "info": "This feature sets the minimum protocol version that may be used when negotiating TLS/SSL sessions.\nSetting TLS 1.0 as the minimum protocol version mitigates the risk of negotiating an insecure protocol, such as SSL 2.0.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_26": {
+        "description": "4.5 Block Mixed Active Content",
+        "info": "This feature disables the ability to view HTTP content such as JavaScript, CSS, objects, and xhr requests.\nBlocking active mixed content minimizes the risk of man-in-the-middle attacks.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_27": {
+        "description": "5.1 Disallow JavaScript's Ability to Change the Status Bar Text",
+        "info": "The Status Bar shows the location of the content when a user hovers over a hyperlink, a user visits a link, or when content is being downloaded on a web page.\nSome malicious websites can use JavaScript to manipulate the text on the status bar so that a user cannot determine the actual location of the content for hyperlinks and downloads.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_28": {
+        "description": "5.2 Disable Scripting of Plugins by JavaScript",
+        "info": "Javascript can initiate and interact with the Plug-ins installed in Firefox.\nThis may reduce a malicious script's ability to exploit vulnerabilities in plug-ins or abuse plug-in features.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_29": {
+        "description": "5.3 Disallow JavaScript's Ability to Hide the Address Bar",
+        "info": "The Address Bar shows the current URL, which can be used to identify the website.\nSome malicious websites can use JavaScript to hide the address bar so that a user cannot determine the URL.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_30": {
+        "description": "5.4 Disallow JavaScript's Ability to Hide the Status Bar",
+        "info": "The Status Bar shows the location of the content when a user visits a link or when content is being downloaded on a web page.\nSome malicious websites can use JavaScript to hide the status bar so that a user cannot determine the location of the content for hyperlinks and downloads.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_31": {
+        "description": "5.5 Disable Closing of Windows via Scripts",
+        "info": "Firefox can be configured to prevent scripts from closing browser windows.\nPreventing an arbitrary web site from closing the browser window will reduce the probability of a user losing work or state being performed in another tab within the same window.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_32": {
+        "description": "5.6 Block Pop-up Windows",
+        "info": "The Pop-up Blocker is used to block Pop-ups which a website might open with or without any user interaction. These Pop-Ups can be used to open un-trusted malicious content.\nBy enabling the Pop-up blocker, all Pop-ups will be blocked which will guard a user against any attacks launched using a Pop-up.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_33": {
+        "description": "5.7 Disable Displaying JavaScript in History URLs",
+        "info": "This will ensure that JavaScript URLs are not displayed in the history bar.\nVarious browser elements, even a simple link, can embed javascript: URLs and access the javascript: protocol. The JavaScript statement used in a javascript: URL can be used to encapsulate a specially crafted URL that performs a malicious function.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_34": {
+        "description": "6.1 Disallow Credential Storage",
+        "info": "Firefox allows credentials to be stored for certain websites.\nStored credentials may be harvested by an adversary that gains local privileges equal to or greater than the principal running Firefox, which may increase the scope and impact of a breach. However, preventing Firefox from storing credentials will not prevent such an adversary from harvesting credentials used while compromised.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_35": {
+        "description": "6.2 Do Not Accept Third Party Cookies",
+        "info": "A third-party cookie is a cookie sent by a domain that differs from the domain in the browser's address bar.\nThird party cookies are often used for tracking user browsing behaviors, which has privacy implications. However, preventing third-party cookies does not completely mitigate privacy concerns as several other active tracking mechanisms exist[1].",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_36": {
+        "description": "6.3 Tracking Protection - privacy.donottrackheader.enabled",
+        "info": "These settings instruct the browser to communicate the preference not to be tracked to websites to which it connects, and additionally attempt to block tracking.\nEnabling Do Not Track instructs the browser to send an optional header in HTTP requests made from the app that indicates a preference not to be tracked by websites. This optional header is voluntary in nature, having no method to enforce adherence and providing no guarantee that web sites will honor the preference. However, a large number of websites do honor it so there is privacy benefit in enabling it.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_37": {
+        "description": "6.3 Tracking Protection - privacy.donottrackheader.value",
+        "info": "These settings instruct the browser to communicate the preference not to be tracked to websites to which it connects, and additionally attempt to block tracking.\nEnabling Do Not Track instructs the browser to send an optional header in HTTP requests made from the app that indicates a preference not to be tracked by websites. This optional header is voluntary in nature, having no method to enforce adherence and providing no guarantee that web sites will honor the preference. However, a large number of websites do honor it so there is privacy benefit in enabling it.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_38": {
+        "description": "6.3 Tracking Protection - privacy.trackingprotection.enabled",
+        "info": "These settings instruct the browser to communicate the preference not to be tracked to websites to which it connects, and additionally attempt to block tracking.\nEnabling Do Not Track instructs the browser to send an optional header in HTTP requests made from the app that indicates a preference not to be tracked by websites. This optional header is voluntary in nature, having no method to enforce adherence and providing no guarantee that web sites will honor the preference. However, a large number of websites do honor it so there is privacy benefit in enabling it.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_39": {
+        "description": "6.3 Tracking Protection - privacy.trackingprotection.pbmode",
+        "info": "These settings instruct the browser to communicate the preference not to be tracked to websites to which it connects, and additionally attempt to block tracking.\nEnabling Do Not Track instructs the browser to send an optional header in HTTP requests made from the app that indicates a preference not to be tracked by websites. This optional header is voluntary in nature, having no method to enforce adherence and providing no guarantee that web sites will honor the preference. However, a large number of websites do honor it so there is privacy benefit in enabling it.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_40": {
+        "description": "6.4 Set Delay for Enabling Security Sensitive Dialog Boxes",
+        "info": "This feature sets the amount of time in milliseconds that elapse before the buttons on security-sensitive dialog boxes are enabled.\nThis delay help prevents Firefox users from inadvertently installing malicious software.",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_41": {
+        "description": "6.5 Disable Geolocation Serivces",
+        "info": "This settings determines whether Firefox will provide geographic location information to websites.\nGeo-location services can expose private information to remote websites.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_42": {
+        "description": "7.1 Secure Application Plug-ins",
+        "info": "Some active content such as audio and video can be automatically loaded by Firefox on websites. It is recommended to secure application plug-ins.\nSome malicious websites use active content to exploit vulnerabilities in the active content handling application plug-in. It is recommended to always prompt the user when a website is about to load active content.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_43": {
+        "description": "7.2 Disabling Auto-Install of Add-ons",
+        "info": "This configuration will show how to ensure that no website is allowed to automatically install Add-Ons. Also, it will list how to ensure that proper notifications are shown when installing Add-Ons.\nAdd-Ons are extensions of the browser that add new functionality to Firefox or change its appearance. These run in a user s session allowing them do manipulate data and the behavior of the way Firefox interacts with other application and user commands. If malicious Add-Ons are installed automatically, a user s security could be completely compromised.",
+        "reference": "800-171|3.4.8,800-53|CM-7(4),800-53r5|CM-7(4),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS13a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_44": {
+        "description": "7.3 Enable Extension Block List",
+        "info": "This feature enables Mozilla to retrieve a list of blocked applications from the server.\nEnabling Mozilla to access the list of blocked applications mitigates the risk of installing a known malicious application.",
+        "reference": "800-171|3.4.8,800-53|CM-7(4),800-53r5|CM-7(4),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS13a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_45": {
+        "description": "7.4 Set Extension Block List Interval",
+        "info": "This feature determines how often Mozilla will attempt to retrieve a list of blocked applications from the server.\nAn updated list of blocked applications mitigates the risk of installing and using a known malicious application.",
+        "reference": "800-171|3.4.8,800-53|CM-7(4),800-53r5|CM-7(4),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS13a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_46": {
+        "description": "7.5 Enable Warning for External Protocol Handler",
+        "info": "This feature indicates whether the user is warned before opening an external application for pre-configured protocols were its behavior is undefined.\nEnabling a warning to appear before passing data to an external application mitigates the risk that sensitive information will be made vulnerable to outside threats.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_47": {
+        "description": "7.6 Disable Popups Initiated by Plugins",
+        "info": "This feature controls popups that are initiated by plugins.\nDisabling plugin popups (except from white-listed sites) from being displayed, guard a user against any attacks launched using a Pop-up.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_48": {
+        "description": "7.7 Enable Extension Auto Update",
+        "info": "This feature configures Firefox to automatically download and install updates as they are made available.\nSecurity updates ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_49": {
+        "description": "7.8 Enable Extension Update",
+        "info": "This feature configures Firefox to prompt when updates are made available.\nSecurity updates ensure that users are safe from known software bugs and vulnerabilities.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_50": {
+        "description": "7.9 Set Extension Update Interval Time Checks",
+        "info": "This feature sets the amount of time the system waits between checking for updates.\nSetting a specific amount of time between automatically checking for updates mitigates the risk that a system will left vulnerable to known risks for an extended period of time.",
+        "reference": "800-171|3.14.1,800-53|SI-2(3),800-53r5|SI-2(3),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2(3),LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_51": {
+        "description": "8.1 Enable Virus Scanning for Downloads",
+        "info": "This feature configures the browser to scan downloads for viruses.\nThis will ensure that a downloaded file is scanned for viruses before the user has an opportunity to interact with the download. It will also ensure that Windows Policy for downloaded files is followed properly.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_52": {
+        "description": "8.2 Disable JAR from Opening Unsafe File Types",
+        "info": "This feature gives the user the ability to override the restriction on only loading files with application/java-archive or application/x-jar content types.\nEnabling the browser to only load application/java-archive or application/x-jar content types mitigates the risk of malware infection and other attack vectors.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_53": {
+        "description": "8.3 Block Reported Web Forgeries",
+        "info": "This feature alerts the user if they are visiting a known phishing website.\nEnabling this feature helps mitigate the threat of phishing attacks.",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4(5),800-53r5|SI-4(5),CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-7,CSF|DE.DP-2,CSF|ID.RA-1,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4(5),LEVEL|1A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.2.5",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    },
+    "custom_item_54": {
+        "description": "8.4 Block Reported Attack Sites",
+        "info": "This feature alerts the user if they are visiting a known malicious website.\nEnabling this feature will decrease the probability of a user falling victim to a known malicious web site.",
+        "reference": "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,CSF|DE.DP-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/1158",
+        "value_data": "@MOZILLA_CONFIG@"
+    }
+}

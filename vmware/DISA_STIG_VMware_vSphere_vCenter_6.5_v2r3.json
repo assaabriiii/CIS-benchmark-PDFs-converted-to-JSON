@@ -1,0 +1,62 @@
+{
+    "custom_item_1": {
+        "description": "VCWN-65-000021 - The vCenter Server for Windows must enable SSL for Network File Copy (NFC).",
+        "info": "NFC is the mechanism used to migrate or clone a VM between two ESXi hosts over the network. By default, NFC over SSL is enabled (i.e., 'True') within a vSphere cluster but the value of the setting is null. Clients check the value of the setting and default to not using SSL for performance reasons if the value is null. This behavior can be changed by ensuring the setting has been explicitly created and set to 'True'. This will force clients to use SSL. Without this setting VM contents could potentially be sniffed if the management network is not adequately isolated and secured.",
+        "solution": "From the vSphere Web Client go to vCenter Inventory Lists >> vCenter Servers >> Select your vCenter Server >> Manage >> Settings >> Advanced Settings.  Click 'Edit' and edit the 'config.nfc.useSSL' value to 'true' or if the value does not exist create it by entering the values in the 'Key' and 'Value' fields and clicking 'Add'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server run the following command:\n\nIf the setting already exists:\nGet-AdvancedSetting -Entity-Name config.nfc.useSSL | Set-AdvancedSetting -Value true\n\nIf the setting does not exist:\nNew-AdvancedSetting -Entity-Name config.nfc.useSSL -Value true",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-216843r879887_rule,STIG-ID|VCWN-65-000021,STIG-Legacy|SV-104583,STIG-Legacy|V-94753,SWIFT-CSCv1|2.3,Vuln-ID|V-216843",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.nfc.useSSL : ",
+        "expect": "config.nfc.useSSL : true"
+    },
+    "custom_item_2": {
+        "description": "VCWN-65-000023 - The vCenter Server for Windows must configure the vpxuser auto-password to be changed every 30 days.",
+        "info": "By default, the vpxuser password will be automatically changed by vCenter every 30 days. Ensure this setting meets your policies; if not, configure to meet password aging policies.\n\nNote: It is very important the password aging policy not be shorter than the default interval that is set to automatically change the vpxuser password, to preclude the possibility that vCenter might get locked out of an ESXi host.",
+        "solution": "Select the vCenter Server in the vSphere Web Client object hierarchy.\nClick Configure.\nClick Advanced Settings and enter VimPasswordExpirationInDays in the filter box.\nSet 'VirtualCenter.VimPasswordExpirationInDays' to '30'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server run the following command:\n\nIf the setting already exists:\nGet-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays | Set-AdvancedSetting -Value 30\n\nIf the setting does not exist:\nNew-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays -Value 30",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-216845r879887_rule,STIG-ID|VCWN-65-000023,STIG-Legacy|SV-104587,STIG-Legacy|V-94757,SWIFT-CSCv1|2.3,Vuln-ID|V-216845",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "VirtualCenter.VimPasswordExpirationInDays : ",
+        "expect": "VirtualCenter.VimPasswordExpirationInDays : 30$"
+    },
+    "custom_item_3": {
+        "description": "VCWN-65-000024 - The vCenter Server for Windows must configure the vpxuser password meets length policy.",
+        "info": "The vpxuser password default length is 32 characters. Ensure this setting meets site policies; if not, configure to meet password length policies. Longer passwords make brute-force password attacks more difficult. The vpxuser password is added by vCenter, meaning no manual intervention is normally required. The vpxuser password length must never be modified to less than the default length of 32 characters.",
+        "solution": "From the vSphere Web Client go to Host and Clusters >> Select a vCenter Server >> Configure >> Settings >> Advanced Settings. Click 'Edit' and edit the 'config.vpxd.hostPasswordLength' value to '32' or if the value does not exist create it by entering the values in the 'Key' and 'Value' fields and clicking 'Add'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server run the following command:\n\nIf the setting already exists:\nGet-AdvancedSetting -Entity-Name config.vpxd.hostPasswordLength | Set-AdvancedSetting -Value 32\n\nIf the setting does not exist:\nNew-AdvancedSetting -Entity-Name config.vpxd.hostPasswordLength -Value 32",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-216846r879887_rule,STIG-ID|VCWN-65-000024,STIG-Legacy|SV-104589,STIG-Legacy|V-94759,SWIFT-CSCv1|2.3,Vuln-ID|V-216846",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.vpxd.hostPasswordLength : ",
+        "expect": "config.vpxd.hostPasswordLength : 32"
+    },
+    "custom_item_4": {
+        "description": "VCWN-65-000036 - The vCenter Server for Windows must produce audit records containing information to establish what type of events occurred.",
+        "info": "Without establishing what types of events occurred, it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.",
+        "solution": "From the vSphere Web Client go to Host and Clusters >> Select a vCenter Server >> Configure >> Settings >> Advanced Settings. Click 'Edit' and edit the 'config.log.level' setting to 'info' or if the value does not exist create it by entering the values in the 'Key' and 'Value' fields and clicking 'Add'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server run the following command:\n\nIf the setting already exists:\nGet-AdvancedSetting -Entity-Name config.log.level | Set-AdvancedSetting -Value info\n\nIf the setting does not exist:\nNew-AdvancedSetting -Entity-Name config.log.level -Value info",
+        "reference": "800-53|SI-6d.,800-53r5|SI-6d.,CAT|III,CCI|CCI-002702,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-6a.,Rule-ID|SV-216858r879845_rule,STIG-ID|VCWN-65-000036,STIG-Legacy|SV-104611,STIG-Legacy|V-94781,Vuln-ID|V-216858",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.log.level : ",
+        "expect": "config.log.level : info"
+    },
+    "custom_item_5": {
+        "description": "VCWN-65-000067 - The vCenter Server for Windows must disable the Customer Experience Improvement Program (CEIP).",
+        "info": "The VMware Customer Experience Improvement Program (CEIP) sends VMware anonymized system information that is used to improve the quality, reliability, and functionality of VMware products and services. For confidentiality purposes this feature must be disabled.",
+        "solution": "From the vSphere Web Client go to Administration >> Deployment >> Customer Experience Improvement Program\n\nClick the 'Leave' button",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-216886r879887_rule,STIG-ID|VCWN-65-000067,STIG-Legacy|SV-104667,STIG-Legacy|V-94837,SWIFT-CSCv1|2.3,Vuln-ID|V-216886",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.HostClientCEIPOptIn : ",
+        "expect": "UserVars.HostClientCEIPOptIn : 2"
+    },
+    "custom_item_6": {
+        "description": "VCWN-65-006000 - The vCenter Server for Windows must disable SNMPv1.",
+        "info": "SNMPv3 supports commercial-grade security, including authentication, authorization, access control, and privacy while previous versions of the protocol contained well-known security weaknesses that were easily exploited. SNMPv3 can be configured for identification and cryptographically based authentication.\n\nSNMPv3 is not supported in vCenter Server for Windows.",
+        "solution": "In the vSphere Web Client go to a vCenter Server instance.\nClick the Configure tab >> Settings >> General.\nOn the vCenter Server Settings central pane, click Edit.\nClick SNMP receivers to edit their settings.\nRemove any SNMP receivers that exist.",
+        "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CAT|II,CCI|CCI-001967,CSF|PR.AC-1,DISA_Benchmark|VMware_vSphere_6-5_vCenter_Server_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),NESA|T5.4.3,QCSC-v1|13.2,Rule-ID|SV-216889r879892_rule,STIG-ID|VCWN-65-006000,STIG-Legacy|SV-104683,STIG-Legacy|V-94853,TBA-FIISB|27.1,Vuln-ID|V-216889",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-5_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : ",
+        "expect": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : False$"
+    }
+}

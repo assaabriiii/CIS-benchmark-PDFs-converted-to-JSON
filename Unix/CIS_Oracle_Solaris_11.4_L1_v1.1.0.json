@@ -1,0 +1,1468 @@
+{
+    "custom_item_1": {
+        "system": "SunOS",
+        "description": "5.1 Set Sticky Bit on World Writable Directories",
+        "info": "When the so-called sticky bit (set with chmod +t) is set on a directory, then only the owner of a file may remove that file from the directory (as opposed to the usual behavior where anybody with write access to that directory may remove the file).\n\nRationale:\n\nFiles in directories that have had the 'sticky bit' set, can only be deleted by users that have both write permissions for the directory in which the file resides, as well as ownership of the file or directory, or has sufficient privilege. As this prevents users from overwriting each other's files, whether it be accidental or malicious, it is generally appropriate for most world-writable directories (e.g., /tmp). However, consult appropriate vendor documentation before blindly applying the sticky bit to any world writable directories found, in order to avoid breaking any application dependencies on a given directory.",
+        "solution": "To set the sticky bit on a directory, run the following command:\n\n# chmod +t [directory name]",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "find_world_writeable_directories",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_2": {
+        "description": "9.2 Check for Duplicate User Names",
+        "info": "Although the useradd program will not let you create a duplicate user name, it is possible for an administrator to manually modify passwd(4) and change the user name.\n\nRationale:\n\nIf a user is assigned a duplicate user name, it will create and have access to files with the first UID for that username in passwd(4). For example, if 'test4' has a UID of 1000 and a subsequent 'test4' entry has a UID of 2000, logging in as 'test4' will use UID 1000. Effectively, the UID is shared, which is a potential security problem.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there are any duplicate user names, and work with their respective owners to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-53|AC-1,800-53|AC-2,800-53|AC-2(1),800-53|AC-2(3),800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),800-53r5|AC-2(3),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|16.6,CSCv7|16.7,CSCv7|16.8,CSCv8|5.1,CSCv8|5.3,CSCv8|6.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|AC-2(1),ITSG-33|AC-2(3),LEVEL|1A,NESA|M1.2.2,NIAv2|AM26,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "passwd_duplicate_username"
+    },
+    "custom_item_3": {
+        "description": "9.7 Verify No UID 0 Accounts Exist Other than root",
+        "info": "Any account with UID 0 has superuser rights on the system.\n\nRationale:\n\nThis access must be limited to only the default root role and be made accessible from the system console only. Administrative access granted to an unprivileged account should use an approved mechanism such as RBAC.",
+        "solution": "Disable or delete any other 0 UID entries that are displayed; there should be only one root account. Finer granularity access control for administrative access can be obtained by using the Solaris Role-Based Access Control (RBAC) mechanism. RBAC configurations should be monitored via user_attr(4) to make sure that privileges are managed appropriately.",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "passwd_zero_uid"
+    },
+    "custom_item_4": {
+        "description": "dot in root path",
+        "name": "dot_in_root_path_variable"
+    },
+    "custom_item_5": {
+        "description": "writable dirs in root path",
+        "name": "writeable_dirs_in_root_path_variable"
+    },
+    "custom_item_6": {
+        "description": "9.13 Check Groups in passwd",
+        "info": "Over time, system administration errors and changes can lead to groups being defined in passwd but not in group.\n\nRationale:\n\nGroups defined in passwd but not in group file pose a threat to system security since group permissions are not properly managed.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any groups are in passwd but not in group, and work with those users or group owners to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-53|AC-1,800-53|AC-2,800-53|AC-2(1),800-53|AC-2(3),800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),800-53r5|AC-2(3),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|16.6,CSCv7|16.7,CSCv7|16.8,CSCv8|5.1,CSCv8|5.3,CSCv8|6.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|AC-2(1),ITSG-33|AC-2(3),LEVEL|1A,NESA|M1.2.2,NIAv2|AM26,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "passwd_invalid_gid"
+    },
+    "custom_item_7": {
+        "description": "9.14 Check That Users Are Assigned Home Directories",
+        "info": "passwd defines a home directory that each user is placed in upon login. If there is no defined home directory, a user will be placed in / and will not be able to write any files or have local environment variables set.\n\nRationale:\n\nAll users must be assigned a home directory in passwd.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there exists any users who are in passwd but do not have a home directory, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "accounts_without_home_dir"
+    },
+    "custom_item_8": {
+        "description": "9.15 Check User Home Directory Ownership",
+        "info": "The user home directory is space defined for the particular user to set local environment variables and to store personal files.\n\nRationale:\n\nSince the user is accountable for files stored in the user home directory, the user must be the owner of the directory.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there exists any users whose home directory is not properly owned, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "accounts_bad_home_permissions"
+    },
+    "custom_item_9": {
+        "description": "9.16 Check for Duplicate UIDs",
+        "info": "Although the useradd program will not let you create a duplicate User ID (UID), it is possible for an administrator to manually modify passwd and change the UID field.\n\nRationale:\n\nUsers must be assigned unique UIDs for accountability and to ensure appropriate access protections.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there exists any users who share a common UID, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "passwd_duplicate_uid"
+    },
+    "custom_item_10": {
+        "description": "9.17 Check for Duplicate GIDs",
+        "info": "Although the groupadd program will not let you create a duplicate Group ID (GID), it is possible for an administrator to manually modify group and change the GID field.\n\nRationale:\n\nUser groups must be assigned unique GIDs for accountability and to ensure appropriate access protections.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there exists any duplicate group identifiers, and work with each respective group owner to remediate this issue and ensure that the group ownership of their files are set to an appropriate value.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "group_duplicate_gid"
+    },
+    "custom_item_11": {
+        "description": "9.18 Check for Duplicate Group Names",
+        "info": "Although the groupadd program will not let you create a duplicate group name, it is possible for an administrator to manually modify group and change the group name.\n\nRationale:\n\nIf a group is assigned a duplicate group name, it will create and have access to files with the first GID for that group in group. Effectively, the GID is shared, which is a security risk.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there are any duplicate group names, and work with their respective owners to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "group_duplicate_name"
+    },
+    "custom_item_12": {
+        "system": "SunOS",
+        "description": "9.21 Find World Writable Files",
+        "info": "Unix-based systems support variable settings to control access to files. World-writable files are the least secure. See the chmod man page for more information.\n\nRationale:\n\nData in world-writable files can be read, modified, and potentially compromised by any user on the system. World-writable files may also indicate an incorrectly written script or program that could potentially be the cause of a larger compromise to the system's integrity.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine the existence of any 'write access' given for the 'other' category (chmod o-w), and work with the owner to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "find_world_writeable_files",
+        "ignore": "/system/*",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_13": {
+        "system": "SunOS",
+        "description": "9.22 Find SUID/SGID System Executables",
+        "info": "The owner of a file can set the file's permissions to run with the owner's or group's permissions, even if the user running the program is not the owner or a member of the group. The most common reason for a SUID/SGID program is to enable users to perform functions (such as changing their password), which requires root privileges.\n\nRationale:\n\nThere are valid reasons for SUID/SGID programs, but it is important to identify and review such programs to ensure they are legitimate.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine the existence of any set-UID programs that do not belong on the system, and work with the owner (or system administrator) to determine the best course of action in accordance with site policy. Digital signatures on the Solaris Set-UID binaries can be verified with the elfsign utility, such as this example:\n\n# elfsign verify -e /usr/bin/su\n\nelfsign: verification of /usr/bin/su passed.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1M,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "find_suid_sgid_files",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_14": {
+        "system": "SunOS",
+        "description": "9.23 Find Un-owned Files and Directories",
+        "info": "Sometimes when administrators delete users from the password file they neglect to remove all files owned by those users from the system.\n\nRationale:\n\nA new user who is assigned the deleted user's user ID or group ID may then end up 'owning' these files, and thus have more access on the system than was intended.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine the existence of any files that are not attributed to current users or groups on the system, and determine the best course of action in accordance with site policy. Note that the Solaris OS is shipped with all files appropriately owned.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "name": "find_orphan_files",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_15": {
+        "description": "Solaris 11.4 is installed",
+        "file": "/etc/release",
+        "regex": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]",
+        "expect": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]+@PLATFORM_VERSION@"
+    },
+    "custom_item_16": {
+        "system": "SunOS",
+        "description": "1.1 Use the Latest Package Updates",
+        "info": "The Solaris 11 OS should be periodically updated to install or upgrade software packages that will enhance the security, reliability, and performance of the system.\n\nRationale:\n\nFor the Solaris 11 OS, there will be no more software patches issued, but rather security and other improvements will be installed by updating one or more software packages.",
+        "solution": "Run the following command to refresh the package catalog, download and apply any available updates:\n\n# pkg update",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.4,CSCv8|7.3,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1M,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/pkg update -n",
+        "expect": "^[\\\\s]*No[\\\\s]+updates[\\\\s]+available[\\\\s]+for[\\\\s]+this[\\\\s]+image\\\\.[\\\\s]*$",
+        "timeout": "@PKG_CMD_TIMEOUT@"
+    },
+    "custom_item_17": {
+        "description": "inetadm tcp_wrappers",
+        "cmd": "/sbin/inetadm -p | /bin/grep tcp_wrappers",
+        "expect": "(?i)^[\\\\s]*tcp_wrappers[\\\\s]*=[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "description": "TCP Wrappers is enabled for all TCP-based services",
+        "cmd": "for svc in `inetadm | awk '/svc:\\\\// { print $NF }'`; do\n     val=`inetadm -l ${svc} 2>/dev/null | grep -c tcp_wrappers=TRUE`\n     if [ ${val} -eq 1 ]; then\n         echo \"TCP Wrappers enabled for ${svc}\"\n\telse\n\t echo \"*** TCP Wrappers is not enabled for ${svc}\"\n     fi\ndone",
+        "expect": "(?i)^[\\\\s]*TCP[\\\\s]*Wrappers[\\\\s]*((?!is not).)*[\\\\s]*enabled[\\\\s]*for[\\\\s]*svc:"
+    },
+    "custom_item_19": {
+        "description": "hosts.allow",
+        "file": "/etc/hosts.allow",
+        "regex": "^[\\\\s]*ALL[\\\\s]*:",
+        "expect": "^[\\\\s]*ALL[\\\\s]*: @HOSTS_ALLOW_NETWORK@"
+    },
+    "custom_item_20": {
+        "description": "hosts.deny",
+        "file": "/etc/hosts.deny",
+        "regex": "^ *[^#]*ALL.*",
+        "expect": "ALL: ALL"
+    },
+    "custom_item_21": {
+        "description": "rpc/bind",
+        "service": "rpc/bind",
+        "property": "config/enable_tcpwrappers",
+        "value": "true"
+    },
+    "custom_item_22": {
+        "description": "Gnome installed",
+        "cmd": "/usr/bin/pkg list consolidation/desktop/gnome-incorporation",
+        "expect": "^consolidation/desktop/gnome-incorporation"
+    },
+    "custom_item_23": {
+        "system": "SunOS",
+        "description": "2.2 Disable Local-only Graphical Login Environment",
+        "info": "The graphical login service provides the capability of logging into the system using an X-windows type interface from the console. If graphical login access for the console is required, leave the service in local-only mode.\n\nRationale:\n\nThis service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/application/graphical-login/gdm:default",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/svcs -Ho state svc:/application/graphical-login/gdm:default",
+        "expect": "disabled"
+    },
+    "custom_item_24": {
+        "system": "SunOS",
+        "description": "2.3 Configure sendmail Service for Local-Only Mode",
+        "info": "In Solaris 11, the sendmail service is set to local only mode by default. This means that users on remote systems cannot connect to the sendmail service, eliminating the possibility of a remote exploit attack against some future sendmail vulnerability. Leaving sendmail in local-only mode permits mail to be sent out from the local system. If the local system will not be processing or sending any mail, this service can be disabled.\n\nHowever, if sendmail is disabled completely, email messages sent to the root account (such as cron job output or audit service warnings) will fail to be delivered.\n\nAn alternative approach is to disable the sendmail service and create a cron job to process all mail that is queued on the local system, sending it to a relay host defined in the sendmail.cf file. It is recommended that sendmail be left in local-only mode unless there is a specific requirement to completely disable it.\n\nRationale:\n\nThe software for all Mail Transfer Agents is complex and most have a long history of security issues. While it is important to ensure that the system can process local mail messages, it is not necessary to have the MTA's daemon listening on a port unless the server is intended to be a mail server that receives and processes mail from other systems.",
+        "solution": "Run the following to set sendmail to listen only local interfaces:\n\n# svccfg -v -s svc:/network/smtp:sendmail setprop config/local_only=true\n\n# svcadm refresh sendmail\n\n# svcadm restart sendmail",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "/network/smtp:sendmail",
+        "regex": "true",
+        "property": "config/local_only"
+    },
+    "custom_item_25": {
+        "system": "SunOS",
+        "description": "2.4 Disable RPC Encryption Key",
+        "info": "The keyserv service is only required for sites that are using the Secure RPC mechanism. The most common use for Secure RPC on Solaris machines is 'secure NFS', which uses the Secure RPC mechanism to provide higher levels of security than the standard NFS protocols. ('Secure NFS' is unrelated to Kerberos authentication as a mechanism for providing higher levels of NFS security. 'Kerberized' NFS does not require the keyserv service to be running.)\n\nRationale:\n\nThis service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/network/rpc/keyserv",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "network/rpc/keyserv:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_26": {
+        "system": "SunOS",
+        "description": "2.5 Disable Generic Security Services (GSS)",
+        "info": "The GSS API is a security abstraction layer that is designed to make it easier for developers to integrate with different authentication schemes. It is most commonly used in applications for sites that use Kerberos for network authentication, though it can also allow applications to interoperate with other authentication schemes.\n\nRationale:\n\nGSS does not expose anything external to the system as it is configured to use TLI (protocol = ticotsord) by default. This service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/network/rpc/gss",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "network/rpc/gss:default",
+        "regex": "(disabled|uninitialized)",
+        "property": "restarter/state"
+    },
+    "custom_item_27": {
+        "system": "SunOS",
+        "description": "2.6 Disable Apache Service",
+        "info": "The Apache service provides an instance of the Apache web server.\n\nRationale:\n\nThis service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/network/http:apache24",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "network/http:apache24",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_28": {
+        "system": "SunOS",
+        "description": "2.7 Disable Kerberos TGT Expiration Warning",
+        "info": "The Kerberos TGT warning service is used to warn users when their Kerberos tickets are about to expire or to renew those tickets before they expire. This service is not used if Kerberos has not been configured. This service is configured to be 'local only' by default.\n\nRationale:\n\nThis service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/network/security/ktkt_warn",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "network/security/ktkt_warn:default",
+        "regex": "(disabled|uninitialized)",
+        "property": "restarter/state"
+    },
+    "custom_item_29": {
+        "system": "SunOS",
+        "description": "nis client",
+        "service": "network/nis/client:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_30": {
+        "system": "SunOS",
+        "description": "nis domain",
+        "service": "network/nis/domain:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_31": {
+        "system": "SunOS",
+        "description": "nis server",
+        "service": "network/nis/server:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_32": {
+        "system": "SunOS",
+        "description": "nis domain",
+        "service": "network/nis/domain:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_33": {
+        "system": "SunOS",
+        "description": "rmvolmgr",
+        "service": "system/filesystem/rmvolmgr:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_34": {
+        "system": "SunOS",
+        "description": "smserver",
+        "service": "network/rpc/smserver:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_35": {
+        "system": "SunOS",
+        "description": "2.11 Disable automount Service",
+        "info": "The automount daemon is normally used to automatically mount NFS file systems from remote file servers when needed. However, the automount daemon can also be configured to mount local (loopback) file systems as well, which may include local user home directories, depending on the system configuration.\n\nRationale:\n\nThis service should be disabled if it is not required.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/system/filesystem/autofs\n\nAdditional Information:\n\nBy default, the Solaris 11 OS uses the automount service for local user home directories, so it should not be disabled without adjusting the home directory setting of each local user.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "system/filesystem/autofs:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_36": {
+        "description": "2.12 Disable Telnet Service",
+        "info": "The telnet daemon, which accepts connections from users from other systems via the telnet protocol and can be used for remote shell access.\n\nRationale:\n\nThe telnet protocol is insecure and unencrypted. The use of an unencrypted transmission medium could allow a user with access to sniff network traffic the ability to steal credentials. The ssh protocol provides an encrypted session and stronger security.",
+        "solution": "To disable this service, run the following command:\n\n# svcadm disable svc:/network/telnet",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "/network/telnet:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_37": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_broadcast -co current ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_38": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_broadcast -co persistent ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_39": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_address_mask_broadcast -co current ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_40": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_address_mask_broadcast -co persistent ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_41": {
+        "description": "/etc/default/inetinit",
+        "file": "/etc/default/inetinit",
+        "regex": "(?i)^[\\\\s]*TCP_STRONG_ISS[\\\\s]*=",
+        "expect": "(?i)^[\\\\s]*TCP_STRONG_ISS[\\\\s]*=[\\\\s]*2[\\\\s]*$"
+    },
+    "custom_item_42": {
+        "description": "ipadm",
+        "cmd": "/sbin/ipadm show-prop -p _strong_iss -co current tcp",
+        "expect": "^2$"
+    },
+    "custom_item_43": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_timestamp_broadcast -co current ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_44": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_timestamp_broadcast -co persistent ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_45": {
+        "description": "current - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _forward_src_routed -co current ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_46": {
+        "description": "persistent - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _forward_src_routed -co persistent ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_47": {
+        "description": "current - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _forward_src_routed -co current ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_48": {
+        "description": "persistent - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _forward_src_routed -co persistent ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_49": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _forward_directed_broadcasts -co current ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^0$"
+    },
+    "custom_item_50": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _forward_directed_broadcasts -co persistent ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^0$"
+    },
+    "custom_item_51": {
+        "system": "SunOS",
+        "description": "nxheap",
+        "cmd": "/usr/sbin/sxadm status -po extension,status,configuration nxheap",
+        "expect": "^[\\\\s]*nxheap:enabled\\\\.tagged-files:default\\\\.default"
+    },
+    "custom_item_52": {
+        "system": "SunOS",
+        "description": "nxstack",
+        "cmd": "/usr/sbin/sxadm status -po extension,status,configuration nxstack",
+        "expect": "^[\\\\s]*nxstack:enabled\\\\.all:default\\\\.default"
+    },
+    "custom_item_53": {
+        "system": "SunOS",
+        "description": "/var/share/cores",
+        "file": "/var/share/cores",
+        "owner": "root",
+        "mask": "0077",
+        "group": "root"
+    },
+    "custom_item_54": {
+        "system": "SunOS",
+        "description": "global core file pattern",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'global core file pattern'",
+        "expect": "/var/share/cores/core_%n_%f_%u_%g_%t_%p"
+    },
+    "custom_item_55": {
+        "system": "SunOS",
+        "description": "global core file content",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'global core file content'",
+        "expect": "[\\\\s:]default[\\\\s]*$"
+    },
+    "custom_item_56": {
+        "system": "SunOS",
+        "description": "kernel zone core file pattern",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'kernel zone core file pattern'",
+        "expect": "[\\\\s:][\\\\s]*$"
+    },
+    "custom_item_57": {
+        "system": "SunOS",
+        "description": "init core file pattern",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'init core file pattern'",
+        "expect": "[\\\\s:]core[\\\\s]*$"
+    },
+    "custom_item_58": {
+        "system": "SunOS",
+        "description": "init core file content",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'init core file content'",
+        "expect": "[\\\\s:]default[\\\\s]*$"
+    },
+    "custom_item_59": {
+        "system": "SunOS",
+        "description": "global core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'global core dumps'",
+        "expect": "enabled"
+    },
+    "custom_item_60": {
+        "system": "SunOS",
+        "description": "kernel zone core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'kernel zone core dumps'",
+        "expect": "disabled"
+    },
+    "custom_item_61": {
+        "system": "SunOS",
+        "description": "per-process core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'per-process core dumps'",
+        "expect": "disabled"
+    },
+    "custom_item_62": {
+        "system": "SunOS",
+        "description": "global setid core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'global setid core dumps'",
+        "expect": "enabled"
+    },
+    "custom_item_63": {
+        "system": "SunOS",
+        "description": "per-process setid core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'per-process setid core dumps'",
+        "expect": "disabled"
+    },
+    "custom_item_64": {
+        "system": "SunOS",
+        "description": "global core dump logging",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'global core dump logging'",
+        "expect": "enabled"
+    },
+    "custom_item_65": {
+        "system": "SunOS",
+        "description": "diagnostic core dumps",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'diagnostic core dumps'",
+        "expect": "enabled"
+    },
+    "custom_item_66": {
+        "system": "SunOS",
+        "description": "retention policy",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'retention policy'",
+        "expect": "summary"
+    },
+    "custom_item_67": {
+        "system": "SunOS",
+        "description": "core diagnostic alert",
+        "cmd": "/usr/bin/coreadm | /usr/bin/egrep -e 'core diagnostic alert'",
+        "expect": "enabled"
+    },
+    "custom_item_68": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_timestamp -co current ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_69": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_timestamp -co persistent ip | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_70": {
+        "description": "current - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_multicast -co current ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_71": {
+        "description": "persistent - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_multicast -co persistent ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_72": {
+        "description": "current - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_multicast -co current ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_73": {
+        "description": "persistent - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _respond_to_echo_multicast -co persistent ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^0$"
+    },
+    "custom_item_74": {
+        "description": "current - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _ignore_redirect -co current ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_75": {
+        "description": "persistent - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _ignore_redirect -co persistent ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_76": {
+        "description": "current - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _ignore_redirect -co current ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_77": {
+        "description": "persistent - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _ignore_redirect -co persistent ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_78": {
+        "description": "current - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _strict_dst_multihoming -co current ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_79": {
+        "description": "persistent - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p _strict_dst_multihoming -co persistent ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_80": {
+        "description": "current - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _strict_dst_multihoming -co current ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_81": {
+        "description": "persistent - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p _strict_dst_multihoming -co persistent ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print \"none\" } }'",
+        "expect": "^1[\\\\s]*$"
+    },
+    "custom_item_82": {
+        "description": "current - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p send_redirects -co current ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^off$"
+    },
+    "custom_item_83": {
+        "description": "persistent - ipv4",
+        "cmd": "/sbin/ipadm show-prop -p send_redirects -co persistent ipv4 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^off$"
+    },
+    "custom_item_84": {
+        "description": "current - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p send_redirects -co current ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^off$"
+    },
+    "custom_item_85": {
+        "description": "persistent - ipv6",
+        "cmd": "/sbin/ipadm show-prop -p send_redirects -co persistent ipv6 | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^off$"
+    },
+    "custom_item_86": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _rev_src_routes -co current tcp | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^0$"
+    },
+    "custom_item_87": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _rev_src_routes -co persistent tcp | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^0$"
+    },
+    "custom_item_88": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _conn_req_max_q0 -co current tcp | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^(409[6-9]|4[1-9][0-9]{2}|[5-9][0-9]{3}|[1-9][0-9]{4,})$"
+    },
+    "custom_item_89": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _conn_req_max_q0 -co persistent tcp | /bin/awk -F: '{ if ($1 != \"\") { print $1 } else { print $2 } }'",
+        "expect": "^(409[6-9]|4[1-9][0-9]{2}|[5-9][0-9]{3}|[1-9][0-9]{4,})$"
+    },
+    "custom_item_90": {
+        "description": "current",
+        "cmd": "/sbin/ipadm show-prop -p _conn_req_max_q -co current tcp | /bin/sed -e 's/^\\\\([1-9][0-9]*\\\\):.*$/\\\\1/' -e 's/://'",
+        "expect": "^(102[4-9]|10[3-9][0-9]|1[1-9][0-9]{2}|[2-9][0-9]{3}|[1-9][0-9]{4,})$"
+    },
+    "custom_item_91": {
+        "description": "persistent",
+        "cmd": "/sbin/ipadm show-prop -p _conn_req_max_q -co persistent tcp | /bin/sed -e 's/^\\\\([1-9][0-9]*\\\\):.*$/\\\\1/' -e 's/://'",
+        "expect": "^(102[4-9]|10[3-9][0-9]|1[1-9][0-9]{2}|[2-9][0-9]{3}|[1-9][0-9]{4,})$"
+    },
+    "custom_item_92": {
+        "description": "ipv4-routing - current",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv4-routing \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $NF); }\\'",
+        "expect": "^[\\\\s]*ipv4-routing[\\\\s]*current=disabled[\\\\s]*$"
+    },
+    "custom_item_93": {
+        "description": "ipv4-forwarding - current",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv4-forwarding \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $NF); }\\'",
+        "expect": "^[\\\\s]*ipv4-forwarding[\\\\s]*current=disabled[\\\\s]*$"
+    },
+    "custom_item_94": {
+        "description": "ipv4-routing - persistent",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv4-routing \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $2); }\\'",
+        "expect": "^[\\\\s]*ipv4-routing[\\\\s]*persistent=disabled[\\\\s]*$"
+    },
+    "custom_item_95": {
+        "description": "ipv4-forwarding - persistent",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv4-forwarding \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $2); }\\'",
+        "expect": "^[\\\\s]*ipv4-forwarding[\\\\s]*persistent=disabled[\\\\s]*$"
+    },
+    "custom_item_96": {
+        "description": "ipv6-routing - current",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv6-routing \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $NF); }\\'",
+        "expect": "^[\\\\s]*ipv6-routing[\\\\s]*current=disabled[\\\\s]*$"
+    },
+    "custom_item_97": {
+        "description": "ipv6-forwarding - current",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv6-forwarding \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $NF); }\\'",
+        "expect": "^[\\\\s]*ipv6-forwarding[\\\\s]*current=disabled[\\\\s]*$"
+    },
+    "custom_item_98": {
+        "description": "ipv6-routing - persistent",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv6-routing \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $2); }\\'",
+        "expect": "^[\\\\s]*ipv6-routing[\\\\s]*persistent=disabled[\\\\s]*$"
+    },
+    "custom_item_99": {
+        "description": "ipv6-forwarding - persistent",
+        "cmd": "/sbin/routeadm -p | /bin/egrep \"^ipv6-forwarding \" | /bin/awk \\'{printf(\"%s %s\\\\n\", $1, $2); }\\'",
+        "expect": "^[\\\\s]*ipv6-forwarding[\\\\s]*persistent=disabled[\\\\s]*$"
+    },
+    "custom_item_100": {
+        "system": "SunOS",
+        "description": "4.1 Create CIS Audit Class",
+        "info": "To group a set of related audit events, the Solaris Audit service provides the ability for sites to define their own audit classes that contain just those events that the site wants to audit.\n\nRationale:\n\nTo simplify administration, a CIS specific audit class should be created.",
+        "solution": "To create the CIS audit class, edit the /etc/security/audit_class file and add the following entry before the last line of the file:\n\n0x0100000000000000:cis:CIS Solaris Benchmark",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/awk '{ print l; l=\\$0 }' /etc/security/audit_class",
+        "expect": "^0x0100000000000000:@CIS_AUDIT_CLASS@:CIS[\\\\s]+Solaris[\\\\s]+Benchmark[\\\\s]*$"
+    },
+    "custom_item_101": {
+        "system": "SunOS",
+        "description": "AUE_ACCEPT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_ACCEPT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_102": {
+        "system": "SunOS",
+        "description": "AUE_CONNECT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_CONNECT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_103": {
+        "system": "SunOS",
+        "description": "AUE_SOCKACCEPT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SOCKACCEPT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_104": {
+        "system": "SunOS",
+        "description": "AUE_SOCKCONNECT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SOCKCONNECT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_105": {
+        "system": "SunOS",
+        "description": "AUE_inetd_connect",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_inetd_connect:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_106": {
+        "system": "SunOS",
+        "description": "AUE_CHMOD",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_CHMOD:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_107": {
+        "system": "SunOS",
+        "description": "AUE_CHOWN",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_CHOWN:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_108": {
+        "system": "SunOS",
+        "description": "AUE_FCHOWN",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_FCHOWN:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_109": {
+        "system": "SunOS",
+        "description": "AUE_FCHMOD",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_FCHMOD:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_110": {
+        "system": "SunOS",
+        "description": "AUE_LCHOWN",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_LCHOWN:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_111": {
+        "system": "SunOS",
+        "description": "AUE_ACLSET",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_ACLSET:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_112": {
+        "system": "SunOS",
+        "description": "AUE_FACLSET",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_FACLSET:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_113": {
+        "description": "AUE_CHROOT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_CHROOT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_114": {
+        "description": "AUE_SETREUID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETREUID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_115": {
+        "description": "AUE_SETREGID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETREGID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_116": {
+        "description": "AUE_FCHROOT",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_FCHROOT:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_117": {
+        "description": "AUE_PFEXEC",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_PFEXEC:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_118": {
+        "description": "AUE_SETUID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETUID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_119": {
+        "description": "AUE_NICE",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_NICE:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_120": {
+        "description": "AUE_SETGID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETGID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_121": {
+        "description": "AUE_PRIOCNTLSYS",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_PRIOCNTLSYS:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_122": {
+        "description": "AUE_SETEGID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETEGID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_123": {
+        "description": "AUE_SETEUID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETEUID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_124": {
+        "description": "AUE_SETPPRIV",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETPPRIV:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_125": {
+        "description": "AUE_SETSID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETSID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_126": {
+        "description": "AUE_SETPGID",
+        "file": "/etc/security/audit_event",
+        "regex": "^[\\\\s]*[0-9]+:AUE_SETPGID:",
+        "expect": "[:,]@CIS_AUDIT_CLASS@(,.*+)*[\\\\s]*$"
+    },
+    "custom_item_127": {
+        "system": "SunOS",
+        "description": "configured user default audit flags",
+        "cmd": "/usr/sbin/auditconfig -getflags | /usr/bin/grep \"configured user default audit flags *=\"",
+        "expect": "^[\\\\s]*configured[\\\\s]+user[\\\\s]+default[\\\\s]+audit[\\\\s]+flags[\\\\s]*=[\\\\s]*((?=.*\\\\bad\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\blo\\\\b)(?=.*\\\\bex\\\\b)(?=.*\\\\b@CIS_AUDIT_CLASS@\\\\b)|(?=.*\\\\bss\\\\b)(?=.*\\\\bas\\\\b)(?=.*\\\\bua\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\blo\\\\b)(?=.*\\\\bex\\\\b)(?=.*\\\\b@CIS_AUDIT_CLASS@\\\\b))[\\\\w,\\\\s]*\\\\("
+    },
+    "custom_item_128": {
+        "system": "SunOS",
+        "description": "active user default audit flags",
+        "cmd": "/usr/sbin/auditconfig -getflags | /usr/bin/grep \"active user default audit flags *=\"",
+        "expect": "^[\\\\s]*active[\\\\s]+user[\\\\s]+default[\\\\s]+audit[\\\\s]+flags[\\\\s]*=[\\\\s]*((?=.*\\\\bad\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\blo\\\\b)(?=.*\\\\bex\\\\b)(?=.*\\\\b@CIS_AUDIT_CLASS@\\\\b)|(?=.*\\\\bss\\\\b)(?=.*\\\\bas\\\\b)(?=.*\\\\bua\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\blo\\\\b)(?=.*\\\\bex\\\\b)(?=.*\\\\b@CIS_AUDIT_CLASS@\\\\b))[\\\\w,\\\\s]*\\\\("
+    },
+    "custom_item_129": {
+        "system": "SunOS",
+        "description": "audit_flags",
+        "cmd": "/usr/bin/userattr audit_flags root",
+        "expect": "^((?=.*\\\\blo\\\\b)(?=.*\\\\bad\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\bex\\\\b).*\\\\:no|(?=.*\\\\blo\\\\b)(?=.*\\\\bss\\\\b)(?=.*\\\\bas\\\\b)(?=.*\\\\bua\\\\b)(?=.*\\\\baa\\\\b)(?=.*\\\\bft\\\\b)(?=.*\\\\bex\\\\b).*\\\\:no)$"
+    },
+    "custom_item_130": {
+        "system": "SunOS",
+        "description": "audit condition",
+        "cmd": "/usr/sbin/auditconfig -getcond",
+        "expect": "^[\\\\s]*audit[\\\\s]+condition[\\\\s]*=[\\\\s]*auditing[\\\\s]*$"
+    },
+    "custom_item_131": {
+        "system": "SunOS",
+        "description": "configured audit policies",
+        "cmd": "/usr/sbin/auditconfig -getpolicy | /usr/bin/grep \"configured audit policies *=\"",
+        "expect": "^[\\\\s]*configured[\\\\s]+audit[\\\\s]+policies[\\\\s]*=[\\\\s]*argv,cnt,zonename[\\\\s]*$"
+    },
+    "custom_item_132": {
+        "system": "SunOS",
+        "description": "active audit policies",
+        "cmd": "/usr/sbin/auditconfig -getpolicy | /usr/bin/grep \"active audit policies *=\"",
+        "expect": "^[\\\\s]*active[\\\\s]+audit[\\\\s]+policies[\\\\s]*=[\\\\s]*argv,cnt,zonename[\\\\s]*$"
+    },
+    "custom_item_133": {
+        "system": "SunOS",
+        "description": "configured non-attributable audit flags",
+        "cmd": "/usr/sbin/auditconfig -getnaflags | /usr/bin/grep \"configured non-attributable audit flags *=\"",
+        "expect": "^[\\\\s]*configured[\\\\s]+non-attributable[\\\\s]+audit[\\\\s]+flags[\\\\s]*=[\\\\s]*lo\\\\("
+    },
+    "custom_item_134": {
+        "system": "SunOS",
+        "description": "active non-attributable audit flags",
+        "cmd": "/usr/sbin/auditconfig -getnaflags | /usr/bin/grep \"active non-attributable audit flags *=\"",
+        "expect": "^[\\\\s]*active[\\\\s]+non-attributable[\\\\s]+audit[\\\\s]+flags[\\\\s]*=[\\\\s]*lo\\\\("
+    },
+    "custom_item_135": {
+        "system": "SunOS",
+        "description": "audit_binfile active",
+        "cmd": "/usr/sbin/auditconfig -getplugin audit_binfile",
+        "expect": "^[\\\\s]*Plugin:[\\\\s]+audit_binfile[\\\\s]+\\\\(active\\\\)[\\\\s]*$"
+    },
+    "custom_item_136": {
+        "system": "SunOS",
+        "description": "audit_binfile p_minfree",
+        "cmd": "/usr/sbin/auditconfig -getplugin audit_binfile | /usr/bin/grep \"Attributes:\"",
+        "expect": "[\\\\s;]p_minfree[\\\\s]*=[\\\\s]*[1-9][0-9]*[;\\\\s]*"
+    },
+    "custom_item_137": {
+        "system": "SunOS",
+        "description": "/var/share/audit/ files",
+        "cmd": "/usr/bin/ls -l /var/share/audit/*.not_terminated.* | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "\\.not_terminated\\."
+    },
+    "custom_item_138": {
+        "system": "SunOS",
+        "description": "crontab audit",
+        "cmd": "/usr/bin/crontab -l root | /usr/bin/grep '/usr/sbin/audit' | /usr/bin/awk '{ print } END { if (NR == 0) print \"not found\" }'",
+        "expect": "^[\\\\s]*[0-9]+[\\\\s]*[0-9+]+[\\\\s]*\\\\*[\\\\s]*\\\\*[\\\\s]*\\\\*[\\\\s]*/usr/sbin/audit[\\\\s]*-n[\\\\s]*$"
+    },
+    "custom_item_139": {
+        "system": "SunOS",
+        "description": "terma",
+        "service": "/system/console-login:terma",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_140": {
+        "system": "SunOS",
+        "description": "termb",
+        "service": "/system/console-login:termb",
+        "regex": "disabled",
+        "property": "restarter/state"
+    },
+    "custom_item_141": {
+        "description": "Check for SPARC",
+        "cmd": "/sbin/uname -p",
+        "expect": "[Ss][Pp][Aa][Rr][Cc]"
+    },
+    "custom_item_142": {
+        "description": "security-mode",
+        "cmd": "/sbin/eeprom security-mode",
+        "expect": "^security-mode=(command|full)$"
+    },
+    "custom_item_143": {
+        "description": "security-#badlogins",
+        "cmd": "/sbin/eeprom security-#badlogins",
+        "expect": "^security-#badlogins=0$"
+    },
+    "custom_item_144": {
+        "system": "SunOS",
+        "description": "cron.deny",
+        "file": "/etc/cron.d/cron.deny"
+    },
+    "custom_item_145": {
+        "system": "SunOS",
+        "description": "at.deny",
+        "file": "/etc/at.deny"
+    },
+    "custom_item_146": {
+        "system": "SunOS",
+        "description": "cron.allow",
+        "file": "/etc/cron.d/cron.allow",
+        "regex": "^root[\\\\s]*$",
+        "expect": "^root[\\\\s]*$"
+    },
+    "custom_item_147": {
+        "system": "SunOS",
+        "description": "/etc/cron.d/at.allow",
+        "cmd": "/usr/bin/wc -l /etc/cron.d/at.allow | /usr/bin/awk '{ print $1 }'",
+        "expect": "0"
+    },
+    "custom_item_148": {
+        "description": "Gnome installed",
+        "cmd": "/usr/bin/pkg list consolidation/desktop/gnome-incorporation",
+        "expect": "^consolidation/desktop/gnome-incorporation"
+    },
+    "custom_item_149": {
+        "description": "timeout",
+        "file": "/usr/share/X11/app-defaults/XScreenSaver",
+        "regex": "^[\\\\s]*\\\\*timeout[\\\\s]*:",
+        "expect": "^[\\\\s]*\\\\*timeout[\\\\s]*:[\\\\s]*0:(0[0-9]|10):00[\\\\s]*$"
+    },
+    "custom_item_150": {
+        "description": "lockTimeout",
+        "file": "/usr/share/X11/app-defaults/XScreenSaver",
+        "regex": "^[\\\\s]*\\\\*lockTimeout[\\\\s]*:",
+        "expect": "^[\\\\s]*\\\\*lockTimeout[\\\\s]*:[\\\\s]*0:00:00[\\\\s]*$"
+    },
+    "custom_item_151": {
+        "description": "lock true",
+        "file": "/usr/openwin/lib/app-defaults/XScreenSaver",
+        "regex": "^\\\\*lock:\\\\s*",
+        "expect": "^\\\\*lock:\\\\s*([Tt][Rr][Uu][Ee])"
+    },
+    "custom_item_152": {
+        "system": "SunOS",
+        "description": "6.5 Remove Autologin Capabilities from the GNOME desktop",
+        "info": "The GNOME Display Manager is used for login session management. See the manual page gdm(1) for more information. By default, GNOME automatic login is defined in /etc/pam.d/gdm-autologin to allow users to access the system without a password.\n\nRationale:\n\nAs automatic logins are a known security risk for other than 'kiosk' types of systems, GNOME automatic login should be disabled in /etc/pam.d/gdm-autologin.",
+        "solution": "Comment out or remove all lines from /etc/pam.d/gdm-autologin:\n\n# cp /etc/pam.d/gdm-autologin /etc/pam.d/gdm-autologin.orig\n\n# awk '{ if ( $1 ~ /auth/ || $1 ~ /account/) $1 = '#'$1 } { print };' /etc/pam.d/gdm-autologin > /etc/pam.d/gdm-autologin.CIS\n\n# cp /etc/pam.d/gdm-autologin.CIS /etc/pam.d/gdm-autologin",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.8,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/pam.d/gdm-autologin",
+        "regex": ".*",
+        "expect": "^[\\\\s]*[^#]"
+    },
+    "custom_item_153": {
+        "system": "SunOS",
+        "description": "6.6 Set Delay between Failed Login Attempts to 4",
+        "info": "The SLEEPTIME variable in the /etc/default/login file controls the number of seconds to wait before printing the 'login incorrect' message when a bad password is provided. The default value for SLEEPTIME is 4 seconds.\n\nRationale:\n\nAs an immediate return of an error message, coupled with the capability to try again may facilitate automatic and rapid-fire brute-force password attacks by a malicious user, this delay time should be set as appropriate to the needs of the user.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/default\n\n# cp login login.orig\n\n# awk '/SLEEPTIME=/ { $1 = 'SLEEPTIME=4' } { print }' login > login.CIS\n\n# mv login.CIS login",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/default/login",
+        "regex": "^[\\\\s]*SLEEPTIME[\\\\s]*=",
+        "expect": "^[\\\\s]*SLEEPTIME[\\\\s]*=[\\\\s]*[4][\\\\s]*$"
+    },
+    "custom_item_154": {
+        "system": "SunOS",
+        "description": "6.7 Disable Rhost-based Authentication for SSH",
+        "info": "The IgnoreRhosts parameter specifies that existing .rhosts and .shosts files, which may apply to application rather than user logins, will not be used in RhostsRSAAuthentication or HostbasedAuthentication.\n\nRationale:\n\nSetting this parameter forces users to enter a password when authenticating with SSH.",
+        "solution": "Perform the following to implement the recommended state:\n\n# awk '/^IgnoreRhosts/ { $2 = 'yes' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh\n\nThis action will only set the IgnoreRhosts line if it already exists in the file to ensure that it is set to the proper value. If the IgnoreRhosts line does not exist in the file, the default setting of Yes is automatically used, so no additional changes are needed.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*IgnoreRhosts[\\\\s]",
+        "expect": "^[\\\\s]*IgnoreRhosts[\\\\s]+[yY][eE][sS][\\\\s]*$"
+    },
+    "custom_item_155": {
+        "system": "SunOS",
+        "description": "6.8 Restrict FTP Use",
+        "info": "If FTP is permitted to be used on the system, the file /etc/ftpd/ftpusers is used to specify a list of users who are not allowed to access the system via FTP.\n\nRationale:\n\nFTP is an old and insecure protocol that transfers files and credentials in clear text and can be replaced by using sftp. However, if FTP is permitted for use in your environment, it is important to ensure that the default 'system' accounts are not permitted to transfer files via FTP, especially the root role. Consider also adding the names of other privileged or shared accounts that may exist on your system such as user oracle and the account which your Web server process runs under. It should be reminded that the Solaris FTP service is disabled by default.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/ftpd\n\n# cp ftpusers ftpusers.orig\n\n# for user in 'logins -s | awk '{ print $1 }'' aiuser noaccess nobody nobody4; do\n$(echo $user >> ftpusers)\ndone\n\n# sort -u ftpusers > ftpusers.CIS\n\n# mv ftpusers.CIS ftpusers\n\nIf your site policy states that users have to be authorized to use FTP, consider placing all users in the /etc/ftpd/ftpusers file and then explicitly removing those who are permitted to use the service. To accomplish this, use the command:\n\n# getent passwd | cut -f1 -d':' > /etc/ftpd/ftpusers\n\nThis prohibits any user on the system from using ftp unless they are explicitly removed from the file. Note that this file will need to be updated as users are added to or removed from the system.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/logins -s | /usr/bin/awk '{ print $1 } END { print \"aiuser\\\\\\\\nnoaccess\\\\\\\\nnobody\\\\\\\\nnobody4\" }' | /usr/bin/egrep -vf /etc/ftpd/ftpusers | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "^none$"
+    },
+    "custom_item_156": {
+        "system": "SunOS",
+        "description": "6.9 Disable root login for SSH",
+        "info": "The PermitRootLogin value (in /etc/ssh/sshd_config) allows for direct root login by a remote user/application to resources on the local host.\n\nRationale:\n\nBy default, it is not possible for the root account to log directly into the system console because the account is configured as a role. This setting therefore does not significantly alter the security posture of the system unless the root account is changed from this default and configured to be a normal user.",
+        "solution": "Perform the following to implement the recommended state:\n\n# awk '/^PermitRootLogin/ { $2 = 'no' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.8,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitRootLogin[\\\\s]",
+        "expect": "^[\\\\s]*PermitRootLogin[\\\\s]+[nN][oO][\\\\s]*$"
+    },
+    "custom_item_157": {
+        "system": "SunOS",
+        "description": "6.10 Disable Host-based Authentication for Login-based Services",
+        "info": "The .rhosts files are used for automatic login to remote hosts and contain username and hostname combinations. The .rhosts files are unencrypted (usually group- or world-readable) and present a serious risk in that a malicious user could use the information within to gain access to a remote host with the privileges of the original application or user.\n\nRationale:\n\nThe use of .rhosts authentication is an old and insecure protocol and can be replaced with public-key authentication using Secure Shell. As automatic authentication settings in the .rhosts files can provide a malicious user with sensitive system credentials, the use of .rhosts files should be disabled. It should be noted that by default the Solaris services that use this file, including rsh and rlogin, are disabled by default.",
+        "solution": "Edit /etc/pam.conf and any /etc/pam.d/* results from audit procedure and comment out or remove any pam_rhosts_auth lines:\n\n#rlogin auth sufficient pam_rhosts_auth.so.1\n\n#rsh auth sufficient pam_rhosts_auth.so.1",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|16.5,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/pam.conf",
+        "regex": "^[\\\\s]*[^#]*[\\\\s]*pam_rhosts_auth",
+        "expect": "^[\\\\s]*[^#]*[\\\\s]*pam_rhosts_auth"
+    },
+    "custom_item_158": {
+        "system": "SunOS",
+        "description": "6.11 Blocking Authentication Using Empty/Null Passwords for SSH",
+        "info": "The PermitEmptyPasswords value allows for direct login through SSH without a password by a remote user/application to resources on the local host in the same way a standard remote login would.\n\nRationale:\n\nPermitting login without a password is inherently risky.",
+        "solution": "Perform the following to implement the recommended state:\n\n# awk '/^.PermitEmptyPasswords/ { $1 = 'PermitEmptyPasswords' ; $2 = 'no' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitEmptyPasswords[\\\\s]",
+        "expect": "^[\\\\s]*PermitEmptyPasswords[\\\\s]+[nN][oO][\\\\s]*$"
+    },
+    "custom_item_159": {
+        "system": "SunOS",
+        "description": "6.12 Limit Consecutive Login Attempts for SSH",
+        "info": "The 'MaxAuthTries' parameter in the /etc/ssh/sshd_config file specifies the maximum number of authentication attempts permitted per connection. By restricting the number of failed authentication attempts before the server terminates the connection, malicious users are blocked from gaining access to the host by using repetitive brute-force login exploits.\n\nRationale:\n\nBy setting the authentication login limit to a low value this will disconnect the attacker and force a reconnect, which severely limits the speed of such brute force attacks.",
+        "solution": "Perform the following to implement the recommended state:\n\n# awk '/MaxAuthTries/ { $1 = 'MaxAuthTries'; $2 = '6' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*MaxAuthTries[\\\\s]",
+        "expect": "^[\\\\s]*MaxAuthTries[\\\\s]+[1-6][\\\\s]*$"
+    },
+    "custom_item_160": {
+        "system": "SunOS",
+        "description": "6.13 Disable X11 Forwarding for SSH",
+        "info": "The X11 Forwarding parameter defined within the /etc/ssh/sshd_config file specifies whether or not X11 Forwarding via SSH is enabled on the server: The Secure Shell service provides an encrypted 'tunnel' for the data traffic passing through it. While commonly used to substitute for clear-text, CLI-based remote connections such as telnet, Secure Shell can be used to forward an 'X Window' session through the encrypted tunnel, allowing the remote user to have a GUI interface.\n\nRationale:\n\nAs enabling X11Forwarding on the host can permit a malicious user to secretly open another X11 connection to another remote client during the session and perform unobtrusive activities such as keystroke monitoring, if the X11 services are not required for the system's intended function, it should be disabled or restricted as appropriate to the user's needs.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cp /etc/ssh/sshd_config /etc/ssh/sshd_config.orig\n\n# awk '/^X11Forwarding / { $2 = 'no' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*X11Forwarding[\\\\s]",
+        "expect": "^[\\\\s]*X11Forwarding[\\\\s]+[nN][oO][\\\\s]*$"
+    },
+    "custom_item_161": {
+        "description": "Check that the keyserv file exists",
+        "file": "/etc/default/keyserv"
+    },
+    "custom_item_162": {
+        "system": "SunOS",
+        "description": "6.14 Disable 'nobody' Access for RPC Encryption Key Storage Service",
+        "info": "This action listed prevents keyserv from using default keys for the nobody user, effectively stopping the nobody user from accessing information via Secure RPC.\n\nRationale:\n\nIf login by the user nobody is allowed for secure RPC, there is an increased risk of system compromise. If keyserv holds a private key for the nobody user, it will be used by key_encryptsession to compute a magic phrase which can be easily recovered by a malicious user.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/default\n\n# cp keyserv keyserv.orig\n\n# awk '/ENABLE_NOBODY_KEYS=/ { $1 = 'ENABLE_NOBODY_KEYS=NO' } { print }' keyserv > keyserv.CIS\n\n# mv keyserv.CIS keyserv",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.8,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/default/keyserv",
+        "regex": "^[\\\\s]*ENABLE_NOBODY_KEYS",
+        "expect": "^[\\\\s]*ENABLE_NOBODY_KEYS[\\\\s]*=[\\\\s]*[nN][oO][\\\\s]*$"
+    },
+    "custom_item_163": {
+        "description": "Check for i386 based architecture",
+        "cmd": "/usr/bin/uname -p",
+        "expect": "i386"
+    },
+    "custom_item_164": {
+        "system": "SunOS",
+        "description": "6.15 Secure the GRUB Menu (Intel)",
+        "info": "GRUB is a boot loader for x64 based systems that permits loading an OS image from any location. Oracle x64 systems support the use of a GRUB Menu password for the console.\n\nRationale:\n\nThe flexibility that GRUB provides creates a security risk if its configuration is modified by an unauthorized user. The failsafe menu entry needs to be secured in the same environments that require securing the systems firmware to avoid unauthorized removable media boots. Setting the GRUB Menu password helps prevent attackers with physical access to the system console from booting off some external device (such as a CD-ROM or floppy) and subverting the security of the system. The actions described in this section will ensure you cannot get to failsafe or any of the GRUB command line options without first entering the password.",
+        "solution": "Run the following command to generate your password hash:\n\n# /usr/lib/grub2/bios/bin/grub-mkpasswd-pbkdf2\n\nEnter password:\nReenter password:\nPBKDF2 hash of your password isCreate the file /usr/lib/grub2/bios/etc/grub.d/01\\_password:\n\n#!/bin/sh\n/usr/bin/cat > /rpool/boot/grub/password.cfg<EOF\n/usr/bin/chmod 600 /rpool/boot/grub/password.cfg\n/usr/bin/echo 'source /@/boot/grub/password.cfg'\n\nRun the following to finalize the password configuration and set menu timeout:\n\n# /usr/bin/chmod 700 /usr/lib/grub2/bios/etc/grub.d/01_password\n\n# /usr/sbin/bootadm set-menu timeout=30\n\nChanges will take effect on the next reboot.",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/rpool/boot/grub/grub.cfg",
+        "regex": "^[\\\\s]*source[\\\\s]/@/boot/grub/password.cfg[\\\\s]*$",
+        "expect": "^[\\\\s]*source[\\\\s]/@/boot/grub/password.cfg[\\\\s]*$"
+    },
+    "custom_item_165": {
+        "system": "SunOS",
+        "description": "6.16 Restrict root Login to System Console",
+        "info": "Privileged access to the system via root must be accountable to a particular user.\n\nRationale:\n\nUse an authorized mechanism such as RBAC and the su command to provide administrative access to unprivileged accounts. These mechanisms provide an audit trail in the event of problems.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/default\n\n# awk '/CONSOLE=/ { print 'CONSOLE=/dev/console'; next }; { print }' login > login.CIS\n\n# mv login.CIS login",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.8,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/default/login",
+        "regex": "^[\\\\s]*[^#]*CONSOLE[\\\\s]*=.*",
+        "expect": "CONSOLE[\\\\s]*=[\\\\s]*/dev/console"
+    },
+    "custom_item_166": {
+        "system": "SunOS",
+        "description": "RETRIES",
+        "file": "/etc/default/login",
+        "regex": "^[\\\\s]*RETRIES[\\\\s]*=",
+        "expect": "^[\\\\s]*RETRIES[\\\\s]*=[\\\\s]*[1-3][\\\\s]*$"
+    },
+    "custom_item_167": {
+        "system": "SunOS",
+        "description": "LOCK_AFTER_RETRIES",
+        "file": "/etc/security/policy.conf",
+        "regex": "^[\\\\s]*LOCK_AFTER_RETRIES[\\\\s]*=",
+        "expect": "^[\\\\s]*LOCK_AFTER_RETRIES[\\\\s]*=[\\\\s]*[yY][eE][sS][\\\\s]*$"
+    },
+    "custom_item_168": {
+        "system": "SunOS",
+        "description": "Accounts",
+        "cmd": "/usr/bin/logins -ox | /usr/bin/awk -F: 'BEGIN { c=0 } ( $1 != \"root\" && $8 != \"LK\" && $8 != \"NL\" && ( $10 < 7 || $11 > 91 || $12 < 7 )) { print; c++ } END { if (c == 0) print \"none\" }'",
+        "expect": "^[\\\\s]*none[\\\\s]*$"
+    },
+    "custom_item_169": {
+        "system": "SunOS",
+        "description": "MAXWEEKS",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MAXWEEKS[\\\\s]*=",
+        "expect": "^[\\\\s]*MAXWEEKS[\\\\s]*=[\\\\s]*@PASSWORD_MAX_WEEKS@[\\\\s]*$"
+    },
+    "custom_item_170": {
+        "system": "SunOS",
+        "description": "MINWEEKS",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINWEEKS[\\\\s]*=",
+        "expect": "^[\\\\s]*MINWEEKS[\\\\s]*=[\\\\s]*@PASSWORD_MIN_WEEKS@[\\\\s]*$"
+    },
+    "custom_item_171": {
+        "system": "SunOS",
+        "description": "WARNWEEKS",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*WARNWEEKS[\\\\s]*=",
+        "expect": "^[\\\\s]*WARNWEEKS[\\\\s]*=[\\\\s]*@PASSWORD_WARNING@[\\\\s]*$"
+    },
+    "custom_item_172": {
+        "system": "SunOS",
+        "description": "PASSLENGTH",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*PASSLENGTH[\\\\s]*=",
+        "expect": "^[\\\\s]*PASSLENGTH[\\\\s]*=[\\\\s]*@PASSLENGTH@[\\\\s]*$"
+    },
+    "custom_item_173": {
+        "system": "SunOS",
+        "description": "NAMECHECK",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*NAMECHECK[\\\\s]*=",
+        "expect": "^[\\\\s]*NAMECHECK[\\\\s]*=[\\\\s]*@NAMECHECK@[\\\\s]*$"
+    },
+    "custom_item_174": {
+        "system": "SunOS",
+        "description": "HISTORY",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*HISTORY[\\\\s]*=",
+        "expect": "^[\\\\s]*HISTORY[\\\\s]*=[\\\\s]*@HISTORY@[\\\\s]*$"
+    },
+    "custom_item_175": {
+        "system": "SunOS",
+        "description": "MINDIFF",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINDIFF[\\\\s]*=",
+        "expect": "^[\\\\s]*MINDIFF[\\\\s]*=[\\\\s]*@MINDIFF@[\\\\s]*$"
+    },
+    "custom_item_176": {
+        "system": "SunOS",
+        "description": "MINUPPER",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINUPPER[\\\\s]*=",
+        "expect": "^[\\\\s]*MINUPPER[\\\\s]*=[\\\\s]*@MINUPPER@[\\\\s]*$"
+    },
+    "custom_item_177": {
+        "system": "SunOS",
+        "description": "MINLOWER",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINLOWER[\\\\s]*=",
+        "expect": "^[\\\\s]*MINLOWER[\\\\s]*=[\\\\s]*@MINLOWER@[\\\\s]*$"
+    },
+    "custom_item_178": {
+        "system": "SunOS",
+        "description": "MINSPECIAL",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINSPECIAL[\\\\s]*=",
+        "expect": "^[\\\\s]*MINSPECIAL[\\\\s]*=[\\\\s]*@MINSPECIAL@[\\\\s]*$"
+    },
+    "custom_item_179": {
+        "system": "SunOS",
+        "description": "MINDIGIT",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MINDIGIT[\\\\s]*=",
+        "expect": "^[\\\\s]*MINDIGIT[\\\\s]*=[\\\\s]*@MINDIGIT@[\\\\s]*$"
+    },
+    "custom_item_180": {
+        "system": "SunOS",
+        "description": "MAXREPEATS",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*MAXREPEATS[\\\\s]*=",
+        "expect": "^[\\\\s]*MAXREPEATS[\\\\s]*=[\\\\s]*@MAXREPEATS@[\\\\s]*$"
+    },
+    "custom_item_181": {
+        "system": "SunOS",
+        "description": "WHITESPACE",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*WHITESPACE[\\\\s]*=",
+        "expect": "^[\\\\s]*WHITESPACE[\\\\s]*=[\\\\s]*@WHITESPACE@[\\\\s]*$"
+    },
+    "custom_item_182": {
+        "system": "SunOS",
+        "description": "DICTIONDBDIR",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*DICTIONDBDIR[\\\\s]*=",
+        "expect": "^[\\\\s]*DICTIONDBDIR[\\\\s]*=[\\\\s]*@DICTIONDBDIR@[\\\\s]*$"
+    },
+    "custom_item_183": {
+        "system": "SunOS",
+        "description": "DICTIONLIST",
+        "file": "/etc/default/passwd",
+        "regex": "^[\\\\s]*DICTIONLIST[\\\\s]*=",
+        "expect": "^[\\\\s]*DICTIONLIST[\\\\s]*=[\\\\s]*@DICTIONLIST@[\\\\s]*$"
+    },
+    "custom_item_184": {
+        "system": "SunOS",
+        "description": "7.3 Set Default umask for users",
+        "info": "The default umask(1) determines the permissions of files created by users. The user creating the file has the discretion of making their files and directories readable by others via the chmod(1) command. Users who wish to allow their files and directories to be readable by others by default may choose a different default umask by inserting the umask command into the standard shell configuration files (.profile, .cshrc, etc.) in their home directories.\n\nRationale:\n\nSetting a very secure default value for umask ensures that users make a conscious choice about their file permissions. A default umask setting of 077 causes files and directories created by users to not be readable by any other user on the system. A umask of 027 would allow files and directories readable by users in the same Unix group, while a umask of 022 would make files readable by every user on the system.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/default\n\n# awk '/#UMASK=/ { $1 = 'UMASK=027' } { print }' login > login.CIS\n\n# mv login.CIS login",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/default/login",
+        "regex": "^[\\\\s]*UMASK[\\\\s]*=",
+        "expect": "^[\\\\s]*UMASK[\\\\s]*=[\\\\s]*0[2367]7[\\\\s]*$"
+    },
+    "custom_item_185": {
+        "description": "Check for FTP Service online",
+        "cmd": "/usr/bin/svcs -Ho state svc:/network/ftp:default",
+        "expect": "^online$"
+    },
+    "custom_item_186": {
+        "system": "SunOS",
+        "description": "7.4 Set Default File Creation Mask for FTP Users",
+        "info": "If FTP is permitted, set a strong, default file creation mask to apply to files created by the FTP server.\n\nRationale:\n\nMany users assume that the FTP server will use their system file creation mask; generally it does not. This setting ensures that files transmitted over FTP use a strong file creation mask.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc\n\n# if [ ''grep '^Umask' proftpd.conf'' ]; then\n     awk '/^Umask/ { $2 = '027' } { print }' proftpd.conf > proftpd.conf.CIS\n     mv proftpd.conf.CIS proftpd.conf\n  else\n     echo 'Umask 027' >> proftpd.conf\n  fi",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/proftpd.conf",
+        "regex": "^[\\\\s]*Umask[\\\\s]*",
+        "expect": "^[\\\\s]*Umask[\\\\s]*0[2-7]7[\\\\s]*$"
+    },
+    "custom_item_187": {
+        "system": "SunOS",
+        "description": "login",
+        "file": "/etc/.login",
+        "regex": "^[\\\\s]*mesg[\\\\s]",
+        "expect": "^[\\\\s]*mesg[\\\\s]+n[\\\\s]*$"
+    },
+    "custom_item_188": {
+        "system": "SunOS",
+        "description": "profile",
+        "file": "/etc/profile",
+        "regex": "^[\\\\s]*mesg[\\\\s]",
+        "expect": "^[\\\\s]*mesg[\\\\s]+n[\\\\s]*$"
+    },
+    "custom_item_189": {
+        "system": "SunOS",
+        "description": "7.6 Lock Inactive User Accounts",
+        "info": "Guidelines published by the U.S. Department of Defense specify that user accounts must be locked out after 35 days of inactivity. This number may vary based on the particular site's policy.\n\nRationale:\n\nInactive accounts pose a threat to system security since the users are not logging in to notice failed login attempts or other anomalies.",
+        "solution": "Perform the following to implement the recommended state:\n\n# useradd -D -f 35\n\nTo set this policy on a user account, use the command(s):\n\n# usermod -f 35 [name]\n\nTo set this policy on a role account, use the command(s):\n\n# rolemod -f 35 [name]",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.2,CSCv7|16.9,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/sbin/useradd -D | /usr/bin/xargs -n 1 | /usr/bin/grep inactive | /usr/bin/awk -F= '{ print $2 }'",
+        "expect": "^[\\\\s]*([1-9]|[1-2][0-9]|3[0-5])[\\\\s]*$"
+    },
+    "custom_item_190": {
+        "description": "motd banner",
+        "file": "/etc/motd",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_191": {
+        "description": "motd permissions",
+        "file": "/etc/motd",
+        "owner": "root",
+        "mask": "133",
+        "group": "sys"
+    },
+    "custom_item_192": {
+        "description": "issue banner",
+        "file": "/etc/issue",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_193": {
+        "system": "SunOS",
+        "description": "issue permissions",
+        "file": "/etc/issue",
+        "owner": "root",
+        "mask": "133",
+        "group": "sys"
+    },
+    "custom_item_194": {
+        "description": "Check for FTP Service online",
+        "cmd": "/usr/bin/svcs -Ho state svc:/network/ftp:default",
+        "expect": "^online$"
+    },
+    "custom_item_195": {
+        "system": "SunOS",
+        "description": "8.2 Enable a Warning Banner for the FTP service",
+        "info": "The action for this item sets a warning message for FTP users before they log in.\n\nRationale:\n\nIf FTP is permitted for use in your environment, it is important to ensure that Warning Banners inform users who are attempting to access the system of their legal status regarding using the system. The text below is a generic sample only, so consult with your organization's legal counsel for the appropriate wording.",
+        "solution": "Perform the following to implement the recommended state:\n\n# echo 'DisplayConnect /etc/issue' >> /etc/proftpd.conf\n\n# svcadm restart ftp",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/proftpd.conf",
+        "regex": "^[\\\\s]*DisplayConnect[\\\\s]*",
+        "expect": "^[\\\\s]*DisplayConnect[\\\\s]+/etc/issue[\\\\s]*$"
+    },
+    "custom_item_196": {
+        "system": "SunOS",
+        "description": "8.3 Enable a Warning Banner for the SSH Service",
+        "info": "The contents of the Banner string in the /etc/ssh/sshd_config file are sent to the remote user before authentication is allowed, requiring that the user read the legal caution.\n\nRationale:\n\nPerforming these steps will ensure the appropriate legal caution is displayed to any user accessing the system via SSH.",
+        "solution": "Perform the following to implement the recommended state:\n\n# awk '/^#Banner/ { $1 = 'Banner' } { print }' /etc/ssh/sshd_config > /etc/ssh/sshd_config.CIS\n\n# mv /etc/ssh/sshd_config.CIS /etc/ssh/sshd_config\n\n# svcadm restart svc:/network/ssh",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Banner[\\\\s]",
+        "expect": "^[\\\\s]*Banner[\\\\s]+/etc/issue[\\\\s]*$"
+    },
+    "custom_item_197": {
+        "description": "Gnome installed",
+        "cmd": "/usr/bin/pkg list consolidation/desktop/gnome-incorporation",
+        "expect": "^consolidation/desktop/gnome-incorporation"
+    },
+    "custom_item_198": {
+        "system": "SunOS",
+        "description": "8.4 Enable a Warning Banner for the GNOME Service",
+        "info": "The GNOME Display Manager is used for login session management. See the manual page gdm(1) for more information on configuration of the settings, which can be user or group specific.\n\nRationale:\n\nThe remediation action for this item sets a pre-login warning message for GDM users. Additional methods can be employed to display a similar message to a user post-authentication. For more information, see the Oracle Solaris 11 Security Guidelines document.",
+        "solution": "Perform the following to implement the recommended state:\nEdit the /etc/gdm/Init/Default file to add the following content before the last line of the file.\n\n/usr/bin/zenity --text-info --width=800 --height=300 --title='Security Message' --filename=/etc/issue",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/gdm/Init/Default",
+        "regex": "Security[\\\\s]+Message",
+        "expect": "--filename[\\\\s]*=[\\\\s]*/etc/issue"
+    },
+    "custom_item_199": {
+        "description": "8.5 Check that the Banner Setting for telnet is Null",
+        "info": "The BANNER variable in the file /etc/default/telnetd can be used to display text before the telnet login prompt. Traditionally, it has been used to display the OS level of the target system.\n\nRationale:\n\nThe warning banner provides information that can be used in reconnaissance for an attack. By default, this file is distributed with the BANNER variable set to null. It is not necessary to create a separate warning banner for telnet if a warning is set in the /etc/issue file. As telnet is an insecure protocol, it should be disabled and all remote administrative/user connections take place by Secure Shell.",
+        "solution": "Perform the following to implement the recommended state:\n\n# cd /etc/default\n\n# awk '/^BANNER=/ { $1 = 'BANNER=' }; { print }' telnetd > telnetd.CIS\n\n# mv telnetd.CIS telnetd",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "/etc/default/telnetd",
+        "regex": "^[\\\\s]*BANNER[\\\\s]*=",
+        "expect": "^[\\\\s]*BANNER[\\\\s]*=[\\\\s]*(\"\")?[\\\\s]*$"
+    },
+    "custom_item_200": {
+        "system": "SunOS",
+        "description": "9.1 Check for Remote Consoles",
+        "info": "The consadm command can be used to select or display alternate console devices.\n\nRationale:\n\nSince the system console has special properties to handle emergency situations, it is important to ensure that the console is in a physically secure location and that unauthorized consoles have not been defined. The 'consadm -p' command displays any alternate consoles that have been defined as auxiliary across reboots. If no remote consoles have been defined, there will be no output from this command.",
+        "solution": "Perform the following to implement the recommended state:\n\n# /usr/sbin/consadm [-d device...]",
+        "reference": "800-171|3.4.1,800-53|CM-8(3),800-53r5|CM-8(3),CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|1.6,CSCv8|1.2,CSF|DE.CM-7,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/sbin/consadm -p | /usr/bin/awk '{ print } END { if(NR == 0) print \"none\" }'",
+        "expect": "none"
+    },
+    "custom_item_201": {
+        "system": "SunOS",
+        "description": "9.3 Check That Defined Home Directories Exist",
+        "info": "Users can be defined to have a home directory in passwd(4), even if the directory does not actually exist.\n\nRationale:\n\nIf the user's home directory does not exist, the user will be placed in '/' and will not be able to write any files or have local environment variables set.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if there exists any users whose home directories do not exist, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/logins -xo | while read line; do user=`echo ${line} | /usr/bin/awk -F: '{ print $1 }'`; home=`echo ${line} | /usr/bin/awk -F: '{ print $6 }'`; if [ ! -d \"${home}\" ]; then echo ${user}; fi; done | /usr/bin/awk '{ print } END { if(NR==0){ print \"all user directories exist\" } }'",
+        "expect": "^all user directories exist[\\\\s]*$"
+    },
+    "custom_item_202": {
+        "system": "SunOS",
+        "description": "9.4 Verify System Account Default Passwords",
+        "info": "There are a number of accounts provided with the Solaris OS that are used to manage applications and are not intended to provide an interactive shell. These accounts are delivered either in a locked or non-login state. Oracle does not support nor recommend changing the passwords associated with these accounts.\n\nRationale:\n\nSystem accounts, such as bin, lpd, and sys have special purposes and privileges. By default, these accounts are configured as either locked or non-login. This status should be verified to ensure that these accounts have not accidentally or intentionally been enabled.",
+        "solution": "To lock a single account, use the command:\n\n# passwd -d [username]\n\n# passwd -l[username]\n\nTo configure a single account to be non-login, use the command:\n\n# passwd -d [username]\n\n# passwd -N[username]",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.8,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "for user in $(logins -s | /usr/bin/awk '{ print $1 }'); do if [ \"${user}\" != \"root\" ]; then stat=`/usr/bin/passwd -s ${user} | /usr/bin/awk '{ print $2 }'`; if [ \"${stat}\" != \"LK\" ] && [ \"${stat}\" != \"NL\" ]; then echo \"Account ${user} is not locked or non-login.\"; fi; fi; done | /usr/bin/awk '{ print } END { if(NR==0){ print \"none\" } }'",
+        "expect": "none"
+    },
+    "custom_item_203": {
+        "system": "SunOS",
+        "description": "9.5 Verify System File Permissions",
+        "info": "The pkg verify and command checks the accuracy of installed directory structures and files.\n\nRationale:\n\nIt is important to ensure that system files and directories are maintained with the permissions they were intended to have from the OS vendor (Oracle).",
+        "solution": "Correct or justify any items discovered in the Audit step. Perform the following to set correct any identified package errors:\n\n# pkg fix\n\nExercise caution in running this command as it may reverse modifications implemented previously including some of those recommended by this document. Rather than use this command broadly, it is recommended that it be used more tactically to correct specific package problems when possible.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/pkg verify | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\"; }'",
+        "expect": "^none$",
+        "timeout": "@PKG_CMD_TIMEOUT@"
+    },
+    "custom_item_204": {
+        "system": "SunOS",
+        "description": "9.6 Ensure Password Fields are Not Empty",
+        "info": "An account with an empty password field means that anybody may log in as that user without providing a password at all (assuming that the value PASSREQ=NO is set in /etc/default/login).\n\nRationale:\n\nAll accounts must have passwords, be configured as 'Non-login,' or be locked.",
+        "solution": "Use the passwd -l command to lock accounts that are not permitted to execute commands . Use the passwd -N command to set accounts to be non-login.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/logins -p | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "none"
+    },
+    "custom_item_205": {
+        "system": "SunOS",
+        "description": "9.9 Check Permissions on User Home Directories",
+        "info": "While the system administrator can establish secure permissions for users' home directories, the users can easily override these.\n\nRationale:\n\nGroup or world-writable user home directories may enable malicious users to steal or modify other users' data or to gain another user's system privileges.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any user directory permissions are world-readable, writable, or executable, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/logins -ox | /usr/bin/awk -F: '($8 == \"PS\") { print $6 }' | while read dir; do /usr/bin/find ${dir} -type d -prune \\\\( -perm -g+w -o -perm -o+r -o -perm -o+w -o -perm -o+x \\\\) -ls; done | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none[\\\\s]*$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_206": {
+        "system": "SunOS",
+        "description": "9.10 Check Permissions on User '.' (Hidden) Files",
+        "info": "While the system administrator can establish secure permissions for users' 'dot' files, the users can easily override these.\n\nRationale:\n\nGroup or world-writable user configuration files may enable malicious users to steal or modify other users' data or to gain another user's system privileges.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any user hidden files are world-readable or writable, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "for dir in `/usr/bin/logins -ox | /usr/bin/awk -F: '($8 == \"PS\") { print $6 }'`; do /usr/bin/find ${dir}/.[A-Za-z0-9-_]* \\\\! -type l \\\\( -perm -20 -o -perm -02 \\\\) -ls; done | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none[\\\\s]*$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_207": {
+        "system": "SunOS",
+        "description": "9.11 Check Permissions on User .netrc Files",
+        "info": "While the system administrator can establish secure permissions for users' .netrc files, the users can easily override these.\n\nRationale:\n\n.netrc files may contain unencrypted passwords that can be used to attack other systems.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any user .netrc files are group- or world-readable or writable, and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "for dir in `/usr/bin/logins -ox | /usr/bin/awk -F: '($8 == \"PS\") { print $6 }'`; do /usr/bin/find ${dir}/.netrc \\\\! -type l \\\\( -perm -20 -o -perm -02 \\\\) -ls; done | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none[\\\\s]*$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_208": {
+        "system": "SunOS",
+        "description": "9.12 Check for Presence of User .rhosts Files",
+        "info": "While no .rhosts files are shipped with Solaris, users can easily create them.\n\nRationale:\n\nThis action is only meaningful if .rhosts support is permitted in the PAM configuration. Even though the .rhosts files are ineffective if support is disabled in the PAM configuration, they may have been brought over from other systems and could contain information useful to an attacker for those other systems.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any user .rhosts files are present in user directories and work with those users to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|16.4,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "~/.rhosts"
+    },
+    "custom_item_209": {
+        "description": "9.19 Check for Presence of User .netrc Files",
+        "info": "The .netrc file contains data for logging into a remote host for file transfers via FTP.\n\nRationale:\n\nThe .netrc file presents a significant security risk since it stores passwords in unencrypted form.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any .netrc files exist, and work with the owner to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|16.4,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "~/.netrc"
+    },
+    "custom_item_210": {
+        "system": "SunOS",
+        "description": "9.20 Check for Presence of User .forward Files",
+        "info": "The .forward file specifies an email address to which a user's mail is forwarded.\n\nRationale:\n\nUse of the .forward file poses a security risk in that sensitive data may be inadvertently transferred outside the organization. The .forward file also poses a secondary risk as it can be used to execute commands that may perform unintended actions.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine if any .forward files exist, and work with the owner to determine the best course of action in accordance with site policy.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "file": "~/.forward"
+    },
+    "custom_item_211": {
+        "system": "SunOS",
+        "description": "9.24 Find Files and Directories with Extended Attributes",
+        "info": "Extended attributes are implemented as files in a 'shadow' file system that is not generally visible via normal administration commands without special arguments.\n\nRationale:\n\nAttackers or malicious users could 'hide' information, exploits, etc. in extended attribute areas. Since extended attributes are rarely used, it is important to find files with extended attributes set.",
+        "solution": "Correct or justify any items discovered in the Audit step. Determine the existence of any files having extended file attributes, and determine the best course of action in accordance with site policy. Note that the Solaris OS does not ship with files that have extended attributes.",
+        "reference": "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.6,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/bin/find / \\\\( -fstype nfs -o -fstype cachefs -o -fstype autofs -o -fstype ctfs -o -fstype mntfs -o -fstype objfs -o -fstype proc \\\\) -prune -o \\\\( -nouser -o -nogroup \\\\) -ls | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\"; }'",
+        "expect": "^none$",
+        "timeout": "@FIND_TIMEOUT@"
+    }
+}

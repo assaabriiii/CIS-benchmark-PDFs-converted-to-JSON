@@ -1,0 +1,140 @@
+{
+    "custom_item_1": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_2": {
+        "description": "2.8 Enable user namespace support --userns-remap=default",
+        "info": "Enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where containers you are using do not have an explicit container user defined in the container image. If container images that you are using have a pre-defined non-root user, this recommendation may be skipped since this feature is still in its infancy and might give you unpredictable issues and complexities.\nRationale:\nThe Linux kernel user namespace support in Docker daemon provides additional security for the Docker host system. It allows a container to have a unique range of user and group IDs which are outside the traditional user and group range utilized by the host system.\nFor example, the root user will have expected administrative privilege inside the container but can effectively be mapped to an unprivileged UID on the host system.",
+        "solution": "Please consult Docker documentation for various ways in which this can be configured depending upon your requirements. Your steps might also vary based on platform - For example, on Red Hat, sub-UIDs and sub-GIDs mapping creation does not work automatically. You might have to create your own mapping.\nHowever, the high-level steps are as below:\nStep 1: Ensure that the files /etc/subuid and /etc/subgid exist.\ntouch /etc/subuid /etc/subgid\nStep 2: Start the docker daemon with --userns-remap flag\ndockerd --userns-remap=default\nImpact:\nUser namespace remapping makes quite a few Docker features incompatible and also currently breaks a few functionalities. Check out the Docker documentation and referenced links for details.\nDefault Value:\nBy default, user namespace is not remapped.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7a.,800-53r5|SC-7a.,CN-L3|8.1.10.6(j),CSCv6|18,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7a.,LEVEL|2A,NESA|T3.4.1,NESA|T3.6.3,NESA|T4.2.1,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]userns-remap=default",
+        "expect": "--userns-remap=default"
+    },
+    "custom_item_3": {
+        "description": "2.8 Enable user namespace support - /etc/subuid",
+        "info": "Enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where containers you are using do not have an explicit container user defined in the container image. If container images that you are using have a pre-defined non-root user, this recommendation may be skipped since this feature is still in its infancy and might give you unpredictable issues and complexities.\nRationale:\nThe Linux kernel user namespace support in Docker daemon provides additional security for the Docker host system. It allows a container to have a unique range of user and group IDs which are outside the traditional user and group range utilized by the host system.\nFor example, the root user will have expected administrative privilege inside the container but can effectively be mapped to an unprivileged UID on the host system.",
+        "solution": "Please consult Docker documentation for various ways in which this can be configured depending upon your requirements. Your steps might also vary based on platform - For example, on Red Hat, sub-UIDs and sub-GIDs mapping creation does not work automatically. You might have to create your own mapping.\nHowever, the high-level steps are as below:\nStep 1: Ensure that the files /etc/subuid and /etc/subgid exist.\ntouch /etc/subuid /etc/subgid\nStep 2: Start the docker daemon with --userns-remap flag\ndockerd --userns-remap=default\nImpact:\nUser namespace remapping makes quite a few Docker features incompatible and also currently breaks a few functionalities. Check out the Docker documentation and referenced links for details.\nDefault Value:\nBy default, user namespace is not remapped.",
+        "reference": "CSCv6|18,LEVEL|2A",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/subuid"
+    },
+    "custom_item_4": {
+        "description": "2.8 Enable user namespace support - /etc/subgid",
+        "info": "Enable user namespace support in Docker daemon to utilize container user to host user re-mapping. This recommendation is beneficial where containers you are using do not have an explicit container user defined in the container image. If container images that you are using have a pre-defined non-root user, this recommendation may be skipped since this feature is still in its infancy and might give you unpredictable issues and complexities.\nRationale:\nThe Linux kernel user namespace support in Docker daemon provides additional security for the Docker host system. It allows a container to have a unique range of user and group IDs which are outside the traditional user and group range utilized by the host system.\nFor example, the root user will have expected administrative privilege inside the container but can effectively be mapped to an unprivileged UID on the host system.",
+        "solution": "Please consult Docker documentation for various ways in which this can be configured depending upon your requirements. Your steps might also vary based on platform - For example, on Red Hat, sub-UIDs and sub-GIDs mapping creation does not work automatically. You might have to create your own mapping.\nHowever, the high-level steps are as below:\nStep 1: Ensure that the files /etc/subuid and /etc/subgid exist.\ntouch /etc/subuid /etc/subgid\nStep 2: Start the docker daemon with --userns-remap flag\ndockerd --userns-remap=default\nImpact:\nUser namespace remapping makes quite a few Docker features incompatible and also currently breaks a few functionalities. Check out the Docker documentation and referenced links for details.\nDefault Value:\nBy default, user namespace is not remapped.",
+        "reference": "CSCv6|18,LEVEL|2A",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/subgid"
+    },
+    "custom_item_5": {
+        "description": "2.9 Ensure the default cgroup usage has been confirmed",
+        "info": "The --cgroup-parent option allows you to set the default cgroup parent to use for all the containers. If there is no specific use case, this setting should be left at its default.\nRationale:\nSystem administrators typically define cgroups under which containers are supposed to run. Even if cgroups are not explicitly defined by the system administrators, containers run under docker cgroup by default.\nIt is possible to attach to a different cgroup other than that is the default. This usage should be monitored and confirmed. By attaching to a different cgroup than the one that is a default, it is possible to share resources unevenly and thus might starve the host for resources.",
+        "solution": "The default setting is good enough and can be left as-is. If you want to specifically set a non-default cgroup, pass --cgroup-parent parameter to the docker daemon when starting it.\nFor Example,\ndockerd --cgroup-parent=/foobar\nImpact:\nNone.\n\n\nDefault Value:\nBy default, docker daemon uses /docker for fs cgroup driver and system.slice for systemd cgroup driver.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]cgroup-parent | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "(--cgroup-parent=@CGROUP_PARENT@|none)"
+    },
+    "custom_item_6": {
+        "description": "2.11 Ensure that authorization for Docker client commands is enabled",
+        "info": "Use native Docker authorization plugins or a third party authorization mechanism with Docker daemon to manage access to Docker client commands.\nRationale:\nDockers out-of-the-box authorization model is all or nothing. Any user with permission to access the Docker daemon can run any Docker client command. The same is true for callers using Dockers remote API to contact the daemon. If you require greater access control, you can create authorization plugins and add them to your Docker daemon configuration. Using an authorization plugin, a Docker administrator can configure granular access policies for managing access to Docker daemon.\nThird party integrations of Docker may implement their own authorization models to require authorization with the Docker daemon outside of docker's native authorization plugin (i.e. Kubernetes, Cloud Foundry, Openshift).",
+        "solution": "Step 1: Install/Create an authorization plugin.\nStep 2: Configure the authorization policy as desired.\nStep 3: Start the docker daemon as below:\ndockerd --authorization-plugin=Impact:\nEach docker command specifically passes through authorization plugin mechanism. This might introduce a slight performance drop.\nThird party use of alternative container engines that utilize the docker daemon may provide alternative mechanisms to provide this security control.\nDefault Value:\nBy default, authorization plugins are not set up.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv6|16,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,LEVEL|2A,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]authorization-plugin",
+        "expect": "authorization-plugin=@AUTH_PLUGIN_ID@"
+    },
+    "custom_item_7": {
+        "description": "2.12 Ensure centralized and remote logging is configured",
+        "info": "Docker now supports various log drivers. A preferable way to store logs is the one that supports centralized and remote logging.\nRationale:\nCentralized and remote logging ensures that all important log records are safe despite catastrophic events. Docker now supports various such logging drivers. Use the one that suits your environment the best.",
+        "solution": "Step 1: Setup the desired log driver by following its documentation.\nStep 2: Start the docker daemon with that logging driver.\nFor example,\ndockerd --log-driver=syslog --log-opt syslog-address=tcp://192.xxx.xxx.xxx\nImpact:\nNone.\nDefault Value:\nBy default, container logs are maintained as json files",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSCv6|6.6,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|2A,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]log-driver",
+        "expect": "log-driver=@LOG_DRIVER@"
+    },
+    "custom_item_8": {
+        "description": "2.16 Ensure daemon-wide custom seccomp profile is applied, if needed",
+        "info": "You can choose to apply your custom seccomp profile at the daemon-wide level if needed and override Docker's default seccomp profile.\nRationale:\nA large number of system calls are exposed to every userland process with many of them going unused for the entire lifetime of the process. Most of the applications do not need all the system calls and thus benefit by having a reduced set of available system calls. The reduced set of system calls reduces the total kernel surface exposed to the application and thus improvises application security.\nYou could apply your own custom seccomp profile instead of Docker's default seccomp profile. Alternatively, if Docker's default profile is good for your environment, you can choose to ignore this recommendation.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "By default, Docker's default seccomp profile is applied. If this is good for your environment, no action is necessary. Alternatively, if you choose to apply your own seccomp profile, use the --seccomp-profile flag at daemon start or put it in the daemon runtime parameters file.\ndockerd --seccomp-profileImpact:\nA misconfigured seccomp profile could possibly interrupt your container environment. Docker-default blocked calls have been carefully scrutinized. These address some critical vulnerabilities/issues within container environments (for example, kernel key ring calls). So, you should be very careful while overriding the defaults.\nDefault Value:\nBy default, Docker applies a seccomp profile.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2M,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker info --format '{{ .SecurityOptions }}'",
+        "expect": ""
+    },
+    "custom_item_9": {
+        "description": "4.5 Ensure Content trust for Docker is Enabled",
+        "info": "Content trust is disabled by default. You should enable it.\nRationale:\nContent trust provides the ability to use digital signatures for data sent to and received from remote Docker registries. These signatures allow client-side verification of the integrity and publisher of specific image tags. This ensures provenance of container images.",
+        "solution": "To enable content trust in a bash shell, enter the following command:\nexport DOCKER_CONTENT_TRUST=1\nAlternatively, set this environment variable in your profile file so that content trust in enabled on every login.\nImpact:\nIn an environment where DOCKER_CONTENT_TRUST is set, you are required to follow trust procedures while working with images - build, create, pull, pushand run. You can use the --disable-content-trust flag to run individual operations on tagged images without content trust on an as-needed basis but that defeats the purpose of enabling content trust and hence, should be avoided wherever possible.\nNote: Content trust is currently only available for users of the public Docker Hub. It is currently not available for the Docker Trusted Registry or for private registries.\nDefault Value:\nBy default, content trust is disabled.",
+        "reference": "800-53|SI-7(6),800-53r5|SI-7(6),CSCv6|18,CSF|PR.DS-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|SI-7,ITSG-33|SI-7a.,LEVEL|2A,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "echo $DOCKER_CONTENT_TRUST",
+        "expect": "1"
+    },
+    "custom_item_10": {
+        "description": "4.11 Ensure verified packages are only Installed",
+        "info": "Verify authenticity of the packages before installing them in the image.\nRationale:\nVerifying authenticity of the packages is essential for building a secure container image. Tampered packages could potentially be malicious or have some known vulnerabilities that could be exploited.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Use GPG keys for downloading and verifying packages or any other secure package distribution mechanism of your choice.\nImpact:\nNone\nDefault Value:\nNot Applicable",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|18.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for image in $(docker images|awk {\\'print $3\\'}); do docker history $image;done",
+        "expect": ""
+    },
+    "custom_item_11": {
+        "description": "5.2 Ensure SELinux security options are set, if applicable",
+        "info": "SELinux is an effective and easy-to-use Linux application security system. It is available on quite a few Linux distributions by default such as Red Hat and Fedora.\nRationale:\nSELinux provides a Mandatory Access Control (MAC) system that greatly augments the default Discretionary Access Control (DAC) model. You can thus add an extra layer of safety by enabling SELinux on your Linux host, if applicable.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If SELinux is applicable for your Linux OS, use it. You may have to follow below set of steps:\n1. Set the SELinux State.\n2. Set the SELinux Policy.\n3. Create or import a SELinux policy template for Docker containers.\n4. Start Docker in daemon mode with SELinux enabled. For example,\ndocker daemon --selinux-enabled\n5. Start your Docker container using the security options. For example,\ndocker run --interactive --tty --security-opt label=level:TopSecret centos /bin/bash\nImpact:\nThe container (process) would have set of restrictions as defined in SELinux policy. If your SELinux policy is mis-configured, then the container may not entirely work as expected.\nDefault Value:\nBy default, no SELinux security options are applied on containers.",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-3(3),800-53r5|AC-3(3),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|14.4,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3(3),LEVEL|2A,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSSv3.2.1|7.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: SecurityOpt={{json .HostConfig.SecurityOpt }}\\'",
+        "expect": ""
+    },
+    "custom_item_12": {
+        "description": "5.29 Ensure Docker's default bridge docker0 is not used",
+        "info": "Do not use Docker's default bridge docker0. Use docker's user-defined networks for container networking.\nRationale:\nDocker connects virtual interfaces created in the bridge mode to a common bridge called docker0. This default networking model is vulnerable to ARP spoofing and MAC flooding attacks since there is no filtering applied.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Docker documentation and setup a user-defined network. Run all the containers in the defined network.\nImpact:\nYou have to manage the user-defined networks.\nDefault Value:\nBy default, docker runs containers on its docker0 bridge.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for net_id in $(docker network ls|awk {\\'print $1\\'}); do docker network inspect $net_id;done",
+        "expect": ""
+    },
+    "custom_item_13": {
+        "description": "7.5 Ensure Docker's secret management commands are used for managing secrets in a Swarm cluster",
+        "info": "Use Docker's in-built secret management command.\nRationale:\nDocker has various commands for managing secrets in a Swarm cluster. This is the foundation for future secret support in Docker with potential improvements such as Windows support, different backing stores, etc.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow docker secret documentation and use it to manage secrets effectively.\nImpact:\nNone\nDefault Value:\nNot Applicable",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|18,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2M,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker secret ls",
+        "expect": ".*"
+    },
+    "custom_item_14": {
+        "description": "7.8 Ensure node certificates are rotated as appropriate",
+        "info": "Rotate swarm node certificates as appropriate.\nRationale:\nDocker Swarm uses mutual TLS for clustering operations amongst its nodes. Certificate rotation ensures that in an event such as compromised node or key, it is difficult to impersonate a node. By default, node certificates are rotated every 90 days. You should rotate it more often or as appropriate in your environment.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run the below command to set the desired expiry time.\nFor example,\ndocker swarm update --cert-expiry 48h\nImpact:\nNone\nDefault Value:\nBy default, node certificates are rotated automatically every 90 days.",
+        "reference": "800-171|3.13.10,800-53|SC-12,800-53r5|SC-12,CSCv6|14.2,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.10.1.2,ITSG-33|SC-12,ITSG-33|SC-12a.,LEVEL|2M,NESA|T7.4.1,NESA|T7.4.2,NIAv2|CY2,NIAv2|CY8,NIAv2|CY9,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker info | grep -i 'Expiry Duration'",
+        "expect": ".*"
+    },
+    "custom_item_15": {
+        "description": "7.9 Ensure CA certificates are rotated as appropriate",
+        "info": "Rotate root CA certificates as appropriate.\nRationale:\nDocker Swarm uses mutual TLS for clustering operations amongst its nodes. Certificate rotation ensures that in an event such as compromised node or key, it is difficult to impersonate a node. Node certificates depend upon root CA certificates. For operational security, it is important to rotate these frequently. Currently, root CA certificates are not rotated automatically. You should thus establish a process to rotate it at the desired frequency.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run the below command to rotate the certificate.\ndocker swarm ca --rotate\nImpact:\nNone\nDefault Value:\nBy default, root CA certificates are not rotated.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2),800-53r5|IA-5(2),CSCv6|14.2,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2),LEVEL|2M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ls -l @PATH_TO_TLS_CA_FILE@",
+        "expect": ".*"
+    },
+    "custom_item_16": {
+        "description": "7.10 Ensure management plane traffic has been separated from data plane traffic",
+        "info": "Separate management plane traffic from data plane traffic.\nRationale:\nSeparating the management plane traffic from data plane traffic ensures that these traffics are on their respective paths. These paths could then be individually monitored and could be tied to different traffic control policies and monitoring. It also ensures that management plane is always reachable despite the huge volume of data flow.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Initialize Swarm with dedicated interfaces for management and data planes respectively.\nFor example,\ndocker swarm init --advertise-addr=192.168.0.1 --data-path-addr=17.1.0.3\nImpact:\nYou would require 2 network interface cards per node.\nDefault Value:\nBy default, the data plane traffic is not separated from management plane traffic.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(13),800-53r5|SC-7(13),CN-L3|8.1.10.6(h),CSCv6|18,CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(13),LEVEL|2M,NESA|T4.5.4,NIAv2|GS7d,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|3.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker node inspect  --format '{{ .Status.Addr }}' self",
+        "expect": ".*"
+    }
+}

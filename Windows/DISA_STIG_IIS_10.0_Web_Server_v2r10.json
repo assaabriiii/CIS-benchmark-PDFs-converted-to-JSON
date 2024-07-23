@@ -1,0 +1,493 @@
+{
+    "custom_item_1": {
+        "description": "Verify IIS is installed.",
+        "value_data": "(internet|iis)",
+        "reg_key": "HKLM\\SYSTEM\\CurrentControlSet\\Services\\W3SVC",
+        "reg_item": "ImagePath"
+    },
+    "custom_item_2": {
+        "description": "Verify IIS 10 installed.",
+        "value_data": "^Version @PRODUCT_VERSION@[\\s]*$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Inetstp",
+        "reg_item": "VersionString"
+    },
+    "custom_item_3": {
+        "description": "Windows Server 2016/2019/2022 and Windows 10",
+        "value_data": "^[a-zA-Z0-9\\(\\)\\s]*@PLATFORM_VERSION@[a-zA-Z0-9\\(\\)\\s]*$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Windows Nt\\Currentversion",
+        "reg_item": "ProductName"
+    },
+    "custom_item_4": {
+        "description": "'W3C' format is applied",
+        "value_data": "W3C",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logFormat"
+    },
+    "custom_item_5": {
+        "description": "Verify field 'Date' is selected",
+        "value_data": "date",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_6": {
+        "description": "Verify field 'Time' is selected",
+        "value_data": "time",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_7": {
+        "description": "Verify field 'Client IP Address' is selected",
+        "value_data": "clientip",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_8": {
+        "description": "Verify field 'User Name' is selected",
+        "value_data": "username",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_9": {
+        "description": "Verify field 'Method' is selected",
+        "value_data": "method",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_10": {
+        "description": "Verify field 'URI Query' is selected",
+        "value_data": "uriquery",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_11": {
+        "description": "Verify field 'Protocol Status' is selected",
+        "value_data": "httpstatus",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_12": {
+        "description": "Verify field 'Referer' is selected",
+        "value_data": "referer",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_13": {
+        "description": "IIST-SV-000103 - Both the log file and Event Tracing for Windows (ETW) for the IIS 10.0 web server must be enabled.",
+        "info": "Internet Information Services (IIS) on Windows Server 2012 provides basic logging capabilities. However, because IIS takes some time to flush logs to disk, administrators do not have access to logging information in real-time. In addition, text-based log files can be difficult and time-consuming to process.\n\nIn IIS 10.0, the administrator has the option of sending logging information to Event Tracing for Windows (ETW). This option gives the administrator the ability to use standard query tools, or create custom tools, for viewing real-time logging information in ETW. This provides a significant advantage over parsing text-based log files that are not updated in real time.\n\nSatisfies: SRG-APP-000092-WSR-000055, SRG-APP-000108-WSR-000166, SRG-APP-000358-WSR-000063",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 server name.\n\nClick the 'Logging' icon.\n\nUnder Log Event Destination, select the 'Both log file and ETW event' radio button.\n\nUnder the 'Actions' pane, click 'Apply'.",
+        "reference": "800-171|3.3.4,800-53|AU-4(1),800-53|AU-5a.,800-53|AU-14(1),800-53r5|AU-4(1),800-53r5|AU-5a.,800-53r5|AU-14(1),CAT|II,CCI|CCI-000139,CCI|CCI-001464,CCI|CCI-001851,CN-L3|7.1.3.3(e),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,ITSG-33|AU-5a.,ITSG-33|AU-14,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-218786r879562_rule,STIG-ID|IIST-SV-000103,STIG-Legacy|SV-109211,STIG-Legacy|V-100107,SWIFT-CSCv1|6.4,Vuln-ID|V-218786",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "File, ETW",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logTargetW3C"
+    },
+    "custom_item_14": {
+        "description": "Verify Request Header is set to 'Warning'",
+        "value_data": "Warning",
+        "powershell_args": "$output=(Get-WebConfiguration -filter 'system.applicationhost/sites/sitedefaults/logfile/customFields' | select -expandproperty collection | where {$_.sourceType -eq 'RequestHeader'} | select sourceName | format-table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_15": {
+        "description": "Verify Request Header is set to 'Connection'",
+        "value_data": "Connection",
+        "powershell_args": "$output=(Get-WebConfiguration -filter 'system.applicationhost/sites/sitedefaults/logfile/customFields' | select -expandproperty collection | where {$_.sourceType -eq 'RequestHeader'} | select sourceName | format-table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_16": {
+        "description": "Verify 'User Agent' field is selected",
+        "value_data": "useragent",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_17": {
+        "description": "Verify 'User Name' field is selected",
+        "value_data": "username",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_18": {
+        "description": "Verify 'Referer' field is selected",
+        "value_data": "Referer",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.logExtFileFlags"
+    },
+    "custom_item_19": {
+        "description": "Verify Response Header is set to 'Authorization'",
+        "value_data": "Authorization",
+        "powershell_args": "$output=(Get-WebConfiguration -filter 'system.applicationhost/sites/sitedefaults/logfile/customFields' | select -expandproperty collection | where {$_.sourceType -eq 'RequestHeader'} | select sourceName | format-table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_20": {
+        "description": "Verify Response Header is set to 'Content-Type'",
+        "value_data": "Content-Type",
+        "powershell_args": "$output=(Get-WebConfiguration -filter 'system.applicationhost/sites/sitedefaults/logfile/customFields' | select -expandproperty collection | where {$_.sourceType -eq 'ResponseHeader'} | select sourceName | format-table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_21": {
+        "description": "IIST-SV-000118 - The IIS 10.0 web server must only contain functions necessary for operation.",
+        "info": "A web server can provide many features, services, and processes. Some of these may be deemed unnecessary or too unsecure to run on a production DoD system.\n\nThe web server must provide the capability to disable, uninstall, or deactivate functionality and services deemed non-essential to the web server mission or that adversely impact server performance.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove all unapproved programs and roles from the production IIS 10.0 web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218793r879587_rule,STIG-ID|IIST-SV-000118,STIG-Legacy|SV-109225,STIG-Legacy|V-100121,SWIFT-CSCv1|2.3,Vuln-ID|V-218793",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "ManualReviewRequired",
+        "powershell_args": "Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, DisplayVersion, Publisher | Sort-Object -Unique DisplayName | Format-Table -AutoSize"
+    },
+    "custom_item_22": {
+        "description": "Check for Application Request Routing installed",
+        "value_data": ".*Application Request Routing.*",
+        "powershell_args": "$result=(Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Where-Object {$_.DisplayName -clike '*Application Request Routing*'} | Select-Object DisplayName, DisplayVersion, Publisher | Sort-Object -Unique DisplayName | Format-Table -AutoSize); if ($result -eq $null) { echo 'Not installed' } else { echo $result };"
+    },
+    "custom_item_23": {
+        "description": "IIST-SV-000119 - The IIS 10.0 web server must not be both a website server and a proxy server.",
+        "info": "A web server should be primarily a web server or a proxy server but not both, for the same reasons that other multi-use servers are not recommended. Scanning for web servers that also proxy requests into an otherwise protected network is a common attack, making the attack anonymous.",
+        "solution": "Open the IIS 10.0 Manager.\n\nUnder the 'Connections' pane on the left side of the management console, select the IIS 10.0 web server.\n\nUnder the IIS installed features, if 'Application Request Routing Cache' is present, double-click the icon to open the feature.\n\nFrom the right 'Actions' pane, under 'Proxy', select 'Server Proxy Settings...'.\n\nIn the 'Application Request Routing' settings window, remove the check from the 'Enable proxy' check box.\n\nClick 'Apply' in the 'Actions' pane.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218794r928918_rule,STIG-ID|IIST-SV-000119,STIG-Legacy|SV-109227,STIG-Legacy|V-100123,SWIFT-CSCv1|2.3,Vuln-ID|V-218794",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "False",
+        "powershell_args": "Get-WebConfigurationProperty 'system.webserver/proxy' -name 'enabled' | Select Value | Format-table -HideTableHeaders"
+    },
+    "custom_item_24": {
+        "description": "IIST-SV-000121 - The accounts created by uninstalled features (i.e., tools, utilities, specific, etc.) must be deleted from the IIS 10.0 server.",
+        "info": "Accounts used for web server features such as documentation, sample code, example applications, tutorials, utilities, and services created when the feature is not installed, become an exploitable threat to a web server.\n\nThese accounts become inactive, are not monitored through regular use, and passwords for the accounts are not created or updated. An attacker, through very little effort, can use these accounts to gain access to the web server and begin investigating ways to elevate the account privileges.\n\nThe accounts used for web server features not installed must not be created and must be deleted when these features are uninstalled.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Access the IIS 10.0 web server.\n\nAccess 'Apps' menu. Under 'Administrative Tools', select 'Computer Management'.\n\nIn the left pane, expand 'Local Users and Groups' and click 'Users'.\n\nDelete any local accounts which were created by features which have been uninstalled or are not used.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218796r879587_rule,STIG-ID|IIST-SV-000121,STIG-Legacy|SV-109231,STIG-Legacy|V-100127,SWIFT-CSCv1|2.3,Vuln-ID|V-218796",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "",
+        "powershell_args": "Get-WmiObject -Class Win32_UserAccount | Select-Object Name"
+    },
+    "custom_item_25": {
+        "description": "IIST-SV-000123 - The IIS 10.0 web server must be reviewed on a regular basis to remove any Operating System features, utility programs, plug-ins, and modules not necessary for operation.",
+        "info": "Just as running unneeded services and protocols is a danger to the web server at the lower levels of the OSI model, running unneeded utilities and programs is a danger at the application layer of the OSI model. Office suites, development tools, and graphic editors are examples of such troublesome programs.\n\nIndividual productivity tools have no legitimate place or use on an enterprise production web server and are prone to security risks. The web server installation process must provide options allowing the installer to choose which utility programs, services, and modules are to be installed or removed. By having a process for installation and removal, the web server is guaranteed to be in a more stable and secure state than if these services and programs were installed and removed manually.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove all utility programs, Operating System features, or modules installed that are not necessary for web server operation.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218797r879587_rule,STIG-ID|IIST-SV-000123,STIG-Legacy|SV-109233,STIG-Legacy|V-100129,SWIFT-CSCv1|2.3,Vuln-ID|V-218797",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "ManualReviewRequired",
+        "powershell_args": "Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, DisplayVersion, Publisher | Sort-Object -Unique DisplayName | Format-Table -AutoSize"
+    },
+    "custom_item_26": {
+        "description": "Verify exe extension is not included",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap | Where-object {$_.fileExtension -eq '.exe' } | Select-object fileExtension | Format-Table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_27": {
+        "description": "Verify dll extension is not included",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap | Where-object {$_.fileExtension -eq '.dll' } | Select-object fileExtension | Format-Table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_28": {
+        "description": "Verify com extension is not included",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap | Where-object {$_.fileExtension -eq '.com' } | Select-object fileExtension | Format-Table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_29": {
+        "description": "Verify bat extension is not included",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap | Where-object {$_.fileExtension -eq '.bat' } | Select-object fileExtension | Format-Table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_30": {
+        "description": "Verify csh extension is not included",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(Get-WebConfiguration -Filter system.webServer/staticContent/mimeMap | Where-object {$_.fileExtension -eq '.csh' } | Select-object fileExtension | Format-Table -HideTableHeaders); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_31": {
+        "description": "IIST-SV-000125 - The IIS 10.0 web server must have Web Distributed Authoring and Versioning (WebDAV) disabled.",
+        "info": "A web server can be installed with functionality that by its nature is not secure. Web Distributed Authoring (WebDAV) is an extension to the HTTP protocol which, when developed, was meant to allow users to create, change, and move documents on a server, typically a web server or web share. Allowing this functionality, development, and deployment is much easier for web authors.\n\nWebDAV is not widely used and has serious security concerns because it may allow clients to modify unauthorized files on the web server.",
+        "solution": "Access Server Manager on the IIS 10.0 web server.\n\nClick the IIS 10.0 web server name.\n\nClick on 'Manage'.\n\nSelect 'Add Roles and Features'.\n\nClick 'Next' in the 'Before you begin' dialog box.\n\nSelect 'Role-based or feature-based installation' on the 'Installation Type' dialog box and click 'Next'.\n\nSelect the IIS 10.0 web server in the 'Server Selection' dialog box.\n\nFrom the 'Windows Features' dialog box, navigate to 'World Wide Web Services' >> 'Common HTTP Features'.\n\nDe-select 'WebDAV Publishing', and click 'Next' to complete removing the WebDAV Publishing feature from the IIS 10.0 web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-218799r879587_rule,STIG-ID|IIST-SV-000125,STIG-Legacy|SV-109237,STIG-Legacy|V-100133,SWIFT-CSCv1|2.3,Vuln-ID|V-218799",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "false",
+        "powershell_args": "get-windowsfeature | where-object { $_.name -eq 'web-dav-publishing' } | select-object installed | format-table -hidetableheaders"
+    },
+    "custom_item_32": {
+        "description": "IIST-SV-000130 - Java software installed on a production IIS 10.0 web server must be limited to .class files and the Java Virtual Machine.",
+        "info": "Mobile code in hosted applications allows the developer to add functionality and displays to hosted applications that are fluid, as opposed to a static web page. The data presentation becomes more appealing to the user, is easier to analyze, and is less complicated to navigate through the hosted application and data.\n\nSome mobile code technologies in use in today's applications are: Java, JavaScript, ActiveX, PDF, Postscript, Shockwave movies, Flash animations, and VBScript. The DoD has created policies that define the usage of mobile code on DoD systems. The usage restrictions and implementation guidance apply to both the selection and use of mobile code installed on organizational servers and mobile code downloaded and executed on individual workstations.\n\nSource code for a Java program is often stored in files with either .java or .jpp file extensions. From the .java and .jpp files the Java compiler produces a binary file with an extension of .class. The .java or .jpp file could therefore reveal sensitive information regarding an application's logic and permissions to resources on the server.",
+        "solution": "Remove all files from the web server with both .java and .jpp extensions.",
+        "reference": "800-171|3.13.13,800-53|SC-18(1),800-53r5|SC-18(1),CAT|II,CCI|CCI-001166,CSF|DE.CM-5,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-18(1),NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,Rule-ID|SV-218801r879627_rule,STIG-ID|IIST-SV-000130,STIG-Legacy|SV-109241,STIG-Legacy|V-100137,Vuln-ID|V-218801",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "No entries found",
+        "powershell_args": "$output=(get-childitem c:\\ -include *.java,*.jpp -recurse -ErrorAction SilentlyContinue); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_33": {
+        "description": "IIST-SV-000132 - The IIS 10.0 web server must separate the hosted applications from hosted web server management functionality.",
+        "info": "The separation of user functionality from web server management can be accomplished by moving management functions to a separate IP address or port. To further separate the management functions, separate authentication methods and certificates should be used.\n\nBy moving the management functionality, the possibility of accidental discovery of the management functions by non-privileged users during hosted application use is minimized.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Develop a method to manage the hosted applications, either by moving its management functions off of the IIS 10.0 web server or by accessing the application's management via a uniquely assigned IP address.",
+        "reference": "800-171|3.13.3,800-53|SC-2,800-53r5|SC-2,CAT|II,CCI|CCI-001082,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-2,ITSG-33|SC-2a.,NESA|T3.4.1,NIAv2|SS15b,Rule-ID|SV-218803r879631_rule,STIG-ID|IIST-SV-000132,STIG-Legacy|SV-109245,STIG-Legacy|V-100141,Vuln-ID|V-218803",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "",
+        "powershell_args": "$output=(get-webapplication | select-object path); foreach-object { if(!$output){ $result='No entries found' } else { $result=$output }; $result };"
+    },
+    "custom_item_34": {
+        "description": "IIST-SV-000134 - The IIS 10.0 web server must use cookies to track session state.",
+        "info": "Cookies are used to exchange data between the web server and the client. Cookies, such as a session cookie, may contain session information and user credentials used to maintain a persistent connection between the user and the hosted application since HTTP/HTTPS is a stateless protocol.\n\nUsing URI will embed the session ID as a query string in the Uniform Resource Identifier (URI) request and then the URI is redirected to the originally requested URL. The changed URI request is used for the duration of the session, so no cookie is necessary.\n\nBy requiring expired session IDs to be regenerated while using URI, potential attackers have less time to capture a cookie and gain access to the Web server content.\n\nSatisfies: SRG-APP-000223-WSR-000011, SRG-APP-000220-WSR-000201",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder 'ASP.Net', double-click the 'Session State' icon.\n\nUnder 'Cookie Settings', select 'Use Cookies' from the 'Mode' drop-down list.\n\nClick 'Apply' in the 'Actions' pane.",
+        "reference": "800-171|3.13.15,800-53|SC-23(3),800-53r5|SC-23(3),CAT|II,CCI|CCI-001664,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23(3),NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-218804r879638_rule,STIG-ID|IIST-SV-000134,STIG-Legacy|SV-109247,STIG-Legacy|V-100143,Vuln-ID|V-218804",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "UseCookies",
+        "appcmd_args": "list config /section:system.web/sessionState /text:cookieless"
+    },
+    "custom_item_35": {
+        "description": "Verify 'Use Cookies' mode is enabled for sessionState",
+        "value_data": "UseCookies",
+        "appcmd_args": "list config /section:system.web/sessionState /text:cookieless"
+    },
+    "custom_item_36": {
+        "description": "Verify Time-out is configured for 20 minutes or less",
+        "value_data": "([1-9]|1[0-9]|20)",
+        "appcmd_args": "list config /section:system.web/sessionState /text:timeout"
+    },
+    "custom_item_37": {
+        "description": "Verify the Validation method is set to 'HMACSHA256' or stronger"
+    },
+    "custom_item_38": {
+        "description": "Verify the Encryption method is set to 'Auto'"
+    },
+    "custom_item_39": {
+        "description": "IIST-SV-000138 - Directory Browsing on the IIS 10.0 web server must be disabled.",
+        "info": "Directory browsing allows the contents of a directory to be displayed upon request from a web client. If directory browsing is enabled for a directory in IIS, users could receive a web page listing the contents of the directory. If directory browsing is enabled, the risk of inadvertently disclosing sensitive content is increased.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nDouble-click the 'Directory Browsing' icon.\n\nUnder the 'Actions' pane click 'Disabled'.\n\nUnder the 'Actions' pane, click 'Apply'.",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-218808r879652_rule,STIG-ID|IIST-SV-000138,STIG-Legacy|SV-109255,STIG-Legacy|V-100151,Vuln-ID|V-218808",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "false",
+        "appcmd_args": "list config /section:directoryBrowse /text:enabled"
+    },
+    "custom_item_40": {
+        "description": "Check for Indexing enabled in registry",
+        "value_data": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\ContentIndex\\Catalogs"
+    },
+    "custom_item_41": {
+        "description": "IIST-SV-000139 - The IIS 10.0 web server Indexing must only index web content.",
+        "info": "The indexing service can be used to facilitate a search function for websites. Enabling indexing may facilitate a directory traversal exploit and reveal unwanted information to a malicious user. Indexing must be limited to web document directories only.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run MMC.\n\nAdd the Indexing Service snap-in.\n\nEdit the indexed directories to only include web document directories.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-218809r879655_rule,STIG-ID|IIST-SV-000139,STIG-Legacy|SV-109257,STIG-Legacy|V-100153,Vuln-ID|V-218809",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\ContentIndex\\Catalogs"
+    },
+    "custom_item_42": {
+        "description": "IIST-SV-000140 - Warning and error messages displayed to clients must be modified to minimize the identity of the IIS 10.0 web server, patches, loaded modules, and directory paths.",
+        "info": "HTTP error pages contain information that could enable an attacker to gain access to an information system. Failure to prevent the sending of HTTP error pages with full information to remote requesters exposes internal configuration information to potential attackers.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nDouble-click the 'Error Pages' icon.\n\nClick any error message, and then click 'Edit Feature Setting' from the 'Actions' Pane. This will apply to all error messages.\n\nSet Feature Setting to 'Detailed errors for local requests and custom error pages for remote requests' or 'Custom error pages'.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-218810r879655_rule,STIG-ID|IIST-SV-000140,STIG-Legacy|SV-109259,STIG-Legacy|V-100155,Vuln-ID|V-218810",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "DetailedLocalOnly",
+        "appcmd_args": "list config /section:system.webServer/httpErrors /text:errorMode"
+    },
+    "custom_item_43": {
+        "description": "Check for Web Management Service",
+        "value_data": "true",
+        "powershell_args": "get-windowsfeature | where-object { $_.name -eq 'web-mgmt-service' } | select-object installed | format-table -hidetableheaders"
+    },
+    "custom_item_44": {
+        "description": "Check for Management Service remote connections enabled",
+        "value_data": "1",
+        "reg_key": "HKLM\\Software\\Microsoft\\WebManagement\\Server",
+        "reg_item": "EnableRemoteManagement"
+    },
+    "custom_item_45": {
+        "description": "IIST-SV-000144 - IIS 10.0 web server system files must conform to minimum file permission requirements.",
+        "info": "This check verifies the key web server system configuration files are owned by the SA or the web administrator controlled account. These same files that control the configuration of the web server, and thus its behavior, must also be accessible by the account running the web service. If these files are altered by a malicious user, the web server would no longer be under the control of its managers and owners; properties in the web server configuration could be altered to compromise the entire server platform.",
+        "solution": "Open Explorer and navigate to the inetpub directory.\n\nRight-click 'inetpub' and select 'Properties'.\n\nClick the 'Security' tab.\n\nSet the following permissions:\n\nSYSTEM: Full control\nAdministrators: Full control\nTrustedInstaller: Full control\nALL APPLICATION PACKAGES (built-in security group): Read and execute\nUsers: Read and execute, list folder contents\nCREATOR OWNER: special permissions to subkeys",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CAT|II,CCI|CCI-002235,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-218814r879717_rule,STIG-ID|IIST-SV-000144,STIG-Legacy|SV-109267,STIG-Legacy|V-100163,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-218814",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "inetpub",
+        "file": "@INETPUB_DIR@"
+    },
+    "custom_item_46": {
+        "description": "IIST-SV-000145 - The IIS 10.0 web server must use a logging mechanism configured to allocate log record storage capacity large enough to accommodate the logging requirements of the IIS 10.0 web server.",
+        "info": "To ensure the logging mechanism used by the web server has sufficient storage capacity in which to write the logs, the logging mechanism must be able to allocate log record storage capacity.\n\nThe task of allocating log record storage capacity is usually performed during initial installation of the logging mechanism. The system administrator will usually coordinate the allocation of physical drive space with the web server administrator along with the physical location of the partition and disk. Refer to NIST SP 800-92 for specific requirements on log rotation and storage dependent on the impact of the web server.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder 'IIS' double-click on the 'Logging' icon.\n\nIf necessary, in the 'Logging' configuration box, re-designate a log path to a location able to house the logs.\n\nUnder 'Log File Rollover', de-select the 'Do not create new log files' setting.\n\nConfigure a schedule to rollover log files on a regular basis.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-218815r879730_rule,STIG-ID|IIST-SV-000145,STIG-Legacy|SV-109269,STIG-Legacy|V-100165,Vuln-ID|V-218815",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "MaxSize",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.logfile.Period"
+    },
+    "custom_item_47": {
+        "description": "IIST-SV-000147 - Access to web administration tools must be restricted to the web manager and the web managers designees.",
+        "info": "A web server can be modified through parameter modification, patch installation, upgrades to the web server or modules, and security parameter changes. With each of these changes, there is the potential for an adverse effect such as a DoS, web server instability, or hosted application instability.\n\nTo limit changes to the web server and limit exposure to any adverse effects from the changes, files such as the web server application files, libraries, and configuration files must have permissions and ownership set properly to only allow privileged users access.\n\nThe key web service administrative and configuration tools must only be accessible by the web server staff. All users granted this authority will be documented and approved by the ISSO. Access to the IIS Manager will be limited to authorized users and administrators.\n\nSatisfies: SRG-APP-000380-WSR-000072, SRG-APP-000435-WSR-000147, SRG-APP-000033-WSR-000169",
+        "solution": "Restrict access to the web administration tool to only the web manager and the web manager's designees.",
+        "reference": "800-171|3.1.1,800-171|3.4.5,800-53|AC-3,800-53|CM-5(1),800-53|SC-5,800-53r5|AC-3,800-53r5|CM-5(1),800-53r5|SC-5,CAT|II,CCI|CCI-000213,CCI|CCI-001813,CCI|CCI-002385,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|DE.CM-1,CSF|PR.AC-4,CSF|PR.DS-4,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|CM-5(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|GS8e,NIAv2|GS10c,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-218816r879753_rule,STIG-ID|IIST-SV-000147,STIG-Legacy|SV-109271,STIG-Legacy|V-100167,TBA-FIISB|31.1,Vuln-ID|V-218816",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "inetmgr",
+        "file": "%systemroot%\\System32\\inetsrv\\InetMgr.exe"
+    },
+    "custom_item_48": {
+        "description": "IIST-SV-000148 - The IIS 10.0 web server must not be running on a system providing any other role.",
+        "info": "Web servers provide numerous processes, features, and functionalities that utilize TCP/IP ports. Some of these processes may be deemed unnecessary or too unsecure to run on a production system.\n\nThe web server must provide the capability to disable or deactivate network-related services deemed non-essential to the server mission, are too unsecure, or are prohibited by the PPSM CAL and vulnerability assessments.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove all unapproved programs and roles from the production web server.",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-218817r879756_rule,STIG-ID|IIST-SV-000148,STIG-Legacy|SV-109273,STIG-Legacy|V-100169,SWIFT-CSCv1|2.3,Vuln-ID|V-218817",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "ManualReviewRequired",
+        "powershell_args": "Get-ItemProperty HKLM:\\Software\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*, HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, DisplayVersion, Publisher | Sort-Object -Unique DisplayName | Format-Table -AutoSize"
+    },
+    "custom_item_49": {
+        "description": "Verify Web Printers directory does not exist",
+        "value_data": "%windir%\\web\\printers"
+    },
+    "custom_item_50": {
+        "description": "Verify 'Print Services' Role has been removed",
+        "value_data": ""
+    },
+    "custom_item_51": {
+        "description": "Verify 'UriMaxUriBytes' registry key is configured",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Services\\Http\\Parameters",
+        "reg_item": "UriMaxUriBytes"
+    },
+    "custom_item_52": {
+        "description": "Verify 'URIEnableCache' registry key is configured",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Services\\Http\\Parameters",
+        "reg_item": "URIEnableCache"
+    },
+    "custom_item_53": {
+        "description": "Verify 'UriScavengerPeriod' registry key is configured",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Services\\Http\\Parameters",
+        "reg_item": "UriScavengerPeriod"
+    },
+    "custom_item_54": {
+        "description": "IIST-SV-000152 - IIS 10.0 web server session IDs must be sent to the client using TLS.",
+        "info": "The HTTP protocol is a stateless protocol. To maintain a session, a session identifier is used. The session identifier is a piece of data used to identify a session and a user. If the session identifier is compromised by an attacker, the session can be hijacked. By encrypting the session identifier, the identifier becomes more difficult for an attacker to hijack, decrypt, and use before the session has expired.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nUnder 'Management' section, double-click the 'Configuration Editor' icon.\n\nFrom the 'Section:' drop-down list, select 'system.webServer/asp'.\n\nExpand the 'session' section.\n\nSelect 'True' for the 'keepSessionIdSecure' setting.\n\nSelect 'Apply' from the 'Actions' pane.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CAT|II,CCI|CCI-002418,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-218820r879810_rule,STIG-ID|IIST-SV-000152,STIG-Legacy|SV-109279,STIG-Legacy|V-100175,Vuln-ID|V-218820",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "true",
+        "appcmd_args": "list config /section:system.webServer/asp /text:session.keepSessionIdSecure"
+    },
+    "custom_item_55": {
+        "description": "Verify a REG_DWORD value of 0 for DisabledByDefault on TLS 1.2",
+        "value_data": "0",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.2\\Server",
+        "reg_item": "DisabledByDefault"
+    },
+    "custom_item_56": {
+        "description": "Verify REG_DWORD value of 1 for Enabled on TLS 1.2",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.2\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_57": {
+        "description": "Verify a REG_DWORD value of 1 for DisabledByDefault on TLS 1.0",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.0\\Server",
+        "reg_item": "DisabledByDefault"
+    },
+    "custom_item_58": {
+        "description": "Verify REG_DWORD value of 0 for Enabled on TLS 1.0",
+        "value_data": "0",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.0\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_59": {
+        "description": "Verify a REG_DWORD value of 1 for DisabledByDefault on TLS 1.1",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.1\\Server",
+        "reg_item": "DisabledByDefault"
+    },
+    "custom_item_60": {
+        "description": "Verify REG_DWORD value of 0 for Enabled on TLS 1.1",
+        "value_data": "0",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\Tls 1.1\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_61": {
+        "description": "Verify a REG_DWORD value of 1 for DisabledByDefault on SSL 2.0",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\SSL 2.0\\Server",
+        "reg_item": "DisabledByDefault"
+    },
+    "custom_item_62": {
+        "description": "Verify REG_DWORD value of 0 for Enabled on SSL 2.0",
+        "value_data": "0",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\SSL 2.0\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_63": {
+        "description": "Verify a REG_DWORD value of 1 for DisabledByDefault on SSL 3.0",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\SSL 3.0\\Server",
+        "reg_item": "DisabledByDefault"
+    },
+    "custom_item_64": {
+        "description": "Verify REG_DWORD value of 0 for Enabled on SSL 3.0",
+        "value_data": "0",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Control\\Securityproviders\\Schannel\\Protocols\\SSL 3.0\\Server",
+        "reg_item": "Enabled"
+    },
+    "custom_item_65": {
+        "description": "IIST-SV-000156 - All accounts installed with the IIS 10.0 web server software and tools must have passwords assigned and default passwords changed.",
+        "info": "During installation of the web server software, accounts are created for the web server to operate properly. The accounts installed can have either no password installed or a default password, which will be known and documented by the vendor and the user community.\n\nThe first things an attacker will try when presented with a logon screen are the default user identifiers with default passwords. Installed applications may also install accounts with no password, making the logon even easier. Once the web server is installed, the passwords for any created accounts should be changed and documented. The new passwords must meet the requirements for all passwords, i.e., upper/lower characters, numbers, special characters, time until change, reuse policy, etc.\n\nService accounts or system accounts that have no logon capability do not need to have passwords set or changed.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Access the IIS 10.0 web server.\n\nAccess the 'Apps' menu. Under Administrative Tools, select Computer Management.\n\nIn left pane, expand 'Local Users and Groups' and click on 'Users'.\n\nChange passwords for any local accounts present that are used by IIS 10.0, then verify with System Administrator default passwords have been changed.\n\nDevelop an internal process for changing passwords on a regular basis.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218823r879887_rule,STIG-ID|IIST-SV-000156,STIG-Legacy|SV-109285,STIG-Legacy|V-100181,SWIFT-CSCv1|2.3,Vuln-ID|V-218823",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "",
+        "powershell_args": "Get-CimInstance -ClassName Win32_Useraccount -Filter 'LocalAccount=True and Disabled=False'"
+    },
+    "custom_item_66": {
+        "description": "Verify the 'Allow unspecified ISAPI modules' is not configured",
+        "value_data": "false",
+        "appcmd_args": "list config -section:IsapiCgiRestriction -text:notListedCgisAllowed"
+    },
+    "custom_item_67": {
+        "description": "Verify the 'Allow unspecified CGI modules' is not configured",
+        "value_data": "false",
+        "appcmd_args": "list config -section:IsapiCgiRestriction -text:notListedIsapisAllowed"
+    },
+    "custom_item_68": {
+        "description": "Verify SharePoint is installed",
+        "value_data": "sharepoint",
+        "appcmd_args": "list site /state:Started /text:name"
+    },
+    "custom_item_69": {
+        "description": "Verify .NET is installed.",
+        "value_data": "v[234].*"
+    },
+    "custom_item_70": {
+        "description": "Verify WSUS is installed.",
+        "value_data": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate"
+    },
+    "custom_item_71": {
+        "description": "IIST-SV-000159 - The IIS 10.0 web server must have a global authorization rule configured to restrict access.",
+        "info": "Authorization rules can be configured at the server, website, folder (including Virtual Directories), or file level. It is recommended that URL Authorization be configured to only grant access to the necessary security principals. Configuring a global Authorization rule that restricts access ensures inheritance of the settings down through the hierarchy of web directories. This will ensure access to current and future content is only granted to the appropriate principals, mitigating risk of unauthorized access.",
+        "solution": "Open the IIS 10.0 Manager.\n\nClick the IIS 10.0 web server name.\n\nDouble-click the '.NET Authorization Rules' icon.\n\nAlter the list as necessary to ensure 'All Users' is set to 'Allow' and 'Anonymous Users' is set to 'Deny'.\n\nRemove any other line items.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-218825r928846_rule,STIG-ID|IIST-SV-000159,STIG-Legacy|SV-109289,STIG-Legacy|V-100185,SWIFT-CSCv1|2.3,Vuln-ID|V-218825",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "appcmd_args": "list config /section:system.web/authorization"
+    },
+    "custom_item_72": {
+        "description": "IIST-SV-000200 - The IIS 10.0 websites MaxConnections setting must be configured to limit the number of allowed simultaneous session requests.",
+        "info": "Resource exhaustion can occur when an unlimited number of concurrent requests are allowed on a website, facilitating a Denial of Service (DoS) attack. Mitigating this kind of attack will include limiting the number of concurrent HTTP/HTTPS requests per IP address and may include, where feasible, limiting parameter values associated with keepalive (i.e., a parameter used to limit the amount of time a connection may be inactive).",
+        "solution": "Access the IIS 10.0 IIS Manager.\n\nClick the IIS 10.0 server.\n\nSelect 'Configuration Editor' under the 'Management' section.\n\nFrom the 'Section:' drop-down list at the top of the configuration editor, locate 'system.applicationHost/sites'.\n\nExpand 'siteDefaults'.\nExpand 'limits'.\n\nSet the 'maxconnections' parameter to a value greater than zero.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-218826r879511_rule,STIG-ID|IIST-SV-000200,STIG-Legacy|SV-109291,STIG-Legacy|V-100187,Vuln-ID|V-218826",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "^[1-9]+[0-9]*$",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:siteDefaults.limits.maxConnections"
+    },
+    "custom_item_73": {
+        "description": "Verify HSTS compatible version/build of IIS 10.0 is installed.",
+        "value_data": "^10.0.(16299|17(134|763)|18(362|363))\\..*",
+        "powershell_args": "[System.Diagnostics.FileVersionInfo]::GetVersionInfo('C:\\Windows\\system32\\notepad.exe').FileVersion"
+    },
+    "custom_item_74": {
+        "description": "Verify HTTP Strict Transport Security (HSTS) is set to enabled",
+        "value_data": "True",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].hsts.enabled",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_75": {
+        "description": "Verify max-age is set to a value greater than 0",
+        "value_data": "^[1-9][0-9]*$",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].hsts.max-age",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_76": {
+        "description": "Verify includeSubDomains is set to True",
+        "value_data": "True",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].hsts.includeSubDomains",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_77": {
+        "description": "Verify redirectHttpToHttps is set to True",
+        "value_data": "True",
+        "appcmd_args": "list config /section:system.applicationHost/sites /text:[name='{}'].hsts.redirectHttpToHttps",
+        "appcmd_list": "list sites"
+    },
+    "custom_item_78": {
+        "description": "IIST-SV-000210 - HTTPAPI Server version must be removed from the HTTP Response Header information.",
+        "info": "HTTP Response Headers contain information that could enable an attacker to gain access to an information system. Failure to prevent the sending of certain HTTP Response Header information to remote requesters exposes internal configuration information to potential attackers.",
+        "solution": "Navigate to 'HKLM\\System\\CurrentControlSet\\Services\\HTTP\\Parameters'.\n\nCreate REG_DWORD 'DisableServerHeader' and set it to '1'.\n\nNote: This can be performed multiple ways, this is an example.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|III,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-241788r879655_rule,STIG-ID|IIST-SV-000210,STIG-Legacy|SV-54431,STIG-Legacy|V-41854,Vuln-ID|V-241788",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "1",
+        "reg_key": "HKLM\\System\\Currentcontrolset\\Services\\Http\\Parameters",
+        "reg_item": "DisableServerHeader"
+    },
+    "custom_item_79": {
+        "description": "IIST-SV-000215 - ASP.NET version must be removed from the HTTP Response Header information.",
+        "info": "HTTP Response Headers contain information that could enable an attacker to gain access to an information system. Failure to prevent the sending of certain HTTP Response Header information to remote requesters exposes internal configuration information to potential attackers.",
+        "solution": "Open the IIS 10.0 Manager.\nUnder the 'Connections' pane on the left side of the management console, select the IIS 10.0 web server.\nClick the HTTP Response Headers button.\nClick to select the 'X-Powered-By' HTTP Header.\nClick 'Remove' in the Actions Panel.\nNote: This can be performed multiple ways, this is an example.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|III,CCI|CCI-001312,DISA_Benchmark|IIS_10-0_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-241789r879655_rule,STIG-ID|IIST-SV-000215,STIG-Legacy|SV-54431,STIG-Legacy|V-41854,Vuln-ID|V-241789",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_IIS_10-0_Y23M10_STIG.zip",
+        "value_data": "X-Powered-By",
+        "appcmd_args": "list config /section:system.webServer/httpProtocol"
+    }
+}

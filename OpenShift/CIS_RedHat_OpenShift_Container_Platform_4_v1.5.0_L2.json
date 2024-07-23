@@ -1,0 +1,263 @@
+{
+    "custom_item_1": {
+        "description": "3.1.1 Client certificate authentication should not be used for users - Authentications",
+        "info": "Kubernetes provides the option to use client certificates for user authentication. However as there is no way to revoke these certificates when a user leaves an organization or loses their credential, they are not suitable for this purpose.\n\nIt is not possible to fully disable client certificate use within a cluster as it is used for component to component authentication.\n\nRationale:\n\nWith any authentication mechanism the ability to revoke credentials if they are compromised or no longer required, is a key control. Kubernetes client certificate authentication does not allow for this due to a lack of support for certificate revocation.\n\nImpact:\n\nExternal mechanisms for authentication generally require additional software to be deployed.",
+        "solution": "Configure an identity provider for the OpenShift cluster following the OpenShift documentation. Once an identity provider has been defined, you can use RBAC to define and apply permissions.\nAfter you define an identity provider and create a new cluster-admin user you can reduce the attack surface by removing the default kubeadmin user.\n\nDefault Value:\n\nBy default, only a kubeadmin user exists on your cluster. To specify an identity provider, you must create a Custom Resource (CR) that describes that identity provider and add it to the cluster.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53|SA-15,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SA-15,CSCv7|16.2,CSCv8|4.8,CSCv8|16.11,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|4.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getAuthentications",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), Kind: \\(.kind)\"",
+        "expect": "Kind: Authentication"
+    },
+    "custom_item_2": {
+        "description": "3.1.1 Client certificate authentication should not be used for users - Identities",
+        "info": "Kubernetes provides the option to use client certificates for user authentication. However as there is no way to revoke these certificates when a user leaves an organization or loses their credential, they are not suitable for this purpose.\n\nIt is not possible to fully disable client certificate use within a cluster as it is used for component to component authentication.\n\nRationale:\n\nWith any authentication mechanism the ability to revoke credentials if they are compromised or no longer required, is a key control. Kubernetes client certificate authentication does not allow for this due to a lack of support for certificate revocation.\n\nImpact:\n\nExternal mechanisms for authentication generally require additional software to be deployed.",
+        "solution": "Configure an identity provider for the OpenShift cluster following the OpenShift documentation. Once an identity provider has been defined, you can use RBAC to define and apply permissions.\nAfter you define an identity provider and create a new cluster-admin user you can reduce the attack surface by removing the default kubeadmin user.\n\nDefault Value:\n\nBy default, only a kubeadmin user exists on your cluster. To specify an identity provider, you must create a Custom Resource (CR) that describes that identity provider and add it to the cluster.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53|SA-15,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SA-15,CSCv7|16.2,CSCv8|4.8,CSCv8|16.11,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|4.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getIdentities",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | [.items[].providerName] | unique | .[] | \"Cluster ID: \\($clusterID), Provider Name: \\(.)\"",
+        "expect": "Provider Name: .+"
+    },
+    "custom_item_3": {
+        "description": "3.1.1 Client certificate authentication should not be used for users - ClusterRoleBindings",
+        "info": "Kubernetes provides the option to use client certificates for user authentication. However as there is no way to revoke these certificates when a user leaves an organization or loses their credential, they are not suitable for this purpose.\n\nIt is not possible to fully disable client certificate use within a cluster as it is used for component to component authentication.\n\nRationale:\n\nWith any authentication mechanism the ability to revoke credentials if they are compromised or no longer required, is a key control. Kubernetes client certificate authentication does not allow for this due to a lack of support for certificate revocation.\n\nImpact:\n\nExternal mechanisms for authentication generally require additional software to be deployed.",
+        "solution": "Configure an identity provider for the OpenShift cluster following the OpenShift documentation. Once an identity provider has been defined, you can use RBAC to define and apply permissions.\nAfter you define an identity provider and create a new cluster-admin user you can reduce the attack surface by removing the default kubeadmin user.\n\nDefault Value:\n\nBy default, only a kubeadmin user exists on your cluster. To specify an identity provider, you must create a Custom Resource (CR) that describes that identity provider and add it to the cluster.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53|SA-15,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SA-15,CSCv7|16.2,CSCv8|4.8,CSCv8|16.11,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|4.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getClusterRoleBindings",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | .metadata.name as $name | .metadata.uid as $uid | .subjects[] | \"Cluster ID: \\($clusterID), Role: \\($name), UID: \\($uid), Name: \\(.name), Kind: \\(.kind)\"",
+        "regex": "Role: cluster-admin.*Kind: User",
+        "expect": "Role: cluster-admin.*Kind: User"
+    },
+    "custom_item_4": {
+        "description": "3.1.1 Client certificate authentication should not be used for users - Secrets",
+        "info": "Kubernetes provides the option to use client certificates for user authentication. However as there is no way to revoke these certificates when a user leaves an organization or loses their credential, they are not suitable for this purpose.\n\nIt is not possible to fully disable client certificate use within a cluster as it is used for component to component authentication.\n\nRationale:\n\nWith any authentication mechanism the ability to revoke credentials if they are compromised or no longer required, is a key control. Kubernetes client certificate authentication does not allow for this due to a lack of support for certificate revocation.\n\nImpact:\n\nExternal mechanisms for authentication generally require additional software to be deployed.",
+        "solution": "Configure an identity provider for the OpenShift cluster following the OpenShift documentation. Once an identity provider has been defined, you can use RBAC to define and apply permissions.\nAfter you define an identity provider and create a new cluster-admin user you can reduce the attack surface by removing the default kubeadmin user.\n\nDefault Value:\n\nBy default, only a kubeadmin user exists on your cluster. To specify an identity provider, you must create a Custom Resource (CR) that describes that identity provider and add it to the cluster.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53|SA-15,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SA-15,CSCv7|16.2,CSCv8|4.8,CSCv8|16.11,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|4.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getSecrets_kube-system",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | select(.metadata.name==\"kubeadmin\") | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: kubeadmin"
+    },
+    "custom_item_5": {
+        "description": "3.2.2 Ensure that the audit policy covers key security concerns - openshift-kube-apiserver",
+        "info": "Ensure that the audit policy created for the cluster covers key security concerns.\n\nRationale:\n\nSecurity audit logs should cover access and modification of key resources in the cluster, to enable them to form an effective part of a security environment.\n\nImpact:\n\nIncreasing audit logging will consume resources on the nodes or other log destinations.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Update the audit log policy profile to use WriteRequestBodies.\n\nDefault Value:\n\nAudit logging is configured by default using the Default audit policy, but you are advised to review the log retention settings and log levels to align with your cluster's security posture.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getConfigMaps_openshift-kube-apiserver",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | .metadata.uid as $uid | .metadata.name as $name | select($name == \"config\") | select(.data.\"config.yaml\" | length > 0) | .data.\"config.yaml\" | fromjson | \"Cluster ID: \\($clusterID), Name: \\($name), UID: \\($uid), Audit Policy File: \\(.apiServerArguments.\"audit-policy-file\")\"",
+        "expect": "MANUAL_REVIEW_REQUIRED"
+    },
+    "custom_item_6": {
+        "description": "3.2.2 Ensure that the audit policy covers key security concerns - openshift-apiserver",
+        "info": "Ensure that the audit policy created for the cluster covers key security concerns.\n\nRationale:\n\nSecurity audit logs should cover access and modification of key resources in the cluster, to enable them to form an effective part of a security environment.\n\nImpact:\n\nIncreasing audit logging will consume resources on the nodes or other log destinations.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Update the audit log policy profile to use WriteRequestBodies.\n\nDefault Value:\n\nAudit logging is configured by default using the Default audit policy, but you are advised to review the log retention settings and log levels to align with your cluster's security posture.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getConfigMaps_openshift-apiserver",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | .metadata.uid as $uid | .metadata.name as $name | select($name == \"config\") | select(.data.\"config.yaml\" | length > 0) | .data.\"config.yaml\" | fromjson | \"Cluster ID: \\($clusterID), Name: \\($name), UID: \\($uid), Audit Policy File: \\(.apiServerArguments.\"audit-policy-file\")\"",
+        "expect": "MANUAL_REVIEW_REQUIRED"
+    },
+    "custom_item_7": {
+        "description": "5.2.6 Minimize the admission of root containers",
+        "info": "Do not generally permit containers to be run as the root user.\n\nRationale:\n\nContainers may run as any Linux user. Containers which run as the root user, whilst constrained by Container Runtime security features still have an escalated likelihood of container breakout.\n\nIdeally, all containers should run as a defined non-UID 0 user.\n\nThere should be at least one Security Context Constraint (SCC) defined which does not permit root users in a container.\n\nIf you need to run root containers, this should be defined in a separate SCC and you should carefully check RBAC controls to ensure that only limited service accounts and users are given permission to access that SCC.\n\nImpact:\n\nPods with containers which run as the root user will not be permitted.",
+        "solution": "None required. By default, OpenShift includes the nonroot and nonroot-v2 SCCs that restrict the ability to run as nonroot. If additional SCCs are appropriate, follow the OpenShift documentation to create custom SCCs.\n\nDefault Value:\n\nBy default, the following SCCs restrict the ability to run as non-root:\n\n'nonroot'\n\n'nonroot-v2'",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-171|3.1.14,800-53|AC-6(2),800-53|AC-6(5),800-53|AC-17(3),800-53|SI-7,800-53r5|AC-6(2),800-53r5|AC-6(5),800-53r5|AC-17(3),800-53r5|SI-7,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(a),CN-L3|8.1.10.6(i),CSCv7|4.3,CSCv8|5.4,CSCv8|12.8,CSF|PR.AC-3,CSF|PR.AC-4,CSF|PR.DS-6,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),ITSG-33|AC-17(3),ITSG-33|SI-7,ITSG-33|SI-7a.,LEVEL|2M,NESA|T3.4.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.6,NESA|T5.6.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5.5,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getSecurityContextConstraints",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid), Run As User: \\(.runAsUser.type), UID Range Min: \\(.runAsUser.uidRangeMin), UID Range Max: \\(.runAsUser.uidRangeMax)\"",
+        "expect": "Run As User: (MustRunAsNonRoot|MustRunAsRange, UID Range Min: [1-9])"
+    },
+    "custom_item_8": {
+        "description": "5.2.9 Minimize the admission of containers with capabilities assigned",
+        "info": "Do not generally permit containers with capabilities.\n\nRationale:\n\nContainers run with a default set of capabilities as assigned by the Container Runtime. Capabilities are parts of the rights generally granted on a Linux system to the root user.\n\nIn many cases applications running in containers do not require any capabilities to operate, so from the perspective of the principal of least privilege use of capabilities should be minimized.\n\nImpact:\n\nPods with containers which require capabilities to operate will not be permitted.",
+        "solution": "Review the use of capabilities in applications running on your cluster. Where a namespace contains applications which do not require any Linux capabilities to operate, consider adding a SCC which forbids the admission of containers which do not drop all capabilities.\n\nDefault Value:\n\nBy default, OpenShift includes three SCCs that drop all container capabilities:\n\n'hostnetwork-v2'\n\n'nonroot-v2'\n\n'restricted-v2'",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|5.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getSecurityContextConstraints",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid), Required Drop Capabilities: \\(.requiredDropCapabilities)\"",
+        "expect": "Required Drop Capabilities:.*\"ALL\""
+    },
+    "custom_item_9": {
+        "description": "5.2.10 Minimize access to privileged Security Context Constraints",
+        "info": "OpenShift has the concept of Security Context Constraints (SCCs) that supplement the Pod Security Admission controller.\n\nSCCs allow you to group elevated container capabilities and assign those capabilities to users and groups. For example, you can have an SCC that restricts the ability to launch privileged containers and assign that SCC to all authenticated users. As a result, users requesting a pod that contains a privileged container will be rejected.\n\nYou can find more information on SCCs in the OpenShift documentation.\n\nRationale:\n\nSCCs that contain the ability to permit privileged or elevated container action should be carefully managed. Users with access to such an SCC can leverage the privileged functionality granted by that SCC, increasing the risk of compromising the container or host.\n\nImpact:\n\nUsers should only have access to SCCs that allow them to perform functions required by their roles, and no more, following the principle of least privilege.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove any users and groups who do not need access to an SCC, following the principle of least privilege.\nYou can remove users and groups from an SCC using the oc edit scc $NAME command.\nAdditionally, you can create your own SCCs that contain the container functionality you need for a particular use case and assign that SCC to users and groups if the default SCCs are not appropriate for your use case.\n\nDefault Value:\n\nOpenShift provides the following SCCs by default:\n\n'anyuid'\n\n'hostaccess'\n\n'hostmount-anyuid'\n\n'hostnetwork'\n\n'hostnetwork-v2'\n\n'machine-api-termination-handler'\n\n'node-exporter'\n\n'nonroot'\n\n'nonroot-v2'\n\n'privileged'\n\n'restricted'\n\n'restricted-v2'\n\nThese default SCCs attempt to group similar privileged container functionality into a single SCC that fits particular use cases.\n\nPlease refer to the OpenShift documentation for a complete list of capabilities associated with each default SCC.",
+        "reference": "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-3,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|4.7,CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2M,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getSecurityContextConstraints",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | select((.allowHostIPC or .allowHostPID or .allowHostPorts or .allowHostNetwork or .allowHostDirVolumePlugin or .allowPrivilegedContainer or .runAsUser.type != \"MustRunAsRange\") and (.groups != []) or (.users != [])) | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid), Groups: \\(.groups), Users: \\(.users)\"",
+        "regex": "Cluster ID:",
+        "not_expect": "Cluster ID:"
+    },
+    "custom_item_10": {
+        "description": "5.3.2 Ensure that all Namespaces have Network Policies defined - Namespaces",
+        "info": "Use network policies to isolate traffic in your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints.\n\nOnce there is any Network Policy in a namespace selecting a particular pod, that pod will reject any connections that are not allowed by any Network Policy. Other pods in the namespace that are not selected by any Network Policy will continue to accept all traffic\n\nImpact:\n\nOnce there is any Network Policy in a namespace selecting a particular pod, that pod will reject any connections that are not allowed by any Network Policy. Other pods in the namespace that are not selected by any Network Policy will continue to accept all traffic'",
+        "solution": "Follow the documentation and create NetworkPolicy objects as you need them.\n\nDefault Value:\n\nBy default, all Pods in a project are accessible from other Pods and network endpoints; network policies are not created.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|14.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getNamespaces",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\""
+    },
+    "custom_item_11": {
+        "description": "5.3.2 Ensure that all Namespaces have Network Policies defined - NetworkPolicies",
+        "info": "Use network policies to isolate traffic in your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints.\n\nOnce there is any Network Policy in a namespace selecting a particular pod, that pod will reject any connections that are not allowed by any Network Policy. Other pods in the namespace that are not selected by any Network Policy will continue to accept all traffic\n\nImpact:\n\nOnce there is any Network Policy in a namespace selecting a particular pod, that pod will reject any connections that are not allowed by any Network Policy. Other pods in the namespace that are not selected by any Network Policy will continue to accept all traffic'\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create NetworkPolicy objects as you need them.\n\nDefault Value:\n\nBy default, all Pods in a project are accessible from other Pods and network endpoints; network policies are not created.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|14.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getNetworkPolicies",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid), Namespace: \\(.metadata.namespace)\"",
+        "expect": "MANUAL_REVIEW_REQUIRED"
+    },
+    "custom_item_12": {
+        "description": "5.7.4 The default namespace should not be used - BuildConfigs",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getBuildConfigs_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_13": {
+        "description": "5.7.4 The default namespace should not be used - Builds",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getBuilds_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_14": {
+        "description": "5.7.4 The default namespace should not be used - CronJobs",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getCronJobs_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_15": {
+        "description": "5.7.4 The default namespace should not be used - DaemonSets",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getDaemonSets_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_16": {
+        "description": "5.7.4 The default namespace should not be used - DeploymentConfigs",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getDeploymentConfigs_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_17": {
+        "description": "5.7.4 The default namespace should not be used - Deployments",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getDeployments_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_18": {
+        "description": "5.7.4 The default namespace should not be used - HorizontalPodAutoScalers",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getHorizontalPodAutoScalers_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_19": {
+        "description": "5.7.4 The default namespace should not be used - ImageStreams",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getImageStreams_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_20": {
+        "description": "5.7.4 The default namespace should not be used - Jobs",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getJobs_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_21": {
+        "description": "5.7.4 The default namespace should not be used - Pods",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getPods_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_22": {
+        "description": "5.7.4 The default namespace should not be used - ReplicaSets",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getReplicaSets_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_23": {
+        "description": "5.7.4 The default namespace should not be used - ReplicationControllers",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getReplicationControllers_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_24": {
+        "description": "5.7.4 The default namespace should not be used - Routes",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getRoutes_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    },
+    "custom_item_25": {
+        "description": "5.7.4 The default namespace should not be used - Services",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getServices_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "expect": "Name: (kubernetes|openshift), UID:"
+    },
+    "custom_item_26": {
+        "description": "5.7.4 The default namespace should not be used - StatefulSets",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-53|SC-20,800-53|SC-21,800-53|SC-22,800-53r5|SC-20,800-53r5|SC-21,800-53r5|SC-22,CSCv7|5,CSCv8|4.9,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,ITSG-33|SC-21,ITSG-33|SC-21a.,ITSG-33|SC-22,ITSG-33|SC-22a.,LEVEL|2M,NESA|T4.5.1,NIAv2|NS17,NIAv2|NS18,NIAv2|NS19,NIAv2|NS20,NIAv2|NS21,NIAv2|NS22,NIAv2|NS23,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/14166",
+        "request": "getStatefulSets_default",
+        "json_transform": ".items[] | .spec.clusterID as $clusterID | .items[] | \"Cluster ID: \\($clusterID), Name: \\(.metadata.name), UID: \\(.metadata.uid)\"",
+        "not_expect": "Name: .+"
+    }
+}

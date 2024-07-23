@@ -1,0 +1,486 @@
+{
+    "custom_item_1": {
+        "description": "AIX Version 7, Release 2 or greater, found",
+        "cmd": "/usr/bin/oslevel",
+        "expect": "^[\\\\s]*@PLATFORM_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "te",
+        "cmd": "/usr/sbin/trustchk -p TE",
+        "expect": "^[\\\\s]*TE[\\\\s]*=[\\\\s]*[Oo][Nn][\\\\s]*$"
+    },
+    "custom_item_3": {
+        "description": "stop_on_chkfail",
+        "cmd": "/usr/sbin/trustchk -p STOP_ON_CHKFAIL 2>&1",
+        "expect": "^[\\\\s]*STOP_ON_CHKFAIL[\\\\s]*=[\\\\s]*[Oo][Nn][\\\\s]*$"
+    },
+    "custom_item_4": {
+        "description": "stop_untrusted",
+        "cmd": "/usr/sbin/trustchk -p stop_untrustd 2>&1",
+        "expect": "^[\\\\s]*STOP_UNTRUSTD[\\\\s]*=[\\\\s]*(?i)(ON|TROJAN)[\\\\s]*"
+    },
+    "custom_item_5": {
+        "description": "2.8 Ensure the Trusted Execution Policies cannot be modified",
+        "info": "Set trusted execution policy LOCK_KERN_POLICIES to enabled. All of the other policies will then be locked and cannot be changed without disabling the LOCK_KERN_POLICIES policy and then restarting the system.\n\nRationale:\n\nWhen policies are locked, unauthorized users cannot make changes to the policies to allow them to execute unapproved tools and then revert the settings afterwards. An unplanned system reboot is likely to be noticed and investigated",
+        "solution": "Execute the following command\n\ntrustchk -p LOCK_KERN_POLICIES=ON",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/sbin/trustchk -p LOCK_KERN_POLICIES",
+        "expect": "^[\\\\s]*LOCK_KERN_POLICIES[\\\\s]*=[\\\\s]*[Oo][Nn][\\\\s]*$"
+    },
+    "custom_item_6": {
+        "description": "clickext",
+        "cmd": "/usr/bin/genkex | /usr/bin/grep crypto/clickext | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "[\\\\s]/usr/lib/drivers/crypto/clickext[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "description": "lslpp clic",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep clic",
+        "expect": "^[\\\\s]+clic\\\\.rte\\\\."
+    },
+    "custom_item_8": {
+        "description": "on disk /usr/sbin/mrouted",
+        "file": "/etc/rc.tcpip",
+        "regex": "^[\\\\s]*start[\\\\s]+/usr/sbin/mrouted",
+        "expect": "^[\\\\s]*start[\\\\s]+/usr/sbin/mrouted"
+    },
+    "custom_item_9": {
+        "description": "lssrc mrouted",
+        "cmd": "/usr/bin/lssrc -s mrouted | /usr/bin/awk '{ print } END { if (NR==0) print \"pass\" }'",
+        "expect": "[\\\\s]+(inoperative|The mrouted Subsystem is not on file\\\\.)$"
+    },
+    "custom_item_10": {
+        "description": "4.1.3.1 autoconf6",
+        "info": "This entry starts autoconf6 on system startup. This is to automatically configure IPv6 interfaces at boot time.\n\nRationale:\n\nautoconf6 is used to automatically configure IPv6 interfaces at boot time. Running this service may allow other hosts on the same physical subnet to connect via IPv6, even when the network does not support it. You must disable this unless you utilize IPv6 on the server.",
+        "solution": "In /etc/rc.tcpip, comment out the autoconf6 entry:\n\nchrctcp -d autoconf6\n\nDefault Value:\n\nCommented out",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSCv8|4.8,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/rc.tcpip",
+        "regex": "^[\\\\s]*start[\\\\s]+/usr/sbin/autoconf6",
+        "expect": "^[\\\\s]*start[\\\\s]+/usr/sbin/autoconf6"
+    },
+    "custom_item_11": {
+        "description": "4.1.3.2 ndpd-host",
+        "info": "This entry starts ndpd-host on system startup. This is the Neighbor Discovery Protocol (NDP) daemon.\n\nThe ndpd-host command handles the default route, which includes the default router, the default interface, and the default interface address. However, the ndpd-host command does not overwrite the static default routes that are set on the host. When the daemon is stopped, the daemon cleans up the prefix addresses and the routes that are created during its lifetime.\n\nRationale:\n\nThe ndpd-host performs the client function of the NDP protocol.\n\nUnless the server utilizes (dynamic) IPv6 this utility is not required and should be disabled.\n\nIpv6 static configuration is not affected by ndpd-host.\n\nImpact:\n\nWhen IPv6 is active and NDP is used to get a non-link-local IPv6 address (link-local addresses begin with fe80::) it is also likely that the MTU size of the interface will change from 1500 to 1492. Additionally, it may add default route to the IPv6 router it received it's address from. For example:\n\nBEFORE NDP\n\nnetstat -ni\n\nName  Mtu   Network     Address           Ipkts Ierrs    Opkts Oerrs  Coll\n\n...\n\nen0   1500  192.168.129 192.168.129.71   105156791     0 49249083     1     0\n\nen0   1500  fe80::dead:beef:fef7:6204    105156791     0 49249083     1     0\n\nnetstat -rn\n\nRouting tables\n\nDestination        Gateway           Flags   Refs     Use  If   Exp  Groups\n\nRoute tree for Protocol Family 2 (Internet):\n\ndefault            192.168.129.1     UG       23  35660110 en0      -      -\n\n127/8              127.0.0.1         U         2     22988 lo0      -      -\n\n192.168.129.0      192.168.129.71    UHSb      0         0 en0      -      -   =>\n\n192.168.129/24     192.168.129.71    U        12  13578475 en0      -      -\n\n192.168.129.71     127.0.0.1         UGHS      0     21471 lo0      -      -\n\n192.168.129.255    192.168.129.71    UHSb      0         0 en0      -      -\n\nRoute tree for Protocol Family 24 (Internet v6):\n\ndefault            link#2            UC        0         0 en0      -      -\n\n::1%1              ::1%1             UH        0     19154 lo0      -      -\n\n...\n\nAfter NDP\n\nnetstat -ni\n\nName  Mtu   Network     Address           Ipkts Ierrs    Opkts Oerrs  Coll\n\n...\n\nen0   1492  192.168.129 192.168.129.71   105190883     0 49267729     1     0\n\nen0   1492  BEEF:980:a9ea:1:deed:beef:fef7:6204 105190883     0 49267729     1     0\n\nen0   1492  fe80::deed:beef:fef7:6204    105190883     0 49267729     1     0\n\nnetstat -nr\n\nRouting tables\n\nDestination        Gateway           Flags   Refs     Use  If   Exp  Groups\n\nRoute tree for Protocol Family 2 (Internet):\n\ndefault            192.168.129.1     UG       17  35724295 en0      -      -\n\n127/8              127.0.0.1         U         2     23044 lo0      -      -\n\n192.168.129.0      192.168.129.71    UHSb      0         0 en0      -      -   =>\n\n192.168.129/24     192.168.129.71    U        14  13622746 en0      -      -\n\n192.168.129.71     127.0.0.1         UGHS      0     21576 lo0      -      -\n\n192.168.129.255    192.168.129.71    UHSb      0         0 en0      -      -\n\nRoute tree for Protocol Family 24 (Internet v6):\n\ndefault            fe80::dead:beef:fefa:4bfe UG        0         0 en0      -      -\n\n::1%1              ::1%1             UH        0     19198 lo0      -      -\n\nNote: the IPv6 destination address is the link-local (fe80::) address of the IPv6 router.",
+        "solution": "In /etc/rc.tcpip, comment out the ndpd-host entry:\n\nchrctcp -d ndpd-host\n\nDefault Value:\n\nCommented out",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSCv8|4.8,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/rc.tcpip",
+        "regex": "^[\\\\s]*start[\\\\s]+/usr/sbin/ndpd-host",
+        "expect": "^[\\\\s]*start[\\\\s]+/usr/sbin/ndpd-host"
+    },
+    "custom_item_12": {
+        "description": "4.1.3.3 ndpd-router",
+        "info": "This entry starts ndpd-router on system startup. This manages the Neighbor Discovery Protocol (NDP) for non kernel activities.\n\nIt receives Router Solicitations and sends Router Advertisements. It can also exchange routing information using the RIPng protocol.\n\nRationale:\n\nThe ndpd-router manages NDP for non-kernel activities. Unless the server utilizes IPv6, this is not required and should be disabled.\n\nImpact:\n\nThis service is not needed unless the AIX host is actively exchanging routing information with IPv6 routers.\n\nSee: manpage AIX 7.1 ndpd-router Daemon",
+        "solution": "In /etc/rc.tcpip, comment out the ndpd-router entry:\n\nchrctcp -d ndpd-router\n\nDefault Value:\n\nDisabled",
+        "reference": "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSCv8|4.8,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|1A,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/rc.tcpip",
+        "regex": "^[\\\\s]*start[\\\\s]+/usr/sbin/ndpd-router",
+        "expect": "^[\\\\s]*start[\\\\s]+/usr/sbin/ndpd-router"
+    },
+    "custom_item_13": {
+        "description": "4.1.4.2 NFS - de-install NFS server",
+        "info": "De-install NFS server if the server does not act as an NFS server to remote clients.\n\nRationale:\n\nNFS is frequently exploited to gain unauthorized access to file and directories. Unless the server needs to act as an NFS server or client, the filesets should be de-installed.",
+        "solution": "Ensure that there are no current NFS exports:\n\ncat /etc/exports\n\nThe above command should yield no output. Or the file should not exist.\nDe-install the NFS sever software:\n\ninstallp -u bos.net.nfs.server\n\nIf there was an empty /etc/exports file, remove it:\n\nrm /etc/exports\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nRe-install the software from the product DVD's\n\nNote: When NFS Server software is installed then the Recommendation 4.1.4.7 is required. Otherwise, it may be skipped.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep bos.net.nfs.server | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none$"
+    },
+    "custom_item_14": {
+        "description": "4.1.4.5 NFS - restrict NFS access",
+        "info": "Only allow explicitly defined host access to NFS exported filesystems and directories.\n\nRationale:\n\nThe NFS server should be configured to only allow explicitly defined hosts to mount filesystems from the server. If an unauthorized host is denied the permission to mount a filesystem, then the unauthorized users on that host will not be able to access the server's files.\n\nThe default value of access allows any machine to mount any exported filesystems/directories.",
+        "solution": "Ensure that all exports defined in /etc/exports have explicit client access options which clearly define the host or hosts allowed access: Review the content of /etc/exports and that all exports have explicit access lists:\n\nshowmount -e | grep '(everyone)'\n\nEnsure that each NFS export has an explicit access line, for example, modify:\n\n/export/repo             (everyone)\n\nto:\n\n/export/repo             x071\n\nThe option -c is used to specify clients permitted access:\n\nchnfsexp -d /export/repo -c x071\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion: Clear the client access specification by supplying the NULL string ('') as argument.\n\nchnfsexp -d /export/repo -c ''",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/showmount -e 2>&1 | /usr/bin/grep \"(everyone)\" | /usr/bin/wc -l",
+        "expect": "^0$"
+    },
+    "custom_item_15": {
+        "description": "4.1.4.7 NFS - secure NFS",
+        "info": "For each NFS export, ensure that the secure option is selected.\n\nRationale:\n\nSecure NFS uses DES encryption or Kerberos to authenticate hosts involved in RPC transactions. RPC is a protocol used by NFS to communicate requests between hosts. Secure NFS mitigates attempts by an attacker to spoof RPC requests by encrypting the time stamp in the RPC requests. A receiver successfully decrypts the time stamp and confirms that it is correct. This serves as a confirmation that the RPC request came from a trusted host.",
+        "solution": "Use chnfsexp to change/validate this value for all NFS exported filesystems:\n\nchnfsexp -d-SThe available security method options are:\n\nsys - UNIX authentication\n\ndh - DES authentication\n\nnone - Use the anonymous ID if it has a value other than -1\n\nkrb5 - Kerberos. Authentication only\n\nkrb5i - Kerberos. Authentication and integrity\n\nkrb5p - Authentication, integrity, and privacy '\n\nOnce all exported filesystems have been successfully validated or changed, re-export the filesystems and directories to activate the new options:\n\nexportfs -a\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion: Copy back the original /etc/exports:\n\ncp -p /etc/exports.pre_cis /etc/exports",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/sbin/lsnfsexp -l | /usr/bin/awk '{ print } BEGIN { f=0; } /^.*/ {if ($0 !~ \"sec=(sys|dh|krb5|krb5i|krb5p)\") f++;} END {if (NR == 0) print \"Pass - /etc/exports empty\"; else if (f > 0) print \"Fail\"; else print \"Pass\"}'",
+        "expect": "^Pass"
+    },
+    "custom_item_16": {
+        "description": "rlogin",
+        "file": "/usr/bin/rlogin",
+        "mask": "777"
+    },
+    "custom_item_17": {
+        "description": "rcp",
+        "file": "/usr/bin/rcp",
+        "mask": "777"
+    },
+    "custom_item_18": {
+        "description": "rsh",
+        "file": "/usr/bin/rsh",
+        "mask": "777"
+    },
+    "custom_item_19": {
+        "description": "4.4.3 Removal of entries from /etc/hosts.equiv",
+        "info": "This process removes all entries from the /etc/hosts.equiv file.\n\nRationale:\n\nThe /etc/hosts.equiv file can be used to circumvent normal login or change control procedures. The existence of this file, with the relevant entries, can allow remote user access to a system bypassing local user and password authentication. Unless required all entries will be removed from this file.",
+        "solution": "Remove all entries from the /etc/hosts.equiv file:\n\nsed '/^\\s*$/d; s/^\\(\\s*[^#].*\\)/#\\1/' /etc/hosts.equiv > /etc/hosts.equiv.work\nmv hosts.equiv.work hosts.equiv\nchown root:system /etc/hosts.equiv\nchmod 644 /etc/hosts.equiv\n\nNote: the above command removes blank lines and comments out any non commented entries.\n\nDefault Value:\n\nN/A",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/hosts.equiv",
+        "regex": "^[\\\\s]*[^#].*",
+        "expect": "^[\\\\s]*[^#].*"
+    },
+    "custom_item_20": {
+        "description": "rhosts",
+        "file": "~/.rhosts"
+    },
+    "custom_item_21": {
+        "description": "netrc",
+        "file": "~/.netrc"
+    },
+    "custom_item_22": {
+        "description": "tftpd",
+        "file": "/usr/sbin/tftpd",
+        "mask": "777"
+    },
+    "custom_item_23": {
+        "description": "rshd",
+        "file": "/usr/sbin/rshd",
+        "mask": "777"
+    },
+    "custom_item_24": {
+        "description": "rlogind",
+        "file": "/usr/sbin/rlogind",
+        "mask": "777"
+    },
+    "custom_item_25": {
+        "description": "4.4.1.1 NIS - de-install NIS client",
+        "info": "If NIS is not used in the environment, disable the NIS client and de-install the software.\n\nRationale:\n\nAs NIS is extremely insecure, the NIS client packages must be removed from the system unless absolutely needed.",
+        "solution": "Ensure that all of the NIS daemons are inactive:\n\nstopsrc -g yp\n\nDe-install the NIS client software:\n\ninstallp -u bos.net.nis.client\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nRe-install the software from the product DVD's.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/lslpp -L bos.net.nis.client",
+        "expect": "[\\\\s]*not[\\\\s]+installed\\\\.[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "description": "4.4.1.2 NIS - de-install NIS server",
+        "info": "If NIS is not used in the environment, disable the NIS server and de-install the software.\n\nRationale:\n\nAs NIS is extremely insecure, the NIS server packages must be removed from the system unless absolutely needed.",
+        "solution": "Ensure that all of the NIS daemons are inactive:\n\nstopsrc -g yp\n\nDe-install the NIS server software:\n\ninstallp -u bos.net.nis.server\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nRe-install the software from the product DVD's.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/lslpp -L bos.net.nis.server",
+        "expect": "[\\\\s]*not[\\\\s]+installed\\\\.[\\\\s]*$"
+    },
+    "custom_item_27": {
+        "description": "/etc/passwd",
+        "file": "/etc/passwd",
+        "regex": "^\\\\+",
+        "expect": "^\\\\+"
+    },
+    "custom_item_28": {
+        "description": "/etc/group",
+        "file": "/etc/group",
+        "regex": "^\\\\+",
+        "expect": "^\\\\+"
+    },
+    "custom_item_29": {
+        "description": "server installed",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep bos.net.nis.server | /usr/bin/awk '{ print } END { if (NR==0) print \"nis server is not installed\" }'",
+        "expect": "^[\\\\s]*bos\\\\.net\\\\.nis\\\\.server[\\\\s]+"
+    },
+    "custom_item_30": {
+        "description": "securenets contents",
+        "file": "/var/yp/securenets",
+        "regex": "^[\\\\s]*[0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\s]+[0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\s]*$",
+        "expect": "^[\\\\s]*[0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\s]+[0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\.][0-9]{1,3}[\\\\s]*$"
+    },
+    "custom_item_31": {
+        "description": "securenets permissions",
+        "file": "/var/yp/securenets",
+        "owner": "root",
+        "mask": "177",
+        "group": "system"
+    },
+    "custom_item_32": {
+        "description": "4.5.1.2 /etc/inetd.conf - cmsd",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep -i CDE",
+        "expect": "^[\\\\s]*X11\\\\.Dt\\\\."
+    },
+    "custom_item_33": {
+        "description": "4.5.1.2 /etc/inetd.conf - cmsd",
+        "info": "This entry starts the cmsd service when required. This is a calendar and appointment service.\n\nRationale:\n\nThe cmsd service is utilized by CDE to provide calendar functionality. If CDE is not required, this service should be disabled.",
+        "solution": "In /etc/inetd.conf, comment out the cmsd entry:\n\nchsubserver -r inetd -C /etc/inetd.conf -d  -v 'cmsd' -p 'tcsunrpc_udp'\nrefresh -s inetd\n\nDefault Value:\n\nUncommented",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/lssrc -s inetd -l | /usr/bin/grep cms | /usr/bin/wc -l",
+        "expect": "^0$"
+    },
+    "custom_item_34": {
+        "description": "4.5.1.3 CDE - disabling dtlogin",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep -i CDE",
+        "expect": "^[\\\\s]*X11\\\\.Dt\\\\."
+    },
+    "custom_item_35": {
+        "description": "4.5.1.3 CDE - disabling dtlogin",
+        "info": "Do not start CDE automatically on system boot.\n\nRationale:\n\nThe implementation of the customized aixpert XML file disables CDE if there is not a graphical console attached to the system. If there is a graphical console or the XML file has not been executed, consider disabling CDE anyway.",
+        "solution": "Disable CDE start up:\n\n/usr/dt/bin/dtconfig -d\n\nNOTE: If CDE is not installed the command will not be found\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nTo re-configure the auto-start of the CDE software:\n\n/usr/dt/bin/dtconfig -e",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/sbin/lsitab dt | /usr/bin/awk '{ print } END { if (NR==0) print \"pass\" }'",
+        "expect": "^pass$"
+    },
+    "custom_item_36": {
+        "description": "4.5.1.4 /etc/inetd.conf - dtspc",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep -i CDE",
+        "expect": "^[\\\\s]*X11\\\\.Dt\\\\."
+    },
+    "custom_item_37": {
+        "description": "4.5.1.4 /etc/inetd.conf - dtspc",
+        "info": "This entry starts the dtspc service when required. This service is used in response to a CDE client request.\n\nRationale:\n\nThe dtspc service deals with the CDE interface of the X11 daemon. It is started automatically by the inetd daemon in response to a CDE client requesting a process to be started on the daemon's host. This makes it vulnerable to buffer overflow attacks, which may allow an attacker to gain root privileges on a host. This service must be disabled unless it is absolutely required.",
+        "solution": "In /etc/inetd.conf, comment out the dtspc entry:\n\nchsubserver -r inetd -C /etc/inetd.conf -d  -v 'dtspc' -p 'tcp'\n\nDefault Value:\n\nCommented out",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/inetd.conf",
+        "regex": "^[\\\\s]*dtspc.*/usr/dt/bin/dtspcd",
+        "expect": "^[\\\\s]*dtspc.*/usr/dt/bin/dtspcd"
+    },
+    "custom_item_38": {
+        "description": "4.5.1.6 CDE - remote GUI login disabled",
+        "cmd": "/usr/bin/lslpp -L | /usr/bin/grep -i CDE",
+        "expect": "^[\\\\s]*X11\\\\.Dt\\\\."
+    },
+    "custom_item_39": {
+        "description": "4.5.1.6 CDE - remote GUI login disabled",
+        "info": "The XDMCP service allows remote systems to start local X login sessions.\n\nRationale:\n\nThe XDMCP service should be disabled unless there is a requirement to allow remote X servers to start login sessions. If the ability to host remote X servers is not required, disable the service.",
+        "solution": "Copy /usr/dt/config/Xconfig to /etc/dt/config if it does not already exist:\n\nls -l /etc/dt/config/Xconfig\n\nIf the file does not exist, create it:\n\nmkdir -p /etc/dt/config\ncp /usr/dt/config/Xconfig /etc/dt/config\n\nDisable remote X sessions from being started:\n\nvi /etc/dt/config/Xconfig\n\nReplace:\n\n#  Dtlogin.requestPort:       0\n\nWith:\n\nDtlogin.requestPort:       0\n\nDefault Value:\n\nEnabled\n\nAdditional Information:\n\nReversion:\n\nComment out the option:\n\nvi /etc/dt/config/Xconfig\n\nReflect:\n\n#  Dtlogin.requestPort:       0",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/dt/config/Xconfig",
+        "regex": "(?i)DtLogin.requestPort",
+        "expect": "(?i)^[\\\\s]*DtLogin[\\\\.]requestPort:[\\\\s]+0[\\\\s]*$"
+    },
+    "custom_item_40": {
+        "description": "4.5.3.5 sshd_config: PermitRootLogin is 'prohibit-password' or 'no'",
+        "info": "The recommendation is to edit the /etc/ssh/sshd_config file to disable direct root login. Direct root login via SSH was enabled by default with prior versions of OpenSSH. To be absolutely certain direct login is disabled the recommendation is to set this variable specifically rather than rely on a new, changeable, default.\n\nRationale:\n\nAll root access should be facilitated through a local logon with a unique and identifiable user ID and then via the su command once locally authenticated.\n\nDirect root login using passwords is insecure and does not provide sufficient logging or audit trailing for accountability.\n\nImpact:\n\nWhile this sounds simple - setting the attribute to no requires either sharing a root password (to use su), the installation of sudo, or a configuration using extended RBAC for actions that require enhanced privileges.\n\nThe recommendation .... specifies a LOG_LEVEL of INFO or DEBUG.\n\nTo resolve, partially, the accountability concerns, permitting publickey authentication as root together with LogLevel INFO (minimum) provides the following syslog information:\n\nJun 25 09:26:41 x071 auth|security:info sshd[8323282]: Accepted publickey for michael from 192.168.129.11 port 54278 ssh2: RSA SHA256:dRHxa5CGr5HCdC89suwYIBtAT8lyogz4SErSxTq0JXk\n\nJun 25 09:26:52 x071 auth|security:info sshd[8847396]: Accepted publickey for root from 192.168.129.11 port 54279 ssh2: RSA SHA256:dRHxa5CGr5HCdC89suwYIBtAT8lyogz4SErSxTq0JXk\n\nJun 25 09:26:53 x071 auth|security:info sshd[9044142]: Accepted publickey for root from 192.168.129.11 port 54280 ssh2: RSA SHA256:dRHxa5CGr5HCdC89suwYIBtAT8lyogz4SErSxTq0JXk\n\nLocal site policy might decide that publickey accountability is sufficient and a setting of PermitRootLogin prohibit-password (the new default) provides sufficient accountability and security.\n\nNote: only public keys in a file such as ~root/.ssh/authorized_keys will be able to connect.",
+        "solution": "#!/usr/bin/ksh\nPREFERRED_SETTING='prohibit-password'\numask 077\nset $(/usr/bin/egrep '^PermitRootLogin' /etc/ssh/sshd_config)\necho $?\nif [[ ! -z $1 ]]; then\n  #  Look for a setting and change to no if anything else\n  if [[ $2 != ${PREFERRED_SETTING} ]]; then\n    sed 's/^PermitRootLogin \\{1\\}[^ ]\\{1,\\}/PermitRootLogin ${PREFERRED_SETTING}/' /etc/ssh/sshd_config >/tmp/sshd_config.$$\n  fi\nelse\n  #  Look for a comment and append\n  sed '/^# \\{0,\\}PermitRootLogin/ a\\^JPermitRootLogin ${PREFERRED_SETTING}/' /etc/ssh/sshd_config  >/tmp/sshd_config.$$\nfi\n\nif [[ -e /tmp/sshd_config.$$ ]]; then\n  diff -u /tmp/sshd_config.$$  /etc/ssh/sshd_config\n  rm /tmp/sshd_config.$$\nelif\n  # Verify setting is specified\n  /usr/bin/egrep '^PermitRootLogin' /etc/ssh/sshd_config >>/dev/null\n  if [[ $? -ne 0 ]]; then\n    print 'PermitRootLogin ${PREFERRED_SETTING}' >> /etc/ssh/sshd_config\n  fi\nfi\n\nRe-cycle the sshd daemon to pick up the configuration changes:\n\nstopsrc -s sshd\nsleep 5\nstartsrc -s sshd\n\nDefault Value:\n\nPermitRootLogin prohibit-password\n\nAdditional Information:\n\nThe values for this parameter have been yes (not recommended), no (not recommended, but accepted), prohibit-password (recommended setting), forced-commands-only (not recommended, but accepted) and without-password (deprecated setting).\n\nPermitRootLogin:\n\nSpecifies whether root can log in using ssh(1). The argument must be yes, prohibit-password, forced-commands-only, or no. The default is prohibit-password. If this option is set to prohibit-password (or its deprecated alias, without-password), password and keyboard-interactive authentication are disabled for root. If this option is set to forced-commands-only, root login with public key authentication will be allowed, but only if the command option has been specified (which may be useful for taking remote backups even if root login is normally not allowed). All other authentication methods are disabled for root. If this option is set to no, root is not allowed to log in.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.7.5,800-53|CM-7,800-53|MA-4,800-53r5|CM-7,800-53r5|MA-4,CSCv7|9.2,CSCv8|4.6,CSF|PR.IP-1,CSF|PR.MA-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|MA-4,LEVEL|2A,NESA|T2.3.4,NESA|T5.4.4,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3,TBA-FIISB|45.2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitRootLogin[\\\\s]+(no|prohibit-password|forced-commands-only)[\\\\s]*$",
+        "expect": "^[\\\\s]*PermitRootLogin[\\\\s]+(no|prohibit-password|forced-commands-only)[\\\\s]*$"
+    },
+    "custom_item_41": {
+        "description": "4.5.3.14 sshd_config: Use Conditional exception(s).",
+        "info": "There are several options available to regulate access to a server via OpenSSH. There are settings that are set at a global level only and there are settings that have a global default but can be modified to meet specific client (from) requirements for the server (to) being configured.\n\nThese overrides are specified via a conditional block that starts with the directive Match. When all the MATCH criteria (User, Group, Host, LocalAddress, LocalPort, RDomain, and Address, or the single token ALL that matches by definition) the following settings can be redefined (overwrite) previous setting values:\n\nAcceptEnv, AllowAgentForwarding, AllowGroups, AllowStreamLocalForwarding, AllowTcpForwarding, AllowUsers, AuthenticationMethods, AuthorizedKeysCommand, AuthorizedKeysCommandUser, AuthorizedKeysFile, AuthorizedPrincipalsCommand, AuthorizedPrincipalsCommandUser, AuthorizedPrincipalsFile, Banner, CASignatureAlgorithms, ChrootDirectory, ClientAliveCountMax, ClientAliveInterval, DenyGroups, DenyUsers, DisableForwarding, ExposeAuthInfo, ForceCommand, GatewayPorts, GSSAPIAuthentication, HostbasedAcceptedAlgorithms, HostbasedAuthentication, HostbasedUsesNameFromPacketOnly, IgnoreRhosts, Include, IPQoS, KbdInteractiveAuthentication, KerberosAuthentication, LogLevel, MaxAuthTries, MaxSessions, PasswordAuthentication, PermitEmptyPasswords, PermitListen, PermitOpen, PermitRootLogin, PermitTTY, PermitTunnel, PermitUserRC, PubkeyAcceptedAlgorithms, PubkeyAuthentication, PubkeyAuthOptions, RekeyLimit, RevokedKeys, RDomain, SetEnv, StreamLocalBindMask, StreamLocalBindUnlink, TrustedUserCAKeys, X11DisplayOffset, X11Forwarding and X11UseLocalhost.\n\nRationale:\n\nThere are situations where exceptions to the corporate security policy are required. Match is the mechanism that permits the configuration - and documentation - of exceptions.\n\n# Example of overriding settings on a per-user basis\n\n# anoncvs does not get a comman prompt, instead a specific command is started.\n\n#Match User anoncvs\n\n#       X11Forwarding no\n\n#       AllowTcpForwarding no\n\n#       PermitTTY no\n\n#       ForceCommand cvs server\n\n# The user michael requires, and is permitted (see support ticket X123456), the use of X11Forwarding.\n\n# Match User michael\n\n#        X11Forwarding yes\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Default Value:\n\nNo MATCH statements are used.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.7.5,800-53|CM-7,800-53|MA-4,800-53r5|CM-7,800-53r5|MA-4,CSCv7|9.2,CSCv8|4.6,CSF|PR.IP-1,CSF|PR.MA-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|MA-4,LEVEL|2M,NESA|T2.3.4,NESA|T5.4.4,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3,TBA-FIISB|45.2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "exceptions=$(egrep \"^Match\" /etc/ssh/sshd_config | wc -l)\nif [[ ${exceptions} != \"0\" ]]; then\n echo \"Verify the following Match statements are properly documented and still permitted/required\"\n /usr/bin/egrep -p \"^Match\" /etc/ssh/sshd_config\nfi",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_42": {
+        "description": "4.5.5.1 SNMP - disable private community string",
+        "file": "/etc/snmpd.conf"
+    },
+    "custom_item_43": {
+        "description": "4.5.5.1 SNMP - disable private community string",
+        "info": "If snmpd is required within the environment, disable the private community string.\n\nRationale:\n\nIn AIX, two SNMP community names, private and system, are enabled with read/write privileges, but are allowed access only from localhost connections. As these SNMP names are the default, they must not be used. Any SNMP community name should be a combination of letters, numbers and special characters to enhance security.",
+        "solution": "Create a backup of /etc/snmpd.conf:\n\ncp -p /etc/snmpd.conf /etc/snmpd.conf.pre_cis\n\nEdit the file:\n\nvi /etc/snmpd.conf\n\nComment out the private entry:\n\n#community       private 127.0.0.1 255.255.255.255 readWrite\n\nDefault Value:\n\nCommented in\n\nAdditional Information:\n\nReversion:\n\nCopy back the original /etc/snmpd.conf file:\n\ncp -p /etc/snmpd.conf.pre_cis /etc/snmpd.conf",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|2A,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/snmpd.conf",
+        "regex": "^[\\\\s]*community[\\\\s]+private([\\\\s]+.*)*[\\\\s]*$",
+        "expect": "^[\\\\s]*community[\\\\s]+private([\\\\s]+.*)*[\\\\s]*$"
+    },
+    "custom_item_44": {
+        "description": "4.5.5.2 SNMP - disable system community string",
+        "file": "/etc/snmpd.conf"
+    },
+    "custom_item_45": {
+        "description": "4.5.5.2 SNMP - disable system community string",
+        "info": "If snmpd is required within the environment, disable the system community string.\n\nRationale:\n\nIn AIX, two SNMP community names, private and system, are enabled with read/write privileges, but are allowed access only from localhost connections. As these SNMP names are the default, they must not be used. Any SNMP community name should be a combination of letters, numbers and special characters to enhance security.",
+        "solution": "Edit the file:\n\nvi /etc/snmpd.conf\n\nComment out the system entry:\n\n#community       system  127.0.0.1 255.255.255.255 readWrite 1.17.2\n\nDefault Value:\n\nCommented in\n\nAdditional Information:\n\nReversion:\n\nCopy back the original /etc/snmpd.conf file:\n\ncp -p /etc/snmpd.conf.pre_cis /etc/snmpd.conf",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/snmpd.conf",
+        "regex": "^[\\\\s]*community[\\\\s]+system([\\\\s]+.*)*[\\\\s]*$",
+        "expect": "^[\\\\s]*community[\\\\s]+system([\\\\s]+.*)*[\\\\s]*$"
+    },
+    "custom_item_46": {
+        "description": "4.5.5.3 SNMP - disable public community string",
+        "file": "/etc/snmpd.conf"
+    },
+    "custom_item_47": {
+        "description": "4.5.5.3 SNMP - disable public community string",
+        "info": "If snmpd is required within the environment, disable or change the public community string.\n\nRationale:\n\nThe public community string can be polled by remote SNMP devices and pertinent information can be read or changed on the host. The public community string should but commented out, or if SNMP is a required service the public community name should be changed to be a combination of letters, numbers and special characters to enhance security.",
+        "solution": "Edit the file:\n\nvi /etc/snmpd.conf\n\nComment out the public entry:\n\n#community       public\n\nDefault Value:\n\nCommented in\n\nAdditional Information:\n\nReversion:\n\nCopy back the original /etc/snmpd.conf file:\n\ncp -p /etc/snmpd.conf.pre_cis /etc/snmpd.conf",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|2A,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/snmpd.conf",
+        "regex": "^[\\\\s]*community[\\\\s]+public([\\\\s]+.*)*[\\\\s]*$",
+        "expect": "^[\\\\s]*community[\\\\s]+public([\\\\s]+.*)*[\\\\s]*$"
+    },
+    "custom_item_48": {
+        "description": "4.5.5.4 SNMP - disable Readwrite community access",
+        "file": "/etc/snmpd.conf"
+    },
+    "custom_item_49": {
+        "description": "4.5.5.4 SNMP - disable Readwrite community access",
+        "info": "If snmpd is required within the environment, disable readWrite permissions for all active community strings.\n\nRationale:\n\nIf SNMP is required, none of the available community strings should have global readWrite permissions defined. This would allow any remote client to query and to set system configuration parameters. SNMP readWrite communities must be disabled unless absolutely necessary. If a readWrite community is enabled, then access must be granted to only trusted machines in your network. As SNMP uses community names as part of authentication, you must ensure that all community names are greater than six characters and is a mix of characters, numbers, and special characters.",
+        "solution": "Identify if there are any currently configured community strings:\n\ngrep '^community[[:blank:]]' /etc/snmpd.conf\n\nIf there are active community strings, edit the configuration file:\n\nvi /etc/snmpd.conf\n\nReplace all instances of:\n\ncommunity[ readWrite]\n\nWith:\n\ncommunity[ readOnly]\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nCopy back the original /etc/snmpd.conf file:\n\ncp -p /etc/snmpd.conf.pre_cis /etc/snmpd.conf",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/snmpd.conf",
+        "regex": "^[\\\\s]*community[\\\\s]+[^#]*[\\\\s]+readWrite[\\\\s]*",
+        "expect": "^[\\\\s]*community[\\\\s]+[^#]*[\\\\s]+readWrite[\\\\s]*"
+    },
+    "custom_item_50": {
+        "description": "4.5.5.5 SNMP - restrict community access",
+        "file": "/etc/snmpd.conf"
+    },
+    "custom_item_51": {
+        "system": "AIX",
+        "description": "4.5.5.5 SNMP - restrict community access",
+        "info": "If snmpd is required within the environment, implement IP access restrictions on the available community strings.\n\nRationale:\n\nIf SNMP is required, IP access restrictions should be put into place to limit which hosts or networks subnets are able to remotely poll the server.",
+        "solution": "Identify if there are any currently configured community strings:\n\ngrep '^community[[:blank:]]' /etc/snmpd.conf\n\nIf there are active community strings, edit the configuration file:\n\nvi /etc/snmpd.conf\n\nImplement IP access restrictions to ALL of the available community names e.g.:\n\ncommunity       tivoli  192.132.10.0 255.255.255.0 readOnly\n\nThe format of each line should reflect:\n\ncommunity[]\n\nDefault Value:\n\nN/A\n\nAdditional Information:\n\nReversion:\n\nCopy back the original /etc/snmpd.conf file:\n\ncp -p /etc/snmpd.conf.pre_cis /etc/snmpd.conf",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/snmpd.conf",
+        "regex": "^[\\\\s]*community[\\\\s]*",
+        "expect": "^[\\\\s]*community[\\\\s]*[^\\\\s#]+[0-9A-Fa-f:\\\\.]*[\\\\s]+((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\\\\.|\\\\b)){4}[\\\\s]*((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\\\\.|\\\\b)){4}.*$"
+    },
+    "custom_item_52": {
+        "description": "readonly",
+        "file": "/etc/profile",
+        "regex": "^[\\\\s]*readonly[\\\\s]+(TMOUT[\\\\s]+TIMEOUT[\\\\s]*|TIMEOUT[\\\\s]+TMOUT[\\\\s]*)$",
+        "expect": "^[\\\\s]*readonly[\\\\s]+(TMOUT[\\\\s]+TIMEOUT[\\\\s]*|TIMEOUT[\\\\s]+TMOUT[\\\\s]*)$"
+    },
+    "custom_item_53": {
+        "description": "TIMEOUT",
+        "file": "/etc/profile",
+        "regex": "^[\\\\s]*TIMEOUT",
+        "expect": "^[\\\\s]*TIMEOUT[\\\\s]*=[\\\\s]*([1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)[\\\\s]*$"
+    },
+    "custom_item_54": {
+        "description": "TMOUT",
+        "file": "/etc/profile",
+        "regex": "^[\\\\s]*TMOUT",
+        "expect": "^[\\\\s]*TMOUT[\\\\s]*=[\\\\s]*([1-9]|[1-9][0-9]|[1-8][0-9]{2}|900)[\\\\s]*$"
+    },
+    "custom_item_55": {
+        "description": "TEP",
+        "cmd": "/usr/sbin/trustchk -p TEP 2>&1",
+        "expect": "^[\\\\s]*TEP[\\\\s]*=[\\\\s]*ON[\\\\s]*$"
+    },
+    "custom_item_56": {
+        "description": "TE",
+        "cmd": "/usr/sbin/trustchk -p TE 2>&1",
+        "expect": "^[\\\\s]*TE[\\\\s]*=[\\\\s]*ON[\\\\s]*$"
+    },
+    "custom_item_57": {
+        "description": "at.deny",
+        "file": "/var/adm/cron/at.deny"
+    },
+    "custom_item_58": {
+        "description": "at.allow",
+        "file": "/var/adm/cron/at.allow",
+        "regex": "^root$",
+        "expect": "^root$"
+    },
+    "custom_item_59": {
+        "description": "cron.deny",
+        "file": "/var/adm/cron/cron.deny"
+    },
+    "custom_item_60": {
+        "description": "cron.allow root",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": "^root$",
+        "expect": "^root$"
+    },
+    "custom_item_61": {
+        "description": "cron.allow admin",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": "^adm$",
+        "expect": "^adm$"
+    },
+    "custom_item_62": {
+        "description": "6.3.1 Privilege escalation: sudo",
+        "info": "The recommendation is to install and configure sudo, to reflect the privileged command access requirements of all users of the system.\n\nRationale:\n\nPrivileged command access should be limited to and defined by a user's individual needs. Access to a root command prompt should limited, wherever possible, to minimize the risk of inadvertent or deliberate misuse of the account.\n\nThe choice between sudo and enhanced RBAC revolves around whether or not the environment is heterogeneous in nature, running different flavors of UNIX, or perhaps different versions of AIX. It may be that sudo is the standard tool of choice for managing privileged command access across an entire UNIX estate. However, if the environment is AIX 6.1+ only, it is recommended that enhanced RBAC is used as the tool of choice. Some implementations however may benefit from a combined approach, utilizing both sudo and enhanced RBAC.",
+        "solution": "Install the latest available version for the sudo distribution installed on your system. This version should be 1.9.5p2 or later.\n\nDefault Value:\n\nNot installed\n\nAdditional Information:\n\nOnce installed refer to the sudo man page for information regarding the creation of a custom /etc/sudoers file. It is recommended that, to reduce rule complexity, privileges are assigned at a group level wherever possible:\n\nhttp://www.gratisoft.us/sudo/man/sudo.html\n\nNOTE: The configuration of sudo is completely dependent on the unique requirements of a given environment.\n\nAll editing of the /etc/sudoers file must be performed by the following command:\n\nvisudo\n\nOnce the /etc/sudoers file has been successfully created, validate the syntax of the file:\n\nvisudo -c\n\nReversion:\n\nDe-install the sudo software:",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/sudo --version | head -1",
+        "expect": "^(?i)sudo[\\\\s]*version[\\\\s]"
+    },
+    "custom_item_63": {
+        "description": "syslog none",
+        "file": "/etc/sudoers /etc/sudoers.d/*",
+        "regex": "(?i)^[\\\\s]*Defaults[\\\\s]+syslog_",
+        "expect": "(?i)^[\\\\s]*Defaults[\\\\s]+syslog_(badpri|goodpri)[\\\\s]*=[\\\\s]*none"
+    },
+    "custom_item_64": {
+        "description": "sudo.log",
+        "file": "/etc/sudoers /etc/sudoers.d/*",
+        "regex": "^[\\\\s]*Defaults[\\\\s]+logfile",
+        "expect": "^[\\\\s]*Defaults[\\\\s]+logfile[\\\\s]*=[\\\\s]*\"?@SUDO_LOG@\"[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_65": {
+        "description": "6.3.3 Ensure sudo commands use pty",
+        "info": "sudo can be configured to run only from a pseudo-pty\n\nNote: visudo edits the sudoers file in a safe fashion, analogous to vipw(8). visudo locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks or parse errors. If the sudoers file is currently being edited you will receive a message to try again later.\n\nRationale:\n\nAttackers can run a malicious program using sudo, which would again fork a background process that remains even when the main program has finished executing.",
+        "solution": "Edit the file /etc/sudoers or a file in /etc/sudoers.d/ with visudo -fand add the following line:\n\nDefaults use_pty",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|2A",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "file": "/etc/sudoers /etc/sudoers.d/*",
+        "regex": "^\\\\s*Defaults\\\\s+([^#]+,\\\\s*)?use_pty(,\\\\s+\\\\S+\\\\s*)*(\\\\s+#.*)?$",
+        "expect": "^\\\\s*Defaults\\\\s+([^#]+,\\\\s*)?use_pty(,\\\\s+\\\\S+\\\\s*)*(\\\\s+#.*)?$",
+        "min_occurrences": "1"
+    },
+    "custom_item_66": {
+        "description": "audit mount",
+        "cmd": "/usr/sbin/lsfs /audit || print \"Audit Filesystem is missing\"",
+        "expect": "[\\\\s]+/audit[\\\\s]+jfs2[\\\\s]+"
+    },
+    "custom_item_67": {
+        "description": "/etc/security/audit/config",
+        "cmd": "/usr/bin/awk 'BEGIN {x=0;a[\"start:-binmode\"] = \"^on$\"; a[\"start:-streammode\"] = \"^off$\"; a[\"bin:-trail\"] = \"^/audit/trail$\"; a[\"bin:-bin1\"] = \"^/audit/bin1$\"; a[\"bin:-bin2\"] = \"^/audit/bin2$\"; a[\"bin:-binsize\"] = \"^10240$\"; a[\"bin:-cmds\"] = \"^/etc/security/audit/bincmds$\"; a[\"users:-root\"] = \"^general\"} /^[^ ]+:$/ { sec=$1 } { if ($3 ~ a[sec\"-\"$1]) delete a[sec\"-\"$1] } END { for (i in a) x++; if (x > 0) { print \"failed\" } else { print \"pass\" } }' /etc/security/audit/config",
+        "expect": "^pass$"
+    },
+    "custom_item_68": {
+        "description": "lssec auditclasses",
+        "cmd": "/usr/bin/lssec -f /usr/lib/security/mkuser.default -s user -a auditclasses",
+        "expect": "^user[\\\\s]+auditclasses[\\\\s]*=[\\\\s]*general,SRC,cron,tcpip[\\\\s]*$"
+    },
+    "custom_item_69": {
+        "description": "crontab",
+        "cmd": "/usr/bin/crontab -l | /usr/bin/grep \"cronaudit\" | awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "^[\\\\s]*[0-9\\\\s\\\\*]+[\\\\s]+/etc/security/aixpert/bin/cronaudit[\\\\s]*$"
+    },
+    "custom_item_70": {
+        "description": "lsitab audit",
+        "cmd": "/usr/sbin/lsitab audit | awk '{ print } END { if (NR == 0) print \"none\" }'",
+        "expect": "^[\\\\s]*audit:2:boot:audit[\\\\s]+start[\\\\s]+>[\\\\s]+/dev/console[\\\\s]+2>&1"
+    },
+    "custom_item_71": {
+        "description": "syslog *.info;auth.none",
+        "file": "/etc/syslog.conf",
+        "regex": "^[\\\\s]*\\\\*\\\\.info;auth\\\\.none[\\\\s]+@",
+        "expect": "^[\\\\s]*\\\\*\\\\.info;auth\\\\.none[\\\\s]+@@SYSLOG_SERVER_IP_ADDRESS@[\\\\s]*$"
+    },
+    "custom_item_72": {
+        "description": "syslog auth.info",
+        "file": "/etc/syslog.conf",
+        "regex": "^[\\\\s]*auth\\\\.info[\\\\s]+@",
+        "expect": "^[\\\\s]*auth\\\\.info[\\\\s]+@@SYSLOG_SERVER_IP_ADDRESS@[\\\\s]*$"
+    },
+    "custom_item_73": {
+        "description": "8.1.3 Configuring syslog - remote messages",
+        "info": "This recommendation prevents the local syslogd daemon from accepting messages from other hosts on the network.\n\nRationale:\n\nApart from a central syslog server, all other hosts should not accept remote syslog messages. By default the syslogd daemon accepts all remote syslog messages as no authentication is required. This means that a hacker could flood a server with syslog messages and potentially fill up the /var filesystem.",
+        "solution": "If the server does not act as a central syslog server, suppress the logging of messages originating from remote servers:\n\nchssys -s syslogd -a '-r'\n\nRe-cycle syslogd to activate the configuration change:\n\nstopsrc -s syslogd\nstartsrc -s syslogd\n\nDefault Value:\n\nNot configured\n\nAdditional Information:\n\nReversion:\n\nRemove the suppression of remote syslog messages:\n\nchssys -s syslogd -a ''\n\nRe-cycle syslogd to activate the configuration change:\n\nstopsrc -s syslogd\n\nstartsrc -s syslogd",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|2A,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/13069",
+        "cmd": "/usr/bin/ps -ef | /usr/bin/grep [s]yslogd",
+        "expect": "^[\\\\s]*root.*/usr/sbin/syslogd[\\\\s]+-r\\\\b"
+    }
+}

@@ -1,0 +1,151 @@
+{
+    "custom_item_1": {
+        "description": "1.1.1 - MobileIron - Update firmware to latest version",
+        "info": "This control ensures that the device firmware remains current.",
+        "solution": "Using iTunes:\n1. Connect the device to the computer.\n2. Open iTunes.\n3. Click on the device under 'Devices' in the source list.\n4. Click on Check for Update.\n5. Click Download and Install.\n6. Do not disconnect the device until the update is finished.\n\nUsing Over-the-Air Update:\n1. Tap Settings.\n2. Tap General.\n3. Tap Software Update.\n4. iOS will automatically check for available updates. If an update is available, tap Download when prompted to download the update.\n5. Once the download has completed, tap Install to update the iOS.\n6. Do not power off the device until the update is finished.",
+        "reference": "800-171|3.4.1,800-53|CM-8a.,800-53r5|CM-8a.,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.1.1,ITSG-33|CM-8,LEVEL|1NS,NESA|T1.2.1,NESA|T1.2.2,NIAv2|NS35,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Device": " + .principal + ",
+        "regex": "Version = ",
+        "expect": "Version = iOS 8"
+    },
+    "custom_item_2": {
+        "description": "1.1.2 - MobileIron - Enable Passcode Lock - 'Passcode Required = on'",
+        "info": "This control determines whether a password is required before allowing access to the device via the touch screen. It is recommended that a password be set.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Password is set to Mandatory.",
+        "reference": "800-53|AC-14a.,800-53r5|AC-14a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-14a.,LEVEL|1NS,NESA|T5.6.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Required =",
+        "expect": "Passcode Required = On"
+    },
+    "custom_item_3": {
+        "description": "1.1.4 - MobileIron - Set Auto-lock - 'Inactivity Timeout <= 2'",
+        "info": "This control defines the number of minutes the device can be inactive before requiring the password be reentered. The recommended setting is 2 minutes or less.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Maximum Inactivity Timeout is set to 2 or less.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1NS,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Inactivity Timeout =",
+        "expect": "Inactivity Timeout = [12] minutes"
+    },
+    "custom_item_4": {
+        "description": "iOS - VPN Configurations Exist",
+        "regex": "VPN Configuration :",
+        "expect": "VPN Configuration : True"
+    },
+    "custom_item_5": {
+        "description": "1.1.13 - MobileIron - Turn off VPN when not needed",
+        "info": "iOS devices can natively connect to VPNs that use the L2TP over IPSec, PPTP, or Cisco IPSec protocols. VPN connections can be established over both Wi-Fi and cellular data network connections. It is recommended that VPN connections be disabled when not in use.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Configurations view. Under the VPN Policy verify that all configured VPN connections are authorized.",
+        "reference": "800-171|3.1.18,800-53|AC-19,800-53r5|AC-19,CSCv6|9.1,CSF|PR.AC-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|1NS,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Configuration": "\n      expect         : "
+    },
+    "custom_item_6": {
+        "description": "iOS - Enable Safari",
+        "Configuration": " + .name + ",
+        "regex": "Allow Safari =",
+        "expect": "Allow Safari = True"
+    },
+    "custom_item_7": {
+        "description": "1.2.2 - MobileIron - Enable Fraudulent Website Warning",
+        "info": "Enabling Fraudulent Website Warning configures Safari to display a warning and prevent the loading of the page when an attempt is made to visit a potentially fraudulent Internet site. It is recommended that the Fraudulent Website Warning feature be enabled.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> iOS and OSX view. Under the Restrictions Policy verify that Force fraud warning is checked.\nNOTE: This item will only be configurable if Allow use of Safari is enabled.",
+        "reference": "800-171|3.1.18,800-171|3.4.6,800-171|3.4.7,800-53|AC-19,800-53|CM-7b.,800-53r5|AC-19,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.AC-3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,ITSG-33|CM-7a.,LEVEL|1NS,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Configuration": " + .name + ",
+        "regex": "Allow Safari Fraud Warning =",
+        "expect": "Allow Safari Fraud Warning = False"
+    },
+    "custom_item_8": {
+        "description": "2.2.1 - MobileIron - Require passcode on device",
+        "info": "This control determines whether a password is required before allowing access to the device via the touch screen.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Password is set to Mandatory.",
+        "reference": "800-53|AC-14a.,800-53r5|AC-14a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-14a.,LEVEL|1S,NESA|T5.6.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Required =",
+        "expect": "Passcode Required = On"
+    },
+    "custom_item_9": {
+        "description": "2.2.2 - MobileIron - Do Not Allow Simple Value",
+        "info": "iOS devices can be configured via the iPCU to check passwords upon entry to disallow the use of repeating, ascending, and/or descending character sequences. By default, simple passcode values are permitted and checks for repeating, ascending, and descending character sequences are not performed. It is recommended that such sequences be disallowed for the passcode.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Password Type is set to Alphanumeric.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Type =",
+        "not_expect": "Passcode Type = (simple|nc)"
+    },
+    "custom_item_10": {
+        "description": "2.2.4 - MobileIron - Set minimum passcode length",
+        "info": "This control specifies the minimum number of characters a passcode can contain. It is recommended that passcode length be at least five (5) characters.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Minimum Password Length is set to 5 or more.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Length =",
+        "expect": "Passcode Length = ([5-9]|1[0-6])"
+    },
+    "custom_item_11": {
+        "description": "2.2.6 - MobileIron - Set Maximum Auto-lock",
+        "info": "This control defines the number of minutes the device can be inactive before requiring the password be reentered. It is recommended that an inactivity timeout of no more than two (2) minutes be set.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Maximum Inactivity Timeout is set to 2 or less.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1S,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Inactivity Timeout =",
+        "expect": "Inactivity Timeout = [12] minutes"
+    },
+    "custom_item_12": {
+        "description": "2.2.7 - MobileIron - Set Maximum number of failed attempts",
+        "info": "This setting determines how many failed passcode attempts can be made before the device is wiped (configurable from 4 to 10).",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Maximum Number of Failed Attempts is set to 6 or less.",
+        "reference": "800-171|3.1.8,800-53|AC-7(2),800-53r5|AC-7(2),CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7(2),LEVEL|1S,NIAv2|OS10,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Maximum Failed Passcode Attempts =",
+        "expect": "Maximum Failed Passcode Attempts = [1-6]"
+    },
+    "custom_item_13": {
+        "description": "3.1.1 - MobileIron - Enable 'Require password'",
+        "info": "This control determines whether a password is required before allowing access to the device via the touch screen. By default, iOS devices do not require a passcode to unlock the device after a period of inactivity, and the default Exchange ActiveSync policy setting applied for users not assigned to a mailbox policy does not require a passcode. It is recommended that a password be set.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Password is set to Mandatory.",
+        "reference": "800-53|AC-14a.,800-53r5|AC-14a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-14a.,LEVEL|1S,NESA|T5.6.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Required =",
+        "expect": "Passcode Required = On"
+    },
+    "custom_item_14": {
+        "description": "3.1.3 - MobileIron - Set the 'minimum password length'",
+        "info": "This control defines the minimum number of characters a user password must contain. By default, the minimum passcode length is only four characters, and this is the default Exchange ActiveSync policy value applied for users not assigned to a mailbox policy if minimum password length checking is enabled. The recommended setting is 5 or more characters.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Minimum Password Length is set to 5 or more.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Passcode Length =",
+        "expect": "Passcode Length = ([5-9]|1[0-6])"
+    },
+    "custom_item_15": {
+        "description": "3.1.5 - MobileIron - Set the 'timeout' for 'Time without user input before password must be re-entered (in minutes)'",
+        "info": "This control defines the number of minutes the device can be inactive before requiring the password be reentered. By default, if a passcode is defined, an iOS device will automatically lock after two minutes of inactivity, and the default Exchange ActiveSync policy setting applied for users not assigned to a mailbox policy sets an inactivity lock at 15 minutes. The recommended setting is 2 minutes or less.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Maximum Inactivity Timeout is set to 2 or less.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1S,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Inactivity Timeout =",
+        "expect": "Inactivity Timeout = ([2-9]|[1-9][0-9]+) minutes"
+    },
+    "custom_item_16": {
+        "description": "3.1.6 - MobileIron - Limit the 'Number of failed attempts allowed'",
+        "info": "If the password setting is enabled then this control defines the number of failed login attempts before all information stored on the device is deleted and the device is automatically reset to original factory settings. The default Exchange ActiveSync policy setting applied for users not assigned to a mailbox policy configures the device to erase data after four (4) failed password attempts, if a password is configured on the device. The recommended setting is 6 or less failed attempts.",
+        "solution": "From the MobileIron console, open the Policies and Configs -> Policies view. Under the Security Policy verify that Maximum Number of Failed Attempts is set to 6 or less.",
+        "reference": "800-171|3.1.8,800-53|AC-7(2),800-53r5|AC-7(2),CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7(2),LEVEL|1S,NIAv2|OS10,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/447",
+        "Policy": " + .policyName + ",
+        "regex": "Maximum Failed Passcode Attempts =",
+        "expect": "Maximum Failed Passcode Attempts = [1-6]"
+    }
+}

@@ -1,0 +1,118 @@
+{
+    "custom_item_1": {
+        "description": "RhttpProxy config exists",
+        "file": "/etc/vmware-rhttpproxy/config.xml"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "VCRP-67-000001 - The rhttpproxy must drop connections to disconnected clients.",
+        "info": "The rhttpproxy client connections that are established but no longer connected can consume resources that might otherwise be required by active connections. It is a best practice to terminate connections that are no longer connected to an active client.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the///block and configureas follows:900Restart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240716r879511_rule,STIG-ID|VCRP-67-000001,Vuln-ID|V-240716",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/vmacore/tcpKeepAlive/clientSocket/idleTimeSec' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*900[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "VCRP-67-000002 - The rhttpproxy must set a limit on established connections.",
+        "info": "The rhttpproxy client connections must be limited to preserve system resources and continue servicing connections without interruption. Without a limit set, the system would be vulnerable to a trivial denial-of-service attack where connections are created en masse and vCenter resources are entirely consumed. The rhttproxy comes configured with a tested and supported value that must be maintained.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the//block and configureas follows:2048Restart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240717r879511_rule,STIG-ID|VCRP-67-000002,Vuln-ID|V-240717",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/vmacore/http/maxConnections' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*2048[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "VCRP-67-000003 - The rhttpproxy must be configured to operate solely with FIPS ciphers.",
+        "info": "The rhttpproxy ships with FIPS 140-2 validated OpenSSL cryptographic libraries and is configured by default to run in FIPS mode. This module is used for all crypto operations performed by rhttproxy, including protection of data-in-transit over the client TLS connection.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the//block and configureas follows:trueRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240718r879519_rule,STIG-ID|VCRP-67-000003,SWIFT-CSCv1|2.6,Vuln-ID|V-240718",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/vmacore/ssl/fips' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*true[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "VCRP-67-000004 - The rhttpproxy must use cryptography to protect the integrity of remote sessions.",
+        "info": "The rhttpproxy can be configured to support TLS 1.0, 1.1 and 1.2. Due to intrinsic problems in TLS 1.0 and TLS 1.1, they are disabled by default. Theblock in the rhttproxy configuration is commented out by default, and this configuration forces TLS 1.2. The block may also be set to 'tls1.2' in certain upgrade scenarios, but the effect is the same.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the//block and configureas follows:tls1.2Restart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-001453,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240719r879520_rule,STIG-ID|VCRP-67-000004,SWIFT-CSCv1|2.6,Vuln-ID|V-240719",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/vmacore/ssl/protocols' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*(XPath[\\\\s]+set[\\\\s]+is[\\\\s]+empty|[\\\\s]*tls1.2[\\\\s]*)[\\\\s]*$"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "VCRP-67-000005 - The rhttpproxy must produce log records containing sufficient information to establish the source of events.",
+        "info": "After a security incident has occurred, investigators will often review log files to determine what happened, and determining the source of an event is crucial for forensics. The rhttpproxy must be configured for verbose logging to capture client IP addresses and the associated actions.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the/block and configureas follows:verboseRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240720r879521_rule,STIG-ID|VCRP-67-000005,SWIFT-CSCv1|2.6,Vuln-ID|V-240720",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/log/level' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*verbose[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "VCRP-67-000006 - The rhttpproxy must have logging enabled.",
+        "info": "After a security incident has occurred, investigators will often review log files to determine what happened. The rhttpproxy must create logs upon service startup to capture information relevant to investigations.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the/block and configureas follows:trueRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-53|AU-14(1),800-53r5|AU-14(1),CAT|II,CCI|CCI-001464,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-14,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-240721r879562_rule,STIG-ID|VCRP-67-000006,SWIFT-CSCv1|6.4,Vuln-ID|V-240721",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/log/outputToFiles' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*true[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "VCRP-67-000007 - The rhttpproxy private key file must be protected from unauthorized access.",
+        "info": "The rhttpproxy's private key is used to prove the identity of the server to clients and securely exchange the shared secret key used to encrypt communications between the web server and clients.\n\nBy gaining access to the private key, an attacker can pretend to be an authorized server and decrypt the TLS traffic between a client and the web server.",
+        "solution": "At the command prompt, execute the following commands:\n\n# chmod 600 /etc/vmware-rhttpproxy/ssl/rui.key\n# chown root:root /etc/vmware-rhttpproxy/ssl/rui.key",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-240722r879613_rule,STIG-ID|VCRP-67-000007,Vuln-ID|V-240722",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/vmware-rhttpproxy/ssl/rui.key",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "VCRP-67-000008 - The rhttproxy must exclusively use the HTTPS protocol for client connections - privateKey",
+        "info": "Remotely accessing vCenter via the rhttpproxy involves sensitive information going over the wire. To protect the confidentiality and integrity of these communications, the rhttpproxy must be configured to use an encrypted session of HTTPS rather than plain-text HTTP. The SSL configuration block inside the rhttproxy configuration must be present and configured correctly to safely enable TLS.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the firstblock and set its content to the following:/etc/vmware-rhttpproxy/ssl/rui.key/etc/vmware-rhttpproxy/ssl/rui.crtlocalhostRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-002314,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240723r879692_rule,STIG-ID|VCRP-67-000008,SWIFT-CSCv1|2.6,Vuln-ID|V-240723",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/ssl' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*/etc/vmware-rhttpproxy/ssl/rui.key[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "VCRP-67-000008 - The rhttproxy must exclusively use the HTTPS protocol for client connections - certificate",
+        "info": "Remotely accessing vCenter via the rhttpproxy involves sensitive information going over the wire. To protect the confidentiality and integrity of these communications, the rhttpproxy must be configured to use an encrypted session of HTTPS rather than plain-text HTTP. The SSL configuration block inside the rhttproxy configuration must be present and configured correctly to safely enable TLS.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the firstblock and set its content to the following:/etc/vmware-rhttpproxy/ssl/rui.key/etc/vmware-rhttpproxy/ssl/rui.crtlocalhostRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-002314,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240723r879692_rule,STIG-ID|VCRP-67-000008,SWIFT-CSCv1|2.6,Vuln-ID|V-240723",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/ssl' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*/etc/vmware-rhttpproxy/ssl/rui.crt[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "VCRP-67-000008 - The rhttproxy must exclusively use the HTTPS protocol for client connections - vecsServerName",
+        "info": "Remotely accessing vCenter via the rhttpproxy involves sensitive information going over the wire. To protect the confidentiality and integrity of these communications, the rhttpproxy must be configured to use an encrypted session of HTTPS rather than plain-text HTTP. The SSL configuration block inside the rhttproxy configuration must be present and configured correctly to safely enable TLS.",
+        "solution": "Navigate to and open /etc/vmware-rhttpproxy/config.xml.\n\nLocate the firstblock and set its content to the following:/etc/vmware-rhttpproxy/ssl/rui.key/etc/vmware-rhttpproxy/ssl/rui.crtlocalhostRestart the service for changes to take effect.\n\n# vmon-cli --restart rhttpproxy",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-002314,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-240723r879692_rule,STIG-ID|VCRP-67-000008,SWIFT-CSCv1|2.6,Vuln-ID|V-240723",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/config/ssl' /etc/vmware-rhttpproxy/config.xml",
+        "expect": "^[\\\\s]*[\\\\s]*localhost[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "VCRP-67-000009 - The rhttpproxy log files must be moved to a permanent repository in accordance with site policy.",
+        "info": "The rhttpproxy produces a handful of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.",
+        "solution": "Navigate to and open /etc/vmware-syslog/stig-services-rhttpproxy.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/rhttpproxy/rhttpproxy.log'\n      Tag='rhttpproxy-main'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_RhttpProxy_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-240724r879731_rule,STIG-ID|VCRP-67-000009,Vuln-ID|V-240724",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-rhttpproxy.conf | /usr/bin/grep -v '^#')",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/rhttpproxy/rhttpproxy.log\" Tag=\"rhttpproxy-main\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    }
+}

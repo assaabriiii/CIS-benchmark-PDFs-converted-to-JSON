@@ -1,0 +1,261 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "1.1 Place Databases on Non-System Partitions",
+        "info": "It is generally accepted that host operating systems should include different filesystem partitions for different purposes. One set of filesystems is typically called system partitions, and these are generally reserved for host system/application operation. The other set of filesystems is typically called 'non-system partitions', and such locations are generally reserved for storing data.\n\nRationale:\n\nMoving the database off the system partition will reduce the probability of denial of service caused by exhaustion of available disk space to the operating system.\n\nImpact:\n\nMoving database files and directories to a non-system partition may be difficult depending on whether there was only a single partition when the operating system was set up and whether there are additional non-system partitions available.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting for the datadir:\n\nBackup the database.\n\nChoose a non-system partition new location for MySQL data.\n\nStop mysqld using a command like: service mysql stop.\n\nCopy the data using a command like: cp -rp.\n\nSet the datadir location to the new location in the MySQL configuration file.\n\nStart mysqld using a command like:\n\nservice mysql start\n\nNote: On some Linux distributions you may need to additionally modify apparmor settings. For example, on a Ubuntu 14.04.1 system edit the file /etc/apparmor.d/usr.sbin.mysqld so that the datadir access is appropriate. The original might look like this:\n\n# Allow data dir access\n/var/lib/mysql/ r,\n/var/lib/mysql/** rwk,\n\nAlter those two paths to be the new location you chose above. For example, if that new location were /media/mysql, then the /etc/apparmor.d/usr.sbin.mysqld file should include something like this:\n\n# Allow data dir access\n/media/mysql/ r,\n/media/mysql/** rwk,\n\nDefault Value:\n\nNot Applicable.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CSCv7|2.10,CSCv8|3.12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1M",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/df -h @MYSQL_DATA@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "1.2 Use Dedicated Least Privileged Account for MySQL Daemon/Service",
+        "info": "As with any service installed on a host, it can be provided with its own user context. Providing a dedicated user to the service provides the ability to precisely constrain the service within the larger host context.\n\nRationale:\n\nUtilizing a least privilege account for MySQL to execute as needed may reduce the impact of a MySQL-born vulnerability. A restricted account will be unable to access resources unrelated to MySQL, such as operating system configurations.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/bin/ps  -ef | /bin/egrep \"^mysql.*$\"",
+        "expect": ".+"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "1.4 Verify That the MYSQL_PWD Environment Variable is Not in Use",
+        "info": "MySQL can read a default database password from an environment variable called MYSQL_PWD. Avoiding use of this environment variable can better safeguard the confidentiality of MySQL credentials.\n\nRationale:\n\nUsing the MYSQL_PWD environment variable implies MySQL credentials are stored as clear text.",
+        "solution": "Check which users and/or scripts are setting MYSQL_PWD and change them to use a more secure method.\nFor unattended logins you should consider\n\nMySQL Configuration Editor\n\nDifferent authentication methods (e.g., X509 certificate verification)\n\nUse MySQL Enterprise LDAP plugin with Kerberos or SASL tokens.\n\nDefault Value:\n\nNot set.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|16.4,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/bin/egrep MYSQL_PWD /proc/*/environ | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.6 Verify That 'MYSQL_PWD' is Not Set in Users' Profiles",
+        "info": "MySQL can read a default database password from an environment variable called MYSQL_PWD.\n\nRationale:\n\nUse of the MYSQL_PWD environment variable implies MySQL credentials are stored as clear text. Avoiding use of this environment variable may increase assurance that the confidentiality of MySQL credentials is preserved.",
+        "solution": "Check which users and/or scripts are setting MYSQL_PWD and change them to use a more secure method.\n\nDefault Value:\n\nNot set.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|16.4,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "grep MYSQL_PWD /home/*/.{bashrc,profile,bash_profile} 2>&1 | grep -v \"No such file or directory\" | awk '{print} END {if (NR == 0) print \"PASS\" ; else print \"FAIL\"}'",
+        "expect": "PASS"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "2.1.1 Backup Policy in Place",
+        "info": "A backup policy should be in place.\n\nRationale:\n\nBacking up MySQL databases, including mysql, will help ensure the availability of data in the event of an incident. Without backups, it might be hard to recover from an incident.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Create a backup policy and backup schedule.",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53|CP-10,800-53r5|CP-9,800-53r5|CP-10,CSCv7|10.1,CSCv8|11.2,CSF|PR.IP-4,CSF|RC.RP-1,CSF|RS.RP-1,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(ii),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,ITSG-33|CP-10,ITSG-33|CP-10a.,LEVEL|1M,NESA|M5.2.3,NESA|T2.2.4,QCSC-v1|5.2.3,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/crontab -l",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "2.6 Ensure Non-Default, Unique Cryptographic Material is in Use",
+        "info": "The cryptographic material used by MySQL, such as digital certificates and encryption keys, should be used only for MySQL and only for one instance. Default cryptographic material should not be used since it is not unique to the instance.\n\nRationale:\n\nIf a cryptographic material is used on multiple MySQL instances and/or systems, then a compromise of one may lead to the network traffic of all servers being compromised that use the same cryptographic material. If an attacker gains access to shared cryptographic material, including default material, the attacker can reuse that material to impersonate the MySQL server or otherwise compromise its operations.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Generate new certificates, keys, and other cryptographic material as needed for each affected MySQL instance.",
+        "reference": "800-171|3.4.3,800-53|CM-3(6),800-53r5|CM-3(6),CN-L3|8.1.10.6(g),CSF|PR.IP-1,CSF|PR.IP-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ISO/IEC-27001|A.10.1.1,ITSG-33|CM-3,LEVEL|1M,NESA|T3.2.3,NESA|T3.3.2,NESA|T7.5.1,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|CM1,NIAv2|CM1a,NIAv2|CM1b,NIAv2|CM1c,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|6.2,QCSC-v1|7.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/openssl x509 -in @SSL_CERT_DIR@/server-cert.pem -subject -noout | /usr/bin/grep Auto_Generated_Server_Certificate",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "3.1 Ensure 'datadir' Has Appropriate Permissions",
+        "info": "The data directory is the location of the MySQL databases.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL database. If someone other than the MySQL user is allowed to read files from the data directory, it may be possible to read data from the mysql.user table which contains passwords. Additionally, the ability to create files can lead to denial of service, or might otherwise allow someone to gain access to specific data by manually creating a file with a view definition.",
+        "solution": "Execute the following commands at a terminal prompt:\n\nchmod 750chown mysql:mysql",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_DATA@",
+        "owner": "mysql",
+        "mask": "027",
+        "group": "mysql"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "3.2 Ensure 'log_bin_basename' Files Have Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log (which can be encrypted), error log, slow query log, relay log, general log, and in the enterprise edition, the audit log (which can be encrypted). Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user. Additionally, using secure key management and at rest MySQL encryption can further protect data from OS users.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nChanging the permissions and ownership of the relay logs and binary log files might have impact on external tools.\n\nIf the permissions on the relay logs and binary log files are accidentally changed to exclude the user account which is used to run the MySQL service, then this might break replication.\n\nThe binary log file can be used for point-in-time recovery so this can also affect backup, restore, and disaster recovery procedures.",
+        "solution": "Execute the following command for each log file location requiring corrected permissions and ownership:\n\nchmod 660chown mysql:mysql",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_BIN_LOG@",
+        "owner": "mysql",
+        "mask": "117",
+        "group": "mysql"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "3.3 Ensure 'log_error' Has Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log (which can be encrypted), error log, slow query log, relay log, general log, and in the enterprise edition, the audit log (which can be encrypted). Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user. Additionally, using secure key management and at rest MySQL encryption can further protect data from OS users.\n\nMuch of the information about the state of MySQL exists in MySQL, the MySQL performance_schema or informations_schema. In cases where the information you need is within a running MySQL, use these methods as they are more secure as they do not require OS login and access.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nChanging the permissions of the error log files might have impact on monitoring tools which use an error log file adapter.",
+        "solution": "Execute the following command for each log file location requiring corrected permissions and ownership:\n\nchmod 600chown mysql:mysql",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.6,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_ERROR_LOG@",
+        "owner": "mysql",
+        "mask": "117",
+        "group": "mysql"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "3.4 Ensure 'slow_query_log' Has Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log (which can be encrypted), error log, slow query log, relay log, general log, and in the enterprise edition, the audit log (which can be encrypted). Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user. Additionally, using secure key management and at rest MySQL encryption can further protect data from OS users.\n\nMuch of the information about the state of MySQL exists in MySQL, the MySQL performance_schema or informations_schema. If you can get the information you need from within MySQL that is more secure as it does not require OS access. If you are not going to use log files it is best to first disable (don't enable) and remove any prior logs.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nChanging the permissions of the log files may impact monitoring tools which use a log file adapter. Also, the slow query log can be used for performance analysis by application developers.\n\nThe information about the performance exists in MySQL performance_schema or sys schema views. In cases where the information you need is within a running MySQL, disable the slow query log and instead use these methods as they are more secure and do not require OS login and access.",
+        "solution": "Set slow query log to OFF (instead use SYS schema views or query Performance_Schema)\n\nSET PERSIST slow_query_log = OFF;\n\nIf slow query is enabled, execute the following command to correct permissions and ownership:\n\nchmod 660chown mysql:mysqlDefault Value:\n\nSlow query log is off by default.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_QUERY_LOG@",
+        "owner": "mysql",
+        "mask": "117",
+        "group": "mysql"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "3.5 Ensure 'relay_log_basename' Files Have Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log (which can be encrypted), error log, slow query log, relay log (which can be encrypted), general log, and in the enterprise edition, the audit log (which can be encrypted). Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user. Additionally, using secure key management and at rest MySQL encryption can further protect data from OS users.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nIf the permissions on the relay logs and binary log files are accidentally changed to exclude the user account which is used to run the MySQL service, then this might break replication.\n\nThe binary log file can be used for point in time recovery so this can also affect backup, restore and disaster recovery procedures.",
+        "solution": "Execute the following command for each log file location requiring corrected permissions and ownership:\n\nchmod 660chown mysql:mysqlDefault Value:+ '/' ++ '-relay-bin'",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_RELAY_LOG@",
+        "owner": "mysql",
+        "mask": "117",
+        "group": "mysql"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "3.6 Ensure 'general_log_file' Has Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log (which can be encrypted), error log, slow query log, relay log (which can be encrypted), general log, and in the enterprise edition, the audit log (which can be encrypted). Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user. Additionally, using secure key management and at rest MySQL encryption can further protect data from OS users.\n\nMuch of the information about the state of MySQL exists in MySQL, the MySQL performance_schema or informations_schema. If you can get the information you need from within MySQL that is more secure as it does not require OS access. If you are not going to use log files it is best to first disable (don't enable) and remove any prior logs.\n\nRationale:\n\nLimiting the accessibility, or existence, of these log files will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nChanging the permissions of the general log files may impact monitoring tools which use a log file adapter.",
+        "solution": "If you can, use MySQL SYS, PERFORMANCE_SCHEMA, or MySQL Auditing as these are more secure options.\nBy default the general_log is disabled (0 or OFF). It's most secure to disable the general_log.\nTo disable the general_log_file:\n\nSET PERSIST @@GENERAL_LOG=OFF;\n\nIf you must use general_log then assure the permissions are correct. Execute the following command for each log file location requiring corrected permissions and ownership:\n\nchmod 600chown mysql:mysqlDefault Value:\n\nThe variable general_log is set to OFF by default. The variable general_log_file is set to.log by default.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_GENERAL_LOG@",
+        "owner": "mysql",
+        "mask": "177",
+        "group": "mysql"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "3.7 Ensure SSL Key Files Have Appropriate Permissions",
+        "info": "When configured to use SSL/TLS, MySQL relies on Secure Sockets Layer (SSL) key files, which are stored on the host's filesystem. These SSL key files are subject to the host's permissions and ownership structure.\n\nMySQL 8.0 provides ways to create the SSL certificate, SSL key files and RSA key-pair files required to support encrypted connections using SSL and secure password exchange using RSA over unencrypted connections, if those files are missing the server will attempt to autogenerate these files at startup if compiled with OpenSSL.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL database and the communication with the client.\n\nIf the contents of the SSL key file are known to an attacker, he or she might impersonate the server. This can be used for a man-in-the-middle attack.\n\nDepending on the SSL cipher suite, the key might also be used to decipher previously captured network traffic.\n\nImpact:\n\nIf the permissions or ownership for the SSL key file are configured incorrectly, this can cause SSL to be disabled when MySQL is restarted or can cause MySQL not to start at all.\n\nIf other applications are using the same key pair, then changing the permissions or ownership of the SSL key file will affect this application. If this were to occur a new key pair must be generated for MySQL.",
+        "solution": "Execute the following commands at a terminal prompt to remediate these settings using the Value from the audit procedure:\n\nchown mysql:mysqlchmod 400",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@SSL_KEY_PATH@",
+        "owner": "mysql",
+        "mask": "377",
+        "group": "mysql"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "3.8 Ensure Plugin Directory Has Appropriate Permissions",
+        "info": "The plugin directory is the location of the MySQL plugins. Plugins are storage engines or user defined functions (UDFs).\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL database. If someone can modify plugins then these plugins might be loaded when the server starts and the code will get executed.\n\nImpact:\n\nUsers other than the MySQL user will no longer be able to update and add/remove plugins unless they're able to switch to the MySQL user.",
+        "solution": "To remediate these settings, execute the following commands at a terminal prompt using the plugin_dir Value from the audit procedure. MySQL server must not be allowed to write to this location.\n\nchmod 550#(or use 554)\nchown mysql:mysql",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@PLUGIN_DIR_PATH@",
+        "owner": "mysql",
+        "mask": "002",
+        "group": "mysql"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "3.9 Ensure 'audit_log_file' Has Appropriate Permissions",
+        "info": "MySQL can operate using a variety of log files, each used for different purposes. These are the binary log, error log, slow query log, relay log, audit log and general log. Because these are files on the host operating system, they are subject to the permissions and ownership structure provided by the host and may be accessible by users other than the MySQL user.\n\nRationale:\n\nLimiting the accessibility of these objects will protect the confidentiality, integrity, and availability of the MySQL logs.\n\nImpact:\n\nChanging the permissions and ownership of the audit log file may have an impact on who can access and edit the audit log. Such changes can affect monitoring tools which maybe using a log file adapter or scripted alternatives. Also, the audit log may be used for alerting by infrastructure teams which can affect real-time audit capability.",
+        "solution": "Execute the following commands for the audit_log_file discovered in the audit procedure:\n\nchmod 660chown mysql:mysql",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@AUDIT_LOG_PATH@",
+        "owner": "mysql",
+        "mask": "117",
+        "group": "mysql"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "keyring_file_data_path",
+        "file": "@KEYRING_FILE_DATA_PATH@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "keyring_encrypted_file_data_path",
+        "file": "@KEYRING_ENCRYPTED_FILE_DATA_PATH@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "keyring_okv_path",
+        "file": "@KEYRING_OKV_PATH@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "keyring_oci_key_file",
+        "file": "@KEYRING_OCI_KEY_FILE@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "keyring_hashicorp_store_path",
+        "file": "@KEYRING_HASHICORP_STORE_PATH@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_22": {
+        "system": "Linux",
+        "description": "keyring_aws_conf_file",
+        "file": "@KEYRING_AWS_CONF_FILE@",
+        "owner": "mysql",
+        "mask": "750",
+        "group": "mysql"
+    },
+    "custom_item_23": {
+        "description": "4.4 Harden Usage for 'local_infile' on MySQL Clients - mysql client version",
+        "info": "The local_infile parameter dictates whether files located on the MySQL client's computer can be loaded or selected via LOAD DATA INFILE or SELECT local_file.\n\nRationale:\n\nFor MySQL client programs and connectors prior to 8.0.21, disabling local_infile reduces an attacker's ability to read sensitive files off the affected server via an SQL injection vulnerability.\n\nImpact:\n\nDisabling local_infile will impact the functionality of solutions that rely on it.",
+        "solution": "Upgrade all MySQL clients and connectors to 8.0.21 or higher.\n\nIn the case where using local_infile is needed, the following changes further harden security:\n\nOn client side, secure by:\n\nLimiting the location from where data can be read using --load-data-local-dir.\n\nmysql --local-infile=0 --load-data-local-dir=/my/local/data\n\nAdding TLS connection to assure server identity by requiring verification.\n\nmysql --local-infile=0 --load-data-local-dir=/my/local/data --ssl-mode=VERIFY_IDENTITY\n\nIf local_infile is not in use or if clients are not upgraded - add the following line to the [mysqld] section of the MySQL configuration file and restart the MySQL service:\n\nlocal-infile=0\n\nDefault Value:\n\n0 (OFF)",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|4.7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/mysql --version",
+        "expect": "@MYSQL_CLIENT_VERSION@"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "4.5 Ensure 'mysqld' is Not Started With '--skip-grant-tables'",
+        "info": "This option causes mysqld to start without using the privilege system.\n\nRationale:\n\nIf this option is used, all clients of the affected server will have unrestricted access to all databases.",
+        "solution": "Perform the following to establish the recommended state:\n\nOpen the MySQL configuration (e.g., my.cnf) file and set:\n\nskip-grant-tables = FALSE",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/grep -E '^[[:space:]]*skip-grant-tables[[:space:]]*=[[:space:]]*[Ff][Aa][Ll][Ss][Ee][[:space:]]*$' /etc/my.cnf /etc/mysql/my.cnf @SYSCONFDIR@/my.cnf | awk '{print} END {if (NR != 0) print \"PASS\" ; else print \"FAIL\"}'",
+        "expect": "PASS"
+    },
+    "custom_item_25": {
+        "system": "Linux",
+        "description": "6.4 Ensure 'log-raw' is Set to 'OFF'",
+        "info": "The log-raw MySQL option determines whether passwords are rewritten by the server so as not to appear in log files as plain text. If log-raw is enabled, then passwords are written to the various log files (general query log, slow query log, and binary log) in plain text.\n\nRationale:\n\nWith raw logging of passwords enabled someone with access to the log files might see plain text passwords.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (my.cnf)\n\nFind the log-raw entry and set it as follows\n\nlog-raw = OFF\n\nDefault Value:\n\nOFF",
+        "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|MP-6,800-53r5|MP-6,CSCv7|13.2,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|1A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "cmd": "/usr/bin/grep -E '^[[:space:]]*log-raw[[:space:]]*=[[:space:]]*[Oo][Ff][Ff][[:space:]]*$' /etc/my.cnf /etc/mysql/my.cnf @SYSCONFDIR@/my.cnf | awk '{print} END {if (NR != 0) print \"PASS\" ; else print \"FAIL\"}'",
+        "expect": "PASS"
+    },
+    "custom_item_26": {
+        "description": "7.2 Ensure Passwords are Not Stored in the Global Configuration",
+        "info": "The [client] section of the MySQL configuration file allows setting a user and password to be used. Verify the password option is not used in the global configuration file (my.cnf).\n\nRationale:\n\nUsing the password parameter may negatively impact the confidentiality of the user's password.\n\nImpact:\n\nThe global configuration is by default readable for all users on the system. This is needed for global defaults (prompt, port, socket, etc.). If a password is present in this file then all users on the system may be able to access it.",
+        "solution": "Use the mysql_config_editor to store authentication credentials in .mylogin.cnf in encrypted form.\nIf not possible, use the user-specific options file, .my.cnf., and restricting file access permissions to the user identity.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|16.4,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/10139",
+        "file": "@MYSQL_VARIABLE_PATH@",
+        "regex": "^(?i)\\\\s*password\\\\s*=.*$",
+        "expect": "^(?i)\\\\s*password\\\\s*=.*$"
+    }
+}

@@ -1,0 +1,351 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "EPAS-00-000700 - The EDB Postgres Advanced Server must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals.",
+        "info": "Enterprise environments make account management for applications and databases challenging and complex. A manual process for account management functions adds the risk of a potential oversight or other error. Managing accounts for the same person in multiple places is inefficient and prone to problems with consistency and synchronization.\n\nA comprehensive application account management process that includes automation helps to ensure that accounts designated as requiring attention are consistently and promptly addressed.\n\nExamples include, but are not limited to, using automation to take action on multiple accounts designated as inactive, suspended, or terminated, or by disabling accounts located in noncentralized account stores, such as multiple servers. Account management functions can also include: assignment of group or role membership; identifying account type; specifying user access authorizations (i.e., privileges); account removal, update, or termination; and administrative alerts. The use of automated mechanisms can include, for example: using email or text messaging to notify account managers when users are terminated or transferred; using the information system to monitor account usage; and using automated telephone notification to report atypical system account usage.\n\nThe DBMS must be configured to automatically use organization-level account management functions, and these functions must immediately enforce the organization's current account policy.\n\nAutomation may comprise differing technologies that when placed together contain an overall mechanism supporting an organization's automated account management requirements.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Identify any user that is using 'trust', 'md5', or 'password' as allowable access methods.\n\n> cat/pg_hba.conf | egrep -I 'trust|md5|password'| grep -v '^\\#'\nNOTE: A command line text editor such as VIM or EMACS can also be used such as VIM or EMACS to search for 'MD5'.\nThe default path for PGDATA is /var/lib/edb/as/data, but this will vary according to local circumstances.\n\nDocument any rows that have 'trust', 'md5', or 'password' specified for the 'METHOD' column and obtain appropriate approval for each user specified in the 'USER' column (i.e., all DBMS managed accounts).\n\nFor any users that are not documented and approved as DBMS managed accounts, change the 'METHOD' column to one of the externally managed (not 'trust', 'md5', or 'password') options defined here: https://www.postgresql.org/docs/current/auth-methods.html\n\nUse a command line text editor such as VIM or EMACS to make changes. Example: > vim/pg_hba.conf",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CAT|I,CCI|CCI-000015,CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-259211r938686_rule,STIG-ID|EPAS-00-000700,Vuln-ID|V-259211",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*[^#]*[\\\\s]*(trust|md5|password)([\\\\s]|$)",
+        "expect": "^[\\\\s]*[^#]*[\\\\s]*(trust|md5|password)([\\\\s]|$)"
+    },
+    "custom_item_3": {
+        "description": "role privileges",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\du'\"",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_4": {
+        "description": "table privileges",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\dp'\"",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_5": {
+        "description": "authentication",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[^#]",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_6": {
+        "description": "EPAS-00-001100 - The EDB Postgres Advanced Server must allow only the ISSM (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+        "info": "Without the capability to restrict which roles and individuals can select which events are audited, unauthorized personnel may be able to prevent or interfere with the auditing of critical events.\n\nSuppression of auditing could permit an adversary to evade detection.\n\nMisconfigured audits can degrade the system's performance by overwhelming the audit log. Misconfigured audits may also make it more difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb postgresql*.conf\n> chgrp enterprisedb postgresql*.conf\n> chmod 600 postgresql*.conf\n\nThe default path for the postgresql*.conf files is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances. Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb postgresql*.conf\n> chgrp enterprisedb postgresql*.conf\n> chmod 600 postgresql*.conf\n\nThe default path for the postgresql*.conf files is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12b.,800-53r5|AU-12b.,CAT|II,CCI|CCI-000171,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12b.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259215r938698_rule,STIG-ID|EPAS-00-001100,SWIFT-CSCv1|6.4,Vuln-ID|V-259215",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/postgresql*.conf",
+        "owner": "@PG_USER@",
+        "mask": "7177",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_7": {
+        "description": "EPAS-00-002600 - The audit information produced by the EDB Postgres Advanced Server must be protected from unauthorized read access.",
+        "info": "If audit data were to become compromised, then competent forensic analysis and discovery of the true source of potentially malicious system activity is difficult, if not impossible, to achieve. In addition, access to audit records provides information an attacker could potentially use to his or her advantage.\n\nTo ensure the veracity of audit data, the information system and/or the application must protect audit information from any and all unauthorized access. This includes read, write, copy, etc.\n\nThis requirement can be achieved through multiple methods which will depend upon system architecture and design. Some commonly employed methods include ensuring log files enjoy the proper file system permissions utilizing file system protections and limiting log data location.\n\nAdditionally, applications with user interfaces to audit records should not allow for the unfettered manipulation of or access to those records via the application. If the application provides access to the audit data, the application becomes accountable for ensuring that audit information is protected from unauthorized access.\n\nAudit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259228r938737_rule,STIG-ID|EPAS-00-002600,Vuln-ID|V-259228",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_8": {
+        "description": "EPAS-00-002700 - The audit information produced by the EDB Postgres Advanced Server must be protected from unauthorized modification.",
+        "info": "If audit data were to become compromised, then competent forensic analysis and discovery of the true source of potentially malicious system activity is impossible to achieve.\n\nTo ensure the veracity of audit data the information system and/or the application must protect audit information from unauthorized modification.\n\nThis requirement can be achieved through multiple methods that will depend upon system architecture and design. Some commonly employed methods include ensuring log files enjoy the proper file system permissions and limiting log data locations.\n\nApplications providing a user interface to audit data will leverage user permissions and roles identifying the user accessing the data and the corresponding rights that the user enjoys in order to make access decisions regarding the modification of audit data.\n\nAudit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.\n\nModification of database audit data could mask the theft of, or the unauthorized modification of, sensitive data stored in the database.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000163,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259229r938740_rule,STIG-ID|EPAS-00-002700,Vuln-ID|V-259229",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_9": {
+        "description": "EPAS-00-002800 - The audit information produced by the EDB Postgres Advanced Server must be protected from unauthorized deletion.",
+        "info": "If audit data were to become compromised, then competent forensic analysis and discovery of the true source of potentially malicious system activity is impossible to achieve.\n\nTo ensure the veracity of audit data, the information system and/or the application must protect audit information from unauthorized deletion. This requirement can be achieved through multiple methods which will depend upon system architecture and design.\n\nSome commonly employed methods include: ensuring log files enjoy the proper file system permissions utilizing file system protections; restricting access; and backing up log data to ensure log data is retained.\n\nApplications providing a user interface to audit data will leverage user permissions and roles identifying the user accessing the data and the corresponding rights the user enjoys in order make access decisions regarding the deletion of audit data.\n\nAudit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.\n\nDeletion of database audit data could mask the theft of, or the unauthorized modification of, sensitive data stored in the database.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259230r938743_rule,STIG-ID|EPAS-00-002800,Vuln-ID|V-259230",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_10": {
+        "description": "EPAS-00-002900 - The EDB Postgres Advanced Server must protect its audit features from unauthorized access.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data.\n\nDepending upon the log format and application, system, and application log tools may provide the only means to manipulate and manage application and system log data. It is, therefore, imperative that access to audit tools be controlled and protected from unauthorized access.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order make access decisions regarding the access to audit tools.\n\nAudit tools include, but are not limited to, OS-provided audit tools, vendor-provided audit tools, and open source audit tools needed to successfully view and manipulate audit information system activity and records.\n\nIf an attacker were to gain access to audit tools, they could analyze audit logs for system weaknesses or weaknesses in the auditing itself. An attacker could also manipulate logs to hide evidence of malicious activity.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001493,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259231r938746_rule,STIG-ID|EPAS-00-002900,Vuln-ID|V-259231",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_11": {
+        "description": "EPAS-00-003000 - The EDB Postgres Advanced Server must protect its audit configuration from unauthorized modification.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data. Therefore, protecting audit tools is necessary to prevent unauthorized operation on audit data.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order make access decisions regarding the modification of audit tools.\n\nAudit tools include, but are not limited to, vendor-provided and open source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001494,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259232r938749_rule,STIG-ID|EPAS-00-003000,Vuln-ID|V-259232",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_12": {
+        "description": "EPAS-00-003100 - The EDB Postgres Advanced Server must protect its audit features from unauthorized removal.",
+        "info": "Protecting audit data also includes identifying and protecting the tools used to view and manipulate log data. Therefore, protecting audit tools is necessary to prevent unauthorized operation on audit data.\n\nApplications providing tools to interface with audit data will leverage user permissions and roles identifying the user accessing the tools and the corresponding rights the user enjoys in order make access decisions regarding the deletion of audit tools.\n\nAudit tools include, but are not limited to, vendor-provided and open source audit tools needed to successfully view and manipulate audit information system activity and records. Audit tools include custom queries and report generators.",
+        "solution": "Run these commands as the 'root' user (or user with sudo privileges) from the EDB Postgres Advanced Server data (PGDATA) directory:\n\n> chown enterprisedb edb_audit\n> chgrp enterprisedb edb_audit\n> chmod 700 edb_audit\n\nThe default path for the edb_audit directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001495,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259233r938752_rule,STIG-ID|EPAS-00-003100,Vuln-ID|V-259233",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/edb_audit",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_13": {
+        "description": "EPAS-00-003400 - Database software, including EDB Postgres Advanced Server configuration files, must be stored in dedicated directories, separate from the host OS and other applications.",
+        "info": "When dealing with change control issues, it should be noted any changes to the hardware, software, and/or firmware components of the information system and/or application can potentially have significant effects on the overall security of the system.\n\nMultiple applications can provide a cumulative negative effect. A vulnerability and subsequent exploit to one application can lead to an exploit of other applications sharing the same security context. For example, an exploit to a web server process that leads to unauthorized administrative access to host system directories can most likely lead to a compromise of all applications hosted by the same system. Database software not installed using dedicated directories both threatens and is threatened by other hosted applications. Access controls defined for one application may by default provide access to the other application's database objects or directories. Any method that provides any level of separation of security context assists in the protection between applications.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Install all applications on directories separate from the DBMS software library directory. Relocate any directories or reinstall other application software that currently shares the DBMS software library directory.",
+        "reference": "800-171|3.4.5,800-53|CM-5(6),800-53r5|CM-5(6),CAT|II,CCI|CCI-001499,CSF|PR.IP-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(6),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-259237r938764_rule,STIG-ID|EPAS-00-003400,Vuln-ID|V-259237",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/usr/bin/df @PG_DATA_DIR@ | /usr/bin/grep -v 'Mounted on' | /usr/bin/awk '{ print $NF }' | xargs /usr/bin/ls -l",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_14": {
+        "description": "EPAS-00-003600 - The role(s)/group(s) used to modify database structure and logic modules must be restricted to authorized users.",
+        "info": "Database structures include but are not necessarily limited to tables, indexes, storage, etc.\n\nLogic modules are objects such as stored procedures, functions, triggers, and links to software external to the DBMS, etc.\n\nIf the DBMS were to allow any user to make changes to database structure or logic modules, then those changes might be implemented without undergoing the appropriate testing and approvals that are part of a robust change management process.\n\nAccordingly, only qualified and authorized individuals must be allowed to obtain access to information system components for purposes of initiating changes, including upgrades and modifications.\n\nUnmanaged changes that occur to the database software libraries or configuration can lead to unauthorized or compromised installations.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Revoke unauthorized privileges. The syntax is:\nREVOKEONFROM.\n\nExample: REVOKE INSERT ON mytable FROM PUBLIC;\n\nRefer to PostgreSQL documentation for details: https://www.postgresql.org/docs/current/sql-revoke.html",
+        "reference": "800-171|3.4.5,800-53|CM-5(6),800-53r5|CM-5(6),CAT|II,CCI|CCI-001499,CSF|PR.IP-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(6),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-259239r938770_rule,STIG-ID|EPAS-00-003600,Vuln-ID|V-259239",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\dp *.*'\"",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "EPAS-00-003800 - Unused database components, EDB Postgres Advanced Server software, and database objects must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review the EDB Postgres Advanced Server packages available in the installation guide here: https://www.enterprisedb.com/docs/epas//\n\nUninstall all packages that are not required by running the following as the 'root' user:\n\n> yum erase -yAt a minimum, the edb-as-server-* packages are required. Additionally, other packages such as pem, jdbc, postgis, pgpool, and others may be required by applications that need the functionality provided in these additional packages.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259241r938776_rule,STIG-ID|EPAS-00-003800,SWIFT-CSCv1|2.3,Vuln-ID|V-259241",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/bin/yum list installed | /usr/bin/grep ppas | awk '{ print } END { if (NR == 0) print \"No packages found\" }'",
+        "expect": "^(No packages found|^Manual Review Required$)$"
+    },
+    "custom_item_16": {
+        "description": "EPAS-00-003900 - Unused database components which are integrated in the EDB Postgres Advanced Server and cannot be uninstalled must be disabled.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nUnused, unnecessary DBMS components increase the attack vector for the DBMS by introducing additional targets for attack. By minimizing the services and applications installed on the system, the number of potential vulnerabilities is reduced. Components of the system that are unused and cannot be uninstalled must be disabled. The techniques available for disabling components will vary by DBMS product, OS, and the nature of the component and may include DBMS configuration settings, OS service settings, OS file access security, and DBMS user/group permissions.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review the EDB Postgres Advanced Server packages available in the installation guide here: https://www.enterprisedb.com/docs/epas//\n\nUninstall all packages that are not required by running the following as the 'root' user:\n\n> yum erase -yAt a minimum, the edb-as-server-* packages are required. Additionally, other packages such as pem, jdbc, postgis, pgpool, and others may be required by applications that need the functionality provided in these additional packages.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259242r938779_rule,STIG-ID|EPAS-00-003900,SWIFT-CSCv1|2.3,Vuln-ID|V-259242",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/bin/yum list installed | /usr/bin/grep edb- | awk '{ print } END { if (NR == 0) print \"No packages found\" }'",
+        "expect": "^(No packages found|^Manual Review Required$)$"
+    },
+    "custom_item_17": {
+        "description": "EPAS-00-004000 - Access to external executables must be disabled or restricted.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nApplications must adhere to the principles of least functionality by providing only essential capabilities.\n\nDBMSs may spawn additional external processes to execute procedures that are defined in the DBMS but stored in external host files (external procedures). The spawned process used to execute the external procedure may operate within a different OS security context than the DBMS and provide unauthorized access to the host system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Review the EDB Postgres Advanced Server packages available in the installation guide here: https://www.enterprisedb.com/docs/epas//\n\nUninstall all packages that are not required by running the following as the 'root' user:\n\n> yum erase -yAt a minimum, the edb-as-server-* packages are required. Additionally, other packages such as pem, jdbc, postgis, pgpool, and others may be required by applications that need the functionality provided in these additional packages.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259243r938782_rule,STIG-ID|EPAS-00-004000,SWIFT-CSCv1|2.3,Vuln-ID|V-259243",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/bin/yum list installed | /usr/bin/grep edb- | awk '{ print } END { if (NR == 0) print \"No packages found\" }'",
+        "expect": "^(No packages found|^Manual Review Required$)$"
+    },
+    "custom_item_18": {
+        "description": "EPAS-00-004200 - The EDB Postgres Advanced Server must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+        "info": "To assure accountability and prevent unauthenticated access, organizational users must be identified and authenticated to prevent potential misuse and compromise of the system.\n\nOrganizational users include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors). Organizational users (and any processes acting on behalf of users) must be uniquely identified and authenticated for all accesses, except the following:\n\n(i) Accesses explicitly identified and documented by the organization. Organizations document specific user actions that can be performed on the information system without identification or authentication; and\n\n(ii) Accesses that occur through authorized use of group authenticators without individual authentication. Organizations may require unique identification of individuals in group accounts (e.g., shared privilege accounts) or for detailed accountability of individual activity.",
+        "solution": "Open the 'pg_hba.conf' file in an editor. The default path for the pg_hba.conf file is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.\n\nIf any rows have 'trust' specified for the 'METHOD' column, delete the rows or change them to other authentication methods.\n\nPermitted methods in preferred order are: peer (local only), cert, ldap, sspi, pam, and scram-sha-256.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259245r938788_rule,STIG-ID|EPAS-00-004200,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-259245",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*[^#]*[\\\\s]*trust([\\\\s]|$)",
+        "expect": "^[\\\\s]*[^#]*[\\\\s]*trust([\\\\s]|$)"
+    },
+    "custom_item_19": {
+        "description": "EPAS-00-004400 - If passwords are used for authentication, the EDB Postgres Advanced Server must transmit only encrypted representations of passwords.",
+        "info": "The DOD standard for authentication is DOD-approved PKI certificates.\n\nAuthentication based on User ID and Password may be used only when it is not possible to employ a PKI certificate, and requires AO approval.\n\nIn such cases, passwords need to be protected at all times, and encryption is the standard method for protecting passwords during transmission.\n\nDBMS passwords sent in clear text format across the network are vulnerable to discovery by unauthorized users. Disclosure of passwords may easily lead to unauthorized access to the database.",
+        "solution": "Open the 'pg_hba.conf' file in an editor. The default path for the pg_hba.conf file is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.\n\nFor any rows that have TYPE of 'hostssl', append 'clientcert=1' in the OPTIONS column at the end of the line.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|I,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259248r938797_rule,STIG-ID|EPAS-00-004400,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-259248",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*hostssl[\\\\s]",
+        "expect": "^[\\\\s]*hostssl[\\\\s].*[\\\\s]clientcert=1([\\\\s]|$)"
+    },
+    "custom_item_20": {
+        "description": "EPAS-00-004500 - The EDB Postgres Advanced Server, when utilizing PKI-based authentication, must validate certificates by performing RFC 5280-compliant certification path validation.",
+        "info": "The DOD standard for authentication is DOD-approved PKI certificates.\n\nA certificate's certification path is the path from the end entity certificate to a trusted root certification authority (CA). Certification path validation is necessary for a relying party to make an informed decision regarding acceptance of an end entity certificate. Certification path validation includes checks such as certificate issuer trust, time validity and revocation status for each certificate in the certification path. Revocation status information for CA and subject certificates in a certification path is commonly provided via certificate revocation lists (CRLs) or online certificate status protocol (OCSP) responses.\n\nDatabase Management Systems that do not validate certificates by performing RFC 5280-compliant certification path validation are in danger of accepting certificates that are invalid and/or counterfeit. This could allow unauthorized access to the database.",
+        "solution": "Open '/pg_hba.conf' in an editor. The default path for the postgresql data directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.\n\nFor any rows that have TYPE of 'hostssl', append 'clientcert=1' in the OPTIONS column at the end of the line.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259249r938800_rule,STIG-ID|EPAS-00-004500,Vuln-ID|V-259249",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*hostssl[\\\\s]",
+        "expect": "^[\\\\s]*hostssl[\\\\s].*[\\\\s]clientcert=1([\\\\s]|$)"
+    },
+    "custom_item_21": {
+        "description": "EPAS-00-004600 - The EDB Postgres Advanced Server must enforce authorized access to all PKI private keys stored/used by the EDB Postgres Advanced Server.",
+        "info": "The DOD standard for authentication is DOD-approved PKI certificates. PKI certificate-based authentication is performed by requiring the certificate holder to cryptographically prove possession of the corresponding private key.\n\nIf the private key is stolen, an attacker can use the private key(s) to impersonate the certificate holder. In cases where the DBMS-stored private keys are used to authenticate the DBMS to the system's clients, loss of the corresponding private keys would allow an attacker to successfully perform undetected man-in-the-middle attacks against the DBMS system and its clients.\n\nBoth the holder of a digital certificate and the issuing authority must take careful measures to protect the corresponding private key. Private keys should always be generated and protected in FIPS 140-2 or 140-3 validated cryptographic modules.\n\nAll access to the private key(s) of the DBMS must be restricted to authorized and authenticated users. If unauthorized users have access to one or more of the DBMS's private keys, an attacker could gain access to the key(s) and use them to impersonate the database on the network or otherwise perform unauthorized actions.",
+        "solution": "Run these commands:\n\n> chown enterprisedb/server.key'\n\n> chgrp enterprisedb/server.key\n\n> chmod 600/server.key\n\nThe default path for the postgresql data directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|I,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259250r938803_rule,STIG-ID|EPAS-00-004600,Vuln-ID|V-259250",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/server.key",
+        "owner": "@PG_USER@",
+        "mask": "177",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_22": {
+        "description": "EPAS-00-004700 - The DBMS must map the PKI-authenticated identity to an associated user account.",
+        "info": "The DOD standard for authentication is DOD-approved PKI certificates. Once a PKI certificate has been validated, it must be mapped to a DBMS user account for the authenticated identity to be meaningful to the DBMS and useful for authorization decisions.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure PostgreSQL to map authenticated identities directly to PostgreSQL user accounts.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(c),800-53r5|IA-5(2)(c),CAT|II,CCI|CCI-000187,CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(c),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259251r938806_rule,STIG-ID|EPAS-00-004700,Vuln-ID|V-259251",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "echo 'Maps in pg_hba.conf:'; grep 'map' @PG_DATA_DIR@/pg_hba.conf; echo; echo 'Content of pg_ident.conf:'; egrep -v '^#' @PG_DATA_DIR@/pg_ident.conf",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_23": {
+        "description": "fips-mode-setup",
+        "cmd": "fips-mode-setup --check",
+        "expect": "FIPS mode is enabled."
+    },
+    "custom_item_24": {
+        "description": "FIPS-certified OpenSSL",
+        "cmd": "/usr/bin/cat /proc/sys/crypto/fips_enabled",
+        "expect": "^1$"
+    },
+    "custom_item_25": {
+        "description": "EPAS-00-005000 - The EDB Postgres Advanced Server must uniquely identify and authenticate nonorganizational users (or processes acting on behalf of nonorganizational users).",
+        "info": "Nonorganizational users include all information system users other than organizational users, which include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors, guest researchers, individuals from allied nations).\n\nNonorganizational users must be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.\n\nAccordingly, a risk assessment is used in determining the authentication needs of the organization.\n\nScalability, practicality, and security are simultaneously considered in balancing the need to ensure ease of use for access to federal information and information systems with the need to protect and adequately mitigate risk to organizational operations, organizational assets, individuals, other organizations, and the nation.",
+        "solution": "Open the 'pg_hba.conf' file in an editor. The default path for the pg_hba.conf file is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.\n\nIf any rows have 'trust' specified for the 'METHOD' column, delete the rows or change them to other authentication methods.\n\nPermitted methods in preferred order are: peer (local only), cert, ldap, sspi, pam, and scram-sha-256.",
+        "reference": "800-53|IA-8,800-53r5|IA-8,CAT|II,CCI|CCI-000804,CSF|PR.AC-1,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-8,ITSG-33|IA-8a.,NESA|T4.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259256r938821_rule,STIG-ID|EPAS-00-005000,SWIFT-CSCv1|2.8,Vuln-ID|V-259256",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*[^#]*[\\\\s]*trust([\\\\s]|$)",
+        "expect": "^[\\\\s]*[^#]*[\\\\s]*trust([\\\\s]|$)"
+    },
+    "custom_item_26": {
+        "description": "EPAS-00-005100 - The EDB Postgres Advanced Server must separate user functionality (including user interface services) from database management functionality.",
+        "info": "Information system management functionality includes functions necessary to administer databases, network components, workstations, or servers and typically requires privileged user access.\n\nThe separation of user functionality from information system management functionality is either physical or logical and is accomplished by using different computers, different central processing units, different instances of the operating system, different network addresses, combinations of these methods, or other methods, as appropriate.\n\nAn example of this type of separation is observed in web administrative interfaces that use separate authentication methods for users of any other information system resources.\n\nThis may include isolating the administrative interface on a different domain and with additional access controls.\n\nIf administrative functionality or information regarding DBMS management is presented on an interface available for users, information on DBMS settings may be inadvertently made available to the user.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Execute the following SQL as the 'enterprisedb' operating system user for all database users not approved for SUPERUSER privileges:\n\n> psql edb -c 'ALTER USERNOSUPERUSER'",
+        "reference": "800-171|3.13.3,800-53|SC-2,800-53r5|SC-2,CAT|II,CCI|CCI-001082,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-2,ITSG-33|SC-2a.,NESA|T3.4.1,NIAv2|SS15b,Rule-ID|SV-259257r938824_rule,STIG-ID|EPAS-00-005100,Vuln-ID|V-259257",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\du'\"",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_27": {
+        "description": "EPAS-00-006100 - Access to database files must be limited to relevant processes and to authorized, administrative users.",
+        "info": "Applications, including DBMSs, must prevent unauthorized and unintended information transfer via shared system resources. Permitting only DBMS processes and authorized, administrative users to have access to the files where the database resides helps ensure that those files are not shared inappropriately and are not open to backdoor access and manipulation.",
+        "solution": "Run these commands:\n\n> chown enterprisedb> chgrp enterprisedb> chmod 700The default path for the postgresql data directory is /var/lib/edb/as/data (PGDATA), but this will vary according to local circumstances.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CAT|II,CCI|CCI-001090,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,Rule-ID|SV-259262r938839_rule,STIG-ID|EPAS-00-006100,Vuln-ID|V-259262",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@",
+        "owner": "@PG_USER@",
+        "mask": "077",
+        "group": "@PG_GROUP@"
+    },
+    "custom_item_28": {
+        "description": "dn",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\dn *.*'\"",
+        "expect": "(0 rows|^Manual Review Required$)"
+    },
+    "custom_item_29": {
+        "description": "dt",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\dt *.*'\"",
+        "expect": "(0 rows|^Manual Review Required$)"
+    },
+    "custom_item_30": {
+        "description": "ds",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\ds *.*'\"",
+        "expect": "(0 rows|^Manual Review Required$)"
+    },
+    "custom_item_31": {
+        "description": "dv",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\dv *.*'\"",
+        "expect": "(0 rows|^Manual Review Required$)"
+    },
+    "custom_item_32": {
+        "description": "df+",
+        "cmd": "su - @PG_USER@ -c \"psql -c '\\\\df+ *.*'\"",
+        "expect": "(0 rows|^Manual Review Required$)"
+    },
+    "custom_item_33": {
+        "description": "SSL",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*(host|hostnossl)[\\\\s]",
+        "expect": "^[\\\\s]*(host|hostnossl)[\\\\s]"
+    },
+    "custom_item_34": {
+        "description": "Port",
+        "file": "@PG_DATA_DIR@/postgresql*.conf",
+        "regex": "^[\\\\s]*port[\\\\s]*=",
+        "expect": "^[\\\\s]*port[\\\\s]*=[\\\\s]*(@VALID_PORTS@)[\\\\s]*$"
+    },
+    "custom_item_35": {
+        "description": "PG_DATA_DIR root.crt file exists",
+        "file": "@PG_DATA_DIR@/root.crt"
+    },
+    "custom_item_36": {
+        "description": "EPAS-00-009100 - The EDB Postgres Advanced Server must only accept end entity certificates issued by DOD PKI or DOD-approved PKI Certification Authorities (CAs) for the establishment of all encrypted sessions.",
+        "info": "Only DOD-approved external PKIs have been evaluated to ensure that they have security controls and identity vetting procedures in place which are sufficient for DOD systems to rely on the identity asserted in the certificate. PKIs lacking sufficient security controls and identity vetting procedures risk being compromised and issuing certificates that enable adversaries to impersonate legitimate users.\n\nThe authoritative list of DOD-approved PKIs is published at http://iase.disa.mil/pki-pke/interoperability.\n\nThis requirement focuses on communications protection for the DBMS session rather than for the network packet.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Revoke trust in any certificates not issued by a DOD-approved certificate authority.\n\nContact the organization's certificate issuer and request a new certificate that is issued by a DOD-approved certificate authority.",
+        "reference": "800-171|3.13.15,800-53|SC-23(5),800-53r5|SC-23(5),CAT|II,CCI|CCI-002470,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-259289r938920_rule,STIG-ID|EPAS-00-009100,Vuln-ID|V-259289",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/usr/bin/openssl x509 -in @PG_DATA_DIR@/root.crt -text | /usr/bin/grep -i 'issuer'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_37": {
+        "description": "EPAS-00-009100 - The EDB Postgres Advanced Server must only accept end entity certificates issued by DOD PKI or DOD-approved PKI Certification Authorities (CAs) for the establishment of all encrypted sessions.",
+        "info": "Only DOD-approved external PKIs have been evaluated to ensure that they have security controls and identity vetting procedures in place which are sufficient for DOD systems to rely on the identity asserted in the certificate. PKIs lacking sufficient security controls and identity vetting procedures risk being compromised and issuing certificates that enable adversaries to impersonate legitimate users.\n\nThe authoritative list of DOD-approved PKIs is published at http://iase.disa.mil/pki-pke/interoperability.\n\nThis requirement focuses on communications protection for the DBMS session rather than for the network packet.",
+        "solution": "Revoke trust in any certificates not issued by a DOD-approved certificate authority.\n\nContact the organization's certificate issuer and request a new certificate that is issued by a DOD-approved certificate authority.",
+        "reference": "800-171|3.13.15,800-53|SC-23(5),800-53r5|SC-23(5),CAT|II,CCI|CCI-002470,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-259289r938920_rule,STIG-ID|EPAS-00-009100,Vuln-ID|V-259289",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/root.crt"
+    },
+    "custom_item_38": {
+        "description": "EPAS-00-009500 - The EDB Postgres Advanced Server must maintain the confidentiality and integrity of information during preparation for transmission.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during preparation for transmission, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nUse of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen transmitting data, the DBMS, associated applications, and infrastructure must leverage transmission protection mechanisms.\n\nEDB Postgres Advanced Server provides native support for using SSL connections to encrypt client/server communications. To enable the use of SSL, the postgres 'ssl' configuration parameter must be set to 'on', and the database instance needs to be configured to use a valid server certificate and private key installed on the server. With SSL enabled, connections made to the database server will default to being encrypted. However, it is possible for clients to override the default and attempt to establish an unencrypted connection. To prevent connections made from nonlocal hosts from being unencrypted, the postgres host-based authentication settings should be configured to only allow hostssl (i.e., encrypted) connections. The hostssl connections can be further configured to require that the client present a valid (trusted) SSL certificate for a connection.",
+        "solution": "To configure EDB Postgres Advanced Server to use SSL, open the 'postgresql.conf' file in an editor. Note that the default location for the postgresql.conf file is in the postgresql data directory (PGDATA). The location of the postgresql.conf for a running EDB Postgres instance can be found using the following command run from a command prompt:\n\n> psql -d-U-c 'SHOW config_file'\n\nWhereis any database in the EDB postgres instance andis a database superuser. By default, a database named 'edb' and a superuser named 'enterprisedb' are installed with EDB Postgres Advanced Server (EPAS).\n\nIn the postgresql.conf file, set the 'ssl' parameter as follows:\n\nssl = on\n\nEnsure the parameter is uncommented.\n\nIn order to start an EDB Postgres Advanced Server instance in SSL mode, files containing the server certificate and private key must exist. By default, these files are expected to exist in the Postgres data directory and are expected to be named server.crt and server.key, respectively. Update the ssl_cert_file and ssl_cert_key parameters in the postgresql.conf file if the files are placed in a different location or are named differently. Note that changes to the SSL parameter setting and any of the other SSL-related parameters require a database server restart to be put the changes into effect.\n\nTo restart the database on a systemd server, issue the following command as the root user or a user with sudo access:\n\n> systemctl restart edb-as-Whereis the major version of the EDB Postgres Advanced Server instance (e.g., 15).\n\nTo restart the database on an initd server, issue the following command as the root user or a user with sudo access:\n\n> systemctl restart edb-as-Whereis the major version of the EDB Postgres Advanced Server instance (e.g., 15).\n\nAfter verifying SSL is enabled for the database, open the pg_hba.conf file in an editor to configure the host-based authentication settings. The default location for the pg_hba.conf file is in the postgresql data directory (PGDATA). The location of the pg_hba.conf file for a running EDB postgres instance can be found using the following command run from a command prompt:\n\n> psql -d-U-c 'SHOW hba_file'\n\nWhereis any database in the EDB postgres instance andis a database superuser. By default, a database named 'edb' and a superuser named 'enterprisedb' are installed with EDB Postgres Advanced Server (EPAS).\n\nObtain approval and document any uncommented entries with corresponding justification that are not of type hostssl and do not include the 'clientcert=1' option.\n\nFor any entries that are not of type hostssl authentication with the 'clientcert=1' option and not documented and approved, change the 'TYPE' column to 'hostssl' and add the 'clientcert=1' authentication method option.\n\nNote that changes to the host-based authentication settings require a database reload in order to apply the updated settings.\n\nTo reload the database on a systemd server, issue the following command as the root user or a user with sudo access:\n\n> systemctl reload edb-as-Whereis the major version of the EDB Postgres Advanced Server instance (e.g., 15).\n\nTo reload the database on an initd server, issue the following command as the root user or a user with sudo access:\n\n> systemctl reload edb-as-Whereis the major version of the EDB Postgres Advanced Server instance (e.g., 15).\n\nFor more information on configuring PostgreSQL to use SSL, consult the following documentation: https://www.postgresql.org/docs/current/ssl-tcp.html",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|EPAS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-259292r938929_rule,STIG-ID|EPAS-00-009500,SWIFT-CSCv1|2.1,Vuln-ID|V-259292",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "file": "@PG_DATA_DIR@/pg_hba.conf",
+        "regex": "^[\\\\s]*hostssl[\\\\s]",
+        "expect": "^[\\\\s]*hostssl[\\\\s].*[\\\\s]cert([\\\\s]|$)"
+    },
+    "custom_item_39": {
+        "description": "fips-mode-setup",
+        "cmd": "fips-mode-setup --check",
+        "expect": "FIPS mode is enabled."
+    },
+    "custom_item_40": {
+        "description": "FIPS-certified OpenSSL",
+        "cmd": "/usr/bin/cat /proc/sys/crypto/fips_enabled",
+        "expect": "^1$"
+    },
+    "custom_item_41": {
+        "description": "fips-mode-setup",
+        "cmd": "fips-mode-setup --check",
+        "expect": "FIPS mode is enabled."
+    },
+    "custom_item_42": {
+        "description": "FIPS-certified OpenSSL",
+        "cmd": "/usr/bin/cat /proc/sys/crypto/fips_enabled",
+        "expect": "^1$"
+    },
+    "custom_item_43": {
+        "description": "EPAS-00-012900 - The EDB Postgres Advanced Server must implement NIST FIPS 140-2 or 140-3 validated cryptographic modules to protect unclassified information requiring confidentiality and cryptographic protection, in accordance with the requirements of the data owner.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The application must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nIt is the responsibility of the data owner to assess the cryptography requirements in light of applicable federal laws, Executive Orders, directives, policies, regulations, and standards.\n\nFor detailed information, refer to NIST FIPS Publication 140-3, Security Requirements For Cryptographic Modules. Note that the product's cryptographic modules must be validated and certified by NIST as FIPS-compliant.",
+        "solution": "If fips_enabled = 0 or FIPS mode is not enabled, configure OpenSSL to be FIPS compliant.\n\nConfigure per operating system documentation:\n\nRedHat7: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/chap-federal_standards_and_regulations\n\nRedHat8: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/security_hardening/assembly_installing-a-rhel-8-system-with-fips-mode-enabled_security-hardening\n\nUbuntu: https://security-certs.docs.ubuntu.com/en/fips",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|EPAS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-259327r939034_rule,STIG-ID|EPAS-00-012900,Vuln-ID|V-259327",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "/usr/bin/cat /proc/sys/crypto/fips_enabled",
+        "expect": "^1$"
+    },
+    "custom_item_44": {
+        "description": "EPAS-00-013200 - EDB Postgres Advanced Server products must be a version supported by the vendor.",
+        "info": "Unsupported commercial and database systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.\n\nSystems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.\n\nWhen maintenance updates and patches are no longer available, the database software is no longer considered supported and should be upgraded or decommissioned.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove or decommission all unsupported software products.\n\nUpgrade unsupported DBMS or unsupported components to a supported version of the product.",
+        "reference": "800-53|SA-22a.,800-53r5|SA-22a.,CAT|I,CCI|CCI-003376,DISA_Benchmark|EPAS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),Rule-ID|SV-259329r939040_rule,STIG-ID|EPAS-00-013200,Vuln-ID|V-259329",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_EPAS_V1R1_STIG.zip",
+        "cmd": "edb-postgres --version",
+        "expect": "^Manual Review Required$"
+    }
+}

@@ -1,0 +1,303 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "DBA group",
+        "cmd": "/bin/cat /etc/group | /bin/egrep -i '^dba' | /bin/grep root | /bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^none$"
+    },
+    "custom_item_3": {
+        "description": "Root group",
+        "file": "/etc/group",
+        "regex": "^root:",
+        "expect": "(@DBA_ACCTS@)"
+    },
+    "custom_item_4": {
+        "description": "O112-C1-011100 - Vendor-supported software must be evaluated and patched against newly found vulnerabilities.",
+        "info": "Security faults with software applications and operating systems are discovered daily. Vendors are constantly updating and patching their products to address newly discovered security vulnerabilities. Organizations (including any contractor to the organization) are required to promptly install security-relevant software updates (e.g., patches, service packs, and hot fixes). Flaws discovered during security assessments, continuous monitoring, incident response activities, or information system error handling, must also be  addressed expeditiously.\n\nAnytime new software code is introduced to a system there is the potential for unintended consequences. There have been documented instances where the application of a patch has caused problems with system integrity or availability.  Due to information system integrity and availability concerns, organizations must give careful consideration to the methodology used to carry out automatic updates.\n\nUnsupported software versions are not patched by vendors to address newly discovered security versions. An unpatched version is vulnerable to attack.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Upgrade the DBMS to a vendor-supported version.\n\nApply the latest DBMS patches.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|I,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-238432r879827_rule,STIG-ID|O112-C1-011100,STIG-Legacy|SV-66543,STIG-Legacy|V-52327,SWIFT-CSCv1|2.2,Vuln-ID|V-238432",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "cmd": "@ORACLE_HOME@/OPatch/opatch lsinventory -detail -oh @ORACLE_HOME@ 2>&1 | /bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^none$"
+    },
+    "custom_item_5": {
+        "description": "O112-C2-019100 - The DBMS must protect against or limit the effects of the organization-defined types of Denial of Service (DoS) attacks.",
+        "info": "A variety of technologies exist to limit, or in some cases, eliminate the effects of DoS attacks. For example, boundary protection devices can filter certain types of packets to protect devices on an organization's internal network from being directly affected by DoS attacks.\n\nEmploying increased capacity and bandwidth combined with service redundancy may reduce the susceptibility to some DoS attacks.\n\nSome of the ways databases can limit their exposure to DoS attacks are through limiting the number of connections that can be opened by a single user and database clustering.",
+        "solution": "Implement measures to limit the effects of organization-defined types of Denial of Service attacks.\n\nModify the $ORACLE_HOME/network/admin/listener.ora to establish a Rate Limit.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-238477r879511_rule,STIG-ID|O112-C2-019100,STIG-Legacy|SV-66377,STIG-Legacy|V-52161,Vuln-ID|V-238477",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*\\\\([\\\\s]*[Aa][Dd][Dd][Rr][Ee][Ss][Ss][\\\\s]*=",
+        "expect": "\\\\(RATE_LIMIT[\\\\s]*=[\\\\s]*([Yy][Ee][Ss]|[0-9]+)"
+    },
+    "custom_item_6": {
+        "description": "SQLNET.AUTHENTICATION_SERVICES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.AUTHENTICATION_SERVICES[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.AUTHENTICATION_SERVICES[\\\\s]*="
+    },
+    "custom_item_7": {
+        "description": "SSL_VERSION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2",
+        "expect": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2"
+    },
+    "custom_item_8": {
+        "description": "SSL_CLIENT_AUTHENTICATION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*="
+    },
+    "custom_item_9": {
+        "description": "SSL_CIPHER_SUITES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*=[\\\\s]*\\\\(SSL_RSA_WITH_AES_256_CBC_SHA384\\\\)"
+    },
+    "custom_item_10": {
+        "description": "SSL_CIPHER_SUITES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*="
+    },
+    "custom_item_11": {
+        "description": "SSL_VERSION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2",
+        "expect": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2"
+    },
+    "custom_item_12": {
+        "description": "SSL_CLIENT_AUTHENTICATION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*="
+    },
+    "custom_item_13": {
+        "description": "SSL_CIPHER_SUITES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*="
+    },
+    "custom_item_14": {
+        "description": "SSL_VERSION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2",
+        "expect": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2"
+    },
+    "custom_item_15": {
+        "description": "SSL_CLIENT_AUTHENTICATION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*="
+    },
+    "custom_item_16": {
+        "description": "O112-C2-015700 - The DBMS must use  NIST-validated FIPS 140-2-compliant cryptography for authentication mechanisms.",
+        "info": "Encryption is only as good as the encryption modules utilized. Unapproved cryptographic module algorithms cannot be verified and cannot be relied upon to provide confidentiality or integrity, and DoD data may be compromised due to weak algorithms.\n\nApplications utilizing encryption are required to use approved encryption modules that meet the requirements of applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nFIPS 140-2 is the current standard for validating cryptographic modules, and NSA Type-X (where X=1, 2, 3, 4) products are NSA-certified hardware-based encryption modules.\n\nAuthentication modules with weak encryption could allow an attacker to gain access to data stored in the database and to the administration settings of the DBMS.",
+        "solution": "Utilize NIST-validated FIPS 140-2-compliant cryptography for all authentication mechanisms.\n\nThe strength requirements are dependent upon data classification.\n\nFor unclassified data, where cryptography is required:\n\nAES 128 for encryption\nSHA 256 for hashing\n\nNSA has established the suite B encryption requirements for protecting National Security Systems (NSS) as follows:\n\nAES 128 for Secret\nAES 256 for Top Secret\nSHA 256 for Secret\nSHA 384 for Top Secret\n\nNational Security System is defined as:\n\n(OMB Circular A-130) Any telecommunications or information system operated by the United States Government, the function, operation, or use of which (1) involves intelligence activities; (2) involves cryptologic activities related to national security; (3) involves command and control of military forces; (4) involves equipment that is an integral part of a weapon or weapons system; or (5) is critical to the direct fulfillment of military or intelligence missions, but excluding any system that is to be used for routine administrative and business applications (including payroll, finance, logistics, and personnel management applications).\n\nThere is more information on this topic in the Oracle Database 11.2g Advanced Security Administrator's Guide, which may be found at  https://docs.oracle.com/database/112/DBSEG/E48135-11.pdf.\n\nNote: because of changes in Oracle's licensing policy, it is no longer necessary to purchase Oracle Advanced Security to use network encryption and advanced authentication.\n\nFIPS 140-2 documentation can be downloaded from http://csrc.nist.gov/publications/PubsFIPS.html#140-2",
+        "reference": "800-53|IA-7,800-53r5|IA-7,CAT|II,CCI|CCI-000803,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),ITSG-33|IA-7,ITSG-33|IA-7a.,NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T7.4.1,QCSC-v1|13.2,Rule-ID|SV-219778r879616_rule,STIG-ID|O112-C2-015700,STIG-Legacy|SV-66513,STIG-Legacy|V-52297,Vuln-ID|V-219778",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/ldap/admin/fips.ora",
+        "regex": "^[\\\\s]*SSLFIPS_140[\\\\s]*=",
+        "expect": "^[\\\\s]*SSLFIPS_140[\\\\s]*=[\\\\s]*[Tt][Rr][Uu][Ee]"
+    },
+    "custom_item_17": {
+        "description": "SSL_CIPHER_SUITES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CIPHER_SUITES[\\\\s]*="
+    },
+    "custom_item_18": {
+        "description": "SSL_VERSION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2",
+        "expect": "^[\\\\s]*SSL_VERSION[\\\\s]*=[\\\\s]*1\\.2"
+    },
+    "custom_item_19": {
+        "description": "SSL_CLIENT_AUTHENTICATION",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*=",
+        "expect": "^[\\\\s]*SSL_CLIENT_AUTHENTICATION[\\\\s]*="
+    },
+    "custom_item_20": {
+        "description": "SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT[\\\\s]*=[\\\\s]*\\(@CLIENT_CHECKSUM_TYPES@\\)"
+    },
+    "custom_item_21": {
+        "description": "SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_TYPES_SERVER[\\\\s]*=[\\\\s]*\\(@SERVER_CHECKSUM_TYPES@\\)"
+    },
+    "custom_item_22": {
+        "description": "SQLNET.ENCRYPTION_TYPES_CLIENT",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.ENCRYPTION_TYPES_CLIENT[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.ENCRYPTION_TYPES_CLIENT[\\\\s]*=[\\\\s]*\\(@CLIENT_ENCRYPTION_TYPES@\\)"
+    },
+    "custom_item_23": {
+        "description": "SQLNET.CRYPTO_CHECKSUM_CLIENT",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_CLIENT[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_CLIENT[\\\\s]*=[\\\\s]*@CLIENT_CRYPTO_CHECKSUM@"
+    },
+    "custom_item_24": {
+        "description": "SQLNET.CRYPTO_CHECKSUM_SERVER",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_SERVER[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.CRYPTO_CHECKSUM_SERVER[\\\\s]*=[\\\\s]*@SERVER_CRYPTO_CHECKSUM@"
+    },
+    "custom_item_25": {
+        "description": "SQLNET.ENCRYPTION_TYPES_SERVER",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET.ENCRYPTION_TYPES_SERVER[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET.ENCRYPTION_TYPES_SERVER[\\\\s]*=[\\\\s]*\\(@SERVER_ENCRYPTION_TYPES@\\)"
+    },
+    "custom_item_26": {
+        "description": "O112-C2-001700 - The DBMS must support the disabling of network protocols deemed by the organization to be non-secure.",
+        "info": "This requirement is related to remote access, but more specifically to the networking protocols allowing systems to communicate. Remote access is any access to an organizational information system by a user (or an information system) communicating through an external, non-organization  controlled network (e.g., the Internet). Examples of remote access methods include dial-up, broadband, and wireless.\n\nSome networking protocols allowing remote access may not meet security requirements to protect data and components. Bluetooth and peer-to-peer networking are examples of less than secure networking protocols.\n\nThe DoD Ports, Protocols, and Services Management (PPSM) program provides implementation guidance on the use of IP protocols and application and data services traversing the DoD Networks in a manner supporting net-centric operations.\n\nApplications implementing or utilizing remote access network protocols need to ensure the application is developed and implemented in accordance with the PPSM requirements. In situations where it has been determined that specific operational requirements outweigh the risks of enabling an insecure network protocol, the organization may pursue a risk acceptance.\n\nUsing protocols deemed non-secure would compromise the ability of the DBMS to operate in a secure fashion. The database must be able to disable network protocols deemed non-secure.",
+        "solution": "Disable any network protocol listed as non-secure in the PPSM documentation.\n\nTo disable the protocol deemed not secure, stop the listener by issuing the following command as the Oracle Software owner, typically Oracle.\n          $ lsnrctl stop\nThis will stop the listener.  Edit the LISTENER.ORA file and remove the protocols deemed not secure and restart the listener.\n\nFor example, if TCP was deemed as not secure and the listener.ora would need to be changed and the tcp entry would need to be removed.  That would only allow the listener to listen for an IPC connection.\n\nLISTENER=\n  (DESCRIPTION=\n    (ADDRESS_LIST=\n      (ADDRESS=(PROTOCOL=tcp)(HOST=sale-server)(PORT=1521)) - remove this line and properly balance the parentheses -\n      (ADDRESS=(PROTOCOL=ipc)(KEY=extproc))))\nSID_LIST_LISTENER=\n  (SID_LIST=\n    (SID_DESC=\n      (GLOBAL_DBNAME=sales.us.example.com)\n      (ORACLE_HOME=/oracle11g)\n      (SID_NAME=sales))\n    (SID_DESC=\n      (SID_NAME=plsextproc)\n      (ORACLE_HOME=/oracle11g)\n      (PROGRAM=extproc)))\n\nRevise the client side TNSNAMES.ORA to align the PROTOCOL value in the PROTOCOL portion of the connect string.  For example, if TCP was deemed as not secure and the listener.ora was changed to listen for an IPC connection the code below would be required:\n\nnet_service_name=\n(DESCRIPTION=\n(ADDRESS=(PROTOCOL=tcp)(HOST=sales1-svr)(PORT=1521))\n(ADDRESS=(PROTOCOL=tcp)(HOST=sales2-svr)(PORT=1521))\n(CONNECT_DATA=\n(SERVICE_NAME=sales.us.example.com)))",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-238435r879588_rule,STIG-ID|O112-C2-001700,STIG-Legacy|SV-66563,STIG-Legacy|V-52347,SWIFT-CSCv1|2.3,Vuln-ID|V-238435",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "\\\\([Pp][Rr][Oo][Tt][Oo][Cc][Oo][Ll][\\\\s]*=[\\\\s]*",
+        "expect": "\\\\([Pp][Rr][Oo][Tt][Oo][Cc][Oo][Ll][\\\\s]*=[\\\\s]*(@UNSAFE_PROTOCOLS@)\\\\)"
+    },
+    "custom_item_27": {
+        "description": "O112-BP-022200 - The Oracle password file ownership and permissions should be limited and the REMOTE_LOGIN_PASSWORDFILE parameter must be set to EXCLUSIVE or NONE.",
+        "info": "It is critically important to the security of your system that you protect your password file and the environment variables that identify the location of the password file. Any user with access to these could potentially compromise the security of the connection.\nThe REMOTE_LOGIN_PASSWORDFILE setting of 'NONE' disallows remote administration of the database. The REMOTE_LOGIN_PASSWORDFILE setting of 'EXCLUSIVE' allows for auditing of individual DBA logins to the SYS account. If not set to 'EXCLUSIVE,' remote connections to the database as 'internal' or 'as SYSDBA' are not logged to an individual account.",
+        "solution": "Disable use of the remote_login_passwordfile where remote administration is not authorized by specifying a value of NONE.\n\nIf authorized, restrict use of a password file to exclusive use by each database by specifying a value of EXCLUSIVE.\n\nFrom SQL*Plus:\n\nalter system set remote_login_passwordfile = 'EXCLUSIVE' scope = spfile;\n\nOR\n\nalter system set remote_login_passwordfile = 'NONE' scope = spfile;\n\nThe above SQL*Plus command will set the parameter to take effect at next system startup.\n\nRestrict ownership and permissions on the Oracle password file to exclude world (Unix) or everyone (Windows).\n\nMore information regarding the ORAPWD file and the REMOTE_LOGIN_PASSWORDFILE parameter, can be found here:\nhttps://docs.oracle.com/cd/E11882_01/server.112/e25494/dba.htm#ADMIN10241",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-219705r879887_rule,STIG-ID|O112-BP-022200,STIG-Legacy|SV-68221,STIG-Legacy|V-53981,SWIFT-CSCv1|2.3,Vuln-ID|V-219705",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/dbs/orapw*",
+        "mask": "640"
+    },
+    "custom_item_28": {
+        "description": "O112-BP-022700 - The Oracle Listener must be configured to require administration authentication.",
+        "info": "Oracle listener authentication helps prevent unauthorized administration of the Oracle listener. Unauthorized administration of the listener could lead to DoS exploits; loss of connection audit data, unauthorized reconfiguration or other unauthorized access. This is a Category I finding because privileged access to the listener is not restricted to authorized users. Unauthorized access can result in stopping of the listener (DoS) and overwriting of listener audit logs.",
+        "solution": "Configure the listener to use Local OS Authentication. This setting prevents remote administration of the listener, restricts management to the Oracle listener owner account (UNIX) and accounts with administrator privileges (WIN).\n\nRemote administration of the listener should not be permitted. If listener administration from a remote system is required, granting secure remote access to the Oracle DBMS server and performing local administration is preferred. Authorize and document this requirement in the System Security Plan.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-219710r879887_rule,STIG-ID|O112-BP-022700,STIG-Legacy|SV-68231,STIG-Legacy|V-53991,SWIFT-CSCv1|2.3,Vuln-ID|V-219710",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "cmd": "for LISTENER in @LISTENER_LIST@; do @ORACLE_HOME@/bin/lsnrctl status $LISTENER; done | /bin/egrep '^Security' | /bin/egrep -v 'ON: Local OS Authentication1' | /bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^none$"
+    },
+    "custom_item_29": {
+        "description": "'/etc/profile umask < 022'",
+        "file": "/etc/profile",
+        "regex": "^[\\\\s\\\\t]*umask",
+        "expect": "^[\\\\s\\\\t]*umask 0(0|2)(0|2)"
+    },
+    "custom_item_30": {
+        "description": "'umask < 0022'",
+        "cmd": "umask",
+        "expect": "^00(0|2)(0|2)"
+    },
+    "custom_item_31": {
+        "description": "TCP.VALIDNODE_CHECKING",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*TCP\\\\.VALIDNODE_CHECKING[\\\\s]*=",
+        "expect": "^[\\\\s]*TCP\\\\.VALIDNODE_CHECKING[\\\\s]*=[\\\\s]*[Yy][Ee][Ss]"
+    },
+    "custom_item_32": {
+        "description": "TCP.INVITED_NODES",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*TCP\\\\.INVITED_NODES[\\\\s]*=",
+        "expect": "^[\\\\s]*TCP\\\\.INVITED_NODES[\\\\s]*="
+    },
+    "custom_item_33": {
+        "description": "Permissions",
+        "file": "@DIAGONOSTICFILE@",
+        "mask": "137"
+    },
+    "custom_item_34": {
+        "description": "Ownership",
+        "file": "@DIAGONOSTICFILE@",
+        "owner": "oracle",
+        "group": "dba"
+    },
+    "custom_item_35": {
+        "description": "Check cman.ora exists in default location",
+        "file": "@ORACLE_HOME@/network/admin/cman.ora"
+    },
+    "custom_item_36": {
+        "description": "O112-BP-026500 - Remote administration must be disabled for the Oracle connection manager.",
+        "info": "Remote administration provides a potential opportunity for malicious users to make unauthorized changes to the Connection Manager configuration or interrupt its service.",
+        "solution": "View the cman.ora file in the ORACLE_HOME/network/admin directory of the Connection Manager.\n\nInclude the following line in the file:\n\nREMOTE_ADMIN = NO",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-219745r879887_rule,STIG-ID|O112-BP-026500,STIG-Legacy|SV-68315,STIG-Legacy|V-54075,SWIFT-CSCv1|2.3,Vuln-ID|V-219745",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/network/admin/cman.ora",
+        "regex": "^[\\\\s]*\\\\(REMOTE_ADMIN[\\\\s]*=",
+        "expect": "^[\\\\s]*\\\\(REMOTE_ADMIN[\\\\s]*=[\\\\s]*[Nn][Oo]"
+    },
+    "custom_item_37": {
+        "description": "O112-BP-026500 - Remote administration must be disabled for the Oracle connection manager.",
+        "info": "Remote administration provides a potential opportunity for malicious users to make unauthorized changes to the Connection Manager configuration or interrupt its service.",
+        "solution": "View the cman.ora file in the ORACLE_HOME/network/admin directory of the Connection Manager.\n\nInclude the following line in the file:\n\nREMOTE_ADMIN = NO",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-219745r879887_rule,STIG-ID|O112-BP-026500,STIG-Legacy|SV-68315,STIG-Legacy|V-54075,SWIFT-CSCv1|2.3,Vuln-ID|V-219745",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/network/admin/cman.ora"
+    },
+    "custom_item_38": {
+        "description": "O112-BP-026600 - The SQLNet SQLNET.ALLOWED_LOGON_VERSION parameter must be set to a value of 12 or higher.",
+        "info": "Unsupported Oracle network client installations may introduce vulnerabilities to the database. Restriction to use of supported versions helps to protect the database and helps to enforce newer, more robust security controls.",
+        "solution": ": Deploy Oracle 11.2.0.4 with the January 2014 CPU patch.\n\nEdit the SQLNET.ORA file to add or edit the entry:\n\nSQLNET.ALLOWED_LOGON_VERSION = 12\n\nSet the value to 12 or higher.\n\nFor more information on sqlnet.ora parameters refer to the following document:\n'Database Net Services Reference'\nhttps://docs.oracle.com/cd/E11882_01/network.112/e10835/sqlnet.htm#NETRF006",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Oracle_Database_11-2g_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-219746r879887_rule,STIG-ID|O112-BP-026600,STIG-Legacy|SV-68317,STIG-Legacy|V-54077,SWIFT-CSCv1|2.3,Vuln-ID|V-219746",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Oracle_Database_11-2g_V2R4_STIG.zip",
+        "file": "@ORACLE_HOME@/network/admin/sqlnet.ora",
+        "regex": "^[\\\\s]*SQLNET\\\\.ALLOWED_LOGON_VERSION[\\\\s]*=",
+        "expect": "^[\\\\s]*SQLNET\\\\.ALLOWED_LOGON_VERSION[\\\\s]*=[\\\\s]*1[2-9]"
+    },
+    "custom_item_39": {
+        "description": "'AUDIT_FILE_DEST not in ORACLEHOME'",
+        "cmd": "/bin/echo '@AUDIT_FILE_DEST@' | /bin/grep '@ORACLE_HOME@' | /bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^none$"
+    },
+    "custom_item_40": {
+        "description": "'AUDIT_FILE_DEST Permissions'",
+        "file": "@AUDIT_FILE_DEST@",
+        "mask": "137"
+    },
+    "custom_item_41": {
+        "description": "'extproc does not exist'",
+        "file": "@ORACLE_HOME@/bin/extproc"
+    },
+    "custom_item_42": {
+        "description": "'run_user=nobody'",
+        "file": "@ORACLE_HOME@/rdbms/admin/externaljob.ora",
+        "regex": "run_user[\\\\s]*=",
+        "expect": "run_user[\\\\s]*=[\\\\s]*nobody"
+    },
+    "custom_item_43": {
+        "description": "'run_group=nobody'",
+        "file": "@ORACLE_HOME@/rdbms/admin/externaljob.ora",
+        "regex": "run_group[\\\\s]*=",
+        "expect": "run_group[\\\\s]*=[\\\\s]*nobody"
+    },
+    "custom_item_44": {
+        "description": "'ORACLE_HOME/hs/admin/extproc.ora exists'",
+        "file": "@ORACLE_HOME@/hs/admin/extproc.ora"
+    },
+    "custom_item_45": {
+        "description": "'extproc.ora EXTPROC_DLLS=ANY does not exist'",
+        "file": "@ORACLE_HOME@/hs/admin/extproc.ora",
+        "regex": "SET EXTPROC_DLLS=",
+        "expect": "SET EXTPROC_DLLS=ANY"
+    },
+    "custom_item_46": {
+        "description": "'listener.ora EXTPROC is not in use'",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "\\\\(KEY[\\\\s]*=",
+        "expect": "\\\\(KEY[\\\\s[\\\\s*][Ee][Xx][Tt][Pp][Rr][Oo][Cc]"
+    },
+    "custom_item_47": {
+        "description": "'listener.ora EXTPROC_DLLS=ANY does not exist'",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "EXTPROC_DLLS=",
+        "expect": "EXTPROC_DLLS=ANY"
+    }
+}

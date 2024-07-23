@@ -1,0 +1,1051 @@
+{
+    "custom_item_1": {
+        "system": "AIX",
+        "description": "2.11.20 - Permissions and Ownership - 'home directory permissions do not allow group or world write'",
+        "info": "Checking that user home directories are not group or world writable",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "name": "accounts_bad_home_permissions",
+        "mask": "022"
+    },
+    "custom_item_2": {
+        "description": "AIX 5.3 or 6.1 is installed",
+        "cmd": "/usr/bin/oslevel",
+        "expect": "^[\\\\s]*@PLATFORM_VERSION@"
+    },
+    "custom_item_3": {
+        "system": "AIX",
+        "description": "1.1.1 - /etc/security/user - 'mindiff >= 4'",
+        "info": "Checks the minimum number of characters that are required in a new password which were not in the old password.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(b),800-53r5|IA-5(1)(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(b),LEVEL|1S,NESA|T5.2.3,NIAv2|AM22d,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a mindiff",
+        "expect": "^default[\\\\s]+mindiff[\\\\s]*=[\\\\s]*[4-8]$"
+    },
+    "custom_item_4": {
+        "system": "AIX",
+        "description": "1.1.2 - /etc/security/user - 'minage >= 1'",
+        "info": "Checks the minimum number of weeks before a password can be changed.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),LEVEL|1S,NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a minage",
+        "expect": "^default[\\\\s]+minage[\\\\s]*=[\\\\s]*(5[0-2]|[1-4][0-9]|[1-9])$"
+    },
+    "custom_item_5": {
+        "system": "AIX",
+        "description": "1.1.3 - /etc/security/user - 'maxage <= 13' but not 0",
+        "info": "Checks the maximum number of weeks that a password is valid.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),LEVEL|1S,NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a maxage",
+        "expect": "^default[\\\\s]+maxage[\\\\s]*=[\\\\s]*(1[0-3]|[1-9])$"
+    },
+    "custom_item_6": {
+        "system": "AIX",
+        "description": "1.1.4 - /etc/security/user - 'minlen = 8'",
+        "info": "Checks the minimum length of a password.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a minlen",
+        "expect": "^default[\\\\s]+minlen[\\\\s]*=[\\\\s]*8$"
+    },
+    "custom_item_7": {
+        "system": "AIX",
+        "description": "1.1.5 - /etc/security/user - 'minalpha >= 2'",
+        "info": "Checks the minimum number of alphabetic characters in a password.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a minalpha",
+        "expect": "^default[\\\\s]+minalpha[\\\\s]*=[\\\\s]*[2-8]$"
+    },
+    "custom_item_8": {
+        "system": "AIX",
+        "description": "1.1.6 - /etc/security/user - 'minother >= 2'",
+        "info": "Checks the minimum number of non-alphabetic characters in a password.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a minother",
+        "expect": "^default[\\\\s]+minother[\\\\s]*=[\\\\s]*[2-8]$"
+    },
+    "custom_item_9": {
+        "system": "AIX",
+        "description": "1.1.7 - /etc/security/user - 'maxrepeats <= 2'",
+        "info": "Checks the maximum number of repeated characters in a password.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(b),800-53r5|IA-5(1)(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(b),LEVEL|1S,NESA|T5.2.3,NIAv2|AM22d,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a maxrepeats",
+        "expect": "^default[\\\\s]+maxrepeats[\\\\s]*=[\\\\s]*[0-2]$"
+    },
+    "custom_item_10": {
+        "system": "AIX",
+        "description": "1.1.8 - /etc/security/user - 'histexpire >= 13'",
+        "info": "Checks the number of weeks that a user will not be able to reuse a password.",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),LEVEL|1S,NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a histexpire",
+        "expect": "^default[\\\\s]+histexpire[\\\\s]*=[\\\\s]*(260|2[0-5][0-9]|1[0-9][0-9]|[2-9][0-9]|1[3-9])$"
+    },
+    "custom_item_11": {
+        "system": "AIX",
+        "description": "1.1.9 - /etc/security/user - 'histsize >= 20'",
+        "info": "Checks the number of previous passwords that a user may not reuse.",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),LEVEL|1S,NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a histsize",
+        "expect": "^default[\\\\s]+histsize[\\\\s]*=[\\\\s]*(50|[2-4][0-9])$"
+    },
+    "custom_item_12": {
+        "system": "AIX",
+        "description": "1.1.10 - /etc/security/user - 'maxexpired <= 2'",
+        "info": "Checks the number of weeks after expiration that a user can change their password.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),LEVEL|1S,NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a maxexpired",
+        "expect": "^default[\\\\s]+maxexpired[\\\\s]*=[\\\\s]*[0-2]$"
+    },
+    "custom_item_13": {
+        "system": "AIX",
+        "description": "1.2.1 - /etc/security/login.cfg - 'logininterval <= 300'",
+        "info": "Checks the time interval in seconds when unsuccessful logins must occur to disable a port.",
+        "reference": "800-171|3.1.8,800-53|AC-7b.,800-53r5|AC-7b.,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7b.,LEVEL|1S,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/login.cfg -s default -a logininterval",
+        "expect": "^default[\\\\s]+logininterval[\\\\s]*=[\\\\s]*(300|[1-2][0-9][0-9]|[1-9][0-9]|[1-9])$"
+    },
+    "custom_item_14": {
+        "system": "AIX",
+        "description": "1.2.2 - /etc/security/login.cfg - 'logindisable <= 10'",
+        "info": "Checks the number of unsuccessful login attempts required before a port will be locked.",
+        "reference": "800-171|3.1.8,800-53|AC-7b.,800-53r5|AC-7b.,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7b.,LEVEL|1S,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/login.cfg -s default -a logindisable",
+        "expect": "^default[\\\\s]+logindisable[\\\\s]*=[\\\\s]*(10|[1-9])$"
+    },
+    "custom_item_15": {
+        "system": "AIX",
+        "description": "1.2.3 - /etc/security/login.cfg - 'loginreenable >= 360'",
+        "info": "Checks the time interval (in minutes) when a port is unlocked after a system lock.",
+        "reference": "800-171|3.1.8,800-53|AC-7,800-53r5|AC-7,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7,LEVEL|1S,NIAv2|AM24,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/login.cfg -s default -a loginreenable",
+        "expect": "^default[\\\\s]+loginreenable[\\\\s]*=[\\\\s]*(1[0-9][0-9][0-9]+|[4-9][0-9][0-9]|3[6-9][0-9]|0)$"
+    },
+    "custom_item_16": {
+        "system": "AIX",
+        "description": "1.2.4 - /etc/security/login.cfg - 'logintimeout <= 30'",
+        "info": "Checks the time interval (in seconds) when a password must be typed in at login.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|1S,NIAv2|NS49",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/login.cfg -s usw -a logintimeout",
+        "expect": "^usw[\\\\s]+logintimeout[\\\\s]*=[\\\\s]*(30|[1-2][0-9]|[0-9])$"
+    },
+    "custom_item_17": {
+        "system": "AIX",
+        "description": "1.2.5 - /etc/security/login.cfg - 'logindelay >= 10'",
+        "info": "Checks the delay (in seconds) between each failed login attempt.",
+        "reference": "800-171|3.1.8,800-53|AC-7b.,800-53r5|AC-7b.,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7b.,LEVEL|1S,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/login.cfg -s default -a logindelay",
+        "expect": "^default[\\\\s]+logindelay[\\\\s]*=[\\\\s]*([1-9][0-9][0-9]+|[1-9][0-9])$"
+    },
+    "custom_item_18": {
+        "system": "AIX",
+        "description": "1.2.6 - /etc/security/user - 'loginretries <= 3'",
+        "info": "Checks the number of attempts a user has to login to the system before their account is disabled.",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CN-L3|8.1.4.1(b),CSCv6|16.7,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,LEVEL|1S,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s default -a loginretries",
+        "expect": "^default[\\\\s]+loginretries[\\\\s]*=[\\\\s]*([0-3])$"
+    },
+    "custom_item_19": {
+        "system": "AIX",
+        "description": "1.2.7 - /etc/security/user - 'rlogin = false'",
+        "info": "Checks whether or not the root user can login remotely.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s root -a rlogin",
+        "expect": "^root[\\\\s]+rlogin[\\\\s]*=[\\\\s]*[Ff][Aa][Ll][Ss][Ee]$"
+    },
+    "custom_item_20": {
+        "system": "AIX",
+        "description": "1.2.8 - /etc/security/user - 'sugroups=ALL su=true'",
+        "info": "Checks whether root, via su, is restricted to a specific group.",
+        "reference": "800-171|3.5.3,800-53|IA-2(3),800-53r5|IA-2(1),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(3),LEVEL|1S,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/lssec -f /etc/security/user -s root -a sugroups -a su",
+        "expect": "^root[\\\\s]+sugroups[\\\\s]*=[\\\\s]*[Aa][Ll][Ll][\\\\s]+su[\\\\s]*=[\\\\s]*[Tt][Rr][Uu][Ee]$"
+    },
+    "custom_item_21": {
+        "system": "AIX",
+        "description": "1.3.53 - /etc/inetd.conf - permissions and ownership - '/etc/inetd.conf root:system 644'",
+        "info": "Checks that the owner, group and mode of /etc/inetd.conf are set appropriately.",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/inetd.conf",
+        "owner": "root",
+        "mask": "133",
+        "group": "system"
+    },
+    "custom_item_22": {
+        "system": "AIX",
+        "description": "1.7.3 - Miscellaneous Enhancements - '/etc/ftpusers includes root'",
+        "info": "Checks that the root user has been added to the /etc/ftpusers file.",
+        "reference": "800-171|3.1.6,800-53|AC-6(2),800-53r5|AC-6(2),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(2),LEVEL|1S,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ftpusers",
+        "regex": "root",
+        "expect": "^root$"
+    },
+    "custom_item_23": {
+        "system": "AIX",
+        "description": "1.7.4 - Miscellaneous Enhancements - login herald - 'default herald is set to appropriate text'",
+        "info": "Update DEFAULT_HERALD with the appropriate value for the local environment",
+        "reference": "800-171|3.1.9,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8,LEVEL|1S,NESA|M1.3.6,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/security/login.cfg",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_24": {
+        "system": "AIX",
+        "description": "1.7.5 - Miscellaneous Enhancements - 'guest account removal'",
+        "info": "Checks that the guest account has been removed.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/sbin/lsuser guest | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_25": {
+        "system": "AIX",
+        "description": "1.7.6 - Miscellaneous Enhancements - crontab permissions - '/usr/sbin/skulker 755'",
+        "info": "Checking that /usr/sbin/skulker exists and is mode 755",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/sbin/skulker",
+        "owner": "root",
+        "mask": "022"
+    },
+    "custom_item_26": {
+        "system": "AIX",
+        "description": "1.7.6 - Miscellaneous Enhancements - crontab permissions - '/usr/lib/spell/compress 755'",
+        "info": "Checking that /usr/lib/spell/compress exists and is mode 755",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/lib/spell/compress",
+        "owner": "root",
+        "mask": "022"
+    },
+    "custom_item_27": {
+        "system": "AIX",
+        "description": "1.7.6 - Miscellaneous Enhancements - crontab permissions - '/usr/bin/errclear 755'",
+        "info": "Checking that /usr/bin/errclear exists and is mode 755",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/bin/errclear",
+        "owner": "root",
+        "mask": "022"
+    },
+    "custom_item_28": {
+        "system": "AIX",
+        "description": "1.7.6 - Miscellaneous Enhancements - crontab permissions - '/usr/lib/ras/dumpcheck 755'",
+        "info": "Checking that /usr/lib/ras/dumpcheck exists and is mode 750",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/lib/ras/dumpcheck",
+        "owner": "root",
+        "mask": "022"
+    },
+    "custom_item_29": {
+        "system": "AIX",
+        "description": "2.2.2 - Configuring SSH - disabling direct root access - 'PermitRootLogin = no'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to disable direct root login.",
+        "reference": "800-171|3.1.2,800-171|3.1.15,800-53|AC-17(4),800-53r5|AC-17(4),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(4),LEVEL|1S,NESA|T5.4.5,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitRootLogin",
+        "expect": "PermitRootLogin[\\\\s]+[Nn][Oo]"
+    },
+    "custom_item_30": {
+        "system": "AIX",
+        "description": "2.2.3 - Configuring SSH - server protocol - 'Protocol 2'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to allow SSH2 only.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Protocol",
+        "expect": "^Protocol[\\\\s]+2$"
+    },
+    "custom_item_31": {
+        "system": "AIX",
+        "description": "2.2.4 - Configuring SSH - client protocol - 'Protocol 2'",
+        "info": "Checking that /etc/ssh/ssh_config has been edited to allow SSH2 only.",
+        "reference": "LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/ssh_config",
+        "regex": "^[\\\\s]*Protocol",
+        "expect": "^Protocol[\\\\s]+2$"
+    },
+    "custom_item_32": {
+        "system": "AIX",
+        "description": "2.2.5 - Configuring SSH - banner configuration - 'Banner = /etc/motd'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to use a login herald.",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,LEVEL|1S,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*Banner",
+        "expect": "^Banner[\\\\s]+\\/etc\\/motd$"
+    },
+    "custom_item_33": {
+        "system": "AIX",
+        "description": "2.2.6 - Configuring SSH - ignore .shosts and .rhosts - 'IgnoreRhosts = yes'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to ignore .shosts and .rhosts.",
+        "reference": "800-171|3.5.2,800-53|AC-14a.,800-53|IA-5,800-53r5|AC-14a.,800-53r5|IA-5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|AC-14a.,ITSG-33|IA-5,LEVEL|1S,NESA|T5.2.3,NESA|T5.6.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*IgnoreRhosts",
+        "expect": "^IgnoreRhosts[\\\\s]+[Yy][Ee][Ss]$"
+    },
+    "custom_item_34": {
+        "system": "AIX",
+        "description": "2.2.7 - Configuring SSH - disable null passwords - 'PermitEmptyPasswords = no'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to disallow authenticating users with null passwords.",
+        "reference": "800-171|3.5.2,800-53|IA-5,800-53r5|IA-5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,LEVEL|1S,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*PermitEmptyPasswords",
+        "expect": "^PermitEmptyPasswords[\\\\s]+[Nn][Oo]$",
+        "search_locations": "/etc/ssh"
+    },
+    "custom_item_35": {
+        "system": "AIX",
+        "description": "2.2.9 - Configuring SSH - set privilege separation - 'UsePrivilegeSeparation = yes'",
+        "info": "Checking that /etc/ssh/sshd_config has been edited to ensure that privilege separation is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "regex": "^[\\\\s]*UsePrivilegeSeparation",
+        "expect": "^UsePrivilegeSeparation[\\\\s]+[Yy][Ee][Ss]$"
+    },
+    "custom_item_36": {
+        "system": "AIX",
+        "description": "2.2.10 - Configuring SSH - sshd_config permissions lockdown - '/etc/ssh/sshd_config root:system 600'",
+        "info": "Checking that /etc/ssh/sshd_config exists and is mode 600",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/sshd_config",
+        "owner": "root",
+        "mask": "177",
+        "group": "system"
+    },
+    "custom_item_37": {
+        "system": "AIX",
+        "description": "2.2.11 - Configuring SSH - ssh_config permissions lockdown - '/etc/ssh/ssh_config root:system 644'",
+        "info": "Checking that /etc/ssh/sshd_config exists and is mode 644",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/ssh/ssh_config",
+        "owner": "root",
+        "mask": "133",
+        "group": "system"
+    },
+    "custom_item_38": {
+        "system": "AIX",
+        "description": "2.3.1 - /etc/mail/sendmail.cf - SmtpGreetingMessage - 'SmtpGreetingMessage = mailerready'",
+        "info": "Checking that /etc/mail/sendmail.cf has been edited to change the default SmtpGreetingMessage.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|3.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/mail/sendmail.cf",
+        "regex": "^O[\\\\s]+SmtpGreetingMessage.*",
+        "expect": "^O[\\\\s]+SmtpGreetingMessage[\\\\s]*=[\\\\s]*mailerready$"
+    },
+    "custom_item_39": {
+        "system": "AIX",
+        "description": "2.3.2 - /etc/mail/sendmail.cf - permissions and ownership - '/etc/mail/sendmail.cf root:system 640'",
+        "info": "Checking that /etc/mail/sendmail.cf exists, is owned by root:system and is mode 640",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|3.1,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/mail/sendmail.cf",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_40": {
+        "system": "AIX",
+        "description": "2.3.3 - /var/spool/mqueue - permissions and ownership - '/var/spool/mqueue root:system 700'",
+        "info": "Checking that the /var/spool/mqueue directory exists, is owned by root and is mode 700",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/spool/mqueue/",
+        "owner": "root",
+        "mask": "077",
+        "group": "system"
+    },
+    "custom_item_41": {
+        "system": "AIX",
+        "description": "2.4.3 - CDE - sgid/suid binary lockdown - '/usr/dt/bin/dtaction root:sys 555'",
+        "info": "Checking that /usr/dt/bin/dtaction is owned by root:sys and is mode 555",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/bin/dtaction",
+        "owner": "root",
+        "mask": "222",
+        "group": "sys"
+    },
+    "custom_item_42": {
+        "system": "AIX",
+        "description": "2.4.3 - CDE - sgid/suid binary lockdown - '/usr/dt/bin/dtappgather root:bin 555'",
+        "info": "Checking that /usr/dt/bin/dtappgather is owned by root:bin and is mode 0555",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/bin/dtappgather",
+        "owner": "root",
+        "mask": "222",
+        "group": "bin"
+    },
+    "custom_item_43": {
+        "system": "AIX",
+        "description": "2.4.3 - CDE - sgid/suid binary lockdown - '/usr/dt/bin/dtprintinfo root:bin 555'",
+        "info": "Checking that dtprintinfo is owned by root:bin and is mode 0555",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/bin/dtprintinfo",
+        "owner": "root",
+        "mask": "222",
+        "group": "bin"
+    },
+    "custom_item_44": {
+        "system": "AIX",
+        "description": "2.4.3 - CDE - sgid/suid binary lockdown - '/usr/dt/bin/dtsession root:bin 555'",
+        "info": "Checking that dtsession is owned by root:bin and is mode 0555",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/bin/dtsession",
+        "owner": "root",
+        "mask": "222",
+        "group": "bin"
+    },
+    "custom_item_45": {
+        "system": "AIX",
+        "description": "2.4.5 - CDE - screensaver lock - 'dtsession*saverTimeout <= 10'",
+        "info": "Checking that files in /usr/dt/config/*/sys.resources have been edited to change the default screensaver timeout.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1S,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/config/*/sys.resources",
+        "regex": "dtsession\\\\*saverTimeout",
+        "expect": "dtsession\\\\*saverTimeout:[\\\\s]*(10|[1-9])$"
+    },
+    "custom_item_46": {
+        "system": "AIX",
+        "description": "2.4.5 - CDE - screensaver lock - 'dtsession*lockTimeout <= 10'",
+        "info": "Checking that files in /usr/dt/config/*/sys.resources have been edited to change the default screensaver lock timeout.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1S,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/config/*/sys.resources",
+        "regex": "dtsession\\\\*lockTimeout",
+        "expect": "dtsession\\\\*lockTimeout:[\\\\s]*(10|[1-9])$"
+    },
+    "custom_item_47": {
+        "system": "AIX",
+        "description": "2.4.6 - CDE - /etc/dt/config/Xconfig permissions and ownership - '/etc/dt/config/Xconfig root:bin 444'",
+        "info": "Checking that /etc/dt/config/Xconfig is owned by root:bin and is mode 444",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|3.1,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/dt/config/Xconfig",
+        "owner": "root",
+        "mask": "333",
+        "group": "bin"
+    },
+    "custom_item_48": {
+        "system": "AIX",
+        "description": "2.4.7 - CDE - /etc/dt/config/Xservers permissions and ownership - 'Dtlogin.servers = /etc/dt/config/Xservers'",
+        "info": "Checking that files in /etc/dt/config/Xconfig has been edited to use the explict path to Xservers.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/dt/config/Xconfig",
+        "regex": "Dtlogin\\\\*servers",
+        "expect": "^Dtlogin\\\\*servers:[\\\\s]+\\/etc\\/dt\\/config\\/Xservers$"
+    },
+    "custom_item_49": {
+        "system": "AIX",
+        "description": "2.4.7 - CDE - /etc/dt/config/Xservers permissions and ownership - '/etc/dt/config/Xservers root:bin 444'",
+        "info": "Checking that /etc/dt/config/Xconfig is owned by root:bin and is mode 444",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/dt/config/Xservers",
+        "owner": "root",
+        "mask": "333",
+        "group": "bin"
+    },
+    "custom_item_50": {
+        "system": "AIX",
+        "description": "2.4.8 - CDE - login screen hostname masking - 'dtlogin*greeting.labelString is set to appropriate text'",
+        "info": "NOTE : Update LABEL_STRING with the appropriate value for the local environment",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,LEVEL|1S,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/config/*/Xresources",
+        "regex": "Dtlogin\\\\*greeting\\.labelString",
+        "expect": "^Dtlogin\\\\*greeting\\.labelString:[\\\\s]*@LABEL_STRING@$"
+    },
+    "custom_item_51": {
+        "system": "AIX",
+        "description": "2.4.8 - CDE - login screen hostname masking - 'dtlogin*greeting.persLabelString is set to appropriate text'",
+        "info": "NOTE : Update PERS_LABEL_STRING with the appropriate value for the local environment",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,LEVEL|1S,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/dt/config/*/Xresources",
+        "regex": "Dtlogin\\\\*greeting.persLabelString",
+        "expect": "^Dtlogin\\\\*greeting.persLabelString:[\\\\s]*@PERS_LABEL_STRING@$"
+    },
+    "custom_item_52": {
+        "system": "AIX",
+        "description": "2.4.9 - CDE - /etc/dt/config/*/Xresources permissions and ownership - '/etc/dt/config/*/Xresources root:sys 444'",
+        "info": "Checking that /etc/dt/config/*Xresources files are owned by root:sys and are mode 444",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/dt/config/*/Xresources",
+        "owner": "root",
+        "mask": "333",
+        "group": "sys"
+    },
+    "custom_item_53": {
+        "system": "AIX",
+        "description": "2.5.2 - NFS - no suid on NFS client mounts - 'All NFS client mounts have nosuid option'",
+        "info": "Checking that all NFS mounts in /etc/filesystems have the nosuid option set.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/sbin/mount | /usr/bin/grep 'nfs' | /usr/bin/grep -v 'nosuid' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_54": {
+        "system": "AIX",
+        "description": "2.5.3 - NFS - localhost removal - 'no localhost references exist in /etc/exports'",
+        "info": "Checking that no entries in /etc/exports have references to localhost",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/cat /etc/exports | /usr/bin/grep 'localhost' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_55": {
+        "system": "AIX",
+        "description": "2.5.5 - NFS - no_root_squash option - 'no anon options exist in /etc/exports'",
+        "info": "Checking that items in /etc/exports do not have anon options",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/cat /etc/exports | /usr/bin/grep 'anon=' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_56": {
+        "system": "AIX",
+        "description": "2.10.2 - TCP Wrappers - creating a hosts.deny file - configuration - 'hosts.deny file contains ALL:ALL'",
+        "info": "Checking that /etc/hosts.deny has been created and configured",
+        "reference": "800-171|3.13.1,800-171|3.13.6,800-53|SC-7(5),800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(5),LEVEL|1S,NESA|T4.5.4,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/hosts.deny",
+        "regex": "ALL: ",
+        "expect": "^ALL:[\\\\s]*ALL$"
+    },
+    "custom_item_57": {
+        "system": "AIX",
+        "description": "2.10.2 - TCP Wrappers - creating a hosts.deny file - creation - '/etc/hosts.deny root:system 600'",
+        "info": "Checking that /etc/hosts.deny is owned by root:system and is mode 600",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/hosts.deny",
+        "owner": "root",
+        "mask": "177",
+        "group": "system"
+    },
+    "custom_item_58": {
+        "system": "AIX",
+        "description": "2.10.3 - TCP Wrappers - creating a hosts.allow file - configuration - 'hosts.allow has been configured'",
+        "info": "NOTE : Update ALLOWED_HOST with the appropriate value for the local environment",
+        "reference": "800-171|3.13.1,800-171|3.13.6,800-53|SC-7(5),800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(5),LEVEL|1S,NESA|T4.5.4,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/hosts.allow",
+        "regex": "ALL: ",
+        "expect": "^ALL:[\\\\s]*@ALLOWED_HOST@$"
+    },
+    "custom_item_59": {
+        "system": "AIX",
+        "description": "2.10.3 - TCP Wrappers - creating a hosts.allow file - creation - '/etc/hosts.allow root:system 600'",
+        "info": "Checking that /etc/hosts.allow is owned by root:system and is mode 600",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/hosts.allow",
+        "owner": "root",
+        "mask": "177",
+        "group": "system"
+    },
+    "custom_item_60": {
+        "system": "AIX",
+        "description": "2.11.1 - Permissions and Ownership - '/etc/security root:security 750'",
+        "info": "Checking that /etc/security is owned by root:security and is mode 750",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/security/",
+        "owner": "root",
+        "mask": "027",
+        "group": "security"
+    },
+    "custom_item_61": {
+        "system": "AIX",
+        "description": "2.11.2 - Permissions and Ownership - '/etc/group root:security 644'",
+        "info": "Checking that /etc/group is owned by root:security and is mode 644",
+        "reference": "800-171|3.5.2,800-53|IA-5(6),800-53r5|IA-5(6),CSCv6|3.1,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(6),LEVEL|1S,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5.4,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/group",
+        "owner": "root",
+        "mask": "133",
+        "group": "security"
+    },
+    "custom_item_62": {
+        "system": "AIX",
+        "description": "2.11.3 - Permissions and Ownership - '/etc/passwd root:security 644'",
+        "info": "Checking that /etc/passwd is owned by root:security and is mode 644",
+        "reference": "800-171|3.5.2,800-53|IA-5(6),800-53r5|IA-5(6),CSCv6|3.1,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(6),LEVEL|1S,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5.4,TBA-FIISB|26.1",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/passwd",
+        "owner": "root",
+        "mask": "133",
+        "group": "security"
+    },
+    "custom_item_63": {
+        "system": "AIX",
+        "description": "2.11.4 - Permissions and Ownership - '/etc/security/audit root:audit 750'",
+        "info": "Checking that /etc/security/audit directory is owned by root:audit and is mode 750",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/security/audit",
+        "owner": "root",
+        "mask": "027",
+        "group": "audit"
+    },
+    "custom_item_64": {
+        "system": "AIX",
+        "description": "2.11.5 - Permissions and Ownership - '/audit root:audit 750'",
+        "info": "Checking that /audit directory is owned by root:audit and is mode 750",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/audit",
+        "owner": "root",
+        "mask": "027",
+        "group": "audit"
+    },
+    "custom_item_65": {
+        "system": "AIX",
+        "description": "2.11.6 - Permissions and Ownership - '/smit.log root:system 640'",
+        "info": "Checking that /smit.log is owned by root:system and is mode 640",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/smit.log",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_66": {
+        "system": "AIX",
+        "description": "2.11.7 - Permissions and Ownership - '/var/adm/cron/log root:cron 660'",
+        "info": "Checking that /var/adm/cron/log is owned by root:cron and is mode 660",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/log",
+        "owner": "root",
+        "mask": "117",
+        "group": "cron"
+    },
+    "custom_item_67": {
+        "system": "AIX",
+        "description": "2.11.8 - Permissions and Ownership - '/var/spool/cron/crontabs/ root:cron 770'",
+        "info": "Checking that /var/spool/cron/crontabs/ is owned by root:cron and is mode 770",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/spool/cron/crontabs/",
+        "owner": "root",
+        "mask": "007",
+        "group": "cron"
+    },
+    "custom_item_68": {
+        "system": "AIX",
+        "description": "2.11.9 - Permissions and Ownership - '/var/adm/cron/at.allow root:sys 400'",
+        "info": "Checking that /var/adm/cron/at.allow is owned by root:sys and is mode 400",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|3.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/at.allow",
+        "owner": "root",
+        "mask": "377",
+        "group": "sys"
+    },
+    "custom_item_69": {
+        "system": "AIX",
+        "description": "2.11.10 - Permissions and Ownership - '/var/adm/cron/cron.allow root:sys 400'",
+        "info": "Checking that /var/adm/cron/cron.allow is owned by root:sys and is mode 400",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|3.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/cron.allow",
+        "owner": "root",
+        "mask": "377",
+        "group": "sys"
+    },
+    "custom_item_70": {
+        "system": "AIX",
+        "description": "2.11.11 - Permissions and Ownership - '/etc/motd bin:bin 644'",
+        "info": "Checking that /etc/motd is owned by bin:bin and is mode 644",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/motd",
+        "owner": "bin",
+        "mask": "133",
+        "group": "bin"
+    },
+    "custom_item_71": {
+        "system": "AIX",
+        "description": "2.11.12 - Permissions and Ownership - '/var/adm/ras/* files are not world readable or writable'",
+        "info": "Checking that /var/adm/ras/* does not allow reading or writing by others",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/ras/*",
+        "mask": "006"
+    },
+    "custom_item_72": {
+        "system": "AIX",
+        "description": "2.11.13 - Permissions and Ownership - '/var/ct/RMstart.log root:system 640'",
+        "info": "Checking that /var/ct/RMstart.log is owned by root:system and is mode 640",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/ct/RMstart.log",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_73": {
+        "system": "AIX",
+        "description": "2.11.14 - Permissions and Ownership - '/var/tmp/dpid2.log root:system 640'",
+        "info": "Checking that /var/tmp/dpid2.log is owned by root:system and is mode 640",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/tmp/dpid2.log",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_74": {
+        "system": "AIX",
+        "description": "2.11.15 - Permissions and Ownership - '/var/tmp/hostmibd.log root:system 640'",
+        "info": "Checking that /var/tmp/hostmibd.log is owned by root:system and is mode 640",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/tmp/hostmibd.log",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_75": {
+        "system": "AIX",
+        "description": "2.11.16 - Permissions and Ownership - '/var/tmp/snmpd.log root:system 640'",
+        "info": "Checking that /var/tmp/snmpd.log is owned by root:system and is mode 640",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/tmp/snmpd.log",
+        "owner": "root",
+        "mask": "137",
+        "group": "system"
+    },
+    "custom_item_76": {
+        "system": "AIX",
+        "description": "2.11.17 - Permissions and Ownership - '/var/adm/sa adm:adm 755'",
+        "info": "Checking that /var/adm/sa directory is owned by adm:adm and is mode 755",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/sa",
+        "owner": "adm",
+        "mask": "022",
+        "group": "adm"
+    },
+    "custom_item_77": {
+        "system": "AIX",
+        "description": "2.11.18 - Permissions and Ownership - 'no group or world writable directories in root PATH'",
+        "info": "Checking that no group or world writeable directories exist in the root user's executable path.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "echo /:${PATH} | tr ':' '\\\\n' | while read DIR; do DIR=${DIR:-$(pwd)}; while [[ -d ${DIR} ]]; do [[ $(ls -ld ${DIR}) = @(d???????w? *) ]] && print \"WARNING ${DIR} is world writable\"; [[ $(ls -ld ${DIR}) = @(d????w???? *) ]] && print \"WARNING ${DIR} is group writable\"; [[ $(ls -ld ${DIR} | awk '{print $3}') != @(root|bin) ]] && print \"WARNING ${DIR} is not owned by root or bin\"; DIR=${DIR%/*}; done; done",
+        "expect": "none"
+    },
+    "custom_item_78": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.login is not world writable'",
+        "info": "Checking that ~/.login is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.login",
+        "mask": "022"
+    },
+    "custom_item_79": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.cschrc is not world writable'",
+        "info": "Checking that ~/.cschrc is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.cschrc",
+        "mask": "022"
+    },
+    "custom_item_80": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.logout is not world writable'",
+        "info": "Checking that ~/.logout is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.logout",
+        "mask": "022"
+    },
+    "custom_item_81": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.profile is not world writable'",
+        "info": "Checking that ~/.profile is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.profile",
+        "mask": "022"
+    },
+    "custom_item_82": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.bash_profile is not world writable'",
+        "info": "Checking that ~/.bash_profile is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.bash_profile",
+        "mask": "022"
+    },
+    "custom_item_83": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.bashrc is not world writable'",
+        "info": "Checking that ~/.bashrc is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.bashrc",
+        "mask": "022"
+    },
+    "custom_item_84": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.bash_logout is not world writable'",
+        "info": "Checking that ~/.bash_logout is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.bash_logout",
+        "mask": "022"
+    },
+    "custom_item_85": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.env is not world writable'",
+        "info": "Checking that ~/.env is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.env",
+        "mask": "022"
+    },
+    "custom_item_86": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.dtprofile is not world writable'",
+        "info": "Checking that ~/.dtprofile is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.dtprofile",
+        "mask": "022"
+    },
+    "custom_item_87": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.dispatch is not world writable'",
+        "info": "Checking that ~/.dispatch is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.dispatch",
+        "mask": "022"
+    },
+    "custom_item_88": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.emacs is not world writable'",
+        "info": "Checking that ~/.emacs is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.emacs",
+        "mask": "022"
+    },
+    "custom_item_89": {
+        "system": "AIX",
+        "description": "2.11.19 - Permissions and Ownership - home directory configuration files are not world writable - '~/.exrc is not world writable'",
+        "info": "Checking that ~/.exrc is not world writable",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "~/.exrc",
+        "mask": "022"
+    },
+    "custom_item_90": {
+        "system": "AIX",
+        "description": "2.12.10 - Miscellaneous Config - 'ftp umask at least 027'",
+        "info": "Checking that inetd.conf is configured so that the ftp service does not create world writable files by default",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/inetd.conf",
+        "regex": "^ftp",
+        "expect": "^ftp[\\\\s]+.+.ftpd[\\\\s]+-l[\\\\s]+-u077.$"
+    },
+    "custom_item_91": {
+        "system": "AIX",
+        "description": "2.12.11 - Miscellaneous Config - 'ftp banner is set to appropriate text'",
+        "info": "Checking that the proper ftp banner is configured.",
+        "reference": "800-171|3.1.9,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8,LEVEL|1S,NESA|M1.3.6,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/usr/lib/nls/msg/en_US/ftpd.cat",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_92": {
+        "system": "AIX",
+        "description": "2.12.12 - Miscellaneous Config - '/etc/motd contains the appropriate text'",
+        "info": "Checking that /etc/motd is configured to post the proper warning message.",
+        "reference": "800-171|3.1.9,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8,LEVEL|1S,NESA|M1.3.6,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/etc/motd",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_93": {
+        "system": "AIX",
+        "description": "2.12.13 - Miscellaneous Config - authorized users in at.allow - 'at.allow contains sys'",
+        "info": "Checking that the appropriate users are defined in /var/adm/cron/at.allow.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/at.allow",
+        "regex": "sys",
+        "expect": "^sys$"
+    },
+    "custom_item_94": {
+        "system": "AIX",
+        "description": "2.12.13 - Miscellaneous Config - authorized users in at.allow - 'at.allow contains adm'",
+        "info": "Checking that the appropriate users are defined in /var/adm/cron/at.allow.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/at.allow",
+        "regex": "adm",
+        "expect": "^adm$"
+    },
+    "custom_item_95": {
+        "system": "AIX",
+        "description": "2.12.13 - Miscellaneous Config - authorized users in at.allow - 'at.allow contains %USERNAME%'",
+        "info": "NOTE: Update AT_ALLOW_USER with the appropriate value for the local environment",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/at.allow",
+        "regex": "@AT_ALLOW_USER@",
+        "expect": "^@AT_ALLOW_USER@$"
+    },
+    "custom_item_96": {
+        "system": "AIX",
+        "description": "2.12.13 - Miscellaneous Config - authorized users in at.allow - 'at.allow contains no other entries besides sys and adm'",
+        "info": "Checking that no other entries except for sys and adm exist in /var/adm/cron/at.allow.",
+        "reference": "800-171|3.1.6,800-53|AC-6(2),800-53r5|AC-6(2),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(2),LEVEL|1S,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/grep -v -E -e 'sys|adm' /var/adm/cron/at.allow | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_97": {
+        "system": "AIX",
+        "description": "2.12.13 - Miscellaneous Config - authorized users in at.allow - 'at.allow contains no other entries besides sys, adm and %USERNAME%'",
+        "info": "NOTE: Update AT_ALLOW_USER with the appropriate value for the local envirnment",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/at.allow",
+        "regex": ".+",
+        "expect": "^(sys|adm|@AT_ALLOW_USER@)$"
+    },
+    "custom_item_98": {
+        "system": "AIX",
+        "description": "2.12.14 - Miscellaneous Config - authorized users in cron.allow - 'cron.allow contains sys'",
+        "info": "Checking that the appropriate users are defined in /var/adm/cron/cron.allow.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": "sys",
+        "expect": "^sys$"
+    },
+    "custom_item_99": {
+        "system": "AIX",
+        "description": "2.12.14 - Miscellaneous Config - authorized users in cron.allow - 'cron.allow contains adm'",
+        "info": "Checking that the appropriate users are defined in /var/adm/cron/cron.allow.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": "adm",
+        "expect": "^adm$"
+    },
+    "custom_item_100": {
+        "system": "AIX",
+        "description": "2.12.14 - Miscellaneous Config - authorized users in cron.allow - 'cron.allow contains %USERNAME%'",
+        "info": "NOTE: Update CRON_ALLOW_USER with the appropriate value for the local environment",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": "@CRON_ALLOW_USER@",
+        "expect": "^@CRON_ALLOW_USER@$"
+    },
+    "custom_item_101": {
+        "system": "AIX",
+        "description": "2.12.14 - Miscellaneous Config - authorized users in cron.allow - 'cron.allow contains no other entries besides sys and adm'",
+        "info": "Checking that the appropriate users are defined in /var/adm/cron/cron.allow.",
+        "reference": "800-171|3.1.6,800-53|AC-6(2),800-53r5|AC-6(2),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(2),LEVEL|1S,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/grep -v -E -e 'sys|adm' /var/adm/cron/cron.allow | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_102": {
+        "system": "AIX",
+        "description": "2.12.14 - Miscellaneous Config - authorized users in cron.allow - 'cron.allow contains no other entries besides sys, adm and %USERNAME%'",
+        "info": "NOTE: Update CRON_ALLOW_USER with the appropriate value for the local environment",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "file": "/var/adm/cron/cron.allow",
+        "regex": ".+",
+        "expect": "^(sys|adm|@CRON_ALLOW_USER@)$"
+    },
+    "custom_item_103": {
+        "system": "AIX",
+        "description": "2.12.15 - Miscellaneous Config - 'all unlocked accounts must have a password'",
+        "info": "Checks that all unlocked accounts have a password set.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/pwdck -n ALL 2>&1 | /bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_104": {
+        "system": "AIX",
+        "description": "2.12.16 - Miscellaneous Config - 'All user id must be unique'",
+        "info": "Checks that all users have a unique user id.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1S,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/cut -d: -f 3 /etc/passwd | /usr/bin/sort -n | /usr/bin/uniq -d | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_105": {
+        "system": "AIX",
+        "description": "2.12.17 - Miscellaneous Config - 'All group id must be unique'",
+        "info": "Checks that all groups have a unique group id.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4d.,800-53r5|IA-4d.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4d.,LEVEL|1S,NESA|T5.5.2,NIAv2|AM14a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|5",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/cut -d: -f 3 /etc/group | /usr/bin/sort -n | /usr/bin/uniq -d | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_106": {
+        "system": "AIX",
+        "description": "2.12.19 - Miscellaneous Config - 'PATH does not include dot'",
+        "info": "Checks that no 'dot' entries exist in the PATH environment variable.",
+        "reference": "800-171|3.4.7,800-53|CM-7(2),800-53r5|CM-7(2),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(2),LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/echo ${PATH} | /usr/bin/egrep '\\\\.:|:\\\\.:|:\\\\.$' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_107": {
+        "system": "AIX",
+        "description": "2.12.20 - Miscellaneous Config - '/etc/environment PATH does not include dot'",
+        "info": "Checks that no 'dot' entries exist in the root PATH environment variable.",
+        "reference": "800-171|3.4.7,800-53|CM-7(2),800-53r5|CM-7(2),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(2),LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/525",
+        "cmd": "/usr/bin/grep '^PATH=' /etc/environment | /usr/bin/egrep '\\\\.:|:\\\\.:|:\\\\.$' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    }
+}

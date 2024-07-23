@@ -1,0 +1,37 @@
+{
+    "custom_item_1": {
+        "description": "Splunk is installed and the correct version",
+        "request": "SplunkGetServerInfo",
+        "json_transform": ".generator.version",
+        "expect": "^@SPLUNK_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "SPLK-CL-000100 - Splunk Enterprise must be configured to aggregate log records from organization-defined devices and hosts within its scope of coverage.",
+        "info": "If the application is not configured to collate records based on the time when the events occurred, the ability to perform forensic analysis and investigations across multiple components is significantly degraded. Centralized log aggregation must also include logs from databases and servers (e.g., Windows) that do not natively send logs using the syslog protocol.",
+        "solution": "Configure Splunk Enterprise to aggregate log records from organization-defined devices and hosts within its scope of coverage, as defined in the site security plan.",
+        "reference": "800-171|3.3.1,800-53|AU-12(1),800-53r5|AU-12(1),CAT|III,CCI|CCI-000174,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Splunk_Enterprise_8-x_for_Linux_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12(1),PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-251663r879557_rule,STIG-ID|SPLK-CL-000100,SWIFT-CSCv1|6.4,Vuln-ID|V-251663",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_8-x_for-Linux_V1R5_STIG.zip",
+        "request": "SplunkGetDataInputsAll",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_3": {
+        "description": "SPLK-CL-000270 - Splunk Enterprise must use TCP for data transmission.",
+        "info": "If the UDP protocol is used for communication, then data packets that do not reach the server are not detected as a data loss. The use of TCP to transport data improves delivery reliability, adds data integrity, and gives the option to encrypt the traffic.",
+        "solution": "This configuration is performed on the machine used as an indexer, which may be a separate machine in a distributed environment.\n\nNavigate to $SPLUNK_HOME/etc/system/local/\n\nModify the inputs.conf file to replace any input that is using a UDP port with a TCP port.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Splunk_Enterprise_8-x_for_Linux_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-251675r879887_rule,STIG-ID|SPLK-CL-000270,SWIFT-CSCv1|2.3,Vuln-ID|V-251675",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_8-x_for-Linux_V1R5_STIG.zip",
+        "request": "SplunkGetDataInputsUDP",
+        "json_transform": "if ((.entry | length) == 0) then \"pass\" else \"fail\" end",
+        "expect": "pass"
+    },
+    "custom_item_4": {
+        "description": "SPLK-CL-000290 - Analysis, viewing, and indexing functions, services, and applications used as part of Splunk Enterprise must be configured to comply with DoD-trusted path and access requirements.",
+        "info": "Access to Splunk Enterprise for analysis, viewing, indexing functions, services, and applications, such as analysis tools and other vendor-provided applications, must be secured. Software used to perform additional functions, which resides on the server, must also be secured or could provide a vector for unauthorized access to the events repository.",
+        "solution": "Edit the following files in the installation to configure Splunk to use SSL certificates:\n\nThis configuration is performed on the machine used as an indexer, which may be a separate machine in a distributed environment.\n\n$SPLUNK_HOME/etc/system/local/inputs.conf\n\n[splunktcp-ssl:9997]\ndisabled = 0\n\n[SSL]\nserverCert =sslPassword =This configuration is performed on the machine used as a forwarder, which is always a separate machine regardless of environment.\n\n$SPLUNK_HOME/etc/system/local/outputs.conf\n\n[tcpout:group1]\ndisabled = 0\nclientCert =sslPassword =This configuration is performed on the machine used as a search head, which may be a separate machine in a distributed environment.\n\nEdit the following file in the installation to configure Splunk to use SSL certificates:\n\n$SPLUNK_HOME/etc/opt/system/local/web.conf\n\n[settings]\nenableSplunkWebSSL = 1\nprivKeyPath =serverCert =",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Splunk_Enterprise_8-x_for_Linux_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-251677r879887_rule,STIG-ID|SPLK-CL-000290,SWIFT-CSCv1|2.3,Vuln-ID|V-251677",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_8-x_for-Linux_V1R5_STIG.zip",
+        "request": "SplunkGetServerSettings",
+        "json_transform": ".entry[].content.enableSplunkWebSSL",
+        "expect": "true"
+    }
+}

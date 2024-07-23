@@ -1,0 +1,59 @@
+{
+    "custom_item_1": {
+        "description": "Windows 10 build installed",
+        "value_data": "@BUILD_VERSION@",
+        "reg_key": "HKLM\\Software\\Microsoft\\Windows Nt\\Currentversion",
+        "reg_item": "CurrentBuild"
+    },
+    "custom_item_2": {
+        "description": "Windows 10 is installed",
+        "value_data": "^[Ww][Ii][Nn][Dd][Oo][Ww][Ss] @PLATFORM_VERSION@.+$",
+        "reg_key": "HKLM\\Software\\Microsoft\\Windows Nt\\Currentversion",
+        "reg_item": "ProductName"
+    },
+    "custom_item_3": {
+        "description": "Target is enrolled with Microsoft Intune",
+        "value_data": "HKLM\\Software\\Microsoft\\Provisioning\\OMADM\\Logger",
+        "key_item": "CurrentEnrollmentId"
+    },
+    "custom_item_4": {
+        "description": "23.1 (NG) Ensure 'Enable Virtualization Based Security' is set to 'Enable virtualization based security'",
+        "info": "This policy setting specifies whether Virtualization Based Security is enabled. Virtualization Based Security uses the Windows Hypervisor to provide support for security services.\n\nThe recommended state for this setting is: Enabled\n\nNote: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.\n\nMore information on system requirements for this feature can be found at\n\nWindows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs\n\nNote #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.\n\nKerberos, NTLM, and Credential manager isolate secrets by using virtualization-based security. Previous versions of Windows stored secrets in the Local Security Authority (LSA). Prior to Windows 10, the LSA stored secrets used by the operating system in its process memory. With Windows Defender Credential Guard enabled, the LSA process in the operating system talks to a new component called the isolated LSA process that stores and protects those secrets. Data stored by the isolated LSA process is protected using virtualization-based security and is not accessible to the rest of the operating system.",
+        "solution": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enable virtualization based security :\n\nDevice Guard\\Enable Virtualization Based Security\n\nImpact:\n\nWarning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16852",
+        "value_data": "1",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "reg_item": "EnableVirtualizationBasedSecurity"
+    },
+    "custom_item_5": {
+        "description": "23.2 (NG) Ensure 'Require Platform Security Features' is set to 'Turns on VBS with Secure Boot' or higher",
+        "info": "This policy setting specifies whether Virtualization Based Security (VBS) is enabled. VBS uses the Windows Hypervisor to provide support for security services.\n\nThe recommended state for this setting is: Turns on VBS with Secure Boot or Turns on VBS with Secure Boot and direct memory access (DMA). DMA requires hardware support\n\nNote: VBS requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.\n\nMore information on system requirements for this feature can be found at\n\nWindows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs\n\nNote #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.\n\nSecure Boot can help reduce the risk of bootloader attacks and in conjunction with DMA protections to help protect data from being scraped from memory.",
+        "solution": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Turns on VBS with Secure Boot or Turns on VBS with Secure Boot and direct memory access (DMA). DMA requires hardware support :\n\nDevice Guard\\Require Platform Security Features\n\nImpact:\n\nChoosing the Secure Boot option provides the system with as much protection as is supported by the computer's hardware. A system with input/output memory management units (IOMMUs) will have Secure Boot with DMA protection. A system without IOMMUs will simply have Secure Boot enabled without DMA protection.\n\nChoosing the Secure Boot with DMA protection option requires the system to have IOMMUs in order to enable VBS. Without IOMMU hardware support, VBS will be disabled.\n\nWarning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16852",
+        "value_data": "3",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "reg_item": "RequirePlatformSecurityFeatures"
+    },
+    "custom_item_6": {
+        "description": "23.3 (NG) Ensure 'Credential Guard' is set to 'Enabled with UEFI lock'",
+        "info": "This setting lets users turn on Credential Guard with virtualization-based security to help protect credentials. The 'Enabled with UEFI lock' option ensures that Credential Guard cannot be disabled remotely. In order to disable the feature, you must set the Group Policy to 'Disabled' as well as remove the security functionality from each computer, with a physically present user, in order to clear configuration persisted in UEFI.\n\nThe recommended state for this setting is: Enabled with UEFI lock\n\nNote: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.\n\nMore information on system requirements for this feature can be found at\n\nWindows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs\n\nNote #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.\n\nThe Enabled with UEFI lock option ensures that Credential Guard cannot be disabled remotely.",
+        "solution": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled with UEFI lock :\n\nDevice Guard\\Credential Guard\n\nImpact:\n\nWarning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.\n\nWarning #2: Once this setting is turned on and active, Credential Guard cannot be disabled solely via GPO or any other remote method. After removing the setting from GPO, the features must also be manually disabled\n\nlocally at the machine\n\nusing the steps provided at this link:\n\nManage Windows Defender Credential Guard (Windows 10) | Microsoft Docs",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16852",
+        "value_data": "1",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "reg_item": "LsaCfgFlags"
+    },
+    "custom_item_7": {
+        "description": "23.4 (NG) Ensure 'Configure System Guard Launch' is set to 'Unmanaged Enables Secure Launch if supported by hardware'",
+        "info": "Secure Launch protects the Virtualization Based Security environment from exploited vulnerabilities in device firmware.\n\nThe recommended state for this setting is: Unmanaged Enables Secure Launch if supported by hardware\n\nNote: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.\n\nSecure Launch changes the way Windows boots to use Intel Trusted Execution Technology (TXT) and Runtime BIOS Resilience features to prevent firmware exploits from being able to impact the security of the Windows Virtualization Based Security environment.",
+        "solution": "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Unmanaged Enables Secure Launch if supported by hardware :\n\nDevice Guard\\Configure System Guard Launch\n\nImpact:\n\nWarning : All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16852",
+        "value_data": "1",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+        "reg_item": "ConfigureSystemGuardLaunch"
+    }
+}

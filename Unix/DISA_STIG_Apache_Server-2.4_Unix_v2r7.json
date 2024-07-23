@@ -1,0 +1,418 @@
+{
+    "custom_item_1": {
+        "description": "Apache found",
+        "cmd": "@HTTPD_LOCATION@ -version",
+        "expect": "@HTTPD_NAME@/@PRODUCT_VERSION@.*"
+    },
+    "custom_item_2": {
+        "description": "KeepAlive",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*KeepAlive[\\\\s]+",
+        "expect": "^[\\\\s]*KeepAlive[\\\\s]+[Oo]n[\\\\s]*$"
+    },
+    "custom_item_3": {
+        "description": "MaxKeepAliveRequests",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*MaxKeepAliveRequests[\\\\s]+",
+        "expect": "^[\\\\s]*MaxKeepAliveRequests[\\\\s]+([1-9][0-9][0-9]+)[\\\\s]*$"
+    },
+    "custom_item_4": {
+        "description": "usertrack_module",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*LoadModule[\\\\s]*usertrack_module[\\\\s]*modules/mod_usertrack\\.so",
+        "expect": "^[\\\\s]*LoadModule[\\\\s]*usertrack_module[\\\\s]*modules/mod_usertrack\\.so"
+    },
+    "custom_item_5": {
+        "description": "session_module",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*LoadModule[\\\\s]*session_module[\\\\s]*modules/mod_session\\.so",
+        "expect": "^[\\\\s]*LoadModule[\\\\s]*session_module[\\\\s]*modules/mod_session\\.so"
+    },
+    "custom_item_6": {
+        "description": "httpd",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"session_module|usertrack_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*(session|usertrack)_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "description": "ssl_module",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"ssl_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*ssl_module[\\\\s]*\\\\(shared\\\\)"
+    },
+    "custom_item_8": {
+        "description": "SSLProtocol",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*SSLProtocol[\\\\s]*",
+        "expect": "^[\\\\s]*SSLProtocol[\\\\s]+-ALL[\\\\s]+\\\\+TLSv1\\\\.2[\\\\s]*$"
+    },
+    "custom_item_9": {
+        "description": "AS24-U1-000065 - The Apache web server must have system logging enabled.",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation. Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts. Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems. The CustomLog directive specifies the log file, syslog facility, or piped logging utility.",
+        "solution": "Edit the 'httpd.conf' file and enter the name, path and level for the CustomLog.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-214231r881410_rule,STIG-ID|AS24-U1-000065,STIG-Legacy|SV-102695,STIG-Legacy|V-92607,SWIFT-CSCv1|2.3,Vuln-ID|V-214231",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*CustomLog.*",
+        "expect": "^[\\\\s]*CustomLog.*"
+    },
+    "custom_item_10": {
+        "description": "log_config_module",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"log_config_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*log_config_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "description": "LogFormat",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*LogFormat[\\\\s]+",
+        "expect": "^[\\\\s]*LogFormat[\\\\s]+[\"]%a %A %h %H %l %m %s %t %u %U \\\\\\\\[\"]%{Referer}i\\\\\\\\[\"] [\"] common[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "description": "AS24-U1-000130 - An Apache web server, behind a load balancer or proxy server, must produce log records containing the client IP information as the source and destination and not the load balancer or proxy IP information with each event.",
+        "info": "Apache web server logging capability is critical for accurate forensic analysis. Without sufficient and accurate information, a correct replay of the events cannot be determined.\n\nAscertaining the correct source of the events (e.g., source IP) is important during forensic analysis. Correctly determining the source of events will add information to the overall reconstruction of the loggable event. By determining the source of the event correctly, analysis of the enterprise can be undertaken to determine if events tied to the source occurred in other areas within the enterprise.\n\nA web server behind a load balancer or proxy server, when not configured correctly, will record the load balancer or proxy server as the source of every loggable event. When looking at the information forensically, this information is not helpful in the investigation of events. The web server must record with each event the client source of the event.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Access the proxy server through which inbound web traffic is passed and configure settings to pass web traffic to the Apache web server transparently.\n\nRefer to https://httpd.apache.org/docs/2.4/mod/mod_remoteip.html for additional information on logging options based on your proxy/load balancing setup.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000133,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214233r881415_rule,STIG-ID|AS24-U1-000130,STIG-Legacy|SV-102709,STIG-Legacy|V-92621,SWIFT-CSCv1|6.4,Vuln-ID|V-214233",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*(CustomLog|ErrorLog|BufferedLog)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_13": {
+        "description": "AS24-U1-000180 - The Apache web server log files must only be accessible by privileged users.",
+        "info": "Log data is essential in the investigation of events. If log data were to become compromised, competent forensic analysis and discovery of the true source of potentially malicious system activity would be difficult, if not impossible, to achieve. In addition, access to log records provides information an attacker could potentially use to their advantage since each event record might contain communication ports, protocols, services, trust relationships, user names, etc.\n\nThe web server must protect the log data from unauthorized read, write, copy, etc. This can be done by the web server if the web server is also doing the logging function. The web server may also use an external log system. In either case, the logs must be protected from access by non-privileged users.",
+        "solution": "To protect the integrity of the data that is being captured in the log files, ensure that only the members of the Auditors group, Administrators, and the user assigned to run the web server software is granted permissions to read the log files.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214235r881417_rule,STIG-ID|AS24-U1-000180,STIG-Legacy|SV-102717,STIG-Legacy|V-92629,Vuln-ID|V-214235",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_LOG_PATH@/*",
+        "owner": "@HTTPD_LOG_OWNER@",
+        "mask": "137",
+        "group": "@HTTPD_LOG_GROUP@"
+    },
+    "custom_item_14": {
+        "description": "AS24-U1-000190 - The log information from the Apache web server must be protected from unauthorized modification or deletion.",
+        "info": "Log data is essential in the investigation of events. If log data were to become compromised, competent forensic analysis and discovery of the true source of potentially malicious system activity would be difficult, if not impossible, to achieve. In addition, access to log records provides information an attacker could potentially use to their advantage since each event record might contain communication ports, protocols, services, trust relationships, user names, etc.\n\nThe web server must protect the log data from unauthorized read, write, copy, etc. This can be done by the web server if the web server is also doing the logging function. The web server may also use an external log system. In either case, the logs must be protected from access by non-privileged users.\n\nSatisfies: SRG-APP-000119-WSR-000069, SRG-APP-000120-WSR-000070",
+        "solution": "Determine the location of the 'ErrorLog' directory in the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nOpen the 'httpd.conf' file.\n\nLook for the 'ErrorLog' directive.\n\nEnsure the permissions and ownership of all files in the Apache log directory are correct by executing the following commands as an administrative service account:\n\n# chown <'service account'> <'ErrorLog directive PATH'>/*",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000163,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-214236r881419_rule,STIG-ID|AS24-U1-000190,STIG-Legacy|SV-102719,STIG-Legacy|V-92631,Vuln-ID|V-214236",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_LOG_PATH@/*",
+        "owner": "@HTTPD_LOG_OWNER@",
+        "group": "@HTTPD_LOG_GROUP@"
+    },
+    "custom_item_15": {
+        "description": "AS24-U1-000230 - Expansion modules must be fully reviewed, tested, and signed before they can exist on a production Apache web server.",
+        "info": "In the case of a production web server, areas for content development and testing will not exist, as this type of content is only permissible on a development website. The process of developing on a functional production website entails a degree of trial and error and repeated testing. This process is often accomplished in an environment where debugging, sequencing, and formatting of content are the main goals. The opportunity for a malicious user to obtain files that reveal business logic and logon schemes is high in this situation. The existence of such immature content on a web server represents a significant security risk that is totally avoidable.\n\nThe web server must enforce, internally or through an external utility, the signing of modules before they are implemented into a production environment. By signing modules, the author guarantees that the module has been reviewed and tested before production implementation.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove any unsigned modules.",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|II,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-214238r879584_rule,STIG-ID|AS24-U1-000230,STIG-Legacy|SV-102725,STIG-Legacy|V-92637,Vuln-ID|V-214238",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "@HTTPD_LOCATION@ -M",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_16": {
+        "description": "AS24-U1-000240 - The Apache web server must not perform user management for hosted applications.",
+        "info": "User management and authentication can be an essential part of any application hosted by the web server. Along with authenticating users, the user management function must perform several other tasks such as password complexity, locking users after a configurable number of failed logons, and management of temporary and emergency accounts. All of this must be done enterprise-wide.\n\nThe web server contains a minimal user management function, but the web server user management function does not offer enterprise-wide user management, and user management is not the primary function of the web server. User management for the hosted applications should be done through a facility that is built for enterprise-wide user management, such as LDAP and Active Directory.",
+        "solution": "Comment out the 'AuthUserFile' lines found in the Apache configuration.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214239r879587_rule,STIG-ID|AS24-U1-000240,STIG-Legacy|SV-102727,STIG-Legacy|V-92639,SWIFT-CSCv1|2.3,Vuln-ID|V-214239",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*AuthUserFile.*",
+        "expect": "^[\\\\s]*AuthUserFile.*"
+    },
+    "custom_item_17": {
+        "description": "AS24-U1-000250 - The Apache web server must only contain services and functions necessary for operation.",
+        "info": "A web server can provide many features, services, and processes. Some of these may be deemed unnecessary or too unsecure to run on a production DoD system.\n\nThe web server must provide the capability to disable, uninstall, or deactivate functionality and services that are deemed to be non-essential to the web server mission or can adversely impact server performance.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove any unnecessary applications per ISSO documentation.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214240r879587_rule,STIG-ID|AS24-U1-000250,STIG-Legacy|SV-102729,STIG-Legacy|V-92641,SWIFT-CSCv1|2.3,Vuln-ID|V-214240",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "rpm -qa",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_18": {
+        "description": "proxy_*_module",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"proxy_(module|ajp|balancer|ftp|http|connect)\" | awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*Module Not Loaded[\\\\s]*$"
+    },
+    "custom_item_19": {
+        "description": "ProxyRequest",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*ProxyRequest[\\\\s]+",
+        "expect": "^[\\\\s]*ProxyRequest[\\\\s]+(?i)on(?-i)[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "description": "Welcome page",
+        "cmd": "egrep -i \"\" @HTTPD_BASE_PATH@*/* | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_21": {
+        "description": " httpd-manual package",
+        "cmd": "rpm -qa httpd-manual | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_22": {
+        "description": " server-status",
+        "cmd": "egrep -i \"^[\\\\s]*SetHandler server-status\" @HTTPD_BASE_PATH@*/* | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_23": {
+        "description": " server-info",
+        "cmd": "egrep -i \"^[\\\\s]*SetHandler server-info\" @HTTPD_BASE_PATH@*/* | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_24": {
+        "description": " Other SetHandler config",
+        "cmd": "egrep -i \"^[\\\\s]*SetHandler.*\" @HTTPD_BASE_PATH@*/* | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_25": {
+        "description": " conf/extra/proxy-html.conf",
+        "cmd": "egrep -i \"^[\\\\s]*Include conf/extra/proxy-html.conf\" @HTTPD_BASE_PATH@*/* | awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_26": {
+        "description": "AS24-U1-000300 - The Apache web server must have resource mappings set to disable the serving of certain file types.",
+        "info": "Resource mapping is the process of tying a particular file type to a process in the web server that can serve that type of file to a requesting client and to identify which file types are not to be delivered to a client.\n\nBy not specifying which files can and cannot be served to a user, the web server could deliver to a user web server configuration files, log files, password files, etc.\n\nThe web server must only allow hosted application file types to be served to a user, and all other types must be disabled.\n\nSatisfies: SRG-APP-000141-WSR-000081, SRG-APP-000141-WSR-000083",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nDisable MIME types for .exe, .dll, .com, .bat, and .csh programs.\n\nIf 'Action' or 'AddHandler' exist within the 'httpd.conf' file and they configure .exe, .dll, .com, .bat, or .csh, remove those references.\n\nRestart Apache: apachectl restart\n\nEnsure this process is documented and approved by the ISSO.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214243r881424_rule,STIG-ID|AS24-U1-000300,STIG-Legacy|SV-102741,STIG-Legacy|V-92653,SWIFT-CSCv1|2.3,Vuln-ID|V-214243",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*(Action|AddHandler)",
+        "expect": "^[\\\\s]*(Action|AddHandler) .*(\\.exe|\\.dll|\\.com|\\.bat|\\.csh)"
+    },
+    "custom_item_27": {
+        "description": "AS24-U1-000310 - The Apache web server must allow the mappings to unused and vulnerable scripts to be removed.",
+        "info": "Scripts allow server-side processing on behalf of the hosted application user or as processes needed in the implementation of hosted applications. Removing scripts not needed for application operation or deemed vulnerable helps to secure the web server.\n\nTo ensure scripts are not added to the web server and run maliciously, script mappings that are not needed or used by the web server for hosted application operation must be removed.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nReview 'Script', 'ScriptAlias' or 'ScriptAliasMatch', and 'ScriptInterpreterSource' directives.\n\nGo into each directory and locate 'cgi-bin' files. Remove any script that is not needed for application operation.\n\nEnsure this process is documented and approved by the ISSO.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214244r881427_rule,STIG-ID|AS24-U1-000310,STIG-Legacy|SV-102743,STIG-Legacy|V-92655,SWIFT-CSCv1|2.3,Vuln-ID|V-214244",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*Script(Alias|AliasMatch|InterpreterSource)?",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_28": {
+        "description": "AS24-U1-000330 - The Apache web server must have Web Distributed Authoring (WebDAV) disabled.",
+        "info": "A web server can be installed with functionality that, by its nature, is not secure. WebDAV is an extension to the HTTP protocol that, when developed, was meant to allow users to create, change, and move documents on a server, typically a web server or web share. Allowing this functionality, development, and deployment is much easier for web authors.\n\nWebDAV is not widely used and has serious security concerns because it may allow clients to modify unauthorized files on the web server.",
+        "solution": "Determine where the 'dav' modules are located by running the following command:\n\ngrep -rl 'dav_module' <'INSTALL PATH'>\n\nEdit the file and comment out the following modules:\n\ndav_module\ndav_fs_module\ndav_lock_module\n\nRestart Apache: apachectl restart",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-214245r879587_rule,STIG-ID|AS24-U1-000330,STIG-Legacy|SV-102747,STIG-Legacy|V-92659,SWIFT-CSCv1|2.3,Vuln-ID|V-214245",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"(dav_module|dav_fs_module|dav_lock_module)\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*Module Not Loaded[\\\\s]*$"
+    },
+    "custom_item_29": {
+        "description": "AS24-U1-000360 - The Apache web server must be configured to use a specified IP address and port.",
+        "info": "The web server must be configured to listen on a specified IP address and port. Without specifying an IP address and port for the web server to use, the web server will listen on all IP addresses available to the hosting server. If the web server has multiple IP addresses, i.e., a management IP address, the web server will also accept connections on the management IP address.\n\nAccessing the hosted application through an IP address normally used for non-application functions opens the possibility of user access to resources, utilities, files, ports, and protocols that are protected on the desired application IP address.\n\nSatisfies: SRG-APP-000142-WSR-000089, SRG-APP-000176-WSR-000096",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nSet the 'Listen' directive to listen on a specific IP address and port.\n\nRestart Apache: apachectl restart",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.5.2,800-53|CM-7b.,800-53|IA-5(2)(b),800-53r5|CM-7b.,800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.AC-1,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|CM-7a.,ITSG-33|IA-5(2)(b),NESA|T5.2.3,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-214246r881430_rule,STIG-ID|AS24-U1-000360,STIG-Legacy|SV-102749,STIG-Legacy|V-92661,SWIFT-CSCv1|2.3,Vuln-ID|V-214246",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*Listen[\\\\s]+",
+        "expect": "^[\\\\s]*Listen[\\\\s]+([0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}|[0-9]+|0.0.0.0:[0-9]+|\\\\[::ffff:0.0.0.0\\\\]:[0-9]+)[\\\\s]*$"
+    },
+    "custom_item_30": {
+        "description": "AS24-U1-000460 - The Apache web server must invalidate session identifiers upon hosted application user logout or other session termination.",
+        "info": "Captured sessions can be reused in 'replay' attacks. This requirement limits the ability of adversaries from capturing and continuing to employ previously valid session IDs.\n\nSession IDs are tokens generated by web applications to uniquely identify an application user's session. Unique session IDs help to reduce predictability of said identifiers. When a user logs out, or when any other session termination event occurs, the web server must terminate the user session to minimize the potential for an attacker to hijack that particular user session.\n\nSatisfies: SRG-APP-000220-WSR-000201, SRG-APP-000295-WSR-000012",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nAdd the following line to the 'httpd.conf' file:\n\nSessionMaxAge 600\n\nRestart Apache: apachectl restart",
+        "reference": "800-171|3.1.11,800-171|3.13.15,800-53|AC-12,800-53|SC-23(1),800-53r5|AC-12,800-53r5|SC-23(1),CAT|II,CCI|CCI-001185,CCI|CCI-002361,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,ITSG-33|SC-23(1),NESA|T4.5.1,NIAv2|NS49,QCSC-v1|5.2.1,Rule-ID|SV-214250r881433_rule,STIG-ID|AS24-U1-000460,STIG-Legacy|SV-102765,STIG-Legacy|V-92677,Vuln-ID|V-214250",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*SessionMaxAge[\\\\s]*",
+        "expect": "^[\\\\s]*SessionMaxAge[\\\\s]+([1-9]|[1-8][0-9]|9[0-9]|[1-5][0-9]{2}|600)[\\\\s]*$"
+    },
+    "custom_item_31": {
+        "description": "SessionCookieName HttpOnly Secure",
+        "file": "@HTTPD_BASE_PATH@/mod_session.conf",
+        "regex": "^[\\\\s]*SessionCookieName[\\\\s]+",
+        "expect": "^[\\\\s]*SessionCookieName[\\\\s]+.*(?=.*[Ss]ecure)(?=.*[Hh]ttp[Oo]nly).*$"
+    },
+    "custom_item_32": {
+        "description": "SessionCookieName Domain",
+        "file": "@HTTPD_BASE_PATH@/mod_session.conf",
+        "regex": "^[\\\\s]*SessionCookieName[\\\\s]*",
+        "expect": "^[\\\\s]*SessionCookieName[\\\\s]+.*(?!.*Domain).*$"
+    },
+    "custom_item_33": {
+        "description": "httpd",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"headers_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*headers_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_34": {
+        "description": "session_crypto",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"session_crypto\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*session_crypto_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_35": {
+        "description": "SessionCryptoCipher",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*SessionCryptoCipher[\\\\s]*",
+        "expect": "^[\\\\s]*SessionCryptoCipher[\\\\s]+aes256"
+    },
+    "custom_item_36": {
+        "description": "AS24-U1-000520 - The Apache web server must generate a session ID using as much of the character set as possible to reduce the risk of brute force.",
+        "info": "Generating a session identifier (ID) that is not easily guessed through brute force is essential to deter several types of session attacks. By knowing the session ID, an attacker can hijack a user session that has already been user-authenticated by the hosted application. The attacker does not need to guess user identifiers and passwords or have a secure token since the user session has already been authenticated.\n\nBy generating session IDs that contain as much of the character set as possible, i.e., A-Z, a-z, and 0-9, the session ID becomes exponentially harder to guess.\n\nSatisfies: SRG-APP-000223-WSR-000145, SRG-APP-000224-WSR-000135, SRG-APP-000224-WSR-000136, SRG-APP-000224-WSR-000138",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nLoad the 'unique_id_module'.\n\nExample: LoadModule unique_id_module modules/mod_unique_id.so\n\nRestart Apache: apachectl restart",
+        "reference": "800-171|3.13.15,800-53|SC-23(3),800-53r5|SC-23(3),CAT|I,CCI|CCI-001188,CCI|CCI-001664,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23(3),NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-214253r881438_rule,STIG-ID|AS24-U1-000520,STIG-Legacy|SV-102777,STIG-Legacy|V-92689,Vuln-ID|V-214253",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"unique_id_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*unique_id_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_37": {
+        "description": "AS24-U1-000590 - The Apache web server must be tuned to handle the operational requirements of the hosted application.",
+        "info": "A denial of service (DoS) can occur when the Apache web server is so overwhelmed that it can no longer respond to additional requests. A web server not properly tuned may become overwhelmed and cause a DoS condition even with expected traffic from users. To avoid a DoS, the Apache web server must be tuned to handle the expected traffic for the hosted applications.\n\nSatisfies: SRG-APP-000246-WSR-000149, SRG-APP-000435-WSR-000148",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nAdd or modify the 'Timeout' directive to have a value of '10' seconds or less:\n\n'Timeout 10'",
+        "reference": "800-53|SC-5,800-53|SC-5(1),800-53r5|SC-5,800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-214255r881441_rule,STIG-ID|AS24-U1-000590,STIG-Legacy|SV-102785,STIG-Legacy|V-92697,Vuln-ID|V-214255",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*Timeout[\\\\s]+",
+        "expect": "^[\\\\s]*Timeout[\\\\s]+([1-9]|10)"
+    },
+    "custom_item_38": {
+        "description": "AS24-U1-000620 - Warning and error messages displayed to clients must be modified to minimize the identity of the Apache web server, patches, loaded modules, and directory paths.",
+        "info": "Information needed by an attacker to begin looking for possible vulnerabilities in a web server includes any information about the web server, backend systems being accessed, and plug-ins or modules being used.\n\nWeb servers will often display error messages to client users, displaying enough information to aid in the debugging of the error. The information given back in error messages may display the web server type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any backends being used for data storage.\n\nThis information could be used by an attacker to blueprint what type of attacks might be successful. The information given to users must be minimized to not aid in the blueprinting of the Apache web server.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Determine the location of the 'HTTPD_ROOT' directory and the 'httpd.conf' file:\n\n# apachectl -V | egrep -i 'httpd_root|server_config_file'\n-D HTTPD_ROOT='/etc/httpd'\n-D SERVER_CONFIG_FILE='conf/httpd.conf'\n\nUse the 'ErrorDocument' directive to enable custom error pages for 4xx or 5xx HTTP status codes.\n\nErrorDocument 500 'Sorry, our script crashed. Oh dear'\nErrorDocument 500 /cgi-bin/crash-recover\nErrorDocument 500 http://error.example.com/server_error.html\nErrorDocument 404 /errors/not_found.html\nErrorDocument 401 /subscription/how_to_subscribe.html\n\nThe syntax of the ErrorDocument directive is:\n\nErrorDocument <3-digit-code>Additional information:\n\nhttps://httpd.apache.org/docs/2.4/custom-error.html",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-214256r944428_rule,STIG-ID|AS24-U1-000620,STIG-Legacy|SV-102787,STIG-Legacy|V-92699,Vuln-ID|V-214256",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*ErrorDocument.*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_39": {
+        "description": "TraceEnable",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*TraceEnable[\\\\s]+",
+        "expect": "^[\\\\s]*TraceEnable[\\\\s]+Off[\\\\s]*$"
+    },
+    "custom_item_40": {
+        "description": "LogLevel",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*LogLevel[\\\\s]+",
+        "expect": "^[\\\\s]*LogLevel[\\\\s]+(info|notice|warn|crit|alert|emerg)"
+    },
+    "custom_item_41": {
+        "description": "reqtimeout_module",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"reqtimeout_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*reqtimeout_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_42": {
+        "description": "RequestReadTimeout",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*RequestReadTimeout[\\\\s]+",
+        "expect": "^[\\\\s]*RequestReadTimeout[\\\\s]+handshake=(5|10|20) header=(5|10|20) body=(5|10|20)"
+    },
+    "custom_item_43": {
+        "description": "AS24-U1-000670 - The Apache web server must restrict inbound connections from nonsecure zones.",
+        "info": "Remote access to the Apache web server is any access that communicates through an external, non-organization-controlled network. Remote access can be used to access hosted applications or to perform management functions.\n\nA web server can be accessed remotely and must be capable of restricting access from what the DoD defines as nonsecure zones. Nonsecure zones are defined as any IP, subnet, or region that is defined as a threat to the organization. The nonsecure zones must be defined for public web servers logically located in a DMZ, as well as private web servers with perimeter protection devices. By restricting access from nonsecure zones, through the internal web server access list, the Apache web server can stop or slow denial-of-service (DoS) attacks on the web server.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the 'http.conf' file to include restrictions.\n\nExample:Require not ip 192.168.205\nRequire not host phishers.example.com",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-002314,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-214259r881452_rule,STIG-ID|AS24-U1-000670,STIG-Legacy|SV-102797,STIG-Legacy|V-92709,SWIFT-CSCv1|2.6,Vuln-ID|V-214259",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*Require[\\\\s]+not",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_44": {
+        "description": "log_config_module",
+        "cmd": "@HTTPD_LOCATION@ -M 2> /dev/null | /usr/bin/egrep \"log_config_module\" | /usr/bin/awk '{print} END {if (NR == 0) print \"Module Not Loaded\"}'",
+        "expect": "^[\\\\s]*log_config_module[\\\\s]*\\\\(shared\\\\)[\\\\s]*$"
+    },
+    "custom_item_45": {
+        "description": "LogFormat %t",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*LogFormat[\\\\s]+",
+        "expect": "^[\\\\s]*LogFormat[\\\\s]+.*(?=.*\\%t).*$"
+    },
+    "custom_item_46": {
+        "description": "AS24-U1-000780 - The Apache web server must prohibit or restrict the use of nonsecure or unnecessary ports, protocols, modules, and/or services.",
+        "info": "Web servers provide numerous processes, features, and functionalities that use TCP/IP ports. Some of these processes may be deemed unnecessary or too unsecure to run on a production system.\n\nThe Apache web server must provide the capability to disable or deactivate network-related services that are deemed to be non-essential to the server mission, are too unsecure, or are prohibited by the Ports, Protocols, and Services Management (PPSM) Category Assurance List (CAL) and vulnerability assessments.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure the website enforces the use of IANA well-known ports for HTTP and HTTPS.",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-214266r879756_rule,STIG-ID|AS24-U1-000780,STIG-Legacy|SV-102815,STIG-Legacy|V-92727,SWIFT-CSCv1|2.3,Vuln-ID|V-214266",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "netstat -natp | awk '{print$4\" \"$7}'",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_47": {
+        "description": "httpd pid",
+        "file": "@HTTPD_PID@",
+        "owner": "@HTTPD_SVC_OWNER@",
+        "mask": "133",
+        "group": "@HTTPD_SVC_GROUP@"
+    },
+    "custom_item_48": {
+        "description": "service",
+        "file": "/usr/sbin/service",
+        "owner": "@HTTPD_SVC_OWNER@",
+        "mask": "022",
+        "group": "@HTTPD_SVC_GROUP@"
+    },
+    "custom_item_49": {
+        "description": "apachectl",
+        "file": "/usr/sbin/apachectl",
+        "owner": "@HTTPD_SVC_OWNER@",
+        "mask": "022",
+        "group": "@HTTPD_SVC_GROUP@"
+    },
+    "custom_item_50": {
+        "description": "Session",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*Session[\\\\s]+",
+        "expect": "^[\\\\s]*Session[\\\\s]+(?i)on(?-i)[\\\\s]*$"
+    },
+    "custom_item_51": {
+        "description": "SessionCookieName",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf",
+        "regex": "^[\\\\s]*SessionCookieName[\\\\s]+",
+        "expect": "^[\\\\s]*SessionCookieName[\\\\s]+.*(?=.*[Ss]ecure)(?=.*[Hh]ttp[Oo]nly).*$"
+    },
+    "custom_item_52": {
+        "description": "AS24-U1-000900 - The Apache web server must remove all export ciphers to protect the confidentiality and integrity of transmitted information.",
+        "info": "During the initial setup of a Transport Layer Security (TLS) connection to the Apache web server, the client sends a list of supported cipher suites in order of preference. The Apache web server will reply with the cipher suite it will use for communication from the client list. If an attacker can intercept the submission of cipher suites to the Apache web server and place, as the preferred cipher suite, a weak export suite, the encryption used for the session becomes easy for the attacker to break, often within minutes to hours.\n\nConfiguring the Apache server with only strong ciphersuites, denying or disabling weak ciphersuites, will prevent this vulnerability.",
+        "solution": "Update the cipher specification string for all enabled SSLCipherSuite directives to include !EXPORT.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CAT|II,CCI|CCI-002418,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-214269r881463_rule,STIG-ID|AS24-U1-000900,STIG-Legacy|SV-102833,STIG-Legacy|V-92745,Vuln-ID|V-214269",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTTPD_BASE_PATH@/httpd.conf /etc/httpd/conf.d/ssl.conf",
+        "regex": "^[\\\\s]*SSLCipherSuite[\\\\s]+",
+        "expect": "^[\\\\s]*SSLCipherSuite[\\\\s]+.*!EXP.*"
+    },
+    "custom_item_53": {
+        "description": "AS24-U1-000930 - The Apache web server must install security-relevant software updates within the configured time period directed by an authoritative source (e.g., IAVM, CTOs, DTMs, and STIGs).",
+        "info": "Security flaws with software applications are discovered daily. Vendors are constantly updating and patching their products to address newly discovered security vulnerabilities. Organizations (including any contractor to the organization) are required to promptly install security-relevant software updates (e.g., patches, service packs, and hot fixes). Flaws discovered during security assessments, continuous monitoring, incident response activities, or information system error handling must also be addressed expeditiously.\n\nThe Apache web server will be configured to check for and install security-relevant software updates from an authoritative source within an identified time period from the availability of the update. By default, this time period will be every 24 hours.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Install the current version of the web server software and maintain appropriate service packs and patches.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|II,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-214270r879827_rule,STIG-ID|AS24-U1-000930,STIG-Legacy|SV-102837,STIG-Legacy|V-92749,SWIFT-CSCv1|2.2,Vuln-ID|V-214270",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "@HTTPD_LOCATION@ -v",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_54": {
+        "description": "AS24-U1-000940 - The account used to run the Apache web server must not have a valid login shell and password defined.",
+        "info": "During installation of the Apache web server software, accounts are created for the Apache web server to operate properly. The accounts installed can have either no password installed or a default password, which will be known and documented by the vendor and the user community.\n\nThe first things an attacker will try when presented with a logon screen are the default user identifiers with default passwords. Installed applications may also install accounts with no password, making the logon even easier. Once the Apache web server is installed, the passwords for any created accounts should be changed and documented. The new passwords must meet the requirements for all passwords, i.e., uppercase/lowercase characters, numbers, special characters, time until change, reuse policy, etc.\n\nService accounts or system accounts that have no logon capability do not need to have passwords set or changed.",
+        "solution": "Update the /etc/passwd file to assign the account used to run the 'httpd' process an invalid login shell such as '/sbin/nologin'.\n\nLock the account used to run the 'httpd' process:\n\n# passwd -lLocking password for userpasswd: Success",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-214271r879887_rule,STIG-ID|AS24-U1-000940,STIG-Legacy|SV-102839,STIG-Legacy|V-92751,SWIFT-CSCv1|2.3,Vuln-ID|V-214271",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "/etc/passwd",
+        "regex": "^[\\\\s]*@HTTPD_SVC_OWNER@:.*",
+        "expect": "^[\\\\s]*@HTTPD_SVC_OWNER@:.*:(/sbin/nologin|/usr/sbin/nologin|/bin/false)"
+    },
+    "custom_item_55": {
+        "description": "AS24-U1-000950 - The Apache web server must be configured in accordance with the security configuration settings based on DoD security configuration or implementation guidance, including STIGs, NSA configuration guides, CTOs, and DTMs.",
+        "info": "Configuring the Apache web server to implement organization-wide security implementation guides and security checklists guarantees compliance with federal standards and establishes a common security baseline across the DoD that reflects the most restrictive security posture consistent with operational requirements.\n\nConfiguration settings are the set of parameters that can be changed that affect the security posture and/or functionality of the system. Security-related parameters are parameters impacting the security state of the Apache web server, including those required to satisfy other security control requirements.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure the website enforces the use of IANA well-known ports for 'HTTP' and 'HTTPS'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-214272r879887_rule,STIG-ID|AS24-U1-000950,STIG-Legacy|SV-102841,STIG-Legacy|V-92753,SWIFT-CSCv1|2.3,Vuln-ID|V-214272",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "netstat -natp | awk '{print$4\" \"$7}'",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_56": {
+        "description": "AS24-U1-000960 - The Apache web server software must be a vendor-supported version.",
+        "info": "Many vulnerabilities are associated with older versions of web server software. As hot fixes and patches are issued, these solutions are included in the next version of the server software. Maintaining the web server at a current version makes the efforts of a malicious user to exploit the web service more difficult.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Install the current version of the web server software and maintain appropriate service packs and patches.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-214273r879887_rule,STIG-ID|AS24-U1-000960,STIG-Legacy|SV-102843,STIG-Legacy|V-92755,SWIFT-CSCv1|2.3,Vuln-ID|V-214273",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "cmd": "@HTTPD_LOCATION@ -v",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_57": {
+        "description": "AS24-U1-000970 - The Apache web server htpasswd files (if present) must reflect proper ownership and permissions.",
+        "info": "In addition to OS restrictions, access rights to files and directories can be set on a website using the web server software. That is, in addition to allowing or denying all access rights, a rule can be specified that allows or denies partial access rights. For example, users can be given read-only access rights to files to view the information but not change the files.\n\nThis check verifies that the htpasswd file is only accessible by System Administrators (SAs) or Web Managers, with the account running the web service having group permissions of read and execute. 'htpasswd' is a utility used by Netscape and Apache to provide for password access to designated websites.",
+        "solution": "Ensure the SA or Web Manager account owns the 'htpasswd' file.\n\nEnsure permissions are set to '550'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apache_Server_2-4_UNIX_Server_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-214274r879887_rule,STIG-ID|AS24-U1-000970,STIG-Legacy|SV-102845,STIG-Legacy|V-92757,SWIFT-CSCv1|2.3,Vuln-ID|V-214274",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apache_Server_2-4_Unix_Y24M04_STIG.zip",
+        "file": "@HTPASSWD_PATH@",
+        "owner": "@HTPASSWD_OWNER@",
+        "mask": "227",
+        "group": "@HTPASSWD_GROUP@"
+    }
+}

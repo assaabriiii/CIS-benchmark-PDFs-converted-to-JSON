@@ -1,0 +1,356 @@
+{
+    "custom_item_1": {
+        "description": "2.1 Configure NTP time synchronization",
+        "info": "NOTE: Update NTP_SERVER with the appropriate value for the local environment.",
+        "solution": "Perform the following From the vSphere web client-\n\n1. Select the host.\n2. Click 'Manage' -> 'Settings' -> 'System' -> 'Time Configuration'.\n3. Click the 'Edit...' button.\n4. Click on 'Use Network Time Protocol'.\n5. Provide the name and / or IP of your NTP servers. Separate servers with commas.\n6. If the NTP Service Status is 'Stopped', click on 'Start'.\n7. Change the startup policy to 'Start and stop with host'.\n8. Click 'OK'.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the NTP Settings for all hosts\n# If an internal NTP server is used replace pool.ntp.org with\n# the IP address of the internal NTP server\n$NTPServers = 'pool.ntp.org', 'pool2.ntp.org' Get-VMHost | Add-VmHostNtpServer\n$NTPServers\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSCv6|6.1,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,LEVEL|1S,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "NTP Server : ",
+        "expect": "NTP Server : @NTP_SERVER@$"
+    },
+    "custom_item_2": {
+        "description": "2.5 Ensure proper SNMP configuration",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : ",
+        "expect": "snmp\\.receiver\\.([Xx]|[0-9]+)\\.enabled : TRUE$"
+    },
+    "custom_item_3": {
+        "description": "2.5 Ensure proper SNMP configuration - 'community name public does not exist'",
+        "info": "Verify that SNMP (Simple Network Management Protocol) is configured and that all the\nsettings are correct. If SNMP is not being used, it should be disabled.Note- ESXi supports SNMPv3 which provides stronger security than SNMPv1 or SNMPv2,\nincluding key authentication and encryption.\n\n*Rationale*\n\n\nIf SNMP is not being used, it should remain disabled. If it is being used, the proper trap\ndestination should be configured. If SNMP is not properly configured, monitoring\n  information can be sent to a malicious host.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Update the host SNMP Configuration (single host connection required)\nGet-VmHostSNMP | Set-VMHostSNMP -Enabled-$true -ReadOnlyCommunity ''Notes-. SNMP must be configured on each ESXi host\n. SNMP settings can be configured using Host Profiles",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|1NS,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.[0-9]+\\.community : ",
+        "not_expect": "snmp\\.receiver\\.[0-9]+\\.community : [Pp][Uu][Bb][Ll][Ii][Cc]"
+    },
+    "custom_item_4": {
+        "description": "2.5 Ensure proper SNMP configuration - 'community name private does not exist'",
+        "info": "Verify that SNMP (Simple Network Management Protocol) is configured and that all the\nsettings are correct. If SNMP is not being used, it should be disabled.Note- ESXi supports SNMPv3 which provides stronger security than SNMPv1 or SNMPv2,\nincluding key authentication and encryption.\n\n*Rationale*\n\n\nIf SNMP is not being used, it should remain disabled. If it is being used, the proper trap\ndestination should be configured. If SNMP is not properly configured, monitoring\n  information can be sent to a malicious host.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Update the host SNMP Configuration (single host connection required)\nGet-VmHostSNMP | Set-VMHostSNMP -Enabled-$true -ReadOnlyCommunity ''Notes-. SNMP must be configured on each ESXi host\n. SNMP settings can be configured using Host Profiles",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,LEVEL|1NS,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "snmp\\.receiver\\.[0-9]+\\.community : ",
+        "not_expect": "snmp\\.receiver\\.[0-9]+\\.community : [Pp][Rr][Ii][Vv][Aa][Tt][Ee]"
+    },
+    "custom_item_5": {
+        "description": "2.6 Prevent unintended use of dvfilter network APIs",
+        "info": "Confirm that dvfilter API is not configured if not is use. If you are using virtual security\nappliances that leverage this API then configuration may be necessary.\n\n*Rationale*\n\nIf you are not using products that make use of the dvfilter network API (e.g. VMSafe), the\nhost should not be configured to send network information to a VM. If the API is enabled,\nan attacker might attempt to connect a VM to it, thereby potentially providing access to the\nnetwork of other VMs on the host. If you are using a product that makes use of this API then\nverify that the host has been configured correctly.",
+        "solution": "Perform the following from the vSphere web client-\n\n1. Select the host and click 'Manage' -> 'Settings' -> 'System' -> 'Advanced System\nSettings'.\n2. Enter Net.DVFilterBindIpAddress in the filter.\n3. Verify Net.DVFilterBindIpAddress has an empty value.\n4. If an appliance is being used, then make sure the value of this parameter is set to the\nproper IP address.\n5. Make sure the attribute is highlighted, then click the pencil icon.\n6. Enter the proper IP address.\n7. Click 'OK'.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set Net.DVFilterBindIpAddress to null on all hosts\nGet-VMHost HOST1 | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nNet.DVFilterBindIpAddress -Value '' }\n\nImpact-This will prevent a dvfilter-based network security appliance such as a firewall from\nfunctioning if not configured correctly.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "Net\\.DVFilterBindIpAddress : ",
+        "expect": "Net\\.DVFilterBindIpAddress : NOT configured"
+    },
+    "custom_item_6": {
+        "description": "3.2 Configure persistent logging for all ESXi host",
+        "info": "NOTE: Update LOG_DIR with the appropriate value for the local environment.",
+        "solution": "Perform the following from the vSphere web client-\n\n1. Select the host and go to 'Manage' -> 'Settings' -> 'Advanced System Settings'.\n2. Enter Syslog.global.LogDir in the filter.\n3. Set the Syslog.global.LogDir to the desired datastore path.\n4. Make sure the attribute is highlighted, then click the pencil icon.Alternatively, run the following PowerCLI command-# Set Syslog.global.logDir for each host\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nSyslog.global.logDir -Value '' }\n\nImpact-Additional disk space will be required to store log files.\n\nDefault Value-When booting from a local disk- YESWhen booting from USB/SD- NOWhen using Auto Deploy Stateless Installs- NO",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12,800-53r5|AU-12,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12,LEVEL|1S,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "Syslog\\.global\\.logDir : ",
+        "expect": "Syslog\\.global\\.logDir : @LOG_DIR@$"
+    },
+    "custom_item_7": {
+        "description": "3.3 Configure remote logging for ESXi hosts",
+        "info": "NOTE: Update LOG_HOST with the appropriate value for the local environment.",
+        "solution": "Perform the following-\n\n1. Install/Enable a syslog host (i.e vSphere Syslog Collector).\n2. From the vSphere web client select the host.\n3. Click 'Manage' -> 'Settings' -> 'System' -> 'Advanced System Settings'.\n4. Enter Syslog.global.logHost in the filter.\n5. Make sure Syslog.global.logHost is highlighted, then click the pencil icon.\n6. Set the Syslog.global.logHost to the hostname or IP address of your syslog\nserver.\n7. Click 'OK'.\nTo implement the recommended configuration state, run the following PowerCLI\ncommand-# Set Syslog.global.logHost for each host\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nSyslog.global.logHost -Value '' }\nNote- When setting a remote log host it is also recommended to set the\n'Syslog.global.logDirUnique' to true. You must configure the syslog settings for each host.\nThe host syslog parameters can also be configured using the vCLI or PowerCLI, or using an\nAPI client.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|1S,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "Syslog\\.global\\.logHost : ",
+        "expect": "Syslog\\.global\\.logHost : @LOG_HOST@$"
+    },
+    "custom_item_8": {
+        "description": "4.3 Use Active Directory for local user authentication - Review Domain",
+        "info": "ESXi can be configured to use a directory service such as Active Directory to manage users\nand groups. It is recommended that a directory service be used.\n\n*Rationale*\n\nJoin ESXi hosts to an Active Directory (AD) domain to eliminate the need to create and\nmaintain multiple local user accounts. Using AD for user authentication simplifies the ESXi\nhost configuration, ensures password complexity and reuse policies are enforced and\nreduces the risk of security breaches and unauthorized access.\nNote- If the AD group 'ESX Admins' (default) is created, all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi hosts the\ndomain. Refer to the 'verify-admin-group' recommendation for more information.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "From the vSphere Web Client-\n\n1. Select the host and go to 'Manage' -> 'Settings' -> 'System' -> 'Authentication\nServices'.\n2. Click the 'Join Domain' button.\n3. Provide the domain name along with the user credentials for an AD user that has the\nrights to join computers to the domain.\n4. Click 'OK'.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Join the ESXI Host to the Domain\nGet-VMHost HOST1 | Get-VMHostAuthentication | Set-VMHostAuthentication -Domain\ndomain.local -User Administrator -Password Passw0rd -JoinDomain\n\nNotes-\n1. Host Profiles can be used to automate adding hosts to an AD domain.\n2. Consider using the vSphere Authentication proxy to avoid transmitting AD\ncredentials over the network.\n3. If the AD group 'ESX Admins' (default) is created all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi\nhosts the domain.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,LEVEL|1S,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": ""
+    },
+    "custom_item_9": {
+        "description": "4.3 Use Active Directory for local user authentication - Enabled = 'true'",
+        "info": "ESXi can be configured to use a directory service such as Active Directory to manage users\nand groups. It is recommended that a directory service be used.\n\n*Rationale*\n\nJoin ESXi hosts to an Active Directory (AD) domain to eliminate the need to create and\nmaintain multiple local user accounts. Using AD for user authentication simplifies the ESXi\nhost configuration, ensures password complexity and reuse policies are enforced and\nreduces the risk of security breaches and unauthorized access.\nNote- If the AD group 'ESX Admins' (default) is created, all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi hosts the\ndomain. Refer to the 'verify-admin-group' recommendation for more information.",
+        "solution": "From the vSphere Web Client-\n\n1. Select the host and go to 'Manage' -> 'Settings' -> 'System' -> 'Authentication\nServices'.\n2. Click the 'Join Domain' button.\n3. Provide the domain name along with the user credentials for an AD user that has the\nrights to join computers to the domain.\n4. Click 'OK'.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Join the ESXI Host to the Domain\nGet-VMHost HOST1 | Get-VMHostAuthentication | Set-VMHostAuthentication -Domain\ndomain.local -User Administrator -Password Passw0rd -JoinDomainNotes-\n\n1. Host Profiles can be used to automate adding hosts to an AD domain.\n2. Consider using the vSphere Authentication proxy to avoid transmitting AD\ncredentials over the network.\n3. If the AD group 'ESX Admins' (default) is created all users and groups that are\nassigned as members to this group will have full administrative access to all ESXi\nhosts the domain.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,LEVEL|1S,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "Enabled",
+        "expect": "Enabled : true"
+    },
+    "custom_item_10": {
+        "description": "4.4 Verify Active Directory group membership for the 'ESX Admins' group",
+        "info": "The AD group used by vSphere is defined by the esxAdminsGroup attribute. By default, this\nattribute is set to 'ESX Admins'. All members of the 'ESX Admins' group are granted full\nadministrative access to all ESXi hosts in the domain. Monitor AD for the creation of this\ngroup and limit membership to highly trusted users and groups.\n\n*Rationale*\n\nAn unauthorized user having membership in the group set by the esxAdminsGroup\nattribute will have full administrative access to all ESXi hosts. Given this, such users may\ncompromise the confidentiality, availability, and integrity of the all ESXi hosts and the\nrespective data and processes they influence.",
+        "solution": "1. Verify the setting of the esxAdminsGroup attribute ('ESX Admins' by default).\n2. Check the list of members for that Microsoft Active Directory group.\n3. Remove any unauthorized users from that group.\n\nImpact-Coordination between vSphere admins and Active Directory admins is needed.\n\nDefault Value-The AD group used by vSphere is defined by the esxAdminsGroup attribute. By default, this\nattribute is set to 'ESX Admins'",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1NS,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "Config\\.HostAgent\\.plugins\\.hostsvc\\.esxAdminsGroup : ",
+        "not_expect": "ESX Admins$"
+    },
+    "custom_item_11": {
+        "description": "5.2 Disable ESXi Shell unless needed for diagnostics or troubleshooting",
+        "info": "The ESXi shell should only be enabled when running diagnostics or troubleshooting.\nOtherwise, it should be disabled on each host.\n\n*Rationale*\n\nESXi Shell is an interactive command line environment available from the Direct Console\nUser Interface (DCUI) or remotely via SSH. Access to this mode requires the root password\nof the server. The ESXi Shell can be turned on and off for individual hosts. Activities\nperformed from the ESXi Shell bypass vCenter RBAC and audit controls. The ESXi shell\nshould only be turned on when needed to troubleshoot/resolve problems that cannot be\nfixed through the vSphere web client or vCLI/PowerCLI. You can use the vSphere Web\nClient to enable local and remote (SSH) access to the ESXi Shell and to set the idle timeout\nand availability timeout.",
+        "solution": "Perform the following-\n\n1. From the vSphere web client select the host.\n2. Select 'Manage' -> 'Settings' -> 'System' -> 'Security Profile'.\n3. Scroll down to 'Services'.\n4. Click 'Edit...'.\n5. Select 'ESXi Shell'.\n6. Click 'Stop'.\n7. Change the Startup Policy 'Start and Stop Manually'\n8. Click 'OK'.Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set ESXi Shell to start manually rather than automatic for all hosts\nGet-VMHost | Get-VMHostService | Where { $_.key -eq 'TSM' } | Set-VMHostService -\nPolicy Off\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "ESXi Shell : running =",
+        "expect": "ESXi Shell : running = FALSE$"
+    },
+    "custom_item_12": {
+        "description": "5.3 Disable SSH",
+        "info": "Disable Secure Shell (SSH) for each ESXi host to prevent remote access to the ESXi shell.\nonly enable if needed for troubleshooting or diagnostics.\n\n*Rationale*\n\nThe ESXi shell, when enabled, can be accessed directly from the host console through the\nDCUI or remotely using SSH. Remote access to the host should be limited to the vSphere\nClient, remote command-line tools (vCLI/PowerCLI), and through the published APIs.\nUnder normal circumstances remote access to the host using SSH should be disabled.",
+        "solution": "Perform the following-\n\n1. From the vSphere web client select the host.\n2. Select 'Manage' -> 'Settings' -> 'System' -> 'Security Profile'.\n3. Scroll down to 'Services'.\n4. Click 'Edit...'.\n5. Select 'SSH'.\n6. Click 'Stop'.\n7. Change the Startup Policy 'to Start and Stop Manually'.\n8. Click 'OK'.Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set SSH to start manually rather than automatic for all hosts\nGet-VMHost | Get-VMHostService | Where { $_.key -eq 'TSM-SSH' } | Set-VMHostService -\nPolicy Off\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "SSH : running = ",
+        "expect": "SSH : running = FALSE$"
+    },
+    "custom_item_13": {
+        "description": "5.7 Set a timeout to automatically terminate idle ESXi Shell and SSH sessions",
+        "info": "NOTE: Update SHELL_SESSION_TIMEOUT with the appropriate value for the local environment.",
+        "solution": "From the vSphere web client-\n\n1. Select the host.\n2. Click 'Manage' -> 'Settings' -> 'System' -> 'Advanced System Settings'.\n3. Type ESXiShellInteractiveTimeOut in the filter.\n4. Click on the attribute to highlight it.\n5. Click the pencil icon to edit.\n6. Set the attribute to the desired value (300 or less).\n7. Click 'OK'.Note- A value of 0 disables the ESXi ShellInteractiveTimeOut.Additionally, the following PowerCLI command will implement the recommended\nconfiguration state-# Set Remove UserVars.ESXiShellInteractiveTimeOut to 300 on all hosts\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nUserVars.ESXiShellInteractiveTimeOut -Value 300 }\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv6|16.4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|1S,NIAv2|NS49",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "UserVars\\.ESXiShellInteractiveTimeOut : ",
+        "expect": "UserVars\\.ESXiShellInteractiveTimeOut : @SHELL_SESSION_TIMEOUT@$"
+    },
+    "custom_item_14": {
+        "description": "5.8 Set a timeout for Shell Services",
+        "info": "In order to limit how long the services are allowed to run, set a timeout to automatically\nstop the service for ESXi shell and SSH sessions.\n\n*Rationale*\n\nWhen the ESXi Shell or SSH services are enabled on a host, they will run indefinitely. To\navoid having these services left running, set the ESXiShellTimeOut. The\nESXiShellTimeOut defines a window of time after which the ESXi Shell and SSH services\nwill automatically be terminated.",
+        "solution": "From the vSphere web client-\n\n1. Select the host and click 'Manage' -> 'Settings' -> 'System' -> 'Advanced System\nSettings'.\n2. Type ESXiShellTimeOut in the filter.\n3. Click on the attribute to highlight it.\n4. Click the pencil icon to edit.\n5. Set the attribute to 3600 seconds (1 hour) or less.\n6. Click 'OK'.\nNote- A value of 0 disables the ESXi ShellTimeOut. It is recommended to set\nthe ESXiShellInteractiveTimeOut together with ESXiShellTimeOut.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set UserVars.ESXiShellTimeOut to 3660 on all hosts\nGet-VMHost | Foreach { Set-VMHostAdvancedConfiguration -VMHost $_ -Name\nUserVars.ESXiShellTimeOut -Value 3600 }\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv6|16.4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|1S,NIAv2|NS49",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "UserVars\\.ESXiShellTimeout : ",
+        "expect": "UserVars\\.ESXiShellTimeout : (([1-9]$)|([1-9][0-9]$)|([1-9][0-9][0-9]$)|([1-2][0-9][0-9][0-9]$)|(3[0-5][0-9][0-9]$)|(3600$))"
+    },
+    "custom_item_15": {
+        "description": "5.9 Set DCUI.Access to allow trusted users to override lockdown mode",
+        "info": "NOTE: Update DCUI_ACCESS with the appropriate value for the local environment.",
+        "solution": "From the vSphere web client-\n\n1. Select the host.\n2. Select 'Manage' -> 'Settings' -> 'System' -> 'Advanced System Settings'.\n3. Type DCUI.Access in the filter.\n4. Click on the attribute to highlight it.\n5. Click the pencil icon to edit.\n6. Set the DCUI.Access attribute to a comma-separated list of the users who are\nallowed to override lockdown mode.\n7. Click 'OK'\n\nImpact-When you disable lockdown mode using the DCUI, all users with the DCUI Access privilege\nare granted the Administrator role on the host.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.2,800-171|3.1.15,800-53|AC-17(4),800-53r5|AC-17(4),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSCv6|5.1,CSF|PR.AC-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(4),LEVEL|1NS,NESA|T5.4.5,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|5.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "DCUI\\.Access : ",
+        "expect": "DCUI\\.Access : @DCUI_ACCESS@$"
+    },
+    "custom_item_16": {
+        "description": "6.1 Enable bidirectional CHAP authentication for iSCSI traffic.",
+        "info": "By enabling bidirectional CHAP, also known as Mutual CHAP, an additional level of security\nenables the initiator to authenticate the target.\n\n*Rationale*\n\nvSphere allows for the use of bidirectional authentication of both the iSCSI target and host.\nChoosing not to enforce more stringent authentication can make sense if you create a\ndedicated network or VLAN to service all your iSCSI devices. By not authenticating both the\niSCSI target and host, there is a potential for a MiTM attack in which an attacker might\nimpersonate either side of the connection to steal data. Bidirectional authentication can\nmitigate this risk. If the iSCSI facility is isolated from general network traffic, it is less\nvulnerable to exploitation.",
+        "solution": "Perform the following-\n1. From the vSphere Web Client, navigate to 'Hosts'.\n2. Click on a host.\n3. Click on 'Manage' -> 'Storage' -> 'Storage Adapters'.\n4. Select the iSCSI adapter to configure OR click the green plus symbol to create a new\nadapter.\n5. Under Adapter Details, click the Properties tab and click 'Edit' in the Authentication\npanel.\n6. Specify authentication method- 'Use bidirectional CHAP'.\n7. Specify the outgoing CHAP name.\no Make sure that the name you specify matches the name configured on the\nstorage side.\n. To set the CHAP name to the iSCSI adapter name, select Use initiator\nname.\n. To set the CHAP name to anything other than the iSCSI initiator name,\ndeselect Use initiator name and type a name in the Name text box.8. Enter an outgoing CHAP secret to be used as part of authentication. Use the same\nsecret as your storage side secret.\n9. Specify incoming CHAP credentials. Make sure your outgoing and incoming secrets\ndo not match.\n10. Click OK.\n11. Click the second to last symbol to rescan the iSCSI adapter.To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the Chap settings for the Iscsi Adapter\nGet-VMHost | Get-VMHostHba | Where {$_.Type -eq 'Iscsi'} | Set-VMHostHba # Use desired\nparameters here\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),LEVEL|1S,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "chapAuthEnabled : ",
+        "not_expect": "chapAuthEnabled : FALSE$"
+    },
+    "custom_item_17": {
+        "description": "7.1 Ensure that the vSwitch Forged Transmits policy is set to reject",
+        "info": "Set the vSwitch Forged Transmits policy is set to reject for each vSwitch.\n\n*Rationale*\n\nIf the virtual machine operating system changes the MAC address, the operating system can\nsend frames with an impersonated source MAC address at any time. This allows an\noperating system to stage malicious attacks on the devices in a network by impersonating a\nnetwork adaptor authorized by the receiving network. Forged transmissions should be set\nto accept by default. This means the virtual switch does not compare the source and\neffective MAC addresses. To protect against MAC address impersonation, all virtual\nswitches should have forged transmissions set to reject. Reject Forged Transmit can be set\nat the vSwitch and/or the Portgroup level. You can override switch level settings at the\nPortgroup level.",
+        "solution": "1. In the vSphere Web Client, navigate to the host.\n2. 'Hosts and Clusters' -> 'vCenter' -> host.\n3. On the Manage tab, click Networking, and select Virtual switches.\n4. Select a standard switch from the list and click the pencil icon to edit settings.\n5. Select Security.\n6. Set Forged transmits to 'Reject'.\n7. Click 'OK'.Additionally, the following ESXi shell command may be used-# esxcli network vswitch standard policy security set -v vSwitch2 -f false\n\nImpact-This will prevent VMs from changing their effective MAC address. This will affect\napplications that require this functionality. An example of an application like this is\nMicrosoft Clustering, which requires systems to effectively share a MAC address. This will\nalso affect how a layer 2 bridge will operate. This will also affect applications that require a\nspecific MAC address for licensing. An exception should be made for the port groups that\nthese applications are connected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "forgedTransmits =",
+        "expect": "forgedTransmits = FALSE$"
+    },
+    "custom_item_18": {
+        "description": "7.2 Ensure that the vSwitch MAC Address Change policy is set to reject",
+        "info": "Ensure that the MAC Address Change policy within the vSwitch is set to reject.\n\n*Rationale*\n\n\nIf the virtual machine operating system changes the MAC address, it can send frames with\nan impersonated source MAC address at any time. This allows it to stage malicious attacks\non the devices in a network by impersonating a network adaptor authorized by the\nreceiving network. This will prevent VMs from changing their effective MAC address. It will\naffect applications that require this functionality. An example of an application like this is\nMicrosoft Clustering, which requires systems to effectively share a MAC address. This will\nalso affect how a layer 2 bridge will operate. This will also affect applications that require a\nspecific MAC address for licensing. An exception should be made for the port groups that\nthese applications are connected to. Reject MAC Changes can be set at the vSwitch and/or\nthe Portgroup level. You can override switch level settings at the Portgroup level.",
+        "solution": "1. In the vSphere Web Client, navigate to the host.\n2. 'Hosts and Clusters' -> 'vCenter' -> host.\n3. On the Manage tab, click Networking, and select Virtual switches.\n4. Select a standard switch from the list and click the pencil icon to edit settings.\n5. Select Security.\n6. Set MAC Address Changes to 'Reject'.\n7. Click 'OK'.Additionally, perform the following to implement the recommended configuration state\nusing the ESXi shell-# esxcli network vswitch standard policy security set -v vSwitch2 -m false\n\n\nImpact-This will prevent VMs from changing their effective MAC address. It will affect applications\nthat require this functionality. An example of an application like this is Microsoft Clustering,\nwhich requires systems to effectively share a MAC address. This will also affect how a layer\n2 bridge will operate. This will also affect applications that require a specific MAC address\nfor licensing. An exception should be made for the port groups that these applications are\nconnected to.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "macChanges =",
+        "expect": "macChanges = FALSE$"
+    },
+    "custom_item_19": {
+        "description": "7.3 Ensure that the vSwitch Promiscuous Mode policy is set to reject",
+        "info": "Ensure that the Promiscuous Mode Policy within the vSwitch is set to reject.\n\n*Rationale*\n\nWhen promiscuous mode is enabled for a virtual switch all virtual machines connected to\nthe dvPortgroup have the potential of reading all packets crossing that network.\nPromiscuous mode is disabled by default on the ESXi Server, and this is the recommended\nsetting. However, there might be a legitimate reason to enable it for debugging, monitoring\nor troubleshooting reasons. Security devices might require the ability to see all packets on\na vSwitch. An exception should be made for the dvPortgroups that these applications are\nconnected to, in order to allow for full-time visibility to the traffic on that\ndvPortgroup. Promiscous mode can be set at the vSwitch and/or the Portgroup level. You\ncan override switch level settings at the Portgroup level.",
+        "solution": "1. In the vSphere Web Client, navigate to the host.\n2. 'Hosts and Clusters' -> 'vCenter' -> host.\n3. On the Manage tab, click Networking, and select Virtual switches.\n4. Select a standard switch from the list and click the pencil icon to edit settings.\n5. Select Security.\n6. Set Promiscuous Mode to 'Reject'.\n7. Click 'OK'.Additionally, perform the following to implement the recommended configuration state via\nthe ESXi shell-# esxcli network vswitch standard policy security set -v vSwitch2 -p false\n\nImpact-Security devices that require the ability to see all packets on a vSwitch will not operate\nproperly if the Promiscuous Mode parameter is set to Reject.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "() - allowPromiscuous =- allowPromiscuous = NOT configured",
+        "regex": "allowPromiscuous =",
+        "not_expect": "allowPromiscuous = (TRUE|NOT configured)$"
+    },
+    "custom_item_20": {
+        "description": "7.6 Ensure that port groups are not configured to VLAN 4095 except for Virtual Guest Tagging (VGT)",
+        "info": "Don't use VLAN 4095 except for Virtual Guest Tagging (VGT).\n\n*Rationale*\n\nWhen a port group is set to VLAN 4095, this activates VGT mode. In this mode, the vSwitch\npasses all network frames to the guest VM without modifying the VLAN tags, leaving it up\nto the guest to deal with them. VLAN 4095 should be used only if the guest has been\nspecifically configured to manage VLAN tags itself. If VGT is enabled inappropriately, it\nmight cause denial of service or allow a guest VM to interact with traffic on an\nunauthorized VLAN.",
+        "solution": "VLAN ID setting on all port groups should not be set to 4095 unless VGT is required.1. From the vSphere web client select the host.\n2. On the Manage tab, click Networking, and select Virtual switches.\n3. Select a standard switch from the list.\n4. The topology diagram of the switch appears showing the various port groups\nassociated with that switch.\n5. For each port group on the vSwitch, verify and record the VLAN IDs used.\n6. If a VLAN ID change is needed click the name of the port group in the topology\ndiagram of the virtual switch.\n7. Click the 'Edit settings' pencil icon under the topology diagram title.\n8. In the Properties section, name the port group in the Network Label text field.\n9. Choose an existing VLAN ID drop-down menu or type in a new one.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "() - vlanId =- vlanId = NOT configured",
+        "regex": "vlanId =",
+        "not_expect": "vlanId = (4095|NOT configured)$"
+    },
+    "custom_item_21": {
+        "description": "8.1.1 Limit informational messages from the VM to the VMX file",
+        "info": "Limit informational messages from the virtual machine to the VMX file to avoid filling the\ndatastore and causing a Denial of Service (DoS).\n\n*Rationale*\n\nThe configuration file containing these name-value pairs is limited to a size of 1MB. This\n1MB capacity should be sufficient for most cases, but you can change this value if\nnecessary. You might increase this value if large amounts of custom information are being\nstored in the configuration file. The default limit is 1MB; this limit is applied even when the\nsizeLimit parameter is not listed in the .vmx file. Uncontrolled size for the VMX file can\nlead to denial of service if the datastore is filled.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'tools.setInfo.sizeLimit' -value 1048576\n\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "() - tools.setInfo.sizeLimit :() - tools.setInfo.sizeLimit :() - tools.setInfo.sizeLimit : NOT configured() - tools.setInfo.sizeLimit : NOT configured",
+        "regex": "tools\\.setInfo\\.sizeLimit : ",
+        "not_expect": "tools\\.setInfo\\.sizeLimit : (^(?!1048576$)\\d+$|NOT Configured)"
+    },
+    "custom_item_22": {
+        "description": "8.2.6 Prevent unauthorized removal and modification of devices.",
+        "info": "Prevent unauthorized removal and modification of devices.\n\n*Rationale*\n\nIn a virtual machine, users and processes without root or administrator privileges can\nconnect or disconnect devices, such as network adaptors and CD-ROM drives, and can\nmodify device settings. Use the virtual machine settings editor or configuration editor to\nremove unneeded or unused hardware devices. If you want to use the device again, you can\nprevent a user or running process in the virtual machine from connecting, disconnecting, or\nmodifying a device from within the guest operating system. By default, a rogue user with\nnonadministrator privileges in a virtual machine can:\n\n1. Connect a disconnected CD-ROM drive and access sensitive information on the media left\nin the drive\n2. Disconnect a network adaptor to isolate the virtual machine from its network, which is a\ndenial of service\n3. Modify settings on a device",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.device.edit.disable' -value $true\n\nImpact-Device interaction is blocked inside the guest OS using VMware tools.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.device\\.edit\\.disable : ",
+        "expect": "isolation\\.device\\.edit\\.disable : TRUE$"
+    },
+    "custom_item_23": {
+        "description": "8.2.7 Prevent unauthorized connection of devices.",
+        "info": "Prevent unauthorized connection of devices.\n\n*Rationale*\n\nIn a virtual machine, users and processes without root or administrator privileges can\nconnect or disconnect devices, such as network adaptors and CD-ROM drives, and can\nmodify device settings. Use the virtual machine settings editor or configuration editor to\nremove unneeded or unused hardware devices. If you want to use the device again, you can\nprevent a user or running process in the virtual machine from connecting, disconnecting, or\nmodifying a device from within the guest operating system. By default, a rogue user with\nnon-administrator privileges in a virtual machine can -\n\nConnect a disconnected CD-ROM drive and access sensitive information on the\nmedia left in the drive\n\nDisconnect a network adaptor to isolate the virtual machine from its network, which\nis a denial of service\n\nModify settings on a device",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.device.connectable.disable' -value $true\n\nImpact-Device interaction is blocked inside the guest OS using VMware tools\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.device\\.connectable\\.disable : ",
+        "expect": "isolation\\.device\\.connectable\\.disable : True$"
+    },
+    "custom_item_24": {
+        "description": "8.4.1 Control access to VMs through the dvfilter network APIs",
+        "info": "Configure VMs protected by dvfilter network APIs correctly.\n\n*Rationale*\n\nA VM must be configured explicitly to accept access by the dvfilter network API. Only\nconfigure VMs that will be specifically accessed by the API. An attacker might compromise\na VM by making use the dvFilter API.",
+        "solution": "If a VM is supposed to be protected:\n\nConfigure the following in its VMX file:\n\nethernet0.filter1.name = dv-filter1 where ethernet0 is the network adapter interface of the virtual machine\nthat is to be protected, filter1 is the number of the filter that is being used, and dv-filter1 is the name of the particular data path kernel module that is protecting the\nVM.\n\nEnsure that the name of the data path kernel is set correctly.If a VM is not supposed to be protected:\n\nRemove the following from its VMX file:\n\nethernet0.filter1.name = dv-filter1 where ethernet0 is the network adapter interface of the virtual machine\nthat is to be protected, filter1 is the number of the filter that is being used, and dv-filter1 is the name of the particular data path kernel module that is protecting the\nVM.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nvmsafe API. It can also prevent VMs from connecting to the network.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1NS,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "ethernet[0-9]+\\\\.filter[0-9]+\\\\.name :",
+        "expect": "ethernet[0-9]+\\\\.filter[0-9]+\\\\.name : NOT configured"
+    },
+    "custom_item_25": {
+        "description": "8.4.2 Control VMsafe Agent Address",
+        "info": "NOTE: Update AGENT_ADDRESS with the appropriate value for the local environment.",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and verify that vmsafe.agentAddress is not present.\nIf it is being protected by a VMsafe CPU/Memory product then make sure this is set to the\ncorrect value\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nVMsafe API.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.agentAddress : ",
+        "expect": "vmsafe\\.agentAddress : @AGENT_ADDRESS@$"
+    },
+    "custom_item_26": {
+        "description": "8.4.3 Control VMsafe Agent Port",
+        "info": "NOTE: Update AGENT_PORT with the appropriate value for the local environment.",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and verify that vmsafe.agentPort is not present.If it is being protect by a VMsafe CPU/Memory product, make sure vmsafe.agentPort is set\nto the correct value.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nVMsafe API.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.agentPort : ",
+        "expect": "vmsafe\\.agentPort : @AGENT_PORT@$"
+    },
+    "custom_item_27": {
+        "description": "8.4.4 Control VMsafe Agent Configuration",
+        "info": "Configure the vmsafe.enable option in the virtual machine configuration file correctly. It\nshould either be non-existent or set to FALSE.\n\n*Rationale*\n\nThe VMsafe CPU/memory API allows a security virtual machine to inspect and modify the\ncontents of the memory and CPU registers on other VMs, for the purpose of detecting and\npreventing malware attacks. However, an attacker might compromise the VM by making\nuse of this introspection channel; therefore you should monitor for unauthorized usage of\nthis API. A VM must be configured explicitly to accept access by the VMsafe CPU/memory\nAPI.This involves three parameters to perform the following-\n\n1. Enable the API\n2. Set the IP address used by the security virtual appliance on the introspection\nvSwitch\n3. Set the port number for that IP address.If the VM is being protected by such a product, then make sure the latter two parameters\nare set correctly. This should be done only for specific VMs for which you want this\nprotection.",
+        "solution": "If the VM is not being protected by a VMsafe CPU/memory product, then check virtual\nmachine configuration file and set vmsafe.enable to FALSE.\n\nImpact-Incorrectly configuring this option can negatively impact functionality of tools that use\nvmsafe API.\n\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.14.5,800-53|SI-3(10),800-53r5|SI-3(10),CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1NS,NIAv2|GS17,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,SWIFT-CSCv1|6.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "vmsafe\\.enable : ",
+        "expect": "vmsafe\\.enable : FALSE$"
+    },
+    "custom_item_28": {
+        "description": "8.4.24 Disable VM Console Copy operations",
+        "info": "Disable VM console copy and paste operations.\n\n*Rationale*\n\nCopy and paste operations are disabled by default; however, by explicitly disabling this\nfeature, it will enable audit controls to check that this setting is correct.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.copy.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same. If you require copy and paste\noperations, you must enable them using the vSphere Client.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.copy\\.disable : ",
+        "expect": "isolation\\.tools\\.copy\\.disable : TRUE$"
+    },
+    "custom_item_29": {
+        "description": "8.4.25 Disable VM Console Drag and Drop operations",
+        "info": "Disable VM Console Drag and Drop operations.\n\n*Rationale*\n\nCopy and paste operations are disabled by default; however, by explicitly disabling this\nfeature, it will enable audit controls to check that this setting is correct.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.dnd.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.dnd\\.disable : ",
+        "expect": "isolation\\.tools\\.dnd\\.disable : TRUE$"
+    },
+    "custom_item_30": {
+        "description": "8.4.26 Disable VM Console GUI Options",
+        "info": "Disable VM Console and Paste GUI Options.\n\n*Rationale*\n\nCopy and paste operations are disabled by default; however, by explicitly disabling this\nfeature, it will enable audit controls to check that this setting is correct.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.setGUIOptions.enable' -value\n$false\n\nImpact-This is the default setting so functionality remains the same.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "() - isolation.tools.setGUIOptions.enable :() - isolation.tools.setGUIOptions.enable :() - isolation.tools.setGUIOptions.enable : NOT configured() - isolation.tools.setGUIOptions.enable : NOT configured",
+        "regex": "isolation\\.tools\\.setGUIOptions\\.enable : ",
+        "not_expect": "isolation\\.tools\\.setGUIOptions\\.enable : (TRUE|NOT configured)$"
+    },
+    "custom_item_31": {
+        "description": "8.4.27 Disable VM Console Paste operations",
+        "info": "Disable VM Console Paste operations.\n\n*Rationale*\n\nCopy and paste operations are disabled by default; however, by explicitly disabling this\nfeature, it will enable audit controls to check that this setting is correct.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.paste.disable' -value $true\n\nImpact-This is the default setting so functionality remains the same. If you require copy and paste\noperations, you must enable them using the vSphere Web Client.\n\nDefault Value-The prescribed state is the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.paste\\.disable : ",
+        "expect": "isolation\\.tools\\.paste\\.disable : TRUE$"
+    },
+    "custom_item_32": {
+        "description": "8.4.28 Control access to VM console via VNC protocol",
+        "info": "Minimize access to the Virtual Machine via VNC protocol.\n\n*Rationale*\n\nThe VM console enables you to connect to the console of a virtual machine, in effect seeing\nwhat a monitor on a physical server would show. This console is also available via the VNC\nprotocol. Setting up this access also involves setting up firewall rules on each ESXi server\nthe virtual machine will run on.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'RemoteDisplay.vnc.enabled' -value $false\n\n\nImpact-Configuring VM settings and opening up the firewall means multiple steps to be configured\nand monitored.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "RemoteDisplay\\.vnc\\.enabled : ",
+        "expect": "RemoteDisplay\\.vnc\\.enabled : FALSE$"
+    },
+    "custom_item_33": {
+        "description": "8.6.2 Disable virtual disk shrinking",
+        "info": "If Virtual disk shrinking is done repeatedly it will cause the virtual disk to become\nunavailable resulting in a denial of service. You can prevent virtual disk shrinking by\ndisabling it.\n\n*Rationale*\n\nShrinking a virtual disk reclaims unused space in it. If there is empty space in the disk, this\nprocess reduces the amount of space the virtual disk occupies on the host drive. Normal\nusers and processes that is, users and processes without root or administrator\nprivileges within virtual machines have the capability to invoke this procedure. However,\nif this is done repeatedly, the virtual disk can become unavailable while this shrinking is\nbeing performed, effectively causing a denial of service. In most datacenter environments,\ndisk shrinking is not done, so you should disable this feature. Repeated disk shrinking can\nmake a virtual disk unavailable. This capability is available to nonadministrative users in\nthe guest.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.diskShrink.disable' -value $true\n\nImpact-Inability to shrink virtual machine disks in the event that a datastore runs out of space.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "() - isolation.tools.diskShrink.disable :() - isolation.tools.diskShrink.disable :() - isolation.tools.diskShrink.disable : NOT configured() - isolation.tools.diskShrink.disable : NOT configured",
+        "regex": "isolation\\.tools\\.diskShrink\\.disable : ",
+        "not_expect": "isolation\\.tools\\.diskShrink\\.disable : (FALSE|NOT configured)$"
+    },
+    "custom_item_34": {
+        "description": "8.6.3 Disable virtual disk wiping",
+        "info": "If Virtual disk wiping is done repeatedly, it will cause the virtual disk to become unavailable\nresulting in a denial of service. You can prevent virtual disk wiping by disabling it.\n\n*Rationale*\n\nWiping a virtual disk reclaims ALL unused space in it. If there is empty space in the disk,\nthis process reduces the amount of space the virtual disk occupies on the host drive.\nNormal users and processes that is, users and processes without root or administrator\nprivileges within virtual machines have the capability to invoke this procedure. However,\nif this is done repeatedly, the virtual disk can become unavailable while this wiping is being\nperformed, effectively causing a denial of service. In most datacenter environments, disk\nwiping is not done, so you should disable this feature. Repeated disk wiping can make a\nvirtual disk unavailable. This capability is available to nonadministrative users in the guest.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-\n# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'isolation.tools.diskWiper.disable' -value $true\n\nImpact-When you disable this feature, you cannot wipe virtual machine disks when a datastore\nruns out of space.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1S,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "isolation\\.tools\\.diskWiper\\.disable : ",
+        "expect": "isolation\\.tools\\.diskWiper\\.disable : True$"
+    },
+    "custom_item_35": {
+        "description": "8.7.2 Limit number of VM log files",
+        "info": "Configure VM settings to prevent uncontrolled logging.\n\n*Rationale*\n\nYou can use log settings to limit the total size and number of log files. Normally a new log\nfile is created only when a host is rebooted, so the file can grow to be quite large. You can\nensure that new log files are created more frequently by limiting the maximum size of the\nlog files. If you want to restrict the total size of logging data, VMware recommends saving\n10 log files, each one limited to 1,000KB. Datastores are likely to be formatted with a block\nsize of 2MB or 4MB, so a size limit too far below this size would result in unnecessary\nstorage utilization. Each time an entry is written to the log, the size of the log is checked; if\nit is over the limit, the next entry is written to a new log. If the maximum number of log files\nalready exists, when a new one is created, the oldest log file is deleted. A denial-of-service\nattack that avoids these limits might be attempted by writing an enormous log entry. But\neach log entry is limited to 4KB, so no log files are ever more than 4KB larger than the\nconfigured limit. A second option is to disable logging for the virtual machine. Disabling\nlogging for a virtual machine makes troubleshooting challenging and support difficult. You\nshould not consider disabling logging unless the log file rotation approach proves\ninsufficient. Uncontrolled logging can lead to denial of service due to the datastore's being\nfilled.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'log.keepOld' -value '10'\n\nImpact-A more extreme strategy is to disable logging altogether for the virtual machine. Disabling\nlogging makes troubleshooting challenging and support difficult. Do not consider disabling\nlogging unless the log file rotation approach proves insufficient.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv6|6.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "log\\.keepOld : ",
+        "expect": "log\\.keepOld : 10$"
+    },
+    "custom_item_36": {
+        "description": "8.7.4 Limit VM log file size",
+        "info": "Configure VM settings to prevent uncontrolled logging. Virtual machines write\ntroubleshooting information into a virtual machine log file stored on the VMFS volume.\nVirtual machine users and processes can abuse logging either on purpose or inadvertently\nso that large amounts of data flood the log file. Over time, the log file can consume enough\nfile system space to cause a denial of service.\n\n*Rationale*\n\nYou can use log settings to limit the total size and number of log files. Normally a new log\nfile is created only when a host is rebooted, so the file can grow to be quite large. You can\nensure that new log files are created more frequently by limiting the maximum size of the\nlog files. If you want to restrict the total size of logging data, VMware recommends saving\n10 log files, each one limited to 1,000KB (1,024,000 bytes). Datastores are likely to be\nformatted with a block size of 2MB or 4MB, so a size limit too far below this size would\nresult in unnecessary storage utilization. Each time an entry is written to the log, the size of\nthe log is checked; if it is over the limit, the next entry is written to a new log. If the\nmaximum number of log files already exists, when a new one is created, the oldest log file is\ndeleted. A denial-of-service attack that avoids these limits might be attempted by writing\nan enormous log entry. But each log entry is limited to 4KB, so no log files are ever more\nthan 4KB larger than the configured limit. A second option is to disable logging for the\nvirtual machine. Disabling logging for a virtual machine makes troubleshooting challenging\nand support difficult. You should not consider disabling logging unless the log file rotation\napproach proves insufficient. Uncontrolled logging can lead to denial of service due to the\ndatastores being filled.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Add the setting to all VMs\nGet-VM | New-AdvancedSetting -Name 'log.rotateSize' -value '1024000'\n\nImpact-A more extreme strategy is to disable logging altogether for the virtual machine. Disabling\nlogging makes troubleshooting challenging and support difficult. Do not consider disabling\nlogging unless the log file rotation approach proves insufficient.\n\nDefault Value-The prescribed state is not the default state.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv6|6.3,CSCv7|6.4,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1S,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/145",
+        "xsl_stmt": "",
+        "regex": "log\\.rotateSize : ",
+        "expect": "log\\.rotateSize : ([0-9]{1,6}|10[0-1][0-9]{4}|10[0-2][0-3][0-9]{3}|1024000)$"
+    }
+}

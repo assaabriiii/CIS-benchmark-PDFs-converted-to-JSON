@@ -1,0 +1,204 @@
+{
+    "custom_item_1": {
+        "description": "Bottlerocket is installed",
+        "file": "/.bottlerocket/rootfs/etc/os-release",
+        "regex": "^PRETTY_NAME=\"Bottlerocket[\\\\s]+OS",
+        "expect": "^PRETTY_NAME=\"Bottlerocket[\\\\s]+OS"
+    },
+    "custom_item_2": {
+        "description": "Ensure mounting of UDF filesystems is disabled - modprobe",
+        "cmd": "/bin/sheltie modprobe -n -v udf | /bin/grep -E '(udf|install)'",
+        "expect": "install /bin/(true|false)"
+    },
+    "custom_item_3": {
+        "description": "Ensure mounting of UDF filesystems is disabled - /proc/modules",
+        "file": "/proc/modules",
+        "regex": "^[\\\\s]*udf[\\\\s]*",
+        "expect": "^[\\\\s]*udf[\\\\s]*"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "3.4.2.3 Ensure IPv6 outbound and established connections are configured",
+        "info": "Configure the firewall rules for new outbound, and established connections.\n\nRationale:\n\nIf rules are not in place for new outbound, and established connections all packets will be dropped by the default policy preventing network usage.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure ip6tables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:\n\n# ip6tables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/proc/modules",
+        "regex": "^[\\\\s]*sctp[\\\\s]*",
+        "expect": "^Manual Review Required$",
+        "cmd": "/bin/sheltie ip6tables -L -v -n",
+        "YESsystem": "Linux"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.5.2 Ensure Lockdown is configured",
+        "info": "Lockdown must be enabled in integrity mode.\n\nNote that this prevents unsigned kernel modules from being loaded. This could interfere with the operation of hardware or third-party software that depends on these modules.\n\nRationale:\n\nMany security mechanisms ultimately depend on the kernel for enforcement. This includes access controls such as capabilities and SELinux, and integrity checks such as dm-verity. Modifications to the running kernel could bypass or subvert these mechanisms.",
+        "solution": "Run the following command to enable Lockdown in integrity mode:\n\n# apiclient set kernel.lockdown=integrity",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/sys/kernel/security/lockdown",
+        "regex": "^[\\\\s]*none[\\\\s]+\\\\[integrity\\\\][\\\\s]+confidentiality[\\\\s]*$",
+        "expect": "^[\\\\s]*none[\\\\s]+\\\\[integrity\\\\][\\\\s]+confidentiality[\\\\s]*$"
+    },
+    "custom_item_6": {
+        "description": "Ensure packet redirect sending is disabled - net.ipv4.conf.all.send_redirects",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.send_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "description": "Ensure packet redirect sending is disabled - net.ipv4.conf.default.send_redirects",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.send_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "description": "Ensure source routed packets are not accepted - net.ipv4.conf.all.accept_source_route",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.accept_source_route",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_9": {
+        "description": "Ensure source routed packets are not accepted - net.ipv4.conf.default.accept_source_route",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.accept_source_route",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_10": {
+        "description": "Ensure source routed packets are not accepted - net.ipv6.conf.all.accept_source_route",
+        "cmd": "/sbin/sysctl net.ipv6.conf.all.accept_source_route",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.all\\\\.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "description": "Ensure source routed packets are not accepted - net.ipv6.conf.default.accept_source_route",
+        "cmd": "/sbin/sysctl net.ipv6.conf.default.accept_source_route",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.default\\\\.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "description": "Ensure ICMP redirects are not accepted - sysctl net.ipv4.conf.all.accept_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.accept_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_13": {
+        "description": "Ensure ICMP redirects are not accepted - sysctl net.ipv4.conf.default.accept_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.accept_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_14": {
+        "description": "Ensure ICMP redirects are not accepted - sysctl net.ipv6.conf.all.accept_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.all.accept_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.all\\\\.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "description": "Ensure ICMP redirects are not accepted - sysctl net.ipv6.conf.default.accept_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.default.accept_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv6\\\\.conf\\\\.default\\\\.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_16": {
+        "description": "Ensure secure ICMP redirects are not accepted - sysctl net.ipv4.conf.all.secure_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.secure_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.secure_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "description": "Ensure secure ICMP redirects are not accepted - sysctl net.ipv4.conf.default.secure_redirects=0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.secure_redirects",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.secure_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "description": "Ensure suspicious packets are logged - sysctl net.ipv4.conf.all.log_martians=1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.log_martians",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.all\\\\.log_martians[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_19": {
+        "description": "Ensure suspicious packets are logged - sysctl net.ipv4.conf.default.log_martians=1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.log_martians",
+        "expect": "^[\\\\s]*net\\\\.ipv4\\\\.conf\\\\.default\\\\.log_martians[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "description": "Ensure SCTP is disabled - modprobe",
+        "cmd": "/bin/sheltie modprobe -n -v sctp | /bin/grep -E '(sctp|install)'",
+        "expect": "install /bin/(true|false)"
+    },
+    "custom_item_21": {
+        "description": "Ensure SCTP is disabled - /proc/modules",
+        "file": "/proc/modules",
+        "regex": "^[\\\\s]*sctp[\\\\s]*",
+        "expect": "^[\\\\s]*sctp[\\\\s]*"
+    },
+    "custom_item_22": {
+        "description": "Ensure IPv4 default deny firewall policy - Chain INPUT",
+        "cmd": "/bin/sheltie iptables -L | grep 'Chain INPUT'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+INPUT[\\\\s]+\\\\(policy[\\\\s]+(?:DROP|REJECT)\\\\)[\\\\s]*$"
+    },
+    "custom_item_23": {
+        "description": "Ensure IPv4 default deny firewall policy - Chain FORWARD",
+        "cmd": "/bin/sheltie iptables -L | grep 'Chain FORWARD'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+FORWARD[\\\\s]+\\\\(policy[\\\\s]+(?:DROP|REJECT)\\\\)[\\\\s]*$"
+    },
+    "custom_item_24": {
+        "description": "Ensure IPv4 default deny firewall policy - Chain OUTPUT",
+        "cmd": "/bin/sheltie iptables -L | grep 'Chain OUTPUT'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+OUTPUT[\\\\s]+\\\\(policy[\\\\s]+(?:DROP|REJECT)\\\\)[\\\\s]*$"
+    },
+    "custom_item_25": {
+        "description": "Ensure IPv4 loopback traffic is configured - Chain INPUT (lo)",
+        "cmd": "/bin/sheltie iptables -L INPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+ACCEPT[\\\\s]+0[\\\\s]+--[\\\\s]+lo[\\\\s]+\\\\*[\\\\s]+0\\\\.0\\\\.0\\\\.0\\\\/0[\\\\s]+0\\\\.0\\\\.0\\\\.0\\\\/0[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "description": "Ensure IPv4 loopback traffic is configured - Chain INPUT (127.0.0.0/8)",
+        "cmd": "/bin/sheltie iptables -L INPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+DROP[\\\\s]+0[\\\\s]+--[\\\\s]+\\\\*[\\\\s]+\\\\*[\\\\s]+127\\\\.0\\\\.0\\\\.0\\\\/8[\\\\s]+0\\\\.0\\\\.0\\\\.0\\\\/0[\\\\s]*$"
+    },
+    "custom_item_27": {
+        "description": "Ensure IPv4 loopback traffic is configured - Chain OUTPUT",
+        "cmd": "/bin/sheltie iptables -L OUTPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+ACCEPT[\\\\s]+0[\\\\s]+--[\\\\s]+\\\\*[\\\\s]+lo[\\\\s]+0\\\\.0\\\\.0\\\\.0\\\\/0[\\\\s]+0\\\\.0\\\\.0\\\\.0\\\\/0[\\\\s]*$"
+    },
+    "custom_item_28": {
+        "system": "Linux",
+        "description": "3.4.1.3 Ensure IPv4 outbound and established connections are configured",
+        "info": "Configure the firewall rules for new outbound, and established connections.\n\nRationale:\n\nIf rules are not in place for new outbound, and established connections all packets will be dropped by the default policy preventing network usage.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure iptables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:\n\n# iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# iptables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT\n\n# iptables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT\n\n# iptables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "cmd": "/bin/sheltie iptables -L -v -n",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_29": {
+        "description": "Ensure IPv6 default deny firewall policy - Chain INPUT",
+        "cmd": "/bin/sheltie ip6tables -L | grep 'Chain INPUT'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+INPUT[\\\\s]+\\\\(policy[\\\\s]+DROP\\\\)[\\\\s]*$"
+    },
+    "custom_item_30": {
+        "description": "Ensure IPv6 default deny firewall policy - Chain FORWARD",
+        "cmd": "/bin/sheltie ip6tables -L | grep 'Chain FORWARD'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+FORWARD[\\\\s]+\\\\(policy[\\\\s]+DROP\\\\)[\\\\s]*$"
+    },
+    "custom_item_31": {
+        "description": "Ensure IPv6 default deny firewall policy - Chain OUTPUT",
+        "cmd": "/bin/sheltie ip6tables -L | grep 'Chain OUTPUT'",
+        "expect": "^[\\\\s]*Chain[\\\\s]+OUTPUT[\\\\s]+\\\\(policy[\\\\s]+DROP\\\\)[\\\\s]*$"
+    },
+    "custom_item_32": {
+        "description": "Ensure IPv6 loopback traffic is configured - Chain INPUT (lo)",
+        "cmd": "/bin/sheltie ip6tables -L INPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+ACCEPT[\\\\s]+0[\\\\s]+--[\\\\s]+lo[\\\\s]+\\\\*[\\\\s]+\\\\:\\\\:\\\\/0[\\\\s]+\\\\:\\\\:\\\\/0[\\\\s]*$"
+    },
+    "custom_item_33": {
+        "description": "Ensure IPv6 loopback traffic is configured - Chain INPUT (::1)",
+        "cmd": "/bin/sheltie ip6tables -L INPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+DROP[\\\\s]+0[\\\\s]+--[\\\\s]+\\\\*[\\\\s]+\\\\*[\\\\s]+\\\\:\\\\:1[\\\\s]+\\\\:\\\\:\\\\/0[\\\\s]*$"
+    },
+    "custom_item_34": {
+        "description": "Ensure IPv6 loopback traffic is configured - Chain OUTPUT (lo)",
+        "cmd": "/bin/sheltie ip6tables -L OUTPUT -v -n",
+        "expect": "^[\\\\s]*[\\\\S]+[\\\\s]+[\\\\S]+[\\\\s]+ACCEPT[\\\\s]+0[\\\\s]+--[\\\\s]+\\\\*[\\\\s]+lo[\\\\s]+\\\\:\\\\:\\\\/0[\\\\s]+\\\\:\\\\:\\\\/0[\\\\s]*$"
+    },
+    "custom_item_35": {
+        "system": "Linux",
+        "description": "3.4.2.3 Ensure IPv6 outbound and established connections are configured",
+        "info": "Configure the firewall rules for new outbound, and established connections.\n\nRationale:\n\nIf rules are not in place for new outbound, and established connections all packets will be dropped by the default policy preventing network usage.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure ip6tables in accordance with site policy. The following commands will implement a policy to allow all outbound connections and all established connections:\n\n# ip6tables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT\n\n# ip6tables -A INPUT -p icmp -m state --state ESTABLISHED -j ACCEPT",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "cmd": "/bin/sheltie ip6tables -L -v -n",
+        "expect": "^Manual Review Required$"
+    }
+}

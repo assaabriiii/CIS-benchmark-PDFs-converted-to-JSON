@@ -1,0 +1,273 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "DB2X-00-000300 - DB2 must integrate with an organization-level authentication/access mechanism providing account management and automation for all users, groups, roles, and any other principals",
+        "info": "Enterprise environments make account management for applications and databases challenging and complex. A manual process for account management functions adds the risk of a potential oversight or other error. Managing accounts for the same person in multiple places is inefficient and prone to problems with consistency and synchronization.\n\nA comprehensive application account management process that includes automation helps to ensure that accounts designated as requiring attention are consistently and promptly addressed.\n\nExamples include, but are not limited to, using automation to take action on multiple accounts designated as inactive, suspended, or terminated, or by disabling accounts located in non-centralized account stores, such as multiple servers. Account management functions can also include: assignment of group or role membership; identifying account type; specifying user access authorizations (i.e., privileges); account removal, update, or termination; and administrative alerts. The use of automated mechanisms can include, for example: using email or text messaging to notify account managers when users are terminated or transferred; using the information system to monitor account usage; and using automated telephone notification to report atypical system account usage.\n\nThe DBMS must be configured to automatically utilize organization-level account management functions, and these functions must immediately enforce the organization's current account policy.\n\nAutomation may be comprised of differing technologies that when placed together contain an overall mechanism supporting an organization's automated account management requirements.",
+        "solution": "Create an IBMLDAPSecurity.ini file at the default name and location for the IBM LDAP security plug-in configuration file:\n\n    On UNIX/LINUX:  $INSTHOME/sqllib/cfg/IBMLDAPSecurity.ini\n    On Windows:  %DB2PATH%\\cfg\\IBMLDAPSecurity.ini\n\nTo create the file in a non-default location, set the environment variable DB2LDAPSecurityConfig to the directory name where configuration file IBMLDAPSecurity.ini is located.\n\nSet the value of SRVCON_PW_PLUGIN to IBMLDAPauthserver for instance by running the following command:\n\n     $db2 update dbm cfg using SRVCON_PW_PLUGIN IBMLDAPauthserver immediate\n\nRefer to details below to determine appropriate values in LDAP configuration file.\n\n-- SERVER-RELATED values:\n1) LDAP_HOST - The name of the LDAP server(s) - This is a space separated list of LDAP server host names or IP addresses, with an optional port number for each one.\n\nFor example: host1[:port1] [host2:[port2] ... The default port number is 389, or 636 if SSL is enabled.\n\n2) ENABLE_SSL - To enable SSL support, set ENABLE_SSL to TRUE (you must have the GSKit installed). This is an optional parameter; it defaults to FALSE (no SSL support).\n\n3) SSL_KEYFILE - The path for the SSL keyring. A keyfile is only required if your LDAP server is using a certificate that is not automatically trusted by your GSKit installation.\n\nFor example: SSL_KEYFILE = /home/db2inst1/IBMLDAPSecurity.kdb\n\n4) SSL_PW - The SSL keyring password. For example: SSL_PW = keyfile-password\n\n5) SECURITY_PROTOCOL - To enable TLS 1.2 support, set SECURITY_PROTOCOL to TLSV12. To enable TLS 1.0, 1.1, and 1.2 support, set SECURITY_PROTOCOL to ALL.\n\nBy default, SECURITY_PROTOCOL is not set. This setting means TLS 1.2 is not supported.\n\n-- USER_RELATED values:\n1) USER_OBJECTCLASS - The LDAP object class used for users.\n\nGenerally, set USER_OBJECTCLASS to inetOrgPerson (the user for Microsoft Active Directory)\n\nFor example: USER_OBJECTCLASS = inetOrgPerson\n\n2) USER_BASEDN -  The LDAP base DN to use when searching for users. If not specified, user searches start at the root of the LDAP directory. Some LDAP servers require that you specify a value for this parameter.\n\nFor example: USER_BASEDN = o=ibm\n\n3) USERID_ATTRIBUTE - The LDAP user attribute that represents the user ID. The USERID_ATTRIBUTE attribute is combined with the USER_OBJECTCLASS and USER_BASEDN (if specified) to construct an LDAP search filter when a user issues a DB2 CONNECT statement with an unqualified user ID.\n\nFor example, if USERID_ATTRIBUTE = uid, then issuing this statement: db2 connect to MYDB user bob using bobpass results in the following search filter:\n&(objectClass=inetOrgPerson)(uid=bob)\n\n4) AUTHID_ATTRIBUTE - The LDAP user attribute that represents the DB2 authorization ID. Usually this is the same as the USERID_ATTRIBUTE.\nFor example: AUTHID_ATTRIBUTE = uid\n\n-- GROUP-RELATED values:\n1) GROUP_OBJECTCLASS - The LDAP object class used for groups. Generally this is groupOfNames or groupOfUniqueNames\n(for Microsoft Active Directory, it is group)\n\nFor example: GROUP_OBJECTCLASS = groupOfNames\n\n2) GROUP_BASEDN - The LDAP base DN to use when searching for groups If not specified, group searches start at the root of the LDAP directory. Some LDAP servers require that you specify a value for this parameter.\n\nFor example: GROUP_BASEDN = o=ibm\n\n3) GROUPNAME_ATTRIBUTE - The LDAP group attribute that represents the name of the group.\n\nFor example: GROUPNAME_ATTRIBUTE = cn\n\n4) GROUP_LOOKUP_ METHOD - Determines the method used to find the group memberships for a user.\nPossible values are:\nSEARCH_BY_DN Indicates to search for groups that list the user as a member. Membership is indicated by the group attribute defined as GROUP_LOOKUP_ATTRIBUTE (typically, member or uniqueMember).\n\nUSER_ATTRIBUTE In this case, a user's groups are listed as attributes of the user object itself. This setting indicates to search for the user attribute defined as GROUP_LOOKUP_ATTRIBUTE to get the user's groups (typically memberOf for Microsoft Active Directory or ibm-allGroups for IBM Tivoli Directory Server).\n\nFor example: GROUP_LOOKUP_METHOD = SEARCH_BY_DN\nGROUP_LOOKUP_METHOD = USER_ATTRIBUTE\n\n5) GROUP_LOOKUP_ATTRIBUTE - Name of the attribute used to determine group membership, as described for GROUP_LOOKUP_METHOD.\n\nFor example:\nGROUP_LOOKUP_ATTRIBUTE = member\nGROUP_LOOKUP_ATTRIBUTE = ibm-allGroups\nNESTED_GROUPS If NESTED_GROUPS is TRUE, the DB2 database manager recursively searches for group membership by attempting to look up the group memberships for every group that is found.\n\nCycles (such as A belongs to B, and B belongs to A) are handled correctly.\nThis parameter is optional, and defaults to FALSE.\n\n-- MISCELLANEOUS  values:\n1) SEARCH_DN, SEARCH_PW If your LDAP server does not support anonymous access, or if anonymous access is not sufficient when searching for users or groups, then you can optionally define a DN and password that will be used to perform searches.\n\nFor example:\nSEARCH_DN = cn=root\nSEARCH_PW = rootpassword\n\n2) DEBUG  Set DEBUG to TRUE to write extra information to the db2diag log files to aid in debugging LDAP related issues.\n\nMost of the additional information is logged at\nDIAGLEVEL 4 (INFO).\nDEBUG defaults to false.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CAT|II,CCI|CCI-000015,CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-213671r879522_rule,STIG-ID|DB2X-00-000300,STIG-Legacy|SV-89105,STIG-Legacy|V-74431,Vuln-ID|V-213671",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "ls -d @DB2_INSTHOME@/sqllib/cfg/IBMLDAPSecurity.ini $(su - @DB2_USER@ -c 'env' | grep DB2LDAPSecurityConfig | cut -f2 -d:) | awk '{ print } END { if (NR==0) { print \"Fail - No config files found\"; else print \"Pass - Config files found\" } }'",
+        "expect": "^Pass - Config files found$"
+    },
+    "custom_item_3": {
+        "description": "verify setting",
+        "cmd": "su - @DB2_USER@ -c '@DB2_INSTHOME@/sqllib/adm/db2audit describe' | grep -i 'Audit Archive Path'",
+        "expect": "\"@DB2_AUDITARCHIVE@\""
+    },
+    "custom_item_4": {
+        "description": "ownership",
+        "file": "@DB2_AUDITARCHIVE@",
+        "owner": "@DB2_USER@",
+        "mask": "027",
+        "group": "@DB2_AUDITGROUP@"
+    },
+    "custom_item_5": {
+        "description": "verify setting",
+        "cmd": "su - @DB2_USER@ -c '@DB2_INSTHOME@/sqllib/adm/db2audit describe' | grep -i 'Audit Data Path'",
+        "expect": "\"@DB2_AUDITDATA@\""
+    },
+    "custom_item_6": {
+        "description": "ownership",
+        "file": "@DB2_AUDITDATA@",
+        "owner": "@DB2_USER@",
+        "mask": "027",
+        "group": "@DB2_AUDITGROUP@"
+    },
+    "custom_item_7": {
+        "description": "verify setting",
+        "cmd": "su - @DB2_USER@ -c '@DB2_INSTHOME@/sqllib/adm/db2audit describe' | grep -i 'Audit Data Path'",
+        "expect": "\"@DB2_AUDITDATA@\""
+    },
+    "custom_item_8": {
+        "description": "ownership",
+        "file": "@DB2_AUDITDATA@",
+        "owner": "@DB2_USER@",
+        "mask": "027",
+        "group": "@DB2_AUDITGROUP@"
+    },
+    "custom_item_9": {
+        "description": "INSTALL",
+        "cmd": "su - @DB2_USER@ -c db2level | grep 'Product is installed' | cut -f2 -d'\"' | xargs ls -ld",
+        "expect": "^drwx[r\\\\-]-[x\\\\-][r\\\\-]-[x\\\\-]\\\\.?\\\\s+[0-9]+\\\\s+(@DB2_USER@|root)\\\\s+(@DB2_GROUP@|root)\\\\s"
+    },
+    "custom_item_10": {
+        "description": "INSTANCE",
+        "file": "@DB2_INSTHOME@/sqllib",
+        "owner": "@DB2_USER@",
+        "mask": "002",
+        "group": "@DB2_GROUP@"
+    },
+    "custom_item_11": {
+        "description": "INSTALL",
+        "cmd": "db2ls | egrep -v '(Install Path|-------|^ *$)' | cut -f1 -d' ' | xargs ls -l",
+        "expect": "^Manual review of install directory$"
+    },
+    "custom_item_12": {
+        "description": "INSTANCE",
+        "cmd": "ls -l @DB2_INSTHOME@ @DB2_INSTHOME@/sqllib",
+        "expect": "^Manual review of instance directory$"
+    },
+    "custom_item_13": {
+        "description": "DB2X-00-003400 - Default demonstration and sample databases, database objects, and applications must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives. Examples include, but are not limited to, installing advertising software, demonstrations, or browser plugins not related to requirements or providing a wide array of functionality, not required for every mission, that cannot be disabled.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nDemonstration and sample database objects and applications present publicly known attack points for malicious users. These demonstration and sample objects are meant to provide simple examples of coding specific functions and are not developed to prevent vulnerabilities from being introduced to the DBMS and host system.",
+        "solution": "Run the following command to DROP the SAMPLE database:\n\n     $db2 drop database sample",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213694r879587_rule,STIG-ID|DB2X-00-003400,STIG-Legacy|SV-89151,STIG-Legacy|V-74477,SWIFT-CSCv1|2.3,Vuln-ID|V-213694",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2 list db directory' | egrep 'Database name\\\\s+=\\\\s+SAMPLE\\\\s*$' | awk '{ print } END { if (NR==0) print \"no sample\" }'",
+        "expect": "^no sample$"
+    },
+    "custom_item_14": {
+        "description": "DB2X-00-003500 - Unused database components, DBMS software, and database objects must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "On UNIX/Linux, run the following db2_deinstall command to remove the non-essential features:\n\n     $db2_deinstall -FNote: The db2_deinstall command is located at DB2DIR/install, where DB2DIR is the location where the current version of the DB2 database product is installed. (If uncertain of the value to provide for DB2DIR, find it using the db2level command.\n\nOn Windows, run the db2unins command to remove one or more db2 product, feature or languages.\n\n     >>-db2unins -p product     (to remove db2 product)\n         or\n     >>-db2unins -u response-file     (to remove db2 product, feature or languages.)\n\nNote:\nUse the following URL to access the knowledgebase documentation on the db2_deinstall command:\nhttp://www.ibm.com/support/knowledgecenter/en/SSEPGG_10.5.0/com.ibm.db2.luw.admin.cmd.doc/doc/r0023670.html\n\nUse the following URL to access the knowledgebase documentation on the db2unins command:\nhttp://www-01.ibm.com/support/knowledgecenter/SSEPGGman db2__10.5.0/com.ibm.db2.luw.admin.cmd.doc/doc/r0023371.html?lang=en",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213695r879587_rule,STIG-ID|DB2X-00-003500,STIG-Legacy|SV-89153,STIG-Legacy|V-74479,SWIFT-CSCv1|2.3,Vuln-ID|V-213695",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "db2ls | egrep -v '(Install Path|-------|^ *$)' | cut -f1 -d' ' | xargs -n1 db2ls -q -b ",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_15": {
+        "description": "DB2X-00-003800 - DB2 must be configured to prohibit or restrict the use of organization-defined functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.",
+        "info": "In order to prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols/services on information systems.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., email and web services); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the application must support the organizational requirements providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nDatabase Management Systems using ports, protocols, and services deemed unsafe are open to attack through those ports, protocols, and services. This can allow unauthorized access to the database and through the database to other components of the information system.",
+        "solution": "Run the following command to set the value of the DB2COMM parameter to the organization-approved communication protocol:\n\n     $db2set DB2COMM=TCPIP,SSL\n\nSet the SSL version:\n\n     $db2 update DBM CFG using SSL_VERSIONS TLSV12\n\nThe database manager can be set to a service name or an organization-approved port number directly for the SVCENAME parameter.\n\nUse the following command to change the database manager configuration:\n\n     $db2 update dbm cfg using svcenameOr\n     $db2 update dbm cfg using svcenameNote: Configuring Secure Sockets Layer (SSL) support in a DB2 instance:\nhttps://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.sec.doc/doc/t0025241.html",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-213698r917662_rule,STIG-ID|DB2X-00-003800,STIG-Legacy|SV-89159,STIG-Legacy|V-74485,SWIFT-CSCv1|2.3,Vuln-ID|V-213698",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2set DB2COMM' | awk -F, -v 'a=@DB2_COMMS@' 'BEGIN { split(a, as, \",\"); f=0 } { for (x=1; x<=NF; x++) { s=0; for (y=1; y<=length(as); y++) if ($x == as[y]) s=1; if (!s) { print $x\" is NOT allowed\"; f=1 } } } END { printf \"Protocols: \"; if (f) { print \"failed\" } else { print \"passed\" } }'",
+        "expect": ": passed$"
+    },
+    "custom_item_16": {
+        "description": "SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Ports: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / (@DB2_PORT@|not set)$"
+    },
+    "custom_item_17": {
+        "description": "SSL_SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SSL_SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Ports: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / (@DB2_SSLPORT@|not set)$"
+    },
+    "custom_item_18": {
+        "description": "AUTHENTICATION",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(AUTHENTICATION\\\\)\\\\s+=' | awk '{ print $NF } END { if (NR==0) print \"no setting\" }'",
+        "expect": "^(SERVER_ENCRYPT|DATA_ENCRYPT|DATA_ENCRYPT_CMP)$"
+    },
+    "custom_item_19": {
+        "description": "DB2AUTH",
+        "cmd": "su - @DB2_USER@ -c 'db2set -all' | egrep 'DB2AUTH=' | awk -F= '{ print $NF } END { if (NR==0) print \"no setting\" }'",
+        "expect": "^JCC_ENFORCE_SECMEC$"
+    },
+    "custom_item_20": {
+        "description": "DB2X-00-004600 - DB2 must use NIST FIPS 140-2 validated cryptographic modules for cryptographic operations",
+        "info": "Use of weak or not validated cryptographic algorithms undermines the purposes of utilizing encryption and digital signatures to protect data.  Weak algorithms can be easily broken and not validated cryptographic modules may not implement algorithms correctly. Unapproved cryptographic modules or algorithms should not be relied on for authentication, confidentiality or integrity. Weak cryptography could allow an attacker to gain access to and modify data stored in the database as well as the administration settings of the DBMS.\n\nApplications, including DBMSs, utilizing cryptography are required to use approved NIST FIPS 140-2 validated cryptographic modules that meet the requirements of applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nThe security functions validated as part of FIPS 140-2 for cryptographic modules are described in FIPS 140-2 Annex A.\n\nThe cryptographic functionality in IBM DB2 for LUW includes features that are fully FIPS 140-2 validated, and others that are not.  To be sure of using only FIPS 140-2 validated modules, specify SSL (TLS) for communication and IBM Database Native Encryption for data at rest.\n\nThe decision whether to employ cryptography is the responsibility of the information owner/steward, who exercises discretion within the framework of applicable rules, policies, and law.",
+        "solution": "Modify the cryptographic configuration to employ SSL/TLS for encryption of communications.\n\nModify the cryptographic configuration to employ IBM Database Native Encryption for encryption of data at rest.",
+        "reference": "800-53|IA-7,800-53r5|IA-7,CAT|I,CCI|CCI-000803,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),ITSG-33|IA-7,ITSG-33|IA-7a.,NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T7.4.1,QCSC-v1|13.2,Rule-ID|SV-213702r917666_rule,STIG-ID|DB2X-00-004600,STIG-Legacy|SV-89167,STIG-Legacy|V-74493,Vuln-ID|V-213702",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2set -all' | egrep 'DB2COMM=' | awk -F= '{ print $NF } END { if (NR==0) print \"no setting\" }'",
+        "expect": "SSL"
+    },
+    "custom_item_21": {
+        "description": "SSL",
+        "cmd": "su - @DB2_USER@ -c 'db2set -all' | egrep 'DB2COMM=' | awk -F= '{ print $NF } END { printf \"Authenticity: \"; if (NR==0) print \"no setting\" }'",
+        "expect": "SSL"
+    },
+    "custom_item_22": {
+        "description": "SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Authenticity: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / @DB2_PORT@$"
+    },
+    "custom_item_23": {
+        "description": "SSL_SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SSL_SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Authenticity: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / @DB2_SSLPORT@$"
+    },
+    "custom_item_24": {
+        "description": "Roll forward",
+        "cmd": "su - @DB2_USER@ -c 'db2 list database directory' | grep 'Database name' | awk '{ print $NF }' | xargs -n1 -I{} su - @DB2_USER@ -c 'db2 get db cfg for {}' | grep 'LOGARCHMETH'",
+        "expect": "Manual review of roll foward"
+    },
+    "custom_item_25": {
+        "description": "History",
+        "cmd": "su - @DB2_USER@ -c 'db2 list database directory' | grep 'Database name' | awk '{ print $NF }' | xargs -n1 -I{} su - @DB2_USER@ -c 'db2 list history backup all for {}'",
+        "expect": "Manual reveiw of backup history"
+    },
+    "custom_item_26": {
+        "description": "Instance",
+        "cmd": "find @DB2_INSTHOME@/sqllib -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_27": {
+        "description": "Database",
+        "cmd": "su - @DB2_USER@ -c 'db2 list db directory' | grep 'Local database directory' | awk '{ print $NF }' | xargs -n1 -I{} find {} -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_28": {
+        "description": "Audit Log",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | egrep 'Audit (Data|Archive) Path' | cut -f2 -d'\"' | xargs -n1 -I{} find {} -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_29": {
+        "description": "Transaction Paths",
+        "cmd": "su - @DB2_USER@ -c 'db2 list database directory' | grep 'Database name' | awk '{ print $NF }' | xargs -n1 -I{} su - @DB2_USER@ -c 'db2 get db cfg for {}' | grep 'PATH) =' | cut -f2 -d= | xargs -n1 -I{} find {} -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_30": {
+        "description": "LOGARCHMETH",
+        "cmd": "su - @DB2_USER@ -c 'db2 list database directory' | grep 'Database name' | awk '{ print $NF }' | xargs -n1 -I{} su - @DB2_USER@ -c 'db2 get db cfg for {}' | grep 'LOGARCHMETH' | awk '{ print } END { if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_31": {
+        "description": "Backup History",
+        "cmd": "su - @DB2_USER@ -c 'db2 list database directory' | grep 'Database name' | awk '{ print $NF }' | xargs -n1 -I{} su - @DB2_USER@ -c 'db2 list history backup all for {}' | awk '{ print } END { if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_32": {
+        "description": "DB2X-00-007300 - DB2 must utilize centralized management of the content captured in audit records generated by all components of DB2.",
+        "info": "Without the ability to centrally manage the content captured in the audit records, identification, troubleshooting, and correlation of suspicious behavior would be difficult and could lead to a delayed or incomplete analysis of an ongoing attack.\n\nThe content captured in audit records must be managed from a central location (necessitating automation). Centralized management of audit records and logs provides for efficiency in maintenance and management of records, as well as the backup and archiving of those records.\n\nThe DBMS may write audit records to database tables, to files in the file system, to other kinds of local repository, or directly to a centralized log management system. Whatever the method used, it must be compatible with off-loading the records to the centralized system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run the following command to set the audit data directory and archive data directory to the location which is compatible with the organization's centralized system:\n\n     $db2audit configure datapatharchivepathNote: See the following knowledgebase page for information regarding extracting Audit logs to syslog for any file system other than Windows:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.cmd.doc/doc/r0002072.html\n\nDB2 does not directly support syslog on windows.  Devise an alternate method of log capture.",
+        "reference": "800-171|3.3.1,800-53|AU-3(2),800-53r5|PL-9,CAT|II,CCI|CCI-001844,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3(2),NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213719r879729_rule,STIG-ID|DB2X-00-007300,STIG-Legacy|SV-89241,STIG-Legacy|V-74567,SWIFT-CSCv1|6.4,Vuln-ID|V-213719",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | awk '{ print } END { if (NR==0) print \"no output\"; }'",
+        "expect": "^Manual reveiw of centralized audit management$"
+    },
+    "custom_item_33": {
+        "description": "DB2X-00-007500 - DB2 must allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+        "info": "In order to ensure sufficient storage capacity for the audit logs, the DBMS must be able to allocate audit record storage capacity. Although another requirement (SRG-APP-000515-DB-000318) mandates that audit data be off-loaded to a centralized log management system, it remains necessary to provide space on the database server to serve as a buffer against outages and capacity limits of the off-loading mechanism.\n\nThe task of allocating audit record storage capacity is usually performed during initial installation of the DBMS and is closely associated with the DBA and system administrator roles. The DBA or system administrator will usually coordinate the allocation of physical drive space with the application owner/installer and the application will prompt the installer to provide the capacity information, the physical location of the disk, or both.\n\nIn determining the capacity requirements, consider such factors as: total number of users; expected number of concurrent users during busy periods; number and type of events being monitored; types and amounts of data being captured; the frequency/speed with which audit records are off-loaded to the central log management system; and any limitations that exist on the DBMS's ability to reuse the space formerly occupied by off-loaded records.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Allocate space to the file system where the audit data directory resides.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213720r879730_rule,STIG-ID|DB2X-00-007500,STIG-Legacy|SV-89243,STIG-Legacy|V-74569,Vuln-ID|V-213720",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | awk '{ print } END { if (NR==0) print \"no output\"; }'",
+        "expect": "^Manual review of allocated audit record storage$"
+    },
+    "custom_item_34": {
+        "description": "DB2X-00-007600 - DB2 must provide a warning to appropriate support staff when allocated audit record storage volume reaches 75% of maximum audit record storage capacity.",
+        "info": "Organizations are required to use a central log management system, so, under normal conditions, the audit space allocated to the DBMS on its own server will not be an issue. However, space will still be required on the DBMS server for audit records in transit, and, under abnormal conditions, this could fill up. Since a requirement exists to halt processing upon audit failure, a service outage would result.\n\nIf support personnel are not notified immediately upon storage volume utilization reaching 75%, they are unable to plan for storage capacity expansion.\n\nThe appropriate support staff include, at a minimum, the ISSO and the DBA/SA.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Use the Operating system tools or external utilities to monitor the Audit Data Path and set alerts for 75% space utilization.",
+        "reference": "800-171|3.3.4,800-53|AU-5(1),800-53r5|AU-5(1),CAT|II,CCI|CCI-001855,CN-L3|7.1.3.7(e),CSF|PR.PT-1,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(1),NESA|T3.3.1,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213721r879732_rule,STIG-ID|DB2X-00-007600,STIG-Legacy|SV-89245,STIG-Legacy|V-74571,TBA-FIISB|37.3.2,Vuln-ID|V-213721",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | awk '{ print } END { if (NR==0) print \"no output\"; }'",
+        "expect": "^Manual review of audit storage alerting$"
+    },
+    "custom_item_35": {
+        "description": "Install",
+        "cmd": "su - @DB2_USER@ -c db2level | grep 'Product is installed' | cut -f2 -d'\"' | xargs -n1 -IXX find XX -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_36": {
+        "description": "Instance",
+        "cmd": "find @DB2_INSTHOME@/sqllib -type f -o -type d -exec ls -ld {} \\\\; | awk '{ us[$3]=1; gs[$4]=1 } END { print \"Users:\"; for (u in us) print \" - \"u; print \"Groups:\"; for (g in gs) print \" - \"g; if (NR==0) print \"no items\"; }'",
+        "expect": "^no items$"
+    },
+    "custom_item_37": {
+        "description": "DB2X-00-008200 - DB2 must produce audit records of its enforcement of access restrictions associated with changes to the configuration of DB2 or database(s) - OS Auditing",
+        "info": "Without auditing the enforcement of access restrictions against changes to configuration, it would be difficult to identify attempted attacks and an audit trail would not be available for forensic investigation for after-the-fact actions.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Audit items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Run the following command to set the auditing at the instance level:\n\n     $db2audit configure scope sysadmin status both error type audit\n\nRun the following command to set the auditing at the database level:\nDB2> CREATE AUDIT POLICYCATEGORIES SYSADMIN STATUS BOTH, CONTEXT STATUS BOTH ERROR TYPE AUDIT\n\nRun the following command if the auditing policy exists but does not include the sysadmin category:\nDB2> ALTER AUDIT POLICYSYSADMIN STATUS BOTH, CONTEXT STATUS BOTH ERROR TYPE AUDIT\n\nIf CREATE was used above, apply the policy created above to the database:\nDB2> AUDIT DATABASE USING POLICYNote: See the following page for knowledgebase information regarding the ALTER AUDIT POLICY:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0050608.html?lang=en",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213725r879754_rule,STIG-ID|DB2X-00-008200,STIG-Legacy|SV-89267,STIG-Legacy|V-74593,Vuln-ID|V-213725",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | grep -i 'Log system administrator events'",
+        "expect": ":\\\\s*\"BOTH\"\\\\s*$"
+    },
+    "custom_item_38": {
+        "description": "SSL",
+        "cmd": "su - @DB2_USER@ -c 'db2set DB2COMM' | awk -F, -v 'a=@DB2_COMMS@' 'BEGIN { split(a, as, \",\"); f=0 } { for (x=1; x<=NF; x++) { s=0; for (y=1; y<=length(as); y++) if ($x == as[y]) s=1; if (!s) { print $x\" is NOT allowed\"; f=1 } } } END { printf \"Protocols: \"; if (f) { print \"failed\" } else { print \"passed\" } }'",
+        "expect": ": passed$"
+    },
+    "custom_item_39": {
+        "description": "SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Ports: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / @DB2_PORT@$"
+    },
+    "custom_item_40": {
+        "description": "SSL_SVCENAME",
+        "cmd": "su - @DB2_USER@ -c 'db2 get dbm cfg' | egrep '\\\\(SSL_SVCENAME\\\\) = .+$' | awk 'BEGIN { svc=\"not set\" } FILENAME == \"/etc/services\" { a[$1] = $2; gsub(/\\\\/.*$/, \"\", a[$1]) } FILENAME != \"/etc/services\" { svc=$NF } END { printf \"Ports: \"; v=svc; if (svc in a) { v=a[svc] }; print svc\" / \"v }' - /etc/services",
+        "expect": " / @DB2_SSLPORT@$"
+    },
+    "custom_item_41": {
+        "description": "DB2X-00-009100 - DB2 must maintain the confidentiality and integrity of information during preparation for transmission.",
+        "info": "Information can be either unintentionally or maliciously disclosed or modified during preparation for transmission, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nUse of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen transmitting data, the DBMS, associated applications, and infrastructure must leverage transmission protection mechanisms.",
+        "solution": "Run the following DB2 command to set the value of ssl_versions to approved TLS or SSL version:\n\n$db2 update dbm cfg using SSL_VERSIONSRun the following command to set the value of db2comm parameter to SSL:\n\n$db2set db2comm=ssl\n\nRestart the database manager.\n\nNote: Details on key database creation and setting up SSL environment are in following links\n\nSelect the following knowledgebase link for more information regarding configuring SSL support:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.sec.doc/doc/t0025241.html?lang=en\n\nSelect the following knowledgebase link for more information regarding SSL_versions:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.config.doc/doc/r0053616.html?cp=SSEPGG_10.5.0%2F2-4-4-8-88⟨=en\n\nSelect the following knowledgebase link for setting communication protocol:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.qb.server.doc/doc/t0004714.html?cp=SSEPGG_10.5.0⟨=en",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213731r917668_rule,STIG-ID|DB2X-00-009100,STIG-Legacy|SV-89279,STIG-Legacy|V-74605,SWIFT-CSCv1|2.1,Vuln-ID|V-213731",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2set -all' | egrep 'DB2COMM=' | awk -F= '{ print $NF } END { if (NR==0) print \"no setting\" }'",
+        "expect": "^SSL$"
+    },
+    "custom_item_42": {
+        "description": "DB2X-00-009200 - DB2 must maintain the confidentiality and integrity of information during reception.",
+        "info": ": Information can be either unintentionally or maliciously disclosed or modified during reception, including, for example, during aggregation, at protocol transformation points, and during packing/unpacking. These unauthorized disclosures or modifications compromise the confidentiality or integrity of the information.\n\nThis requirement applies only to those applications that are either distributed or can allow access to data non-locally. Use of this requirement will be limited to situations where the data owner has a strict requirement for ensuring data integrity and confidentiality is maintained at every step of the data transfer and handling process.\n\nWhen receiving data, the DBMS, associated applications, and infrastructure must leverage protection mechanisms.",
+        "solution": "Run the following DB2 command to set the value of ssl_versions to approved TLS or SSL version:\n\n$db2 update dbm cfg using SSL_VERSIONSRun the following command to set the value of db2comm parameter to SSL:\n\n$db2set db2comm=ssl\n\nRestart the database manager.\n\nNote: Details on key database creation and setting up SSL environment are in the following links\n\nSelect the following knowledgebase link for more information regarding configuring SSL support:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.sec.doc/doc/t0025241.html?lang=en\n\nSelect the following knowledgebase link for more information regarding SSL_versions:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.admin.config.doc/doc/r0053616.html?cp=SSEPGG_10.5.0%2F2-4-4-8-88⟨=en\n\nSelect the following knowledgebase link for setting communication protocol:\nhttp://www.ibm.com/support/knowledgecenter/SSEPGG_10.5.0/com.ibm.db2.luw.qb.server.doc/doc/t0004714.html?cp=SSEPGG_10.5.0⟨=en",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|II,CCI|CCI-002422,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213732r917670_rule,STIG-ID|DB2X-00-009200,STIG-Legacy|SV-89281,STIG-Legacy|V-74607,SWIFT-CSCv1|2.1,Vuln-ID|V-213732",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2set -all' | egrep 'DB2COMM=' | awk -F= '{ print $NF } END { if (NR==0) print \"no setting\" }'",
+        "expect": "^SSL$"
+    },
+    "custom_item_43": {
+        "description": "DB2X-00-012600 - DB2 must off-load audit data to a separate log management facility; this must be continuous and in near real time for systems with a network connection to the storage facility and weekly or more often for stand-alone systems.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.\n\nOff-loading is a common process in information systems with limited audit storage capacity.\n\nThe DBMS may write audit records to database tables, to files in the file system, to other kinds of local repository, or directly to a centralized log management system. Whatever the method used, it must be compatible with off-loading the records to the centralized system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the separate log management facility to absorb audit logs data from comma delimited files produced by extracting the audit data from archived audit logs.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|IBM_DB2_V10-5_LUW_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213762r879886_rule,STIG-ID|DB2X-00-012600,STIG-Legacy|SV-89249,STIG-Legacy|V-74575,Vuln-ID|V-213762",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_IBM_DB2_V10-5_LUW_V2R1_STIG.zip",
+        "cmd": "su - @DB2_USER@ -c 'db2audit describe' | egrep -i 'Audit (Data|Archive) Path'",
+        "expect": "^Manual review audit records are off-loaded$"
+    }
+}

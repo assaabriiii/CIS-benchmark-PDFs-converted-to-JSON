@@ -1,0 +1,1083 @@
+{
+    "custom_item_1": {
+        "description": "ARST-RT-000010 - The Arista router must be configured to enforce approved authorizations for controlling the flow of information within the network based on organization-defined information flow control policies.",
+        "info": "Information flow control regulates where information is allowed to travel within a network and between interconnected networks. The flow of all network traffic must be monitored and controlled so it does not introduce any unacceptable risk to the network infrastructure or data. Information flow control policies and enforcement mechanisms are commonly employed by organizations to control the flow of information between designated sources and destinations (e.g., networks, individuals, and devices) within information systems.\n\nEnforcement occurs, for example, in boundary protection devices (e.g., gateways, routers, guards, encrypted tunnels, and firewalls) that employ rule sets or establish configuration settings that restrict information system services, provide a packet filtering capability based on header information, or provide a message filtering capability based on message content (e.g., implementing key word searches or using document characteristics).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nConfigure the Arista routers to enforce ACLs and filters to allow or deny traffic for specific source and destination addresses as well as ports and protocols for controlling information flow.\n\nTo configure an IP access list to fulfill this function, enter the following commands, substituting organizational values for the bracketed variables and values.\n\nStep 1:\nIp access-list [name]\n[permit/deny] [protocol] [source address] [source port] [destination address] [destination port]\nExit\n\nStep 2:\nApply the filters inbound or outbound on the appropriate external and internal interfaces.\n\nInterface [type] [number]\nIp access-group [name] [direction]\n\nNote: Policy-based routing can also be implemented if needed.",
+        "reference": "800-171|3.1.3,800-53|AC-4,800-53r5|AC-4,CAT|II,CCI|CCI-001368,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4,NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-255987r882303_rule,STIG-ID|ARST-RT-000010,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-255987",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_2": {
+        "description": "Bogon prefix-list - 0.0.0.0/8",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 0.0.0.0/8 le 32"
+    },
+    "custom_item_3": {
+        "description": "Bogon prefix-list - 10.0.0.0/8",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 10.0.0.0/8 le 32"
+    },
+    "custom_item_4": {
+        "description": "Bogon prefix-list - 100.64.0.0/10",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 100.64.0.0/10 le 32"
+    },
+    "custom_item_5": {
+        "description": "Bogon prefix-list - 127.0.0.0/8",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 127.0.0.0/8 le 32"
+    },
+    "custom_item_6": {
+        "description": "Bogon prefix-list - 169.254.0.0/16",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 169.254.0.0/16 le 32"
+    },
+    "custom_item_7": {
+        "description": "Bogon prefix-list - 172.16.0.0/12",
+        "context": "^[\\s]*ip prefix-list .+",
+        "expect": "deny 172.16.0.0/12 le 32"
+    },
+    "custom_item_8": {
+        "description": "router bgp prefix-list",
+        "context": "router bgp .+",
+        "regex": "prefix-list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_9": {
+        "description": "ip prefix-list",
+        "context": "ip prefix-list",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_10": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "prefix-list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_11": {
+        "description": "ip access-list",
+        "context": "ip access-list",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_12": {
+        "description": "route-map",
+        "context": "route-map .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_13": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "route-map",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_14": {
+        "description": "ip prefix-list",
+        "context": "^[\\s]*ip prefix-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_15": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "prefix-list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_16": {
+        "description": "ARST-RT-000060 - The Arista BGP router must be configured to reject route advertisements from BGP peers that do not list their autonomous system (AS) number as the first AS in the AS_PATH attribute.",
+        "info": "Verifying the path a route has traversed will ensure the IP core is not used as a transit network for unauthorized or possibly even internet traffic. All autonomous system boundary routers (ASBRs) must ensure updates received from eBGP peers list their AS number as the first AS in the AS_PATH attribute.",
+        "solution": "Configure all Arista ASBR routers to deny updates received from eBGP peers that do not list their AS number as the first AS in the AS_PATH attribute.\n\nLEAF-1A(config)#router  bgp 65001\nLEAF-1A(config-router-bgp)#bgp enforce-first-as",
+        "reference": "800-171|3.1.3,800-53|AC-4(8),800-53r5|AC-4(8),CAT|III,CCI|CCI-000032,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4(8),NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS10a,NIAv2|GS10d,NIAv2|NS12a,NIAv2|NS12b,NIAv2|NS12c,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-255992r882318_rule,STIG-ID|ARST-RT-000060,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-255992",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "router bgp .+",
+        "regex": "^[\\s]*bgp",
+        "expect": "^[\\s]*bgp enforce-first-as",
+        "min_occurrences": "1"
+    },
+    "custom_item_17": {
+        "description": "router msdp",
+        "context": "^[\\s]*router msdp .+",
+        "regex": "^[\\s]*(peer|sa-filter)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_18": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_19": {
+        "description": "router msdp",
+        "context": "^[\\s]*router msdp .+",
+        "regex": "^[\\s]*(peer|sa-filter)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_20": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_21": {
+        "description": "ARST-RT-000090 - The Arista MSDP router must be configured to limit the amount of source-active messages it accepts on per-peer basis.",
+        "info": "To reduce any risk of a denial-of-service (DoS) attack from a rogue or misconfigured MSDP router, the router must be configured to limit the number of source-active messages it accepts from each peer.",
+        "solution": "Configure the Arista MSDP router to limit the amount of source-active messages it accepts from each peer.\n\n!\nrouter (config) #router msdp\nrouter (config-router-msdp) #peer 10.1.1.5\nrouter (config-router-msdp-peer 10.1.1.5) # sa-limit 500\nrouter (config-router-msdp) #peer 10.1.55.78\nrouter (config-router-msdp-peer 10.1.55.78) # sa-limit 900\nrouter (config-router-msdp-peer 10.1.55.78) # exit",
+        "reference": "800-171|3.1.3,800-53|AC-4,800-53r5|AC-4,CAT|III,CCI|CCI-001368,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4,NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-255995r882327_rule,STIG-ID|ARST-RT-000090,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-255995",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*peer .+",
+        "expect": "^[\\s]*sa-limit [0-9]+"
+    },
+    "custom_item_22": {
+        "description": "ip as-path",
+        "context": "^[\\s]*ip as-path .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_23": {
+        "description": "route-map",
+        "context": "^[\\s]*route-map .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_24": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "route-map",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_25": {
+        "description": "show ip access-lists summary",
+        "cmd": "show ip access-lists summary",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_26": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_27": {
+        "description": "ARST-RT-000120 - The Arista multicast router must be configured to disable Protocol Independent Multicast (PIM) on all interfaces that are not required to support multicast routing.",
+        "info": "If multicast traffic is forwarded beyond the intended boundary, it is possible that it can be intercepted by unauthorized or unintended personnel. Limiting where, within the network, a given multicast group's data is permitted to flow is an important first step in improving multicast security.\n\nA scope zone is an instance of a connected region of a given scope. Zones of the same scope cannot overlap while zones of a smaller scope will fit completely within a zone of a larger scope. For example, Admin-local scope is smaller than Site-local scope, so the administratively configured boundary fits within the bounds of a site. According to RFC 4007 IPv6 Scoped Address Architecture (section 5), scope zones are also required to be 'convex from a routing perspective'; that is, packets routed within a zone must not pass through any links that are outside of the zone. This requirement forces each zone to be one contiguous island rather than a series of separate islands.\n\nAs stated in the DOD IPv6 IA Guidance for MO3, 'One should be able to identify all interfaces of a zone by drawing a closed loop on their network diagram, engulfing some routers and passing through some routers to include only some of their interfaces.' Therefore, it is imperative that the network engineers have documented their multicast topology and thereby knows which interfaces are enabled for multicast. Once this is done, the zones can be scoped as required.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Document all enabled interfaces for PIM in the network's multicast topology diagram. Disable support for PIM on interfaces that are not required to support it.\n\nStep 1: Configure the router in global configuration mode to support multicast routing.\n\nrouter(config)#router multicast\nrouter(config-router-multicast)#ipv4\nrouter(config-router-multicast-ipv4)#routing\nrouter(config-router-multicast-ipv4)#exit\nrouter(config-router-multicast)#exit\n\nStep 2: Enable PIM on interfaces required to support multicast.\n\nInterfaces have PIM disabled by default. To enable PIM from an interface active in a multicast network, enter 'pim sparse-mode' in the interface configuration mode.\n\nrouter(config)#interface Ethernet1\nrouter(config-if-Et1)#pim ipv4 sparse-mode\nrouter(config-if-Et1)#pim ipv6 sparse-mode\n\nStep 3: Disable support for PIM on interfaces that are not required to support it.\n\nrouter(config)#interface Ethernet2\nrouter(config-if-Et2)#no pim ipv4 sparse-mode\nrouter(config-if-Et2)#no pim ipv6 sparse-mode",
+        "reference": "800-171|3.1.3,800-53|AC-4,800-53r5|AC-4,CAT|II,CCI|CCI-001414,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4,NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-255998r882336_rule,STIG-ID|ARST-RT-000120,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-255998",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": "^[\\s]*pim ipv(4|6)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_28": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_29": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": "^[\\s]*pim",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_30": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_31": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": "^[\\s]*multicast",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_32": {
+        "description": "ARST-RT-000150 - The Arista router must be configured to have all inactive interfaces disabled.",
+        "info": "An inactive interface is rarely monitored or controlled and may expose a network to an undetected attack on that interface. Unauthorized personnel with access to the communication facility could gain access to a router by connecting to a configured interface that is not in use.\n\nIf an interface is no longer used, the configuration must be deleted and the interface disabled. For sub-interfaces, delete sub-interfaces that are on inactive interfaces and delete sub-interfaces that are themselves inactive. If the sub-interface is no longer necessary for authorized communications, it must be deleted.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Delete inactive sub-interfaces and disable and delete the configuration of any inactive ports on the router.\n\nDeleting the sub-interface:\n\nrouter(config)#no interface Ethernet8.100\n\nDisabling the interface:\n\nrouter(config)#interface Ethernet 8-10\nrouter(config-if-Et8-10)#shutdown\n\nResetting the interface to the default-configuration:\n\nrouter(config)#default interface Ethernet 8",
+        "reference": "800-171|3.1.3,800-53|AC-4,800-53r5|AC-4,CAT|III,CCI|CCI-001414,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4,NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-256001r882345_rule,STIG-ID|ARST-RT-000150,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-256001",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": "shutdown",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_33": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_34": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "^[\\s]*ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_35": {
+        "description": "ARST-RT-000170 - The Arista perimeter router must be configured to not be a Border Gateway Protocol (BGP) peer to an alternate gateway service provider.",
+        "info": "ISPs use BGP to share route information with other autonomous systems (i.e., other ISPs and corporate networks). If the perimeter router was configured to BGP peer with an ISP, NIPRNet routes could be advertised to the ISP; thereby creating a backdoor connection from the internet to the NIPRNet.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nConfigure a static route on the perimeter router to reach the AS of a router connecting to an alternate gateway.\n\nrouter(config)#ip route 192.168.67.0/24 12.15.4.9",
+        "reference": "800-171|3.1.3,800-53|AC-4,800-53r5|AC-4,CAT|I,CCI|CCI-001414,CN-L3|8.1.10.2(c),CSF|DE.AE-1,CSF|ID.AM-3,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4,NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-256003r882351_rule,STIG-ID|ARST-RT-000170,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-256003",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "regex": "^[\\s]*ip route .+",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_36": {
+        "description": "router bgp redistribute static",
+        "context": "router bgp",
+        "regex": "redistribute static",
+        "not_expect": "^[\\s]*redistribute static"
+    },
+    "custom_item_37": {
+        "description": "router ospf redistribute static",
+        "context": "router ospf.+",
+        "regex": "redistribute static",
+        "not_expect": "^[\\s]*redistribute static"
+    },
+    "custom_item_38": {
+        "description": "router rip redistribute static",
+        "context": "router rip",
+        "regex": "redistribute static",
+        "not_expect": "^[\\s]*redistribute static"
+    },
+    "custom_item_39": {
+        "description": "ip vrf",
+        "context": "^[\\s]*ip vrf .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_40": {
+        "description": "router ospf 100",
+        "context": "^[\\s]*router ospf 100",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_41": {
+        "description": "router ospf 200",
+        "context": "^[\\s]*router ospf 200",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_42": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": "ip address",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_43": {
+        "description": "router ospf",
+        "context": "router ospf .+",
+        "regex": "(network|redistribute)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_44": {
+        "description": "router rip",
+        "context": "router rip",
+        "regex": "(network|redistribute)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_45": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_46": {
+        "description": "router pim",
+        "context": "router pim .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_47": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_48": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface (Ethernet|Vlan).+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_49": {
+        "description": "router ospf md5 not present",
+        "context": "interface Ethernet.+",
+        "regex": "^[\\s]*ip ospf message-digest-key",
+        "not_expect": "^[\\s]*^[\\s]*ip ospf message-digest-key.*md5"
+    },
+    "custom_item_50": {
+        "description": "clock date/time",
+        "cmd": "show clock",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_51": {
+        "description": "BGP Management Security Profile",
+        "cmd": "show management security session shared-secret profile",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_52": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "(shared-secret|graceful-restart)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_53": {
+        "description": "ARST-RT-000290 - The MPLS router with RSVP-TE enabled must be configured with message pacing or refresh reduction to adjust maximum number of RSVP messages to an output queue based on the link speed and input queue size of adjacent core routers.",
+        "info": "RSVP-TE can be used to perform constraint-based routing when building LSP tunnels within the network core that will support QoS and traffic engineering requirements. RSVP-TE is also used to enable MPLS Fast Reroute, a network restoration mechanism that will reroute traffic onto a backup LSP in case of a node or link failure along the primary path. When there is a disruption in the MPLS core, such as a link flap or router reboot, the result is a significant amount of RSVP signaling, such as 'PathErr' and 'ResvErr' messages that need to be sent for every LSP using that link.\n\nWhen RSVP messages are sent out, they are sent either hop by hop or with the router alert bit set in the IP header. This means that every router along the path must examine the packet to determine if additional processing is required for these RSVP messages. If there is enough signaling traffic in the network, it is possible for an interface to receive more packets for its input queue than it can hold, resulting in dropped RSVP messages and hence slower RSVP convergence. Increasing the size of the interface input queue can help prevent dropping packets; however, there is still the risk of having a burst of signaling traffic that can fill the queue. Solutions to mitigate this risk are RSVP message pacing or refresh reduction to control the rate at which RSVP messages are sent. RSVP refresh reduction includes the following features: RSVP message bundling, RSVP Message ID to reduce message processing overhead, Reliable delivery of RSVP messages using Message ID, and summary refresh to reduce the amount of information transmitted every refresh interval.",
+        "solution": "Configure the router for Refresh Overhead Reduction if using RSVP.\n\nRefresh Overhead Reduction (RFC 2961) can be enabled to support sending message IDs and refreshing state with refresh messages by setting the refresh method to 'bundled'.\n\n(config-mpls-rsvp)# no shutdown\n(config-mpls-rsvp)# refresh method bundled\n\nThis is also the default setting. The above command will reset back to default.",
+        "reference": "800-53|SC-5(2),800-53r5|SC-5(2),CAT|III,CCI|CCI-001095,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256011r882375_rule,STIG-ID|ARST-RT-000290,SWIFT-CSCv1|6.4,Vuln-ID|V-256011",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "mpls rsvp",
+        "expect": "refresh method bundled"
+    },
+    "custom_item_54": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "(tx-queue|bandwidth)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_55": {
+        "description": "ip prefix-list",
+        "context": "^[\\s]*policy-map type copp",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_56": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_57": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_58": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_59": {
+        "description": "policy-map type copp copp-system-policy",
+        "context": "^[\\s]*policy-map type copp copp-system-policy",
+        "regex": "(class|bandwidth)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_60": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_61": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @ICMP_FRAGMENTS_ACL@",
+        "expect": "(deny ip any any fragments|permit ip any any)",
+        "min_occurrences": "2"
+    },
+    "custom_item_62": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @ICMP_FRAGMENTS_ACL@ in",
+        "min_occurrences": "1"
+    },
+    "custom_item_63": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_64": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_65": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_66": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_67": {
+        "description": "ip prefix-list",
+        "context": "^[\\s]*ip prefix-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_68": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_69": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_70": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_71": {
+        "description": "ARST-RT-000410 - The Arista router must be configured with Unicast Reverse Path Forwarding (uRPF) loose mode enabled on all CE-facing interfaces.",
+        "info": "The uRPF feature is a defense against spoofing and denial-of-service (DoS) attacks by verifying if the source address of any ingress packet is reachable. To mitigate attacks that rely on forged source addresses, all provider edge routers must enable uRPF loose mode to guarantee that all packets received from a CE router contain source addresses that are in the route table.",
+        "solution": "Enable uRPF loose mode on all CE-facing interfaces.\n\nConfigure uRPF loose mode on all CE-facing interfaces.\n\nrouter(config)#interface Ethernet 3/17/1\nrouter(config-if-Et3/17/1)#ip verify unicast source reachable-via any\nrouter(config-if-Et3/17/1)#end",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7a.,800-53r5|SC-7a.,CAT|II,CCI|CCI-001097,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7a.,NESA|T3.4.1,NESA|T3.6.3,NESA|T4.2.1,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,Rule-ID|SV-256022r882408_rule,STIG-ID|ARST-RT-000410,TBA-FIISB|43.1,Vuln-ID|V-256022",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface Ethernet.+",
+        "expect": "ip verify unicast source reachable-via any"
+    },
+    "custom_item_72": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_73": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_74": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_75": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_76": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_77": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_78": {
+        "description": "ARST-RT-000450 - The Arista perimeter router must be configured to restrict it from accepting outbound IP packets that contain an illegitimate address in the source address field via egress filter or by enabling Unicast Reverse Path Forwarding (uRPF).",
+        "info": "A compromised host in an enclave can be used by a malicious platform to launch cyberattacks on third parties. This is a common practice in 'botnets', a collection of compromised computers using malware to attack other computers or networks. DDoS attacks frequently leverage IP source address spoofing to send packets to multiple hosts that in turn will then send return traffic to the hosts with the IP addresses that were forged. This can generate significant amounts of traffic. Therefore, protection measures to counteract IP source address spoofing must be taken. When uRPF is enabled in strict mode, the packet must be received on the interface that the device would use to forward the return packet; thereby mitigating IP source address spoofing.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nConfigure the Arista router to ensure an egress filter or uRPF is configured to restrict the router from accepting any outbound IP packet that contains an external IP address in the source field.\n\nLEAF-1A(config)#interface Ethernet3/17/1\nLEAF-1A(config)#ip address 172.16.43.3/24\nLEAF-1A(config)#ip verify unicast source reachable-via rx",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|I,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256026r882420_rule,STIG-ID|ARST-RT-000450,Vuln-ID|V-256026",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]interface Ethernet.+",
+        "expect": "ip verify unicast source reachable-via rx"
+    },
+    "custom_item_79": {
+        "description": "ARST-RT-000470 - The Arista BGP router must be configured to use a unique key for each autonomous system (AS) that it peers with.",
+        "info": "If the same keys are used between eBGP neighbors, the chance of a hacker compromising any of the BGP sessions increases. It is possible that a malicious user exists in one autonomous system who would know the key used for the eBGP session. This user would then be able to hijack BGP sessions with other trusted neighbors.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure all eBGP Arista routers with unique keys for each eBGP neighbor that it peers with.\n\nTo configure BGP authentication, in the BGP configuration mode interface, when adding neighbors, include the following statement:\n\nrouter bgp NN\nneighbor 100.1.0.0  password 0 [password-string]",
+        "reference": "800-171|3.1.3,800-53|AC-4(17),800-53r5|AC-4(17),CAT|II,CCI|CCI-002205,CN-L3|8.1.10.2(c),CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4(17),NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,Rule-ID|SV-256027r882423_rule,STIG-ID|ARST-RT-000470,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4,Vuln-ID|V-256027",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*router bgp",
+        "regex": "neighbor",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_80": {
+        "description": "mpls ldp router-id",
+        "context": "^[\\s]*mpls ldp",
+        "regex": "router-id",
+        "expect": "^[\\s]*router-id"
+    },
+    "custom_item_81": {
+        "description": "mpls ldp password",
+        "context": "^[\\s]*mpls ldp",
+        "regex": "password",
+        "expect": "^[\\s]*password"
+    },
+    "custom_item_82": {
+        "description": "mpls ldp enabled globally",
+        "regex": "^mpls ip",
+        "expect": "^mpls ip"
+    },
+    "custom_item_83": {
+        "description": "mpls ldp enabled per interface",
+        "context": "^[\\s]*interface .+",
+        "regex": "mpls ip",
+        "expect": "^[\\s]*mpls ip"
+    },
+    "custom_item_84": {
+        "description": "ARST-RT-000490 - The Arista router must not be configured to have any zero-touch deployment feature enabled when connected to an operational network.",
+        "info": "Network devices that are configured via a zero-touch deployment or auto-loading feature can have their startup configuration or image pushed to the device for installation via TFTP or Remote Copy (rcp). Loading an image or configuration file from the network is taking a security risk because the file could be intercepted by an attacker who could corrupt the file, resulting in a denial of service.",
+        "solution": "Disable all configuration auto-loading or zero-touch deployment features.\n\nLEAF-1A(config)#zerotouch disable",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256029r882429_rule,STIG-ID|ARST-RT-000490,Vuln-ID|V-256029",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "cmd": "show zerotouch",
+        "expect": "Disabled"
+    },
+    "custom_item_85": {
+        "description": "ARST-RT-000510 - The Arista router must be configured to have gratuitous ARP disabled on all external interfaces.",
+        "info": "A gratuitous ARP is an ARP broadcast in which the source and destination MAC addresses are the same. It is used to inform the network about a host IP address. A spoofed gratuitous ARP message can cause network mapping information to be stored incorrectly, causing network malfunction.",
+        "solution": "Disable gratuitous ARP on all external interfaces.\n\nDisable\n\ninterface Ethernet 2\n  no arp gratuitous accept",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256030r882432_rule,STIG-ID|ARST-RT-000510,Vuln-ID|V-256030",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface Ethernet.+",
+        "not_expect": "^[\\s]*arp gratuitous accept"
+    },
+    "custom_item_86": {
+        "description": "ARST-RT-000520 - The Arista router must be configured to have IP directed broadcast disabled on all interfaces.",
+        "info": "An IP-directed broadcast is a datagram sent to the broadcast address of a subnet that is not directly attached to the sending machine. The directed broadcast is routed through the network as a unicast packet until it arrives at the target subnet, where it is converted into a link-layer broadcast. Because of the nature of the IP addressing architecture, only the last router in the chain, which is connected directly to the target subnet, can conclusively identify a directed broadcast.\n\nIP-directed broadcasts are used in the extremely common and popular smurf, or denial-of-service (DoS) attacks. In a smurf attack, the attacker sends Internet Control Message Protocol (ICMP) echo requests from a falsified source address to a directed broadcast address, causing all the hosts on the target subnet to send replies to the falsified source. By sending a continuous stream of such requests, the attacker can create a much larger stream of replies, which can completely inundate the host whose address is being falsified. This service should be disabled on all interfaces when not needed to prevent smurf and DoS attacks.\n\nDirected broadcast can be enabled on internal facing interfaces to support services such as Wake-On-LAN. Case scenario may also include support for legacy applications where the content server and the clients do not support multicast. The content servers send streaming data using UDP broadcast. Used in conjunction with the IP multicast helper-map feature, broadcast data can be sent across a multicast topology. The broadcast streams are converted to multicast and vice versa at the first-hop routers and last-hop routers before entering and leaving the multicast transit area respectively. The last-hop router must convert the multicast to broadcast. Hence, this interface must be configured to forward a broadcast packet (i.e., a directed broadcast address is converted to the nodes' broadcast address).",
+        "solution": "Disable IP directed broadcasts on all layer 3 interfaces.\n\nLEAF-1A(config)#interface Ethernet 2\nLEAF-1A(config-if-Et2)# ip address 10.1.12.1/24\nLEAF-1A(config-if-Et2)# no ip directed-broadcast",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|III,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256031r884234_rule,STIG-ID|ARST-RT-000520,Vuln-ID|V-256031",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip directed-broadcast",
+        "not_expect": "^[\\s]*ip directed-broadcast"
+    },
+    "custom_item_87": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @DENY_ICMP_UNREACHABLE_ACL@",
+        "expect": "(deny icmp any any (host-)?unreachable|permit ip any any)",
+        "min_occurrences": "2"
+    },
+    "custom_item_88": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @DENY_ICMP_UNREACHABLE_ACL@ out",
+        "min_occurrences": "1"
+    },
+    "custom_item_89": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @DENY_ICMP_MASK_REPLY_ACL@",
+        "expect": "(deny icmp any any mask-reply|permit ip any any)",
+        "min_occurrences": "2"
+    },
+    "custom_item_90": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @DENY_ICMP_MASK_REPLY_ACL@ out",
+        "min_occurrences": "1"
+    },
+    "custom_item_91": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @DENY_REDIRECT_ACL@",
+        "expect": "(deny icmp any any redirect|permit ip any any)",
+        "min_occurrences": "2"
+    },
+    "custom_item_92": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @DENY_REDIRECT_ACL@ out",
+        "min_occurrences": "1"
+    },
+    "custom_item_93": {
+        "description": "ARST-RT-000560 - The Arista BGP router must be configured to use the maximum prefixes feature to protect against route table flooding and prefix de-aggregation attacks.",
+        "info": "The effects of prefix de-aggregation can degrade router performance due to the size of routing tables and also result in black-holing legitimate traffic. Initiated by an attacker or a misconfigured router, prefix de-aggregation occurs when the announcement of a large prefix is fragmented into a collection of smaller prefix announcements.\n\nIn 1997, misconfigured routers in the Florida Internet Exchange network (AS7007) de-aggregated every prefix in their routing table and started advertising the first /24 block of each of these prefixes as their own. Faced with this additional burden, the internal routers became overloaded and crashed repeatedly. This caused prefixes advertised by these routers to disappear from routing tables and reappear when the routers came back online. As the routers came back after crashing, they were flooded with the routing table information by their neighbors. The flood of information would again overwhelm the routers and cause them to crash. This process of route flapping served to destabilize not only the surrounding network but also the entire internet. Routers trying to reach those addresses would choose the smaller, more specific /24 blocks first. This caused backbone networks throughout North America and Europe to crash.\n\nMaximum prefix limits on peer connections combined with aggressive prefix-size filtering of customers' reachability advertisements will effectively mitigate the de-aggregation risk. BGP maximum prefix must be used on all eBGP routers to limit the number of prefixes that it should receive from a particular neighbor, whether customer or peering AS. Consider each neighbor and how many routes they should be advertising and set a threshold slightly higher than the number expected.",
+        "solution": "Configure all eBGP Arista routers to use the maximum prefixes feature to protect against route table flooding and prefix deaggregation attacks.\n\nConfigure each BGP neighbor to control the number of prefixes.\n\nrouter bgp NNN\n neighbor x.1.12.1 remote-as YYY\n neighbor x.1.12.1 maximum-routes 12000\n neighbor x.1.12.1 maximum-accepted-routes 10000",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256035r882447_rule,STIG-ID|ARST-RT-000560,Vuln-ID|V-256035",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*router bgp",
+        "regex": "maximum-(routes|accepted-routes)",
+        "expect": "^[\\s]*neighbor .+ maximum-(routes|accepted-routes) .+"
+    },
+    "custom_item_94": {
+        "description": "ip prefix-list",
+        "context": "^[\\s]*ip prefix-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_95": {
+        "description": "router bgp",
+        "context": "router bgp .+",
+        "regex": "neighbor .+ prefix-list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_96": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_97": {
+        "description": "router msdp",
+        "context": "router msdp",
+        "regex": "sa-(filter|limit)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_98": {
+        "description": "ARST-RT-000590 - The Arista multicast Designated Router (DR) must be configured to increase the shortest-path tree (SPT) threshold or set it to infinity to minimalize source-group (S, G) state within the multicast topology where Any Source Multicast (ASM) is deployed.",
+        "info": "ASM can have many sources for the same groups (many-to-many). For many receivers, the path via the RP may not be ideal compared with the shortest path from the source to the receiver. By default, the last-hop router will initiate a router from the shared tree to a source-specific SPT to obtain lower latencies. This is accomplished by the last-hop router sending an (S, G) Protocol Independent Multicast (PIM) Join toward S (the source).\n\nWhen the last-hop router begins to receive traffic for the group from the source via the SPT, it will send a PIM Prune message to the RP for the (S, G). The RP will then send a Prune message toward the source. The SPT routerover becomes a scaling issue for large multicast topologies that have many receivers and many sources for many groups because (S, G) entries require more memory than (*, G). Hence, it is imperative to minimize the amount of (S, G) state to be maintained by increasing the threshold that determines when the SPT routerover occurs.",
+        "solution": "Configure the Arista multicast router to increase the SPT threshold or set it to infinity to minimalize (S, G) state within the multicast topology where ASM is deployed.\n\nLEAF-1A(config)#router pim sparse-mode\nLEAF-1A(config-router-pim-sparse)#ipv4\nLEAF-1A(config-router-pim-sparse-ipv4)#spt threshold infinity",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256038r882456_rule,STIG-ID|ARST-RT-000590,Vuln-ID|V-256038",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*router pim sparse-mode",
+        "expect": "^[\\s]*spt threshold infinity"
+    },
+    "custom_item_99": {
+        "description": "ARST-RT-000600 - The Arista BGP router must be configured to enable the Generalized TTL Security Mechanism (GTSM).",
+        "info": "GTSM is designed to protect a router's IP-based control plane from DoS attacks. Many attacks focused on CPU load and line-card overload can be prevented by implementing GTSM on all Exterior Border Gateway Protocol speaking routers.\n\nGTSM is based on the fact that the vast majority of control plane peering is established between adjacent routers; that is, the Exterior Border Gateway Protocol peers are either between connecting interfaces or between loopback interfaces. Since TTL spoofing is considered nearly impossible, a mechanism based on an expected TTL value provides a simple and reasonably robust defense from infrastructure attacks based on forged control plane traffic.",
+        "solution": "Configure all Exterior Border Gateway Protocol peering sessions to use GTSM.\n\nrouter bgp 65000\n neighbor 10.1.12.2 ttl maximum-hops 2",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|III,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256039r882459_rule,STIG-ID|ARST-RT-000600,Vuln-ID|V-256039",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*router bgp .+",
+        "regex": "^[\\s]*neighbor .+ ttl",
+        "expect": "^[\\s]*neighbor .+ ttl maximum-hops [0-9]+"
+    },
+    "custom_item_100": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_101": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_102": {
+        "description": "deny ip 0.0.0.0/8 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 0.0.0.0/8 any"
+    },
+    "custom_item_103": {
+        "description": "deny ip 10.0.0.0/8 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 10.0.0.0/8 any"
+    },
+    "custom_item_104": {
+        "description": "deny ip 100.64.0.0/10 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 100.64.0.0/10 any"
+    },
+    "custom_item_105": {
+        "description": "deny ip 127.0.0.0/8 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 127.0.0.0/8 any"
+    },
+    "custom_item_106": {
+        "description": "deny ip 169.254.0.0/16 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 169.254.0.0/16 any"
+    },
+    "custom_item_107": {
+        "description": "deny ip 172.16.0.0/12 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 172.16.0.0/12 any"
+    },
+    "custom_item_108": {
+        "description": "deny ip 192.0.0.0/24 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 192.0.0.0/24 any"
+    },
+    "custom_item_109": {
+        "description": "deny ip 192.0.2.0/24 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 192.0.2.0/24 any"
+    },
+    "custom_item_110": {
+        "description": "deny ip 192.88.99.0/24 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 192.88.99.0/24 any"
+    },
+    "custom_item_111": {
+        "description": "deny ip 192.168.0.0/16 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 192.168.0.0/16 any"
+    },
+    "custom_item_112": {
+        "description": "deny ip 198.18.0.0/15 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 198.18.0.0/15 any"
+    },
+    "custom_item_113": {
+        "description": "deny ip 198.51.100.0/24 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 198.51.100.0/24 any"
+    },
+    "custom_item_114": {
+        "description": "deny ip 203.0.113.0/24 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 203.0.113.0/24 any"
+    },
+    "custom_item_115": {
+        "description": "deny ip 224.0.0.0/4 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 224.0.0.0/4 any"
+    },
+    "custom_item_116": {
+        "description": "deny ip 240.0.0.0/4 any",
+        "context": "ip access-list @BOGON_PREFIXES_IPV4_ACL@",
+        "expect": "deny ip 240.0.0.0/4 any"
+    },
+    "custom_item_117": {
+        "description": "deny ipv6 host :: any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 host :: any"
+    },
+    "custom_item_118": {
+        "description": "deny ipv6 host ::1 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 host ::1 any"
+    },
+    "custom_item_119": {
+        "description": "deny ipv6 ::/96 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 ::/96 any"
+    },
+    "custom_item_120": {
+        "description": "deny ipv6 ::ffff:0.0.0.0/96 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 ::ffff:0.0.0.0/96 any"
+    },
+    "custom_item_121": {
+        "description": "deny ipv6 3ffe::/16 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 3ffe::/16 any"
+    },
+    "custom_item_122": {
+        "description": "deny ipv6 64:ff9b::/96 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 64:ff9b::/96 any"
+    },
+    "custom_item_123": {
+        "description": "deny ipv6 100::/64 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 100::/64 any"
+    },
+    "custom_item_124": {
+        "description": "deny ipv6 2001:10::/28 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2001:10::/28 any"
+    },
+    "custom_item_125": {
+        "description": "deny ipv6 2001:db8::/32 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2001:db8::/32 any"
+    },
+    "custom_item_126": {
+        "description": "deny ipv6 2001:2::/48 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2001:2::/48 any"
+    },
+    "custom_item_127": {
+        "description": "deny ipv6 2001::/32 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2001::/32 any"
+    },
+    "custom_item_128": {
+        "description": "deny ipv6 2001::/23 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2001::/23 any"
+    },
+    "custom_item_129": {
+        "description": "deny ipv6 2002::/16 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 2002::/16 any"
+    },
+    "custom_item_130": {
+        "description": "deny ipv6 fc00::/7 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 fc00::/7 any"
+    },
+    "custom_item_131": {
+        "description": "deny ipv6 fe80::/10 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 fe80::/10 any"
+    },
+    "custom_item_132": {
+        "description": "deny ipv6 fec0::/10 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 fec0::/10 any"
+    },
+    "custom_item_133": {
+        "description": "deny ipv6 ff00::/8 any",
+        "context": "ipv6 access-list @BOGON_PREFIXES_IPV6_ACL@",
+        "expect": "deny ipv6 ff00::/8 any"
+    },
+    "custom_item_134": {
+        "description": "interfaces ipv4",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "ip access-group @BOGON_PREFIXES_IPV4_ACL@",
+        "min_occurrences": "1"
+    },
+    "custom_item_135": {
+        "description": "interfaces ipv6",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "ip access-group @BOGON_PREFIXES_IPV6_ACL@",
+        "min_occurrences": "1"
+    },
+    "custom_item_136": {
+        "description": "lldp enabled globally",
+        "regex": "lldp run",
+        "expect": "^no lldp run"
+    },
+    "custom_item_137": {
+        "description": "interfaces lldp transmit",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "lldp transmit",
+        "expect": "^[\\s]*no lldp transmit"
+    },
+    "custom_item_138": {
+        "description": "interfaces lldp receive",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "lldp receive",
+        "expect": "^[\\s]*no lldp receive"
+    },
+    "custom_item_139": {
+        "description": "ARST-RT-000640 - The Arista perimeter router must be configured to have Proxy ARP disabled on all external interfaces.",
+        "info": "When Proxy ARP is enabled on a Cisco router, it allows that router to extend the network (at Layer 2) across multiple interfaces (LAN segments). Because proxy ARP allows hosts from different LAN segments to look like they are on the same segment, proxy ARP is only safe when used between trusted LAN segments. Attackers can leverage the trusting nature of proxy ARP by spoofing a trusted host and then intercepting packets. Proxy ARP should always be disabled on router interfaces that do not require it unless the router is being used as a LAN bridge.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nDisable IP Proxy ARP on all external interfaces.\n\nLEAF-1A(config)#int ethernet 3\nLEAF-1A(config-if-Et3)#no ip proxy-arp",
+        "reference": "800-171|3.13.1,800-53|SC-7(11),800-53r5|SC-7(11),CAT|II,CCI|CCI-002403,CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.PT-4,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(11),NESA|T4.5.4,NIAv2|GS7c,PCI-DSSv3.2.1|1.3.1,PCI-DSSv3.2.1|1.3.2,PCI-DSSv3.2.1|1.3.3,PCI-DSSv3.2.1|1.3.5,PCI-DSSv4.0|1.3.1,PCI-DSSv4.0|1.4.2,PCI-DSSv4.0|1.4.3,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,Rule-ID|SV-256043r882471_rule,STIG-ID|ARST-RT-000640,TBA-FIISB|31.3,Vuln-ID|V-256043",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip proxy-arp",
+        "expect": "^[\\s]*no ip proxy-arp"
+    },
+    "custom_item_140": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_141": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_142": {
+        "description": "ip access-list igmp",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": "deny igmp",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_143": {
+        "description": "ip access-list igmp",
+        "context": "^[\\s]*router igmp",
+        "regex": "ip igmp access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_144": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_145": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_146": {
+        "description": "router pim sparse-mode",
+        "context": "^[\\s]*ipv4",
+        "regex": "ssm range",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_147": {
+        "description": "router msdp peer",
+        "context": "router msdp",
+        "regex": "peer",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_148": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list .+",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_149": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ip access-group .+ in",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_150": {
+        "description": "interface loopback",
+        "context": "^[\\s]*interface loopback.+",
+        "regex": "ip address",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_151": {
+        "description": "router bgp router-id",
+        "context": "router bgp .+",
+        "regex": "router-id",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_152": {
+        "description": "interface loopback",
+        "context": "^[\\s]*interface loopback.+",
+        "regex": "ip address",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_153": {
+        "description": "mpls ldp router-id",
+        "context": "^[\\s]*router mpls ldp",
+        "regex": "router-id",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_154": {
+        "description": "router isis mpls ldp",
+        "context": "^[\\s]*router isis",
+        "regex": "mpls ldp",
+        "expect": "^[\\s]*mpls ldp sync default"
+    },
+    "custom_item_155": {
+        "description": "router ospf mpls ldp",
+        "context": "^[\\s]*router ospf mpls ldp",
+        "regex": "mpls ldp",
+        "expect": "^[\\s]*mpls ldp sync default"
+    },
+    "custom_item_156": {
+        "description": "interface loopback mpls ldp",
+        "context": "^[\\s]*router ospf mpls ldp",
+        "regex": "mpls ldp",
+        "expect": "^[\\s]*mpls ldp sync default"
+    },
+    "custom_item_157": {
+        "description": "ARST-RT-000720 - The MPLS router must be configured to have TTL propagation disabled.",
+        "info": "The head end of the label-routered path (LSP), the label edge router (LER) will decrement the IP packet's time-to-live (TTL) value by one and then copy the value to the MPLS TTL field. At each label-routered router (LSR) hop, the MPLS TTL value is decremented by one. The MPLS router that pops the label (either the penultimate LSR or the egress LER) will copy the packet's MPLS TTL value to the IP TTL field and decrement it by one.\n\nThis TTL propagation is the default behavior. Because the MPLS TTL is propagated from the IP TTL, a traceroute will list every hop in the path, be it routed or label routered, thereby exposing core nodes. With TTL propagation disabled, LER decrements the IP packet's TTL value by one and then places a value of 255 in the packet's MPLS TTL field, which is then decremented by one as the packet passes through each LSR in the MPLS core. Because the MPLS TTL never drops to zero, none of the LSP hops triggers an ICMP TTL exceeded message and consequently, these hops are not recorded in a traceroute. Hence, nodes within the MPLS core cannot be discovered by an attacker.",
+        "solution": "Configure Arista LERs to disable TTL propagation.\n\nConfigure the router to disable the TTL propagation in MPLS core network.\n\nrouter(config)#no mpls icmp ttl-exceeded tunneling",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256051r882495_rule,STIG-ID|ARST-RT-000720,SWIFT-CSCv1|2.3,Vuln-ID|V-256051",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "regex": "mpls icmp",
+        "expect": "^[\\s]*no mpls icmp ttl-exceeded tunneling"
+    },
+    "custom_item_158": {
+        "description": "vrf instance",
+        "regex": "^[\\s]*vrf instance",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_159": {
+        "description": "ip routing vrf",
+        "regex": "^[\\s]*ip routing vrf",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_160": {
+        "description": "interfaces",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "vrf",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_161": {
+        "description": "ARST-RT-000740 - The PE router must be configured to have each Virtual Routing and Forwarding (VRF) instance with the appropriate Route Target (RT).",
+        "info": "The primary security model for an MPLS L3VPN as well as a VRF-lite infrastructure is traffic separation. Each interface can only be associated to one VRF, which is the fundamental framework for traffic separation. Forwarding decisions are made based on the routing table belonging to the VRF. Control of what routes are imported into or exported from a VRF is based on the RT. It is critical that traffic does not leak from one COI tenant or L3VPN to another; hence, it is imperative that the correct RT is configured for each VRF.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure all J-PE Arista routers to have the correct VRF defined with the appropriate RT.\n\nConfigure the route-target's for import and export.\n\nPE11(config)#router bgp 65000\nPE11(config-router-bgp)#vrf PROD\nPE11(config-router-bgp-vrf-PROD)#rd 200:200\nPE11(config-router-bgp-vrf-PROD)#route-target import vpn-ipv4 200:200\nPE11(config-router-bgp-vrf-PROD)#route-target export vpn-ipv4 200:200",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256053r882501_rule,STIG-ID|ARST-RT-000740,SWIFT-CSCv1|2.3,Vuln-ID|V-256053",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*vrf",
+        "regex": "(rd|route-target)",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_162": {
+        "description": "ARST-RT-000750 - The PE router must be configured to have each VRF with the appropriate Route Distinguisher (RD).",
+        "info": "An RD provides uniqueness to the customer address spaces within the MPLS L3VPN infrastructure. The concept of the VPN-IPv4 and VPN-IPv6 address families consists of the RD prepended before the IP address. Hence, if the same IP prefix is used in several different L3VPNs, it is possible for BGP to carry several completely different routes for that prefix, one for each VPN.\n\nSince VPN-IPv4 addresses and IPv4 addresses are different address families, BGP never treats them as comparable addresses. The purpose of the RD is to create distinct routes for common IPv4 address prefixes. On any given PE router, a single RD can define a VRF in which the entire address space may be used independently, regardless of the makeup of other VPN address spaces. Hence, it is imperative that a unique RD is assigned to each L3VPN and that the proper RD is configured for each VRF.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the correct RD for each VRF.\n\nConfigure the correct Route Distinguisher.\n\nPE11(config)#router bgp 65000\nPE11(config-router-bgp)#vrf PROD\nPE11(config-router-bgp-vrf-PROD)#rd 200:200",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256054r882504_rule,STIG-ID|ARST-RT-000750,SWIFT-CSCv1|2.3,Vuln-ID|V-256054",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*vrf",
+        "regex": "rd",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_163": {
+        "description": "patch panel",
+        "context": "^[\\s]patch panel",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_164": {
+        "description": "router bgp",
+        "context": "^[\\s]*vpws",
+        "regex": ".*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_165": {
+        "description": "ARST-RT-000770 - The Arista Multicast Source Discovery Protocol (MSDP) router must be configured to use its loopback address as the source address when originating MSDP traffic.",
+        "info": "Using a loopback address as the source address offers a multitude of uses for security, access, management, and scalability of MSDP routers. It is easier to construct appropriate ingress filters for router management plane traffic destined to the network management subnet since the source addresses will be from the range used for loopback interfaces instead of a larger range of addresses used for physical interfaces. Log information recorded by authentication and syslog servers will record the router's loopback address instead of the numerous physical interface addresses.",
+        "solution": "Ensure the Arista router originator-id is the source address loopback0 for originating traffic.\n\nrouter(config)#router msdp\nrouter (config-router-msdp)#originator-id local-interface loopback0\nrouter (config-router-msdp)#exit",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256056r882510_rule,STIG-ID|ARST-RT-000770,SWIFT-CSCv1|2.3,Vuln-ID|V-256056",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*router msdp",
+        "expect": "^[\\s]*originator-id local-interface Loopback.+"
+    },
+    "custom_item_166": {
+        "description": "ARST-RT-000780 - The Arista router must be configured to advertise a hop limit of at least 32 in Router Advertisement messages for IPv6 stateless auto-configuration deployments.",
+        "info": "The Neighbor Discovery protocol allows a hop limit value to be advertised by routers in a Router Advertisement message being used by hosts instead of the standardized default value. If a very small value was configured and advertised to hosts on the LAN segment, communications would fail due to the hop limit reaching zero before the packets sent by a host reached its destination.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nConfigure the Arista router to advertise a hop limit of at least 32 in Router Advertisement messages.\n\nLEAF-1A(config-if-Et3)#interface ethernet 3\nLEAF-1A(config-if-Et3)#ipv6 nd ra hop-limit 32",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256057r882513_rule,STIG-ID|ARST-RT-000780,SWIFT-CSCv1|2.3,Vuln-ID|V-256057",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface .+",
+        "regex": "ipv6 nd ra hop-limit",
+        "expect": "^[\\s]*ipv6 nd ra hop-limit (3[2-9]|[4-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])",
+        "min_occurrences": "1"
+    },
+    "custom_item_167": {
+        "description": "ARST-RT-000790 - The Arista router must not be configured to use IPv6 Site Local Unicast addresses.",
+        "info": "As currently defined, site local addresses are ambiguous and can be present in multiple sites. The address itself does not contain any indication of the site to which it belongs. The use of site-local addresses has the potential to adversely affect network security through leaks, ambiguity, and potential misrouting as documented in section 2 of RFC3879. RFC3879 formally deprecates the IPv6 site-local unicast prefix FEC0::/10 as defined in RFC3513.\n\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the Arista router using authorized IPv6 addresses.\n\nStep 1: Configure the interface with IPv6 address.\n\nLEAF-1A(config-if-Et3)#interface ethernet 3\nLEAF-1A(config-if-Et3)#no routerport\nLEAF-1A(config-if-Et3)#ipv6 address FD6D:8D64:AF0C:2::/64",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256058r882516_rule,STIG-ID|ARST-RT-000790,SWIFT-CSCv1|2.3,Vuln-ID|V-256058",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface Ethernet.+",
+        "regex": "ipv6 address",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_168": {
+        "description": "ARST-RT-000800 - The Arista perimeter router must be configured to suppress Router Advertisements on all external IPv6-enabled interfaces.",
+        "info": "Many of the known attacks in stateless autoconfiguration are defined in RFC 3756 were present in IPv4 ARP attacks. To mitigate these vulnerabilities, links that have no hosts connected such as the interface connecting to external gateways must be configured to suppress router advertisements.",
+        "solution": "This requirement is not applicable for the DODIN backbone.\n\nConfigure the Arista router to suppress Router Advertisements on all external IPv6-enabled interfaces.\n\nConfigure the Arista router to suppress RAs on all IPv6 enabled interface as in the following example for VLAN 200:\n\nrouter(config)#interface vlan 200\nrouter(config-vl200)#ipv6 nd ra disabled all\nrouter(config-vl200)#",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Arista_MLS_EOS_4-2x_Router_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256059r882519_rule,STIG-ID|ARST-RT-000800,SWIFT-CSCv1|2.3,Vuln-ID|V-256059",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Arista_MLS_EOS_4-2x_Y23M02_STIG.zip",
+        "context": "^[\\s]*interface .+",
+        "regex": "ipv6 nd ra disabled",
+        "expect": "^[\\s]*ipv6 nd ra disabled all",
+        "min_occurrences": "1"
+    },
+    "custom_item_169": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @IP_OPTION_ACL@",
+        "expect": "(deny ip any any ip-length gt|deny any log)",
+        "min_occurrences": "2"
+    },
+    "custom_item_170": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @IP_OPTION_ACL@ in",
+        "min_occurrences": "1"
+    },
+    "custom_item_171": {
+        "description": "ip access-list",
+        "context": "^[\\s]*ip access-list @IP_OPTION_ACL@",
+        "expect": "(deny ip any any ip-length gt|deny any log)",
+        "min_occurrences": "2"
+    },
+    "custom_item_172": {
+        "description": "external interfaces with ICMP fragments ACL",
+        "context": "^[\\s]*interface .+",
+        "expect": "ip access-group @IP_OPTION_ACL@ in",
+        "min_occurrences": "1"
+    }
+}

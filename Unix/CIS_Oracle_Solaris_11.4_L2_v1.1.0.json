@@ -1,0 +1,29 @@
+{
+    "custom_item_1": {
+        "description": "Solaris 11.4 is installed",
+        "file": "/etc/release",
+        "regex": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]",
+        "expect": "^[\\\\s]+Oracle[\\\\s]+Solaris[\\\\s]+@PLATFORM_VERSION@"
+    },
+    "custom_item_2": {
+        "system": "SunOS",
+        "description": "10.1 SN.1 Restrict access to suspend feature",
+        "info": "Solaris 11 does not enable the suspend capability by default and now uses the poweradm command to suspend the system.\n\nRationale:\n\nBear in mind that users with physical access to a system can simply remove power from the machine if they are truly motivated to take the system off-line, and granting the capability to use poweradm may be a more graceful way of allowing desktop users to shut down their own machines.",
+        "solution": "Perform the following to implement the recommended state:\n\n# poweradm set suspend-enable=false\n\n# poweradm update",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2M,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "cmd": "/usr/sbin/poweradm list | /usr/bin/grep suspend",
+        "expect": "^[\\\\s]*suspend/suspend-enable[\\\\s].*smf[\\\\s]*=[\\\\s]*false"
+    },
+    "custom_item_3": {
+        "system": "SunOS",
+        "description": "10.2 SN.2 Remove Support for Internet Services (inetd)",
+        "info": "If the actions in this section result in disabling all inetd-based services, then there is no point in running inetd at boot time.\n\nRationale:\n\nIf inetd-based services are ever re-enabled in the future it will be necessary to re-enable the inetd daemon as well ('svcadm enable svc:/network/inetd:default').",
+        "solution": "Perform the following to implement the recommended state:\n\n# svcadm disable svc:/network/inetd",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/4777",
+        "service": "/network/inetd:default",
+        "regex": "disabled",
+        "property": "restarter/state"
+    }
+}

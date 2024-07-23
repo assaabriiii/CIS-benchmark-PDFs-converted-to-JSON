@@ -1,0 +1,526 @@
+{
+    "custom_item_1": {
+        "description": "4.3 Do not install unnecessary packages in the container",
+        "info": "https://github.com/progrium/busybox",
+        "solution": "At the outset, do not install anything on the container that does not justify the purpose. If\nthe image had some packages that your container does not use, uninstall them.Consider using a minimal base image rather than the standard Redhat/Centos/Debian\nimages if you can. Some of the options include BusyBox and Alpine.\nNot only does this trim your image size from >150Mb to ~20 Mb, there are also fewer tools\nand paths to escalate privileges. You can even remove the package installer as a final\nhardening measure for leaf/production containers.\n\nImpact-None.\n\nDefault Value-Not Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1NS,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "name": "list_docker_container_packages"
+    },
+    "custom_item_2": {
+        "description": "4.4 Rebuild the images to include security patches",
+        "info": "https://docs.docker.com/userguide/dockerimages/",
+        "solution": "Follow the below steps to rebuild the images with security patches-\nStep 1- 'docker pull' all the base images (i.e., given your set of Dockerfiles, extract all\nimages declared in 'FROM' instructions, and re-pull them to check for an updated version).\nStep 2- Force a rebuild of each image with 'docker build --no-cache'.\nStep 3- Restart all containers with the updated images.\n\nImpact-Rebuilding the images has to be done after upstream packages are available, otherwise re-\npulling and rebuilding will do no good. When the affected packages are in the base image, it\nis necessary to pull it (and therefore rebuild). When the affected packages are in the\ndownloaded packages, it is not necessary to pull the image; but nonetheless, in doubt, it is\nrecommended to always follow this strict procedure and rebuild the entire image.\n\nNote- If updated packages are not available and it is critical to install a security patch, live\npatching could be used.\n\nDefault Value-By default, containers and images are not updated of their own.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1NS,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "name": "list_docker_container_packages"
+    },
+    "custom_item_3": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_4": {
+        "description": "2.1 Do not use lxc execution driver",
+        "info": "http://docs.docker.com/reference/commandline/cli/#docker-exec-driver-option",
+        "solution": "Do not run the Docker daemon with 'lxc' as execution driver.For example, do not start the Docker daemon as below-$> docker -d --exec-driver=lxc\n\nImpact-None.\n\nDefault Value-By default, Docker execution driver is 'libcontainer'.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/bin/ps -ef | grep docker | grep [l]xc",
+        "expect": ""
+    },
+    "custom_item_5": {
+        "description": "2.2 Restrict network traffic between containers",
+        "info": "https://docs.docker.com/articles/networking",
+        "solution": "Run the docker in daemon mode and pass '--icc=false' as argument.For Example,$> docker -d --icc=false\n\nImpact-The inter container communication would be disabled. No containers would be able to talk\nto another container on the same host. If any communication between containers on the\nsame host is desired, then it needs to be explicitly defined using container linking.\n\nDefault Value-By default, all inter container communication is allowed.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(21),800-53r5|SC-7(21),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|1S,NESA|T4.5.3,NIAv2|VL6,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [i]cc=false",
+        "expect": "icc=false"
+    },
+    "custom_item_6": {
+        "description": "2.3 Set the logging level",
+        "info": "https://docs.docker.com/ reference/commandline/cli/#daemon",
+        "solution": "Run the Docker daemon as below-$> docker -d --log-level='info'\n\nImpact-None.\n\nDefault Value-By default, Docker daemon is set to log level of 'info'.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1S,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [l]og-level",
+        "expect": "log-level=\"info\""
+    },
+    "custom_item_7": {
+        "description": "2.4 Allow Docker to make changes to iptables",
+        "info": "http://docs.docker.com/articles/networking/#communication-between-containers",
+        "solution": "Do not run the Docker daemon with '--iptables=false' parameter.\nFor example, do not start the Docker daemon as below-\n$> docker -d --iptables=false\n\nImpact-None.\n\nDefault Value-By default, 'iptables' is set to 'true'.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1S,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [i]ptables=false | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_8": {
+        "description": "2.5 Do not use insecure registries",
+        "info": "http://docs.docker.com/ reference/commandline/cli/#insecure-registries",
+        "solution": "Do not use any insecure registries.For example, do not start the Docker daemon as below-$> docker -d --insecure-registry 10.1.0.0/16\n\nImpact-None.\n\nDefault Value-By default, Docker assumes all, but local, registries are secure.",
+        "reference": "800-53|SI-7(6),800-53r5|SI-7(6),CSF|PR.DS-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|SI-7,ITSG-33|SI-7a.,LEVEL|1S,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [i]nsecure-registry | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_9": {
+        "description": "2.6 Setup a local registry mirror",
+        "info": "http://docs.docker.com/articles/registry_mirror/",
+        "solution": "Configure a local registry mirror and then start the Docker daemon as below-$> docker --registry-mirror=-dFor example,$> docker --registry-mirror=https-//10.0.0.2-5000 -d\n\nImpact-The local registry mirror would need to be managed. It must have verified images that you\nuse in your environment and those images must be kept updated time to time.\n\nDefault Value-By default, there are no local registry mirrors setup on the host with Docker installation.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [r]egistry-mirror",
+        "expect": "registry-mirror"
+    },
+    "custom_item_10": {
+        "description": "2.7 Do not use the aufs storage driver",
+        "info": "http://jpetazzo.github.io/assets/2015-03-05-deep-dive-into-docker-storage-drivers.html#1",
+        "solution": "Do not explicitly use 'aufs' as storage driver.For example, do not start Docker daemon as below-$> docker -s aufs -d\n\nImpact-'aufs' is the only storage driver that allows containers to share executable and shared\nlibrary memory. It might be useful if you are running thousands of containers with the\nsame program or libraries.\n\nDefault Value-By default, Docker uses 'devicemapper' as the storage driver on most of the platforms.\nDefault storage driver can vary based on your OS vendor. You should use the storage driver\nthat is best supported by your preferred vendor.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker info | grep -e \"^Storage Driver:\"",
+        "expect": "^Storage Driver: [^a][^u][^f][^s]"
+    },
+    "custom_item_11": {
+        "description": "2.8 Do not bind Docker to another IP/Port or a Unix socket",
+        "info": "https://docs.docker.com/articles/basics/#bind-docker-to-another-hostport-or-a-unix-socket",
+        "solution": "Do not bind the Docker daemon to any IP and Port or a non-default Unix socket.For example, do not start the Docker daemon as below-$> docker -H tcp-//10.1.2.3-2375 -H unix-///var/run/example.sock -d\n\nImpact-No one can have full access to Docker daemon except 'root'. Alternatively, you should\nconfigure the TLS authentication for Docker and Docker Swarm APIs if you want to bind\nthe Docker daemon to any other IP and Port.\n\nDefault Value-By default, Docker daemon binds to a non-networked Unix socket.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][H] ",
+        "expect": ""
+    },
+    "custom_item_12": {
+        "description": "2.9 Configure TLS authentication for Docker daemon '--tlsverify'",
+        "info": "http://www.blackfinsecurity.com/docker-swarm-with-tls-authentication/",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\n\nImpact-You would need to manage and guard certificates and keys for Docker daemon and Docker\nclients.\n\nDefault Value-By default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1S,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlsverify",
+        "expect": "--tlsverify"
+    },
+    "custom_item_13": {
+        "description": "2.9 Configure TLS authentication for Docker daemon '--tlscacert'",
+        "info": "http://www.blackfinsecurity.com/docker-swarm-with-tls-authentication/",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\n\nImpact-You would need to manage and guard certificates and keys for Docker daemon and Dockerclients.\n\nDefault Value-By default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1S,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlscacert",
+        "expect": "--tlscacert"
+    },
+    "custom_item_14": {
+        "description": "2.9 Configure TLS authentication for Docker daemon '--tlscert'",
+        "info": "http://www.blackfinsecurity.com/docker-swarm-with-tls-authentication/",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\n\nImpact-You would need to manage and guard certificates and keys for Docker daemon and Docker\nclients.\n\nDefault Value-By default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1S,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlscert",
+        "expect": "--tlscert"
+    },
+    "custom_item_15": {
+        "description": "2.9 Configure TLS authentication for Docker daemon '--tlskey''",
+        "info": "http://www.blackfinsecurity.com/docker-swarm-with-tls-authentication/",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\n\nImpact-You would need to manage and guard certificates and keys for Docker daemon and Docker\nclients.\n\nDefault Value-By default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1S,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlskey",
+        "expect": "--tlskey"
+    },
+    "custom_item_16": {
+        "description": "2.10 Set default ulimit as appropriate '--default-ulimit'",
+        "info": "http://docs.docker.com/ reference/commandline/cli/#default-ulimits",
+        "solution": "Run the docker in daemon mode and pass '--default-ulimit' as argument with respective\nulimits as appropriate in your environment.\nFor Example,\n\n$> docker -d --default-ulimit nproc=1024-2408 --default-ulimit nofile=100-200\n\nImpact-If the ulimits are not set properly, the desired resource control might not be achieved and\nmight even make the system unusable.\n\nDefault Value-By default, no ulimit is set.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1NS,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]default-ulimit",
+        "expect": "--default-ulimit @DEFAULT_ULIMIT@"
+    },
+    "custom_item_17": {
+        "description": "3.1 Verify that docker.service file ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chown root-root /usr/lib/systemd/system/docker.serviceThis would set the ownership and group-ownership for the file to 'root'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the ownership and group-ownership for this file\nis correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker.service",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_18": {
+        "description": "3.2 Verify that docker.service file permissions are set to 644 or more restrictive",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chmod 644 /usr/lib/systemd/system/docker.service\nThis would set the file permissions to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions are correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker.service",
+        "mask": "133"
+    },
+    "custom_item_19": {
+        "description": "3.3 Verify that docker-registry.service file ownership is set to root:root",
+        "info": "https://github.com/docker/docker-registry",
+        "solution": "#> chown root-root /usr/lib/systemd/system/docker-registry.service\n    This would set the ownership and group-ownership for the file to 'root'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the ownership and group-ownership for this file\nis correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker-registry.service",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_20": {
+        "description": "3.4 Verify that docker-registry.service file permissions are set to 644 or more restrictive",
+        "info": "https://github.com/docker/docker-registry",
+        "solution": "#> chmod 644 /usr/lib/systemd/system/docker-registry.service\n    This would set the file permissions to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions are correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker-registry.service",
+        "mask": "133"
+    },
+    "custom_item_21": {
+        "description": "3.5 Verify that docker.socket file ownership is set to root:root",
+        "info": "http://daviddaeschler.com/2014/12/14/centos-7rhel-7-and-docker-containers-on-boot/",
+        "solution": "#> chown root-root /usr/lib/systemd/system/docker.socket\nThis would set the ownership and group-ownership for the file to 'root'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the ownership and group-ownership for this file\nis correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker.socket",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_22": {
+        "description": "3.6 Verify that docker.socket file permissions are set to 644 or more restrictive",
+        "info": "http://daviddaeschler.com/2014/12/14/centos-7rhel-7-and-docker-containers-on-boot/",
+        "solution": "#> chmod 644 /usr/lib/systemd/system/docker.socket\nThis would set the file permissions for this file to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions for this file are correctly set\nto '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/usr/lib/systemd/system/docker.socket",
+        "mask": "133"
+    },
+    "custom_item_23": {
+        "description": "3.7 Verify that Docker environment file ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chown root-rootFor example,#> chown root-root /etc/sysconfig/docker\n    This would set the ownership and group-ownership for the environment file to 'root'.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for this file is correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@DOCKER_ENV_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_24": {
+        "description": "3.8 Verify that Docker environment file permissions are set to 644 or more restrictive",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chmod 644For example,#> chmod 644 /etc/sysconfig/dockerThis would set the file permissions for the environment file to '644'.\n\nImpact-None.\n\nDefault Value-By default, the file permissions for this file is correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@DOCKER_ENV_FILE@",
+        "mask": "133"
+    },
+    "custom_item_25": {
+        "description": "3.9 Verify that docker-network environment file ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-network",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_26": {
+        "description": "3.10 Verify that docker-network environment file permissions are set to 644 or more restrictive",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chmod 644 /etc/sysconfig/docker-network\nThis would set the file permissions to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions are correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-network",
+        "mask": "133"
+    },
+    "custom_item_27": {
+        "description": "3.11 Verify that docker-registry environment file ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chown root-root /etc/sysconfig/docker-registry\nThis would set the ownership and group-ownership for the file to 'root'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the ownership and group-ownership for this file\nis correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-registry",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_28": {
+        "description": "3.12 Verify that docker-registry environment file permissions are set to 644 or more restrictive",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chmod 644 /etc/sysconfig/docker-registry\nThis would set the file permissions to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions are correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-registry",
+        "mask": "133"
+    },
+    "custom_item_29": {
+        "description": "3.13 Verify that docker-storage environment file ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chown root-root /etc/sysconfig/docker-storage\nThis would set the ownership and group-ownership for the file to 'root'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the ownership and group-ownership for this file\nis correctly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-storage",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_30": {
+        "description": "3.14 Verify that docker-storage environment file permissions are set to 644 or more restrictive",
+        "info": "https://docs.docker.com/articles/systemd/",
+        "solution": "#> chmod 644 /etc/sysconfig/docker-storage\nThis would set the file permissions to '644'.\n\nImpact-None.\n\nDefault Value-This file may not be present on the system. In that case, this recommendation is not\napplicable. By default, if the file is present, the file permissions are correctly set to '644'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/sysconfig/docker-storage",
+        "mask": "133"
+    },
+    "custom_item_31": {
+        "description": "3.15 Verify that /etc/docker directory ownership is set to root:root",
+        "info": "https://docs.docker.com/articles/certificates/",
+        "solution": "#> chown root-root /etc/docker\n    This would set the ownership and group-ownership for the directory to 'root'.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for this directory is correctly set to 'root'.",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/docker",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_32": {
+        "description": "3.16 Verify that /etc/docker directory permissions are set to 755 or more restrictive",
+        "info": "https://docs.docker.com/articles/certificates/",
+        "solution": "#> chmod 755 /etc/docker\nThis would set the permissions for the directory to '755'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for this directory are correctly set to '755'.",
+        "reference": "CSCv6|3.1,LEVEL|1S",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/etc/docker",
+        "mask": "022"
+    },
+    "custom_item_33": {
+        "description": "3.17 Verify that registry certificate file ownership is set to root:root",
+        "info": "http://docs.docker.com/reference/commandline/cli/#insecure-registries",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@BASE_PATH_TO_CERTS@@REGISTRY_NAME@/*",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_34": {
+        "description": "3.18 Verify that registry certificate file permissions are set to 444 or more restrictive",
+        "info": "http://docs.docker.com/reference/commandline/cli/#insecure-registries",
+        "solution": "#> chmod 444 /etc/docker/certs.d//*\nThis would set the permissions for registry certificate files to '444'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for registry certificate files might not be '444'. The default file\npermissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@BASE_PATH_TO_CERTS@@REGISTRY_NAME@/*",
+        "mask": "333"
+    },
+    "custom_item_35": {
+        "description": "3.19 Verify that TLS CA certificate file ownership is set to root:root",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chown root-rootThis would set the ownership and group-ownership for the TLS CA certificate file to 'root'.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for TLS CA certificate file is correctly set to\n'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_TLS_CA_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_36": {
+        "description": "3.20 Verify that TLS CA certificate file permissions are set to 444 or more restrictive",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chmod 444This would set the file permissions of the TLS CA file to '444'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for TLS CA certificate file might not be '444'. The default file\npermissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_TLS_CA_FILE@",
+        "mask": "333"
+    },
+    "custom_item_37": {
+        "description": "3.21 Verify that Docker server certificate file ownership is set to root:root",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chown root-rootThis would set the ownership and group-ownership for the Docker server certificate file to\n'root'.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for Docker server certificate file is\ncorrectly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_SERVER_CERT_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_38": {
+        "description": "3.22 Verify that Docker server certificate file permissions are set to 444 or more restrictive",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chmod 444This would set the file permissions of the Docker server file to '444'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for Docker server certificate file might not be '444'. The default\nfile permissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_SERVER_CERT_FILE@",
+        "mask": "333"
+    },
+    "custom_item_39": {
+        "description": "3.23 Verify that Docker server certificate key file ownership is set to root:root",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chown root-rootThis would set the ownership and group-ownership for the Docker server certificate key\nfile to 'root'.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for Docker server certificate key file is\ncorrectly set to 'root'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_SERVER_CERT_KEY_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_40": {
+        "description": "3.24 Verify that Docker server certificate key file permissions are set to 400",
+        "info": "http://docs.docker.com/articles/https/",
+        "solution": "#> chmod 400This would set the Docker server certificate key file permissions to '400'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for Docker server certificate key file might not be '400'. The\ndefault file permissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "@PATH_TO_SERVER_CERT_KEY_FILE@",
+        "mask": "377"
+    },
+    "custom_item_41": {
+        "description": "3.25 Verify that Docker socket file ownership is set to root:docker - /var/run/docker.sock",
+        "info": "https://docs.docker.com/articles/basics/#bind-docker-to-another-hostport-or-a-unix-socket",
+        "solution": "#> chown root-docker /var/run/docker.sock\nThis would set the ownership to 'root' and group-ownership to 'docker' for default Docker\nsocket file.\n\nImpact-None.\n\nDefault Value-By default, the ownership and group-ownership for Docker socket file is correctly set to\n'root-docker'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/var/run/docker.sock",
+        "owner": "root",
+        "group": "docker"
+    },
+    "custom_item_42": {
+        "description": "3.26 Verify that Docker socket file permissions are set to 660 or more restrictive",
+        "info": "https://docs.docker.com/articles/basics/#bind-docker-to-another-hostport-or-a-unix-socket",
+        "solution": "#> chmod 660 /var/run/docker.sock\nThis would set the file permissions of the Docker socket file to '660'.\n\nImpact-None.\n\nDefault Value-By default, the permissions for Docker socket file is correctly set to '660'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "file": "/var/run/docker.sock",
+        "mask": "117"
+    },
+    "custom_item_43": {
+        "description": "4.1 Create a user for the container",
+        "cmd": "/usr/bin/docker ps -q | xargs docker inspect --format '{{ .Id }}: User={{.Config.User}}'",
+        "expect": "User=$"
+    },
+    "custom_item_44": {
+        "description": "4.2 Use trusted base images for containers",
+        "info": "https://github.com/docker/docker/pull/11109",
+        "solution": "Only download the container images from a source you trust over a secure channel.\nAdditionally, use features such as pull-by-digest to get specific images from the registry.\n\nImpact-None.\n\nDefault Value-Not Applicable.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1NS,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker images",
+        "expect": ""
+    },
+    "custom_item_45": {
+        "description": "5.3 Verify that containers are running only a single main process",
+        "info": "https://docs.docker.com/articles/using_supervisord",
+        "solution": "Do not run multiple applications within a single container. Use container linking instead to\nrun multiple applications in multiple containers in tandem.\n\nImpact-None.\n\nDefault Value-By default, only one process per container is allowed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do echo $i is running:;/usr/bin/docker exec $i ps -el; done",
+        "expect": ""
+    },
+    "custom_item_46": {
+        "description": "5.4 Restrict Linux Kernel Capabilities within containers",
+        "info": "http://man7.org/linux/man-pages/man7/capabilities.7.html",
+        "solution": "Execute the below command to add needed capabilities-\n    $> docker run --cap-add={'Capability 1','Capability 2'}For example,\n    $> docker run --cap-add={'NET_ADMIN','SYS_ADMIN'} -i -t centos-latest /bin/bash\n\n    Execute the below command to drop unneeded capabilities-\n$> docker run --cap-drop={'Capability 1','Capability 2'}For example,$> docker run --cap-drop={'SETUID','SETGID'} -i -t centos-latest /bin/bash\n\nImpact-Based on what Linux Kernel Capabilities were added or dropped, restrictions within the\ncontainer would apply.\n\nDefault Value-By default, below capabilities are available for containers-AUDIT_WRITE\nCHOWN\nDAC_OVERRIDE\nFOWNER\nFSETID\nKILL\nMKNOD\nNET_BIND_SERVICE\nNET_RAW\nSETFCAP\nSETGID\nSETPCAP\nSETUID\nSYS_CHROOT",
+        "reference": "800-171|3.1.5,800-53|AC-6(4),800-53r5|AC-6(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(4),LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: CapAdd={{json .HostConfig.CapAdd }} CapDrop={{json .HostConfig.CapDrop }}'",
+        "expect": ""
+    },
+    "custom_item_47": {
+        "description": "5.5 Do not use privileged containers",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: Privileged={{ .HostConfig.Privileged }}'",
+        "expect": "Privileged=true"
+    },
+    "custom_item_48": {
+        "description": "5.6 Do not mount sensitive host system directories on containers",
+        "info": "https://docs.docker.com/userguide/dockervolumes",
+        "solution": "Do not mount host sensitive directories on containers especially in read-write mode.\n\nImpact-None.\n\nDefault Value-Docker defaults to a read-write volume but you can also mount a directory read-only. By\ndefault, no sensitive host directories are mounted on containers.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: Volumes={{json .Volumes }} VolumesRW={{json .VolumesRW }}'",
+        "expect": ""
+    },
+    "custom_item_49": {
+        "description": "5.7 Do not run ssh within containers",
+        "info": "http://blog.docker.com/2014/06/why-you-dont-need-to-run-sshd-in-docker/",
+        "solution": "Uninstall SSH server from the container and use nsenter or any other commands such as\ndocker exec or docker attach to interact with the container instance.docker exec -i -t $INSTANCE_ID shORdocker attach $INSTANCE_ID\n\nImpact-None.\n\nDefault Value-\nBy default, SSH server is not running inside the container. Only one process per container is\nallowed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker exec $i ps -el|grep ssh; done",
+        "expect": ""
+    },
+    "custom_item_50": {
+        "description": "5.8 Do not map privileged ports within containers",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do echo $i ' : ';/usr/bin/docker port $i; done",
+        "expect": ":([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|10[0-2][0-3])$"
+    },
+    "custom_item_51": {
+        "description": "5.9 Open only needed ports on container",
+        "info": "https://docs.docker.com/articles/networking/#binding-ports",
+        "solution": "Fix the Dockerfile of the container image to expose only needed ports by your\ncontainerized application. You can also completely ignore the list of ports defined in the\nDockerfile by NOT using '-P' (UPPERCASE) flag when starting the container. Use the '-p'\n(lowercase) flag to explicitly define the ports that you need for a particular container\ninstance.For example,$> docker run -i -t -p 5000 -p 5001 -p 5002 centos /bin/bash\n\nImpact-None.\n\nDefault Value-By default, all the ports that are listed in the Dockerfile under EXPOSE instruction for an\nimage are opened when container is run with '-P' flag.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1S,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": ""
+    },
+    "custom_item_52": {
+        "description": "5.10 Do not use host network mode on container",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: NetworkMode={{ .HostConfig.NetworkMode }}'",
+        "expect": "NetworkMode=host"
+    },
+    "custom_item_53": {
+        "description": "5.11 Limit memory usage for container",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: Memory={{ .HostConfig.Memory }}'",
+        "expect": "Memory=0"
+    },
+    "custom_item_54": {
+        "description": "5.12 Set container CPU priority appropriately",
+        "info": "https://docs.docker.com/articles/runmetrics/",
+        "solution": "Manage the CPU shares between your containers. To do so start the container using '-c'\nargument. You may start the container as below-$> docker run-cFor example,$> docker run -i -t -c 512 centos /bin/bashIn the above example, the container is started with a CPU shares of 50% of what the other\ncontainers use. So, if the other container has CPU shares of 80%, this container will have\nCPU shares of 40%.Note- Every new container will have 1024 shares of CPU by default. However, this value is\nshown as '0' if you run the command mentioned in the audit section.\n\nAlternatively,\n1. Navigate to /sys/fs/cgroup/cpu/system.slice/ directory.\n2. Check your container instance ID using 'docker ps' command.\n3. Now, inside the above directory (in step 1), you would have a directory by name\n'docker-.scope' for example 'docker-\n4acae729e8659c6be696ee35b2237cc1fe4edd2672e9186434c5116e1a6fbed6.scope'.\nNavigate to this directory.\n4. You will find a file named 'cpu.shares'. Execute 'cat cpu.shares'. This will always\ngive you the CPU share value based on the system. So, even if there are no CPU\nshares configured using '-c' argument in the 'docker run' command, this file will\nhave a value of '1024'.If we set one containers CPU shares to 512 it will receive half of the CPU time compared to\nthe other container. So, take 1024 as 100% and then do quick maths to derive the number\nthat you should set for respective CPU shares. For example, use 512 if you want to set 50%\nand 256 if you want to set 25%.\n\nImpact-If you do not set proper CPU shares, the container process may have to starve if the\nresources on the host are not available. If the CPU resources on the host are free, CPU\nshares do not place any restrictions on the CPU that the container may use.\n\nDefault Value-By default, all containers on a Docker host share the resources equally. No CPU shares are\nenforced.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1S,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: CpuShares={{ .HostConfig.CpuShares }}'",
+        "expect": ""
+    },
+    "custom_item_55": {
+        "description": "5.13 Mount container's root filesystem as read only",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: ReadonlyRootfs={{ .HostConfig.ReadonlyRootfs }}'",
+        "expect": "ReadonlyRootfs=false"
+    },
+    "custom_item_56": {
+        "description": "5.14 Bind incoming container traffic to a specific host interface",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": "0\\.0\\.0\\.\\0: "
+    },
+    "custom_item_57": {
+        "description": "5.15 Set the 'on-failure' container restart policy to 5",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}'",
+        "expect": "RestartPolicyName=always"
+    },
+    "custom_item_58": {
+        "description": "5.15 Set the 'on-failure' container restart policy to 5 - RestartPolicyName=on-failure",
+        "info": "http://docs.docker.com/ reference/commandline/cli/#restart-policies",
+        "solution": "If a container is desired to be restarted of its own, then start the container as below-$> docker run--restart=on-failure-5For example,\n\n$> docker run -d --restart=on-failure-5 nginx\n\nImpact-The container would attempt to restart only for 5 times.\n\nDefault Value-By default, containers are not configured with restart policies. Hence, containers do not\nattempt to restart of their own.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1S,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}'|grep RestartPolicyName=on-failure|egrep 'MaximumRetryCount=([6-9]\\|[1-9][0-9]+)'",
+        "expect": ""
+    },
+    "custom_item_59": {
+        "description": "5.16 Do not share the host's process namespace",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: PidMode={{ .HostConfig.PidMode }}'",
+        "expect": "PidMode=host"
+    },
+    "custom_item_60": {
+        "description": "5.17 Do not share the host's IPC namespace",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: IpcMode={{ .HostConfig.IpcMode }}'",
+        "expect": "IpcMode=host"
+    },
+    "custom_item_61": {
+        "description": "5.18 Do not directly expose host devices to containers",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: Devices={{ .HostConfig.Devices }}'",
+        "expect": "Devices=\\\\[.+\\\\]"
+    },
+    "custom_item_62": {
+        "description": "5.19 Override default ulimit at runtime only if needed",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: Ulimits={{json .HostConfig.Ulimits }}'",
+        "expect": "Ulimits=\\\\[.*\\\\]"
+    },
+    "custom_item_63": {
+        "description": "6.5 Use a centralized and remote log collection service",
+        "info": "http://stackengine.com/docker-logs-aggregating-ease/",
+        "solution": "Configure a centralized and remote log collection service. Some of the examples to do this\nare in    references. Once the log collection service is active, configure all the containers to\nsend their logs to this service.\n\nImpact-None.\n\nDefault Value-By default, each container logs separately.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|1NS,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format='{{json .Volumes}} {{.Mounts}}'",
+        "expect": ""
+    }
+}

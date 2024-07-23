@@ -1,0 +1,412 @@
+{
+    "custom_item_1": {
+        "description": "ESXI-70-000001 - Access to the ESXi host must be limited by enabling lockdown mode.",
+        "info": "Enabling lockdown mode disables direct access to an ESXi host, requiring the host to be managed remotely from vCenter Server. This is done to ensure the roles and access controls implemented in vCenter are always enforced and users cannot bypass them by logging on to a host directly.\n\nBy forcing all interaction to occur through vCenter Server, the risk of someone inadvertently attaining elevated privileges or performing tasks that are not properly audited is greatly reduced.\n\nSatisfies: SRG-OS-000027-VMM-000080, SRG-OS-000123-VMM-000620",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Security Profile >> Lockdown Mode.\n\nClick 'Edit...'. Select the 'Normal' or 'Strict' radio buttons.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$level = 'lockdownNormal' OR 'lockdownStrict'\n$vmhost = Get-VMHost -Name| Get-View\n$lockdown = Get-View $vmhost.ConfigManager.HostAccessManager\n$lockdown.ChangeLockdownMode($level)\n\nNote: In strict lockdown mode, the Direct Console User Interface (DCUI) service is stopped. If the connection to vCenter Server is lost and the vSphere Client is no longer available, the ESXi host becomes inaccessible.",
+        "reference": "800-171|3.1.1,800-53|AC-2(2),800-53|AC-10,800-53r5|AC-2(2),800-53r5|AC-10,CAT|II,CCI|CCI-000054,CCI|CCI-001682,CN-L3|7.1.3.2(e),CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(2),ITSG-33|AC-10,NESA|T5.5.1,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-256375r885906_rule,STIG-ID|ESXI-70-000001,Vuln-ID|V-256375",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Lockdown Mode : ",
+        "expect": "Lockdown Mode : lockdown(Normal|Strict)$"
+    },
+    "custom_item_2": {
+        "description": "ESXI-70-000002 - The ESXi host must verify the DCUI.Access list.",
+        "info": "Lockdown mode disables direct host access, requiring that administrators manage hosts from vCenter Server. However, if a host becomes isolated from vCenter, the administrator is locked out and can no longer manage the host.\n\nThe 'DCUI.Access' advanced setting allows specified users to exit lockdown mode in such a scenario. If the Direct Console User Interface (DCUI) is running in strict lockdown mode, this setting is ineffective.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'DCUI.Access' value and configure it to 'root'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name DCUI.Access | Set-AdvancedSetting -Value 'root'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256376r885909_rule,STIG-ID|ESXI-70-000002,SWIFT-CSCv1|2.3,Vuln-ID|V-256376",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "DCUI.Access : ",
+        "expect": "DCUI.Access : root$"
+    },
+    "custom_item_3": {
+        "description": "ESXI-70-000003 - The ESXi host must verify the exception users list for lockdown mode.",
+        "info": "While a host is in lockdown mode (strict or normal), only users on the 'Exception Users' list are allowed access. These users do not lose their permissions when the host enters lockdown mode.\n\nThe organization may want to add service accounts such as a backup agent to the Exception Users list. Verify the list of users exempted from losing permissions is legitimate and as needed per the environment. Adding unnecessary users to the exception list defeats the purpose of lockdown mode.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Security Profile.\n\nUnder 'Lockdown Mode', click 'Edit' and remove unnecessary users from the Exception Users list.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256377r885912_rule,STIG-ID|ESXI-70-000003,SWIFT-CSCv1|2.3,Vuln-ID|V-256377",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "DCUI.Access : ",
+        "expect": "DCUI.Access : @AUDIT_EXCEPTION_USERS@$"
+    },
+    "custom_item_4": {
+        "description": "ESXI-70-000004 - Remote logging for ESXi hosts must be configured.",
+        "info": "Remote logging to a central log host provides a secure, centralized store for ESXi logs. By gathering host log files onto a central host, it can more easily monitor all hosts with a single tool. It can also do aggregate analysis and searching to look for such things as coordinated attacks on multiple hosts.\n\nLogging to a secure, centralized log server also helps prevent log tampering and provides a long-term audit record.\n\nSatisfies: SRG-OS-000032-VMM-000130, SRG-OS-000342-VMM-001230, SRG-OS-000479-VMM-001990, SRG-OS-000059-VMM-000280, SRG-OS-000058-VMM-000270, SRG-OS-000051-VMM-000230",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Syslog.global.logHost' value and configure it to a site-specific syslog server.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Syslog.global.logHost | Set-AdvancedSetting -Value ''",
+        "reference": "800-171|3.1.12,800-171|3.3.1,800-171|3.3.8,800-53|AC-17(1),800-53|AU-4(1),800-53|AU-6(4),800-53|AU-9,800-53r5|AC-17(1),800-53r5|AU-4(1),800-53r5|AU-6(4),800-53r5|AU-9,CAT|II,CCI|CCI-000067,CCI|CCI-000154,CCI|CCI-000163,CCI|CCI-000164,CCI|CCI-001851,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.AC-3,CSF|PR.DS-4,CSF|PR.PT-1,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-2,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-17(1),ITSG-33|AU-4,ITSG-33|AU-6(4),ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.2.5,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NESA|T3.6.4,NESA|T5.4.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,Rule-ID|SV-256378r885915_rule,STIG-ID|ESXI-70-000004,SWIFT-CSCv1|2.6,SWIFT-CSCv1|6.4,Vuln-ID|V-256378",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Syslog.global.logHost : ",
+        "expect": "Syslog.global.logHost : @LOG_HOST@"
+    },
+    "custom_item_5": {
+        "description": "ESXI-70-000005 - The ESXi host must enforce the limit of three consecutive invalid logon attempts by a user.",
+        "info": "By limiting the number of failed logon attempts, the risk of unauthorized access via user password guessing, otherwise known as brute forcing, is reduced. Once the configured number of attempts is reached, the account is locked by the ESXi host.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Security.AccountLockFailures' value and configure it to '3'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Set-AdvancedSetting -Value 3",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CAT|II,CCI|CCI-000044,CN-L3|8.1.4.1(b),DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,Rule-ID|SV-256379r885918_rule,STIG-ID|ESXI-70-000005,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2,Vuln-ID|V-256379",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.AccountLockFailures : ",
+        "expect": "Security.AccountLockFailures : 3$"
+    },
+    "custom_item_6": {
+        "description": "ESXI-70-000006 - The ESXi host must enforce an unlock timeout of 15 minutes after a user account is locked out.",
+        "info": "By enforcing a reasonable unlock timeout after multiple failed logon attempts, the risk of unauthorized access via user password guessing, otherwise known as brute forcing, is reduced. Users must wait for the timeout period to elapse before subsequent logon attempts are allowed.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Security.AccountUnlockTime' value and configure it to '900'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountUnlockTime | Set-AdvancedSetting -Value 900",
+        "reference": "800-171|3.1.8,800-53|AC-7b.,800-53r5|AC-7b.,CAT|II,CCI|CCI-002238,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7b.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,Rule-ID|SV-256380r885921_rule,STIG-ID|ESXI-70-000006,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2,Vuln-ID|V-256380",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.AccountUnlockTime : ",
+        "expect": "Security.AccountUnlockTime : 900$"
+    },
+    "custom_item_7": {
+        "description": "ESXI-70-000008 - The ESXi host must display the Standard Mandatory DOD Notice and Consent Banner before granting access to the system via Secure Shell (SSH).",
+        "info": "Failure to display the DOD logon banner prior to a logon attempt will negate legal proceedings resulting from unauthorized access to system resources.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Config.Etc.issue' value and set it to the following:\n\n'You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions: -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations. -At any time, the USG may inspect and seize data stored on this IS. -Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose. -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy. -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.'\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.Etc.issue | Set-AdvancedSetting -Value ''",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-256382r885927_rule,STIG-ID|ESXI-70-000008,TBA-FIISB|45.2.4,Vuln-ID|V-256382",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "[Cc]onfig\\.[Ee]tc\\.[Ii]ssue : .*$",
+        "expect": "@SSH_BANNER@"
+    },
+    "custom_item_8": {
+        "description": "ESXI-70-000030 - The ESXi host must produce audit records containing information to establish what type of events occurred.",
+        "info": "Without establishing what types of events occurred, it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.\n\nSatisfies: SRG-OS-000037-VMM-000150, SRG-OS-000063-VMM-000310",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings. Click 'Edit'.\n\nSelect the 'Config.HostAgent.log.level' value and configure it to 'info'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.log.level | Set-AdvancedSetting -Value 'info'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53|AU-12b.,800-53r5|AU-3,800-53r5|AU-12b.,CAT|II,CCI|CCI-000130,CCI|CCI-000171,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-12b.,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256396r885969_rule,STIG-ID|ESXI-70-000030,SWIFT-CSCv1|6.4,Vuln-ID|V-256396",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Config.HostAgent.log.level : ",
+        "expect": "Config.HostAgent.log.level : info$"
+    },
+    "custom_item_9": {
+        "description": "ESXI-70-000031 - The ESXi host must be configured with a sufficiently complex password policy.",
+        "info": "To enforce the use of complex passwords, minimum numbers of characters of different classes are mandated.\n\nThe use of complex passwords reduces the ability of attackers to successfully obtain valid passwords using guessing or exhaustive search techniques. Complexity requirements increase the password search space by requiring users to construct passwords from a larger character set than they may otherwise use.\n\nSatisfies: SRG-OS-000069-VMM-000360, SRG-OS-000070-VMM-000370, SRG-OS-000071-VMM-000380, SRG-OS-000072-VMM-000390, SRG-OS-000078-VMM-000450, SRG-OS-000266-VMM-000940",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Security.PasswordQualityControl' value and configure it to 'similar=deny retry=3 min=disabled,disabled,disabled,disabled,15'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.PasswordQualityControl | Set-AdvancedSetting -Value 'similar=deny retry=3 min=disabled,disabled,disabled,disabled,15'",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53|IA-5(1)(b),800-53r5|IA-5(1)(a),800-53r5|IA-5(1)(b),CAT|II,CCI|CCI-000192,CCI|CCI-000193,CCI|CCI-000194,CCI|CCI-000195,CCI|CCI-000205,CCI|CCI-001619,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),ITSG-33|IA-5(1)(b),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,NIAv2|AM22d,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256397r885972_rule,STIG-ID|ESXI-70-000031,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256397",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.PasswordQualityControl : ",
+        "expect": "Security.PasswordQualityControl : similar=deny retry=3 min=disabled,disabled,disabled,disabled,15$"
+    },
+    "custom_item_10": {
+        "description": "ESXI-70-000032 - The ESXi host must prohibit the reuse of passwords within five iterations.",
+        "info": "If a user or root used the same password continuously or was allowed to change it back shortly after being forced to change it to something else, it would provide a potential intruder with the opportunity to keep guessing at one user's password until it was guessed correctly.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Security.PasswordHistory' value and configure it to '5'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.PasswordHistory | Set-AdvancedSetting -Value 5",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CAT|II,CCI|CCI-000200,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256398r919019_rule,STIG-ID|ESXI-70-000032,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3,Vuln-ID|V-256398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.PasswordHistory : ",
+        "expect": "Security.PasswordHistory : 5$"
+    },
+    "custom_item_11": {
+        "description": "ESXI-70-000034 - The ESXi host must disable the Managed Object Browser (MOB).",
+        "info": "The MOB provides a way to explore the object model used by the VMkernel to manage the host and enables configurations to be changed. This interface is meant to be used primarily for debugging the vSphere Software Development Kit (SDK), but because there are no access controls it could also be used as a method to obtain information about a host being targeted for unauthorized access.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings. Click 'Edit'.\n\nClick 'Edit'. Select the 'Config.HostAgent.plugins.solo.enableMob' value and configure it to 'false'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.solo.enableMob | Set-AdvancedSetting -Value false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-256399r919020_rule,STIG-ID|ESXI-70-000034,SWIFT-CSCv1|2.3,Vuln-ID|V-256399",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Config.HostAgent.plugins.solo.enableMob : ",
+        "expect": "Config.HostAgent.plugins.solo.enableMob : false"
+    },
+    "custom_item_12": {
+        "description": "ESXI-70-000035 - The ESXi host must be configured to disable nonessential capabilities by disabling Secure Shell (SSH).",
+        "info": "The ESXi Shell is an interactive command line interface (CLI) available at the ESXi server console. The ESXi shell provides temporary access to commands essential for server maintenance. Intended primarily for use in break-fix scenarios, the ESXi shell is well suited for checking and modifying configuration details, which are not always generally accessible, using the vSphere Client.\n\nThe ESXi shell is accessible remotely using SSH by users with the Administrator role. Under normal operating conditions, SSH access to the host must be disabled as is the default. As with the ESXi shell, SSH is also intended only for temporary use during break-fix scenarios. SSH must therefore be disabled under normal operating conditions and must only be enabled for diagnostics or troubleshooting. Remote access to the host must therefore be limited to the vSphere Client or Host Client at all other times.\n\nSatisfies: SRG-OS-000095-VMM-000480, SRG-OS-000297-VMM-001040, SRG-OS-000298-VMM-001050",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Services.\n\nUnder 'Services', select the 'SSH' service and click the 'Stop' button.\n\nClick the 'Edit Startup policy...' button.\n\nSelect the 'Start and stop manually' radio button.\n\nClick 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'SSH'} | Set-VMHostService -Policy Off\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'SSH'} | Stop-VMHostService",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-171|3.1.12,800-171|3.4.6,800-171|3.4.7,800-53|AC-17(1),800-53|AC-17(9),800-53|CM-7a.,800-53r5|AC-17(1),800-53r5|AC-17(9),800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CCI|CCI-002314,CCI|CCI-002322,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17,ITSG-33|AC-17(1),ITSG-33|CM-7a.,NESA|T5.4.4,NESA|T5.4.5,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256400r885981_rule,STIG-ID|ESXI-70-000035,SWIFT-CSCv1|2.3,SWIFT-CSCv1|2.6,Vuln-ID|V-256400",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "SSH : running =",
+        "expect": "SSH : running = false"
+    },
+    "custom_item_13": {
+        "description": "ESXI-70-000036 - The ESXi host must disable ESXi Shell unless needed for diagnostics or troubleshooting.",
+        "info": "The ESXi Shell is an interactive command line environment available locally from the Direct Console User Interface (DCUI) or remotely via SSH. Activities performed from the ESXi Shell bypass vCenter role-based access control (RBAC) and audit controls.\n\nThe ESXi shell must only be turned on when needed to troubleshoot/resolve problems that cannot be fixed through the vSphere client.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Services.\n\nUnder 'Services', select the 'ESXi Shell' service and click the 'Stop' button.\n\nClick the 'Edit Startup policy...' button.\n\nSelect the 'Start and stop manually' radio button.\n\nClick 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'ESXi Shell'} | Set-VMHostService -Policy Off\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'ESXi Shell'} | Stop-VMHostService",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-256401r885984_rule,STIG-ID|ESXI-70-000036,SWIFT-CSCv1|2.3,Vuln-ID|V-256401",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "ESXi Shell : running =",
+        "expect": "ESXi Shell : running = false"
+    },
+    "custom_item_14": {
+        "description": "ESXI-70-000039 - Active Directory ESX Admin group membership must not be used when adding ESXi hosts to Active Directory.",
+        "info": "When adding ESXi hosts to Active Directory, all user/group accounts assigned to the Active Directory group \\'ESX Admins\\' will have full administrative access to the host.\n\nIf this group is not controlled or known to the system administrators, it may be used for inappropriate access to the host. Therefore, the default group must be changed to a site-specific Active Directory group and membership must be severely restricted.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Config.HostAgent.plugins.hostsvc.esxAdminsGroup' key and configure its value to an appropriate Active Directory group other than 'ESX Admins'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.plugins.hostsvc.esxAdminsGroup | Set-AdvancedSetting -Value",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256404r885993_rule,STIG-ID|ESXI-70-000039,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-256404",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Config.HostAgent.plugins.hostsvc.esxAdminsGroup : ",
+        "not_expect": "Config.HostAgent.plugins.hostsvc.esxAdminsGroup : .*ESX Admins$"
+    },
+    "custom_item_15": {
+        "description": "ESXI-70-000041 - The ESXi host must set a timeout to automatically disable idle shell sessions after two minutes.",
+        "info": "If a user forgets to log out of their local or remote ESXi Shell session, the idle connection will remain open indefinitely and increase the likelihood of inappropriate host access via session hijacking. The 'ESXiShellInteractiveTimeOut' allows the automatic termination of idle shell sessions.\n\nSatisfies: SRG-OS-000163-VMM-000700, SRG-OS-000279-VMM-001010",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'UserVars.ESXiShellInteractiveTimeOut' value and configure it to '120'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.ESXiShellInteractiveTimeOut | Set-AdvancedSetting -Value 120",
+        "reference": "800-171|3.1.11,800-171|3.13.9,800-53|AC-12,800-53|SC-10,800-53r5|AC-12,800-53r5|SC-10,CAT|II,CCI|CCI-001133,CCI|CCI-002361,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,NIAv2|NS49,Rule-ID|SV-256405r885996_rule,STIG-ID|ESXI-70-000041,SWIFT-CSCv1|2.6,Vuln-ID|V-256405",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.ESXiShellInteractiveTimeout : ",
+        "expect": "UserVars.ESXiShellInteractiveTimeout : 120$"
+    },
+    "custom_item_16": {
+        "description": "ESXI-70-000042 - The ESXi host must terminate shell services after 10 minutes.",
+        "info": "When the ESXi Shell or Secure Shell (SSH) services are enabled on a host, they will run indefinitely. To avoid having these services left running, set the 'ESXiShellTimeOut'. The 'ESXiShellTimeOut' defines a window of time after which the ESXi Shell and SSH services will be stopped automatically.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'UserVars.ESXiShellTimeOut' value and configure it to '600'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.ESXiShellTimeOut | Set-AdvancedSetting -Value 600",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-256406r885999_rule,STIG-ID|ESXI-70-000042,SWIFT-CSCv1|2.6,Vuln-ID|V-256406",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.ESXiShellTimeout : ",
+        "expect": "UserVars.ESXiShellTimeout : 600$"
+    },
+    "custom_item_17": {
+        "description": "ESXI-70-000043 - The ESXi host must log out of the console UI after two minutes.",
+        "info": "When the Direct Console User Interface (DCUI) is enabled and logged in, it should be automatically logged out if left logged on to avoid access by unauthorized persons. The 'DcuiTimeOut' setting defines a window of time after which the DCUI will be logged out.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'UserVars.DcuiTimeOut' value and configure it to '120'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.DcuiTimeOut | Set-AdvancedSetting -Value 120",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-256407r886002_rule,STIG-ID|ESXI-70-000043,SWIFT-CSCv1|2.6,Vuln-ID|V-256407",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.DcuiTimeOut : ",
+        "expect": "UserVars.DcuiTimeOut : 120$"
+    },
+    "custom_item_18": {
+        "description": "ESXI-70-000045 - The ESXi host must enable a persistent log location for all locally stored logs.",
+        "info": "ESXi can be configured to store log files on an in-memory file system. This occurs when the host's '/scratch' directory is linked to '/tmp/scratch'. When this is done, only a single day's worth of logs are stored at any time. In addition, log files will be reinitialized upon each reboot.\n\nThis presents a security risk as user activity logged on the host is only stored temporarily and will not persist across reboots. This can also complicate auditing and make it harder to monitor events and diagnose issues. ESXi host logging should always be configured to a persistent datastore.\n\nNote: Scratch space is configured automatically during installation or first boot of an ESXi host and does not usually need to be configured manually.\n\nIf ESXi is installed on an SD card or USB device, a persistent log location may not be configured upon install as normal.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Syslog.global.logDir' value and set it to a known persistent location.\n\nAn example is shown below, where 51dda02d-fade5016-8a08-005056171889 is the UUID of the target datastore:\n\n/vmfs/volumes/51dda02d-fade5016-8a08-005056171889\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Syslog.global.logDir | Set-AdvancedSetting -Value 'New Log Location'",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256408r886005_rule,STIG-ID|ESXI-70-000045,Vuln-ID|V-256408",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "[Ss]yslog\\.[Gg]lobal\\.[Ll]og[Dd]ir : .*$",
+        "expect": "@LOG_DIR@"
+    },
+    "custom_item_19": {
+        "description": "ESXI-70-000046 - The ESXi host must configure NTP time synchronization.",
+        "info": "To ensure the accuracy of the system clock, it must be synchronized with an authoritative time source within DOD. Many system functions, including time-based logon and activity restrictions, automated reports, system logs, and audit records, depend on an accurate system clock. If there is no confidence in the correctness of the system clock, time-based functions may not operate as intended and records may be of diminished value.\n\nSatisfies: SRG-OS-000355-VMM-001330, SRG-OS-000356-VMM-001340",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Time Configuration.\n\nUnder 'Network Time Protocol', click 'Edit...'. Ensure the 'NTP Servers' are authorized DOD time sources.\n\nEnsure the 'NTP Service Startup Policy' is set to 'Start and stop with host'.\n\nEnsure the 'Enable' checkbox, in the upper left, is checked. Click 'OK'.\n\nClick 'Edit' to configure the NTP service to start and stop with the host and with authoritative DOD time sources.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\n$NTPServers = 'ntpserver1','ntpserver2'\nGet-VMHost | Add-VMHostNTPServer $NTPServers\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'NTP Daemon'} | Set-VMHostService -Policy On\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'NTP Daemon'} | Start-VMHostService",
+        "reference": "800-171|3.3.7,800-53|AU-8(1)(a),800-53|AU-8(1)(b),800-53r5|SC-45(1),CAT|II,CCI|CCI-001891,CCI|CCI-002046,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.4,ITSG-33|AU-8(1),NESA|T3.6.7,NIAv2|NS44,NIAv2|NS45,NIAv2|NS46,NIAv2|NS47,PCI-DSSv3.2.1|10.4,PCI-DSSv3.2.1|10.4.1,PCI-DSSv3.2.1|10.4.3,PCI-DSSv4.0|10.6,PCI-DSSv4.0|10.6.1,PCI-DSSv4.0|10.6.2,PCI-DSSv4.0|10.6.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256409r886008_rule,STIG-ID|ESXI-70-000046,TBA-FIISB|37.4,Vuln-ID|V-256409",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "NTP Daemon : running =",
+        "expect": "NTP Daemon : running = true"
+    },
+    "custom_item_20": {
+        "description": "ESXI-70-000053 - Simple Network Management Protocol (SNMP) must be configured properly on the ESXi host.",
+        "info": "If SNMP is not being used, it must remain disabled. If it is being used, the proper trap destination must be configured. If SNMP is not properly configured, monitoring information can be sent to a malicious host that can use this information to plan an attack.",
+        "solution": "To disable SNMP from an ESXi shell, run the following command:\n\n# esxcli system snmp set -e no\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi Host:\n\nGet-VMHostSnmp | Set-VMHostSnmp -Enabled $false\n\nTo configure SNMP for v3 targets, use the 'esxcli system snmp set' command set locally on the host or remotely via PowerCLI.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256414r886023_rule,STIG-ID|ESXI-70-000053,SWIFT-CSCv1|2.3,Vuln-ID|V-256414",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "SNMP Server : running =",
+        "expect": "SNMP Server : running = false"
+    },
+    "custom_item_21": {
+        "description": "ESXI-70-000054 - The ESXi host must enable bidirectional Challenge-Handshake Authentication Protocol (CHAP) authentication for Internet Small Computer Systems Interface (iSCSI) traffic.",
+        "info": "When enabled, vSphere performs bidirectional authentication of both the iSCSI target and host. When not authenticating both the iSCSI target and host, there is potential for a man-in-the-middle attack, in which an attacker might impersonate either side of the connection to steal data. Bidirectional authentication mitigates this risk.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Storage >> Storage Adapters.\n\nSelect the iSCSI adapter >> Properties >> Authentication.\n\nClick 'Edit...'. Set 'Authentication Method' to 'Use bidirectional CHAP' and enter a unique secret for each traffic flow direction.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-VMHostHba | Where {$_.Type -eq 'iscsi'} | Set-VMHostHba -ChapType Required -ChapName 'chapname' -ChapPassword 'password' -MutualChapEnabled $true -MutualChapName 'mutualchapname' -MutualChapPassword 'mutualpassword'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256415r886026_rule,STIG-ID|ESXI-70-000054,SWIFT-CSCv1|2.3,Vuln-ID|V-256415",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "chapAuthEnabled : ",
+        "not_expect": "chapAuthEnabled : False$"
+    },
+    "custom_item_22": {
+        "description": "ESXI-70-000055 - The ESXi host must disable Inter-Virtual Machine (VM) Transparent Page Sharing.",
+        "info": "Published academic papers have demonstrated that by forcing a flush and reload of cache memory, it is possible to measure memory timings to try to determine an Advanced Encryption Standard (AES) encryption key in use on another virtual machine running on the same physical processor of the host server if Transparent Page Sharing (TPS) is enabled between the two VMs. This technique works only in a highly controlled system configured in a nonstandard way that VMware believes would not be recreated in a production environment.\n\nAlthough VMware believes information being disclosed in real-world conditions is unrealistic, out of an abundance of caution, upcoming ESXi Update releases will no longer enable TPS between VMs by default (TPS will still be used within individual VMs).",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Mem.ShareForceSalting' value and set it to '2'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Mem.ShareForceSalting | Set-AdvancedSetting -Value 2",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256416r886029_rule,STIG-ID|ESXI-70-000055,SWIFT-CSCv1|2.3,Vuln-ID|V-256416",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Mem.ShareForceSalting : ",
+        "expect": "Mem.ShareForceSalting : 2$"
+    },
+    "custom_item_23": {
+        "description": "ESXI-70-000057 - The ESXi host must configure the firewall to block network traffic by default - incoming",
+        "info": "In addition to service-specific firewall rules, ESXi has a default firewall rule policy to allow or deny incoming and outgoing traffic. Reduce the risk of attack by ensuring this is set to deny incoming and outgoing traffic.",
+        "solution": "From an ESXi shell, run the following command:\n\n# esxcli network firewall set --default-action=false\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHostFirewallDefaultPolicy | Set-VMHostFirewallDefaultPolicy -AllowIncoming $false -AllowOutgoing $false",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256418r886035_rule,STIG-ID|ESXI-70-000057,SWIFT-CSCv1|2.3,Vuln-ID|V-256418",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Firewall Default Policy : Incoming Blocked = ",
+        "expect": "Firewall Default Policy : Incoming Blocked = true"
+    },
+    "custom_item_24": {
+        "description": "ESXI-70-000057 - The ESXi host must configure the firewall to block network traffic by default - outgoing",
+        "info": "In addition to service-specific firewall rules, ESXi has a default firewall rule policy to allow or deny incoming and outgoing traffic. Reduce the risk of attack by ensuring this is set to deny incoming and outgoing traffic.",
+        "solution": "From an ESXi shell, run the following command:\n\n# esxcli network firewall set --default-action=false\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHostFirewallDefaultPolicy | Set-VMHostFirewallDefaultPolicy -AllowIncoming $false -AllowOutgoing $false",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256418r886035_rule,STIG-ID|ESXI-70-000057,SWIFT-CSCv1|2.3,Vuln-ID|V-256418",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Firewall Default Policy : Outgoing Blocked = ",
+        "expect": "Firewall Default Policy : Outgoing Blocked = true"
+    },
+    "custom_item_25": {
+        "description": "ESXI-70-000058 - The ESXi host must enable Bridge Protocol Data Units (BPDU) filter on the host to prevent being locked out of physical switch ports with Portfast and BPDU Guard enabled.",
+        "info": "BPDU Guard and Portfast are commonly enabled on the physical switch to which the ESXi host is directly connected to reduce the Spanning Tree Protocol (STP) convergence delay.\n\nIf a BPDU packet is sent from a virtual machine (VM) on the ESXi host to the physical switch configured as stated above, a cascading lockout of all the uplink interfaces from the ESXi host can occur. To prevent this type of lockout, BPDU Filter can be enabled on the ESXi host to drop any BPDU packets being sent to the physical switch.\n\nThe caveat is that certain Secure Socket Layer (SSL) virtual private networks that use Windows bridging capability can legitimately generate BPDU packets. The administrator should verify no legitimate BPDU packets are generated by VMs on the ESXi host prior to enabling BPDU Filter. If BPDU Filter is enabled in this situation, enabling Reject Forged Transmits on the virtual switch port group adds protection against Spanning Tree loops.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Net.BlockGuestBPDU' value and configure it to '1'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Net.BlockGuestBPDU | Set-AdvancedSetting -Value 1",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256419r886038_rule,STIG-ID|ESXI-70-000058,SWIFT-CSCv1|2.3,Vuln-ID|V-256419",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Net.BlockGuestBPDU : ",
+        "expect": "Net.BlockGuestBPDU : 1$"
+    },
+    "custom_item_26": {
+        "description": "ESXI-70-000059 - All port groups on standard switches must be configured to reject forged transmits.",
+        "info": "If the virtual machine (VM) operating system changes the Media Access Control (MAC) address, the operating system can send frames with an impersonated source MAC address at any time. This allows an operating system to stage malicious attacks on the devices in a network by impersonating a network adaptor authorized by the receiving network.\n\nThis means the virtual switch does not compare the source and effective MAC addresses.\n\nTo protect against MAC address impersonation, all virtual switches must have forged transmissions set to reject. Reject Forged Transmit can be set at the vSwitch and/or the Portgroup level. Switch-level settings can be overridden at the Portgroup level.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual Switches.\n\nOn each standard switch, click the '...' button next to each port group. Click Edit Settings >> Security tab.\n\nSet 'Forged transmits' to 'Reject'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VirtualSwitch -Standard | Get-SecurityPolicy | Set-SecurityPolicy -ForgedTransmits $false\nGet-VirtualPortGroup -Standard | Get-SecurityPolicy | Set-SecurityPolicy -ForgedTransmitsInherited $true",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256420r886041_rule,STIG-ID|ESXI-70-000059,SWIFT-CSCv1|2.3,Vuln-ID|V-256420",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": " - Allow Forged Transmits : ",
+        "expect": " - Allow Forged Transmits : false"
+    },
+    "custom_item_27": {
+        "description": "ESXI-70-000060 - All port groups on standard switches must be configured to reject guest Media Access Control (MAC) address changes.",
+        "info": "If the virtual machine (VM) operating system changes the MAC address, it can send frames with an impersonated source MAC address at any time. This allows it to stage malicious attacks on the devices in a network by impersonating a network adaptor authorized by the receiving network.\n\nThis will prevent VMs from changing their effective MAC address, which will affect applications that require this functionality. This will also affect how a layer 2 bridge will operate and will affect applications that require a specific MAC address for licensing. 'Reject MAC Changes' can be set at the vSwitch and/or the Portgroup level. Switch-level settings can be overridden at the Portgroup level.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual Switches.\n\nOn each standard switch, click the '...' button next to each port group. Click Edit Settings >> Security tab.\n\nSet 'MAC Address Changes' to 'Reject'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VirtualSwitch -Standard | Get-SecurityPolicy | Set-SecurityPolicy -MacChanges $false\nGet-VirtualPortGroup -Standard | Get-SecurityPolicy | Set-SecurityPolicy -MacChangesInherited $true",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256421r886044_rule,STIG-ID|ESXI-70-000060,SWIFT-CSCv1|2.3,Vuln-ID|V-256421",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": " - Allow MAC Changes : ",
+        "expect": " - Allow MAC Changes : false"
+    },
+    "custom_item_28": {
+        "description": "ESXI-70-000061 - All port groups on standard switches must be configured to reject guest promiscuous mode requests.",
+        "info": "When promiscuous mode is enabled for a virtual switch, all virtual machines (VMs) connected to the Portgroup have the potential to read all packets across that network (only the virtual machines connected to that Portgroup).\n\nPromiscuous mode is disabled by default on the ESXi Server, and this is the recommended setting. Promiscuous mode can be set at the vSwitch and/or the Portgroup level. Switch-level settings can be overridden at the Portgroup level.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual Switches.\n\nOn each standard switch, click the '...' button next to each port group. Click Edit Settings >> Security tab.\n\nSet 'Promiscuous Mode' to 'Reject'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VirtualSwitch -Standard | Get-SecurityPolicy | Set-SecurityPolicy -AllowPromiscuous $false\nGet-VirtualPortGroup -Standard | Get-SecurityPolicy | Set-SecurityPolicy -AllowPromiscuousInherited $true",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256422r886047_rule,STIG-ID|ESXI-70-000061,SWIFT-CSCv1|2.3,Vuln-ID|V-256422",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": " - Allow Promiscuous : ",
+        "expect": " - Allow Promiscuous : false"
+    },
+    "custom_item_29": {
+        "description": "ESXI-70-000062 - Use of the dvFilter network application programming interfaces (APIs) must be restricted.",
+        "info": "If the organization is not using products that use the dvfilter network API, the host should not be configured to send network information to a virtual machine (VM).\n\nIf the API is enabled, an attacker might attempt to connect a virtual machine to it, potentially providing access to the network of other VMs on the host.\n\nIf using a product that makes use of this API, verify the host has been configured correctly. If not using such a product, ensure the setting is blank.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Net.DVFilterBindIpAddress' value and remove any incorrect addresses.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Net.DVFilterBindIpAddress | Set-AdvancedSetting -Value ''",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256423r886050_rule,STIG-ID|ESXI-70-000062,SWIFT-CSCv1|2.3,Vuln-ID|V-256423",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Net.DVFilterBindIpAddress : ",
+        "expect": "Net.DVFilterBindIpAddress : NOT found$"
+    },
+    "custom_item_30": {
+        "description": "ESXI-70-000063 - All port groups on standard switches must be configured to a value other than that of the native virtual local area network (VLAN).",
+        "info": "ESXi does not use the concept of native VLAN. Frames with a VLAN specified in the port group will have a tag, but frames with VLAN not specified in the port group are not tagged and therefore will belong to the native VLAN of the physical switch.\n\nFor example, frames on VLAN 1 from a Cisco physical switch will be untagged, because this is considered as the native VLAN. However, frames from ESXi specified as VLAN 1 will be tagged with a '1'; therefore, traffic from ESXi that is destined for the native VLAN will not be routed correctly (because it is tagged with a '1' instead of being untagged), and traffic from the physical switch coming from the native VLAN will not be visible (because it is not tagged).\n\nIf the ESXi virtual switch port group uses the native VLAN ID, traffic from those virtual machines (VMs) will not be visible to the native VLAN on the switch because the switch is expecting untagged traffic.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual switches.\n\nFor each port group on a standard switch that is configured to a native VLAN, click the '...' button next to the port group.\n\nClick 'Edit Settings'. On the 'Properties' tab, change the 'VLAN ID' to a non-native VLAN and click 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VirtualPortGroup -Name 'portgroup name' | Set-VirtualPortGroup -VLanId 'New VLAN#'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256424r886053_rule,STIG-ID|ESXI-70-000063,SWIFT-CSCv1|2.3,Vuln-ID|V-256424",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "- VLAN : .*$",
+        "not_expect": "@VLAN_ID@"
+    },
+    "custom_item_31": {
+        "description": "ESXI-70-000064 - All port groups on standard switches must not be configured to virtual local area network (VLAN) 4095 unless Virtual Guest Tagging (VGT) is required - VGT is required.",
+        "info": "When a port group is set to VLAN 4095, the vSwitch passes all network frames to the attached virtual machines (VMs) without modifying the VLAN tags. In vSphere, this is referred to as VGT. The VM must process the VLAN information itself via an 802.1Q driver in the operating system.\n\nVLAN 4095 must only be implemented if the attached VMs have been specifically authorized and are capable of managing VLAN tags themselves. If VLAN 4095 is enabled inappropriately, it may cause denial of service or allow a VM to interact with traffic on an unauthorized VLAN.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual switches.\n\nFor each port group on a standard switch that is configured to a native VLAN, click the '...' button next to the port group.\n\nClick 'Edit Settings'. On the 'Properties' tab, change the 'VLAN ID' to an appropriate VLAN ID and click 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VirtualPortGroup -Name 'portgroup name' | Set-VirtualPortGroup -VLanId 'New VLAN#'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256425r919425_rule,STIG-ID|ESXI-70-000064,SWIFT-CSCv1|2.3,Vuln-ID|V-256425",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": " - VLAN :",
+        "not_expect": " - VLAN : 4095$"
+    },
+    "custom_item_32": {
+        "description": "ESXI-70-000065 - All port groups on standard switches must not be configured to virtual local area network (VLAN) values reserved by upstream physical switches.",
+        "info": "Certain physical switches reserve certain VLAN IDs for internal purposes and often disallow traffic configured to these values. For example, Cisco Catalyst switches typically reserve VLANs 1001 to 1024 and 4094, while Nexus switches typically reserve 3968 to 4094. Check the documentation for the specific switch in use. Using a reserved VLAN might result in a denial of service on the network.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> Networking >> Virtual switches.\n\nFor each port group on a standard switch that is configured to a reserved VLAN, click the '...' button next to the port group.\n\nClick 'Edit Settings'. On the 'Properties' tab, change the 'VLAN ID' to an appropriate VLAN ID and click 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VirtualPortGroup -Name 'portgroup name' | Set-VirtualPortGroup -VLanId 'New VLAN#'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256426r892864_rule,STIG-ID|ESXI-70-000065,SWIFT-CSCv1|2.3,Vuln-ID|V-256426",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": " - VLAN :",
+        "not_expect": " - VLAN : (100[1-9]|101[0-9]|102[0-4]|396[8-9]|39[7-9][0-9]|40[0-3][0-9]|404[0-7]|4094)$"
+    },
+    "custom_item_33": {
+        "description": "ESXI-70-000074 - The ESXi host must exclusively enable Transport Layer Security (TLS) 1.2 for all endpoints.",
+        "info": "TLS 1.0 and 1.1 are deprecated protocols with well-published shortcomings and vulnerabilities. TLS 1.2 should be enabled on all interfaces and SSLv3, TL 1.1, and 1.0 disabled, where supported.\n\nMandating TLS 1.2 may break third-party integrations and add-ons to vSphere. Test these integrations carefully after implementing TLS 1.2 and roll back where appropriate.\n\nOn interfaces where required functionality is broken with TLS 1.2, this finding is not applicable until such time as the third-party software supports TLS 1.2.\n\nModify TLS settings in the following order:\n1. vCenter.\n2. ESXi.\n\nSatisfies: SRG-OS-000480-VMM-002000, SRG-OS-000425-VMM-001710",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the 'UserVars.ESXiVPsDisabledProtocols' value and set it to the following:\n\ntlsv1,tlsv1.1,sslv3\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.ESXiVPsDisabledProtocols | Set-AdvancedSetting -Value 'tlsv1,tlsv1.1,sslv3'\n\nReboot the host for changes to take effect.",
+        "reference": "800-171|3.13.8,800-53|SC-8(2),800-53r5|SC-8(2),CAT|I,CCI|CCI-002420,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-256429r886068_rule,STIG-ID|ESXI-70-000074,SWIFT-CSCv1|2.1,Vuln-ID|V-256429",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.ESXiVPsDisabledProtocols : ",
+        "expect": "UserVars.ESXiVPsDisabledProtocols : sslv3,tlsv1,tlsv1.1$"
+    },
+    "custom_item_34": {
+        "description": "ESXI-70-000079 - The ESXi host must not suppress warnings that the local or remote shell sessions are enabled.",
+        "info": "Warnings that local or remote shell sessions are enabled alert administrators to activity they may not be aware of and need to investigate.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'UserVars.SuppressShellWarning' value and set it to '0'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.SuppressShellWarning | Set-AdvancedSetting -Value '0'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256432r919023_rule,STIG-ID|ESXI-70-000079,SWIFT-CSCv1|2.3,Vuln-ID|V-256432",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.SuppressShellWarning : ",
+        "expect": "UserVars.SuppressShellWarning : 0$"
+    },
+    "custom_item_35": {
+        "description": "ESXI-70-000081 - The ESXi host must not suppress warnings about unmitigated hyperthreading vulnerabilities.",
+        "info": "The L1 Terminal Fault (L1TF) CPU vulnerabilities published in 2018 have patches and mitigations available in vSphere. However, there are performance impacts to these mitigations that require careful thought and planning from the system administrator before implementation. Until a mitigation is implemented, the UI warning about the lack of a mitigation must not be dismissed so the SA does not assume the vulnerability has been addressed.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'UserVars.SuppressHyperthreadWarning' value and set it to '0'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.SuppressHyperthreadWarning | Set-AdvancedSetting -Value '0'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256433r919025_rule,STIG-ID|ESXI-70-000081,SWIFT-CSCv1|2.3,Vuln-ID|V-256433",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.SuppressHyperthreadWarning : ",
+        "expect": "UserVars.SuppressHyperthreadWarning : 0$"
+    },
+    "custom_item_36": {
+        "description": "ESXI-70-000086 - The ESXi host must verify certificates for SSL syslog endpoints.",
+        "info": "When sending syslog data to a remote host, ESXi can be configured to use any combination of TCP, UDP and SSL transports. When using SSL, the server certificate must be validated to ensure that the host is connecting to a valid syslog server.",
+        "solution": "To configure SSL syslog endpoint certificate checking it must be turned on and also the trusted certificate chain must be added to ESXi's trusted store.\n\nFrom the vSphere Client go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the 'Syslog.global.logCheckSSLCerts' value and set it to 'true'.\n\nCopy the PEM formatted trusted CA certificate so that is accessible to the host and append the contents to /etc/vmware/ssl/castore.pem by running the follow command:\n\n#>> /etc/vmware/ssl/castore.pem\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Syslog.global.logCheckSSLCerts | Set-AdvancedSetting -Value 'true'\n\nCopy the PEM formatted trusted CA certificate so that is accessible to the host.\n\n$esxcli = Get-EsxCli -v2\n$arguments = $esxcli.system.security.certificatestore.add.CreateArgs()\n$arguments.filename =$esxcli.system.security.certificatestore.add.Invoke($arguments)",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256438r886095_rule,STIG-ID|ESXI-70-000086,SWIFT-CSCv1|2.3,Vuln-ID|V-256438",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Syslog.global.logCheckSSLCerts : ",
+        "expect": "Syslog.global.logCheckSSLCerts : true"
+    },
+    "custom_item_37": {
+        "description": "ESXI-70-000087 - The ESXi host must enable volatile key destruction.",
+        "info": "By default, pages allocated for virtual machines (VMs), userspace applications, and kernel threads are zeroed out at allocation time. ESXi will always ensure that no nonzero pages are exposed to VMs or userspace applications. While this prevents exposing cryptographic keys from VMs or userworlds to other clients, these keys can stay present in host memory for a long time if the memory is not reused.\n\nThe NIAP Virtualization Protection Profile and Server Virtualization Extended Package require that memory that may contain cryptographic keys be zeroed upon process exit.\n\nTo this end, a new configuration option, MemEagerZero, can be configured to enforce zeroing out userworld and guest memory pages when a userworld process or guest exits. For kernel threads, memory spaces holding keys are zeroed out as soon as the secret is no longer needed.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Mem.MemEagerZero' value and set it to '1'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Mem.MemEagerZero | Set-AdvancedSetting -Value '1'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256439r919028_rule,STIG-ID|ESXI-70-000087,SWIFT-CSCv1|2.3,Vuln-ID|V-256439",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Mem\\.MemEagerZero : ",
+        "expect": "Mem\\.MemEagerZero : 1$"
+    },
+    "custom_item_38": {
+        "description": "ESXI-70-000088 - The ESXi host must configure a session timeout for the vSphere API.",
+        "info": "The vSphere API (VIM) allows for remote, programmatic administration of the ESXi host. Authenticated API sessions are no different from a risk perspective than authenticated UI sessions and they need similar protections.\n\nOne of these protections is a basic inactivity timeout, after which the session will be invalidated and reauthentication will be required by the application accessing the API. This is set to 30 seconds by default but can be disabled, thus leaving API sessions open indefinitely. The 30 second default must be verified and maintained.",
+        "solution": "From the vSphere Client go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the 'Config.HostAgent.vmacore.soap.sessionTimeout' value and set it to '30'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Config.HostAgent.vmacore.soap.sessionTimeout | Set-AdvancedSetting -Value '30'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256440r886101_rule,STIG-ID|ESXI-70-000088,SWIFT-CSCv1|2.3,Vuln-ID|V-256440",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Config\\.HostAgent\\.vmacore\\.soap\\.sessionTimeout : ",
+        "expect": "Config\\.HostAgent\\.vmacore\\.soap\\.sessionTimeout : 30$"
+    },
+    "custom_item_39": {
+        "description": "ESXI-70-000089 - The ESXi Host Client must be configured with a session timeout.",
+        "info": "The ESXi Host Client is the UI served up by the host itself, outside of vCenter. It is accessed by browsing to 'https:///ui'. ESXi is not usually administered via this interface for long periods, and all users will be highly privileged. Implementing a mandatory session idle limit will ensure that orphaned, forgotten, or ignored sessions will be closed promptly.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nSelect the 'UserVars.HostClientSessionTimeout' value and set it to '600'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name UserVars.HostClientSessionTimeout | Set-AdvancedSetting -Value '600'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256441r886104_rule,STIG-ID|ESXI-70-000089,SWIFT-CSCv1|2.3,Vuln-ID|V-256441",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars\\.HostClientSessionTimeout : ",
+        "expect": "UserVars\\.HostClientSessionTimeout : 600$"
+    },
+    "custom_item_40": {
+        "description": "ESXI-70-000091 - The ESXi host must be configured with an appropriate maximum password age.",
+        "info": "The older an ESXi local account password is, the larger the opportunity window is for attackers to guess, crack or reuse a previously cracked password. Rotating passwords on a regular basis is a fundamental security practice and one that ESXi supports.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Advanced System Settings.\n\nClick 'Edit'. Select the 'Security.PasswordMaxDays' value and set it to '90'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.PasswordMaxDays | Set-AdvancedSetting -Value '90'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256443r919030_rule,STIG-ID|ESXI-70-000091,SWIFT-CSCv1|2.3,Vuln-ID|V-256443",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security\\.PasswordMaxDays : ",
+        "expect": "Security\\.PasswordMaxDays : 90$"
+    },
+    "custom_item_41": {
+        "description": "ESXI-70-000097 - The ESXi Common Information Model (CIM) service must be disabled.",
+        "info": "The CIM system provides an interface that enables hardware-level management from remote applications via a set of standard application programming interfaces (APIs). These APIs are consumed by external applications such as HP SIM or Dell OpenManage for agentless, remote hardware monitoring of the ESXi host.\n\nTo reduce attack surface area and following the minimum functionality principal, the CIM service must be disabled unless explicitly needed and approved.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters.\n\nSelect the ESXi Host >> Configure >> System >> Services.\n\nSelect the 'CIM Server' service. If the service is started, click 'Stop'.\n\nClick 'Edit Startup Policy...'. Select 'Start and stop manually'. Click 'OK'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host, run the following commands:\n\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'CIM Server'} | Set-VMHostService -Policy Off\nGet-VMHost | Get-VMHostService | Where {$_.Label -eq 'CIM Server'} | Stop-VMHostService",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256448r886125_rule,STIG-ID|ESXI-70-000097,SWIFT-CSCv1|2.3,Vuln-ID|V-256448",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "CIM Server : running = ",
+        "expect": "CIM Server : running = False"
+    }
+}

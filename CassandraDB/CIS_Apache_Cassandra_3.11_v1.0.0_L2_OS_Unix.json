@@ -1,0 +1,235 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "1.1 Ensure a separate user and group exist for Cassandra - passwd",
+        "info": "Create separate userid and group for Cassandra.\n\nRationale:\nAll processes need to run as a user with least privilege. This mitigates the potential impact of malware to the system.",
+        "solution": "Create a group for cassandra(if it does not already exist)\n\nsudo groupadd cassandra\n\nCreate a user which is only used for running Cassandra and its related processes.\n\nsudo useradd -m -d /home/cassandra -s /bin/bash -g cassandra -ucassandra\n\nReplacingwith a number not already used on the server\n\nReferences:",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv6|5.1,CSCv7|4,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1NS,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/getent passwd @CASSANDRA_DB_USER@",
+        "expect": "^[\\\\s]*@CASSANDRA_DB_USER@"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "1.1 Ensure a separate user and group exist for Cassandra - group",
+        "info": "Create separate userid and group for Cassandra.\n\nRationale:\nAll processes need to run as a user with least privilege. This mitigates the potential impact of malware to the system.",
+        "solution": "Create a group for cassandra(if it does not already exist)\n\nsudo groupadd cassandra\n\nCreate a user which is only used for running Cassandra and its related processes.\n\nsudo useradd -m -d /home/cassandra -s /bin/bash -g cassandra -ucassandra\n\nReplacingwith a number not already used on the server\n\nReferences:",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv6|5.1,CSCv7|4,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1NS,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/getent group @CASSANDRA_DB_GROUP@",
+        "expect": "^[\\\\s]*@CASSANDRA_DB_GROUP@"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "1.1 Ensure a separate user and group exist for Cassandra - user exists in group",
+        "info": "Create separate userid and group for Cassandra.\n\nRationale:\nAll processes need to run as a user with least privilege. This mitigates the potential impact of malware to the system.",
+        "solution": "Create a group for cassandra(if it does not already exist)\n\nsudo groupadd cassandra\n\nCreate a user which is only used for running Cassandra and its related processes.\n\nsudo useradd -m -d /home/cassandra -s /bin/bash -g cassandra -ucassandra\n\nReplacingwith a number not already used on the server\n\nReferences:",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv6|5.1,CSCv7|4,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1NS,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "group_gid=`/usr/bin/getent group @CASSANDRA_DB_GROUP@ | /usr/bin/cut -d: -f3`; passwd_gid=`/usr/bin/getent passwd @CASSANDRA_DB_USER@ | /usr/bin/cut -d: -f4`; echo \"Group GID: $group_gid PASSWD GID: $passwd_gid\"; if [ $group_gid -eq $passwd_gid ]; then echo 'pass'; else echo 'fail'; fi",
+        "expect": "^[\\\\s]*pass[\\\\s]*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.2 Ensure the latest version of Java is installed",
+        "info": "A prerequisite to installing Cassandra is the installation of Java. The version of Java installed should be the most recent that is compatible with the organization's operational needs.\n\nRationale:\nUsing the most recent Java SDK version can help limit the possibilities for vulnerabilities in the software, the installation version applied during setup should be established according to the needs of the organization. Ensure you are using a release that is covered by a level of support which includes regular updates to address vulnerabilities.",
+        "solution": "Uninstall the old/unsupported version of Java, if present.\nDownload the latest compatible release of the Java JDK, or OpenJDK.\nFollow the provided installation instructions to complete the install.\n\nReferences:\nhttp://www.oracle.com/technetwork/java/javase/downloads/index-jsp-138363.html#javasejdk\nhttp://openjdk.java.net/\nhttp://openjdk.java.net/install/index.html\nhttp://cassandra.apache.org/doc/latest/getting_started/installing.html#prerequisites\nhttps://www.java.com/en/download/help/index_installing.xml?os=All+Platforms&j=8&n=20",
+        "reference": "800-53|SA-13,800-53r5|SA-8,CSCv6|2,CSCv7|18.4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-13,ITSG-33|SA-13a.,LEVEL|1S,NESA|T7.6.5",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "java -version",
+        "expect": ".*1\\.8\\.[0-9].*"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "1.3 Ensure the latest version of Python is installed",
+        "info": "A prerequisite to installing Cassandra is the installation of Python. The version of Python installed should be the most recent that is compatible with the organizations' operational needs.\n\nRationale:\nUsing the most recent Python can help limit the possibilities for vulnerabilities in the software, the installation version applied during setup should be established according to the needs of the organization. Ensure you are using a release that is covered by a level of support which includes regular updates to address vulnerabilities.",
+        "solution": "Uninstall the old/unsupported version of Python, if present.\nDownload the latest compatible release of the Python: https://www.python.org/downloads/\nFollow the provided installation instructions to complete the install.\n\nReferences:\nhttps://www.python.org/downloads/\nhttp://cassandra.apache.org/doc/latest/getting_started/installing.html#prerequisites",
+        "reference": "800-53|SA-13,800-53r5|SA-8,CSCv6|2,CSCv7|18.4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-13,ITSG-33|SA-13a.,LEVEL|1S,NESA|T7.6.5",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "python -V",
+        "expect": "^[\\\\s]*Python (2\\.7|3\\.[89])\\.[0-9]+[\\\\s]*$"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "1.4 Ensure latest version of Cassandra is installed",
+        "info": "The Cassandra installation version, along with the patches, should be the most recent that is compatible with organization's operational needs. When obtaining and installing software packages (typically via apt-get or you can compile the source code), it's imperative that packages (or the source code, tarball) are sourced only from valid and authorized repositories.\nFor Cassandra, a short list of valid repositories may include:\nThe official apache cassandra website: http://cassandra.apache.org/\nDataStax Enterprise: https://www.datastax.com/\n\nRationale:\nUsing the most recent version of Cassandra can help limit the possibilities for vulnerabilities in the software, the installation version applied during setup should be established according to the needs of the organization. Ensure you are using a release that is covered by a level of support which includes regular updates to address vulnerabilities.",
+        "solution": "Upgrade to the latest version of the Cassandra software:\n\nFor each node in the cluster:\n\nUsing the nodetool drain command to push all memtables data to SSTables.\nStop Cassandra services.\nBackup the data set and all of your Cassandra configuration files.\nDownload/Update Java if needed.\nDownload/Update Python if needed.\nDownload the binaries for the latest Cassandra revision from the Cassandra Download Page.\nInstall new version of Cassandra.\nConfigure new version of Cassandra, taking into account all of your previous settings in your config files(cassandra.yml, cassandrea-env.sh, etc).\nStart Cassandra services.\nCheck logs for warnings, errors.\nUsing the nodetool to upgrade your SSTables.\nUsing the nodetool command to check status of cluster.\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/getting_started/installing.html#prerequisites",
+        "reference": "800-53|SA-13,800-53r5|SA-8,CSCv6|2,CSCv7|18.4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-13,ITSG-33|SA-13a.,LEVEL|1S,NESA|T7.6.5",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "cassandra -v",
+        "expect": "^[\\\\s]*3\\.11\\.[0-9]+[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "1.5 Ensure the Cassandra service is run as a non-root user",
+        "info": "Though Cassandra database may be run as root, it should run as another non-root user.\n\nRationale:\nOne of the best ways to reduce your exposure to attack is to create a unique, unprivileged user and group for the server application. A best practice is to follow is ensuring processes run with a user with least privilege.",
+        "solution": "Create a group for cassandra (if it does not already exist)\n\nsudo groupadd cassandra\n\nCreate a user which is only used for running Cassandra and its related processes.\n\nsudo useradd -m -d-s /bin/bash -g cassandra -ucassandra\n\nReplacingwith the full path of where Cassandra binaries are installed.\n\nReplacingwith a number not already used on the server",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv6|5.1,CSCv7|4,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1S,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "cassandra_user=`/usr/bin/ps -aef | /usr/bin/grep -v grep | /usr/bin/grep cassandra | /usr/bin/grep java | /usr/bin/cut -d' ' -f1`; /usr/bin/echo Cassandra Service User: $cassandra_user; if [ $cassandra_user != root ]; then /usr/bin/echo passed; else /usr/bin/echo failed; fi",
+        "expect": "^[\\\\s]*passed[\\\\s]*$"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "1.6 Ensure clocks are synchronized on all nodes",
+        "info": "Enabling Network Time Protocol (NTP), or some equivalent way, to keep clocks on all nodes in sync is critical.\n\nRationale:\nCassandra decides which data is most current between all of the nodes in the cluster based on timestamps. It is paramount to ensure all clocks are in-sync, otherwise the most current data may not be returned or worse, marked for deletion.",
+        "solution": "Install and start the time protocol on every node in the Cassandra cluster.",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSCv6|6.1,CSCv7|6.1,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,LEVEL|1NS,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/ps -ef | /usr/bin/egrep '(ntp|chronyd)' | /usr/bin/grep -v grep",
+        "expect": "(ntp|chronyd)"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "2.1 Ensure that authentication is enabled for Cassandra databases",
+        "info": "Authentication is pluggable in Cassandra and is configured using the authenticator setting in cassandra.yaml. Cassandra ships with two options included in the default distribution, AllowAllAuthenticator and PasswordAuthenticator. The default, AllowAllAuthenticator, performs no authentication checks and therefore requires no credentials. It is used to disable authentication completely. The second option, PasswordAuthenticator, stores encrypted credentials in a system table. This can be used to enable simple username/password authentication.\n\nRationale:\nAuthentication is a necessary condition of Cassandra's permissions subsystem, so if authentication is disabled then so are permissions. Failure to authenticate clients, users, and/or servers can allow unauthorized access to the Cassandra database and can prevent tracing actions back to their sources. The authentication mechanism should be implemented before anyone accesses the Cassandra server.",
+        "solution": "To enable the authentication mechanism:\n\nStop the Cassandra database.\nModify cassandra.yaml file to modify/add entry for authenticator: set it to PasswordAuthenticator\nStart the Cassandra database.\n\nDefault Value:\nauthenticator: AllowAllAuthenticator\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/getting_started/configuring.html\nhttp://cassandra.apache.org/doc/latest/operating/security.html",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|16,CSCv7|14.7,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*authenticator[\\\\s]*:[\\\\s]*",
+        "expect": "^[\\\\s]*authenticator[\\\\s]*:[\\\\s]*PasswordAuthenticator[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "2.2 Ensure that authorization is enabled for Cassandra databases",
+        "info": "Authorization is pluggable in Cassandra and is configured using the authorizer setting in cassandra.yaml. Cassandra ships with two options included in the default distribution, AllowAllAuthenticator and CassandraAuthorizer. The default, AllowAllAuthenticator performs no checking which grants all permissions to all roles. The second option, CassandraAuthorizer, implements full permissions management functionality and stores its data in Cassandra system tables.\n\nRationale:\nAuthorizing roles is an important step towards ensuring only authorized access to the Cassandra database tables is permitted. It also provides the requisite means of implementing least privilege best practices. The authorization mechanism should be implemented before anyone accesses the Cassandra database.",
+        "solution": "To enable the authorization mechanism:\n\nStop the Cassandra database.\nModify cassandra.yaml file to modify/add entry for authorization: set it to CassandraAuthorizer\nStart the Cassandra database.\n\nDefault Value:\nauthorizer: AllowAllAuthorizer\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/getting_started/configuring.html\nhttp://cassandra.apache.org/doc/latest/operating/security.html\nNotes:\nThe authorizer must be configured to AllowAllAuthorizer if AllowAllAuthenticator is the configured authenticator.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|16,CSCv7|14.7,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1S,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^authorizer[\\\\s]*:[\\\\s]*",
+        "expect": "^authorizer[\\\\s]*:[\\\\s]*CassandraAuthorizer[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "3.2 Ensure that the default password changed for the cassandra role",
+        "info": "The cassandra role has a default password which must be changed.\n\nRationale:\nFailure to change the default password for the cassandra role may pose a risk to the database in the form of unauthorized access.",
+        "solution": "Change the password for the cassandra role by issuing the following command:\ncqlsh -u cassandra -p cassandra\nalter role 'cassandra' with password '';\nWhereis replaced with the password of your choosing.\n\nDefault Value:\ncassandra\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/operating/security.html",
+        "reference": "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv6|16,CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1S,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/cqlsh -u cassandra -p cassandra --execute='exit'",
+        "expect": ".*Connection error:.*Unable to connect to any servers.*"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "3.4 Ensure that Cassandra is run using a non-privileged, dedicated service account",
+        "info": "As with any service installed on a host, it can be provided with its own user context. Providing a dedicated user to the service provides the ability to precisely constrain the service within the larger host context.\n\nRationale:\nUtilizing a non-privileged account for Cassandra to execute as may reduce the impact of a Cassandra-born vulnerability. A restricted account will be unable to access resources unrelated to Cassandra, such as operating system configurations.",
+        "solution": "Create a user which is only used for running Cassandra and directly related processes. This user must not have administrative rights to the system.",
+        "reference": "800-171|3.1.1,800-171|3.1.5,800-53|AC-2,800-53|AC-6,800-53r5|AC-2,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4,CSCv7|14,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,ITSG-33|AC-6,LEVEL|1S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "cassandra_process_user=`/usr/bin/ps axo user:20,pid,pcpu,pmem,vsz,rss,tty,stat,start,time,comm | /usr/bin/egrep '^@CASSANDRA_DB_USER@.*$' | /usr/bin/egrep java | /usr/bin/cut -d' ' -f1`; /usr/bin/id $cassandra_process_user | /usr/bin/awk '{print ($0 !~ /groups=.*0\\(root\\).*\\(sudo\\)/ ) ?$0 \"\\\\nUser is not root and does not belong to sudo group\" :$0 \"\\\\nUser is root or belongs to sudo group\"}'",
+        "expect": "^[\\\\s]*User is not root and does not belong to sudo group[\\\\s]*$"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "Verify listen_address is not set to 0.0.0.0",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*listen_address[\\\\s]*:[\\\\s]*0\\.0\\.0\\.0[\\\\s]*$",
+        "expect": "^[\\\\s]*listen_address[\\\\s]*:[\\\\s]*0\\.0\\.0\\.0[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "Verify listen_interface is not set. (Should not be set in conjunction with listen_address )",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*[#]+[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*.*$",
+        "expect": "^[\\\\s]*[#]+[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*.*$"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "3.5 Ensure that Cassandra only listens for network connections on authorized interfaces",
+        "info": "When listen_address is blank and listen_interface is commented out, this will be set automatically by InetAddress.getLocalHost(). Presuming the node is configured correctly, e.g. hostname, name resolution, etc., this will configure the node to use the address associated with the hostname. The listen_address must not be set to 0.0.0.0.\n\nRationale:\nSetting the address or interface to bind to will tell other Cassandra nodes to which address or interface to connect. This must be changed from the default in order for multiple nodes to be able to communicate.",
+        "solution": "Set the listen_address or listen_interface, not both, in the cassandra.yaml to an authorized address or interface.\n\nDefault Value:\nlisten_address: localhost\nlisten_interface: eth0, but is commented out by default.\n\nReferences:\nhttp://cassandra.apache.org/doc/3.11/configuration/cassandra_config_file.html#listen-address\nhttp://cassandra.apache.org/doc/3.11/configuration/cassandra_config_file.html#listen-interface",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1NS,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*listen_address[\\\\s]*:[\\\\s]*",
+        "expect": "^[\\\\s]*listen_address[\\\\s]*:[\\\\s]*@LISTEN_ADDRESS@[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "Verify listen_address is not set to 0.0.0.0",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*[#]+[\\\\s]*listen_address[\\\\s]*:[\\\\s]*.*$",
+        "expect": "^[\\\\s]*[#]+[\\\\s]*listen_address[\\\\s]*:[\\\\s]*.*$"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "Verify listen_interface is not set. (Should not be set in conjunction with listen_address )",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*.*$",
+        "expect": "^[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*.*$"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "3.5 Ensure that Cassandra only listens for network connections on authorized interfaces",
+        "info": "When listen_address is blank and listen_interface is commented out, this will be set automatically by InetAddress.getLocalHost(). Presuming the node is configured correctly, e.g. hostname, name resolution, etc., this will configure the node to use the address associated with the hostname. The listen_address must not be set to 0.0.0.0.\n\nRationale:\nSetting the address or interface to bind to will tell other Cassandra nodes to which address or interface to connect. This must be changed from the default in order for multiple nodes to be able to communicate.",
+        "solution": "Set the listen_address or listen_interface, not both, in the cassandra.yaml to an authorized address or interface.\n\nDefault Value:\nlisten_address: localhost\nlisten_interface: eth0, but is commented out by default.\n\nReferences:\nhttp://cassandra.apache.org/doc/3.11/configuration/cassandra_config_file.html#listen-address\nhttp://cassandra.apache.org/doc/3.11/configuration/cassandra_config_file.html#listen-interface",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1NS,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*",
+        "expect": "^[\\\\s]*listen_interface[\\\\s]*:[\\\\s]*@LISTEN_INTERFACE@[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "4.1 Ensure that logging is enabled. - nodetool getlogginglevels",
+        "info": "Apache Cassandra uses Logback for logging functionality. While this can be set using nodetool setlogginglevel changes made using this method will be reverted to the level specified in the logback.xml file the next time the process restarts.\n\nThe configurable logging levels are:\nOFF\nTRACE\nDEBUG\nINFO (Default)\nWARN\nERROR\n\nRationale:\nIf logging is not enabled, issues may go undiscovered, and compromises and other incidents may occur without being quickly detected. It may also not be possible to provide evidence of compliance with security laws, regulations, and other requirements.",
+        "solution": "To remediate this setting:\nEdit the logback-test.xml if present; otherwise, edit the logback.xmlINFO%-5level [%thread] %date{ISO8601} %F:%L - %msg%nRestart the Apache Cassandra\n\nDefault Value:\nINFO\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/troubleshooting/reading_logs.html?highlight=logging\nhttps://logback.qos.ch/manual/configuration.html",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12,800-53r5|AU-12,CSCv7|6.3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12,LEVEL|1S,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/nodetool getlogginglevels",
+        "expect": "^[\\\\s]*ROOT[\\\\s]+(TRACE|DEBUG|INFO|WARN|ERROR)"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "4.1 Ensure that logging is enabled. - logback.xml",
+        "info": "Apache Cassandra uses Logback for logging functionality. While this can be set using nodetool setlogginglevel changes made using this method will be reverted to the level specified in the logback.xml file the next time the process restarts.\n\nThe configurable logging levels are:\nOFF\nTRACE\nDEBUG\nINFO (Default)\nWARN\nERROR\n\nRationale:\nIf logging is not enabled, issues may go undiscovered, and compromises and other incidents may occur without being quickly detected. It may also not be possible to provide evidence of compliance with security laws, regulations, and other requirements.",
+        "solution": "To remediate this setting:\nEdit the logback-test.xml if present; otherwise, edit the logback.xmlINFO%-5level [%thread] %date{ISO8601} %F:%L - %msg%nRestart the Apache Cassandra\n\nDefault Value:\nINFO\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/troubleshooting/reading_logs.html?highlight=logging\nhttps://logback.qos.ch/manual/configuration.html",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12,800-53r5|AU-12,CSCv7|6.3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12,LEVEL|1S,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/logback.xml",
+        "regex": "<[\\\\s]*root level[\\\\s]*=\"[\\\\s]*(TRACE|DEBUG|INFO|WARN|ERROR)[\\\\s]*\">",
+        "expect": "<[\\\\s]*root level[\\\\s]*=\"[\\\\s]*(TRACE|DEBUG|INFO|WARN|ERROR)[\\\\s]*\">"
+    },
+    "custom_item_22": {
+        "description": "Check if the commercial version DataStax Cassandra is installed",
+        "file": "/etc/dse/dse.yaml"
+    },
+    "custom_item_23": {
+        "system": "Linux",
+        "description": "4.2 Ensure that auditing is enabled",
+        "info": "Audit logging in Cassandra logs every incoming CQL command request, Authentication (successful as well as unsuccessful login) to C* node. Currently, there are two implementations provided, the custom logger can be implemented and injected with the class name as a parameter in cassandra.yaml.\n\nRationale:\nUnauthorized attempts to create, drop or alter users or data should be a concern.",
+        "solution": "Open Source Version\nApache Cassandra versions up to 3.11.4 does not have auditing capabilities, it will be in version 4.x but that has not been released yet according to apache Cassandra website. http://cassandra.apache.org/download/\n\nCommercial Version\nOpen the dse.yaml file in a text editor\nIn the audit_logging_options section, set enabled to true.\n\n# Audit logging options\naudit_logging_options:\n       enabled: true\n\nYou must also define where you want logging to go, add either of the following lines:\nSet the logger option to either CassandraAuditWriter, which logs to a table, or SLF4JAuditWriter, which logs to the SLF4J logger.\n\nReferences:\nhttps://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/sec/secAudit.html#secAudit",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-12,LEVEL|1NS,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/grep -A2 audit_logging_options /etc/dse/dse.yaml | /usr/bin/grep enabled",
+        "expect": "^[\\\\s]*enabled[\\\\s]*:[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "5.1 Inter-node Encryption",
+        "info": "Cassandra offers the option to encrypt data in transit between nodes on the cluster. By default, inter-node encryption is turned off.\n\nRationale:\nData being transferred on the wire should be encrypted to avoid network snooping, whether legitimate or not.",
+        "solution": "The inter-node encryption should be implemented before anyone accesses the Cassandra server.\n\nTo enable the inter-node encryption mechanism:\n\nStop the Cassandra database.\nIf not done so already, build out your keystore and truststore.\nModify cassandra.yaml file to modify/add entry for internode_encryption: set it to all\nStart the Cassandra database.\n\nDefault Value:\ninternode_encryption: none\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/operating/security.html",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1S,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "file": "/etc/cassandra/default.conf/cassandra.yaml",
+        "regex": "^[\\\\s]*internode_encryption[\\\\s]*:[\\\\s]*",
+        "expect": "^[\\\\s]*internode_encryption[\\\\s]*:[\\\\s]*(all|dc|rack)[\\\\s]*$"
+    },
+    "custom_item_25": {
+        "system": "Linux",
+        "description": "5.2 Client Encryption",
+        "info": "Cassandra offers the option to encrypt data in transit between the client and nodes on the cluster. By default client encryption is turned off.\n\nRationale:\nData in transit between the client and node on the cluster should be encrypted to avoid network snooping, whether legitimate or not.",
+        "solution": "The client encryption should be implemented before anyone accesses the Cassandra server.\nTo enable the client encryption mechanism:\nStop the Cassandra database.\nIf not done so already, build out your keystore and truststore.\nModify cassandra.yaml file to modify/add entries under client_encryption_options:\nset enabled: true\n\nset optional: false\nThis will force all connections to be encrypted between client and node on the cluster.\nStart the Cassandra database.\n\nDefault Value:\nenabled: false\noptional: false\n\nReferences:\nhttp://cassandra.apache.org/doc/latest/operating/security.html",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1S,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/2309",
+        "cmd": "/usr/bin/grep -A2 client_encryption_options /etc/cassandra/default.conf/cassandra.yaml | /usr/bin/grep enabled",
+        "expect": "^[\\\\s]*enabled[\\\\s]*:[\\\\s]*true[\\\\s]*$"
+    }
+}

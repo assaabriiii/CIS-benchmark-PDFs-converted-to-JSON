@@ -1,0 +1,613 @@
+{
+    "custom_item_1": {
+        "description": "TiMOS Platform Check",
+        "expect": "^#?\\s*TiMOS.*"
+    },
+    "custom_item_2": {
+        "description": "SR-OS Platform Check",
+        "expect": "^#?\\s*SR-OS.*"
+    },
+    "custom_item_3": {
+        "description": "TiMOS/SR-OS : OS Version is up to date",
+        "info": "Regular OS and firmware updates are an important tool in mitigating security vulnerabilities.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Make sure that your device is running the most recent version of TiMOS/SR-OS.",
+        "reference": "800-171|3.4.1,800-53|CM-8a.,800-53r5|CM-8a.,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.1.1,ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,NIAv2|NS35,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show version",
+        "regex": "",
+        "expect": "Manual review required"
+    },
+    "custom_item_4": {
+        "description": "check for BGP",
+        "expect": "^\\s*bgp\\s*$"
+    },
+    "custom_item_5": {
+        "description": "BGP: Disable Capability Negotiation",
+        "info": "This command disables the exchange of capabilities. When command is enabled and after the peering is flapped, any new capabilities are not negotiated and will strictly support IPv4 routing exchanges with that peer. The no form of the command removes this command from the configuration and restores the normal behavior. This is beneficial in Internet peering environment when only address-family exchanged is IPv4.",
+        "solution": "Run the following command on the device to disable capability negotiation: configure router bgp groupdisable-capability-negotiation",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7c.,800-53r5|SC-7c.,CN-L3|7.1.2.2(f),CN-L3|8.1.3.1(a),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7b.,NESA|T5.4.5,NIAv2|NS52,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "disable-capability-negotiation"
+    },
+    "custom_item_6": {
+        "description": "BGP: Authenticate peers",
+        "info": "This command ensures you are able communicate with known peering routers either within AS.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run the following command on the device to configure BGP authentication keys: configure router bgp groupauthentication-key",
+        "reference": "800-171|3.1.3,800-53|AC-4(17),800-53r5|AC-4(17),CN-L3|8.1.10.2(c),CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-4(17),NESA|T4.2.1,NESA|T4.5.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T5.4.6,NESA|T5.7.2,NESA|T7.5.2,NESA|T7.6.4,NIAv2|GS11a,NIAv2|GS12a,NIAv2|GS14a,NIAv2|GS15a,NIAv2|GS16a,NIAv2|NS13a,NIAv2|NS13b,NIAv2|NS13c,NIAv2|NS14,NIAv2|SS23,NIAv2|SS27a,NIAv2|SS27b,NIAv2|SS32,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "auth-keychain.*$",
+        "expect": "authentication-key \"[0-9a-f]{32,64}\" hash2"
+    },
+    "custom_item_7": {
+        "description": "CPM Filtering: Filter for IGP",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "match protocol ospf-igp"
+    },
+    "custom_item_8": {
+        "description": "CPM Filtering: Filter for RSVP",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "expect": "match protocol rsvp"
+    },
+    "custom_item_9": {
+        "description": "CPM Filtering: Filter for VRRP",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n        NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "expect": "match protocol vrrp"
+    },
+    "custom_item_10": {
+        "description": "CPM Filtering: Filter for PIM",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "expect": "match protocol pim"
+    },
+    "custom_item_11": {
+        "description": "CPM Filtering: Filter for IGMP",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "match protocol igmp"
+    },
+    "custom_item_12": {
+        "description": "CPM Filtering: Filter for L2TP",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "match protocol l2tp"
+    },
+    "custom_item_13": {
+        "description": "Look for ICMP rules - ICMP enabled",
+        "expect": "match protocol icmp"
+    },
+    "custom_item_14": {
+        "description": "CPM Filtering: Filter for ICMP - echo-reply",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "icmp-type echo-reply"
+    },
+    "custom_item_15": {
+        "description": "CPM Filtering: Filter for ICMP - dest-unreachable",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "icmp-type dest-unreachable"
+    },
+    "custom_item_16": {
+        "description": "CPM Filtering: Filter for ICMP - echo request",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "icmp-type echo-request"
+    },
+    "custom_item_17": {
+        "description": "CPM Filtering: Filter for ICMP - time exceeded",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "icmp-type time-exceeded"
+    },
+    "custom_item_18": {
+        "description": "CPM Filtering: Filter for ICMP - source quench",
+        "info": "CPM-Filters are used to restrict (or in combination with cpm-queues, rate limit) traffic destined to the CPU on the SF/CPM including routing protocols. These filters are implemented in TiMOS/SR-OS such that packets exit on first match to perform the associated action. It is critical that filter entries be properly sequenced from most to least explicit. The CPM filters are dedicated ACL-like filters that act only on control traffic this is extracted from the data plane and sent to the CPM for processing.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "icmp-type source-quench"
+    },
+    "custom_item_19": {
+        "description": "check to see if ICMP is enabled",
+        "expect": "\\s*icmp\\s*$"
+    },
+    "custom_item_20": {
+        "description": "ICMP: Do not return redirect messages",
+        "info": "Prevent routers from responding with unreachable notifications can be implemented at router and service interface. For interfaces such as IES or VPRN, the service interface is used to configure the ICMP parameters. ICMP mask replies are commonly used for network mapping and information gathering. These messages do not provide any legitimately required services so should be disabled. Redirects and unreachables can either be turned off or rate-limited.",
+        "solution": "Run the following command on the device to disable ICMP options for interfaces that do not require it: configure router ificmp no",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "no redirects"
+    },
+    "custom_item_21": {
+        "description": "ICMP: Do not return unreachable messages",
+        "info": "Prevent routers from responding with unreachable notifications can be implemented at router and service interface. For interfaces such as IES or VPRN, the service interface is used to configure the ICMP parameters. ICMP mask replies are commonly used for network mapping and information gathering. These messages do not provide any legitimately required services so should be disabled. Redirects and unreachables can either be turned off or rate-limited.",
+        "solution": "Run the following command on the device to disable ICMP options for interfaces that do not require it: configure router ificmp no",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "no unreachables"
+    },
+    "custom_item_22": {
+        "description": "DNS: A trusted primary DNS server is configured",
+        "info": "It is strongly recommended to set both a primary and secondary DNS server on TiMOS/SR-OS devices.",
+        "solution": "Update the bof.cfg file on the CF media directly to set DNS servers.",
+        "reference": "800-53|SC-20,800-53r5|SC-20,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,QCSC-v1|5.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system information",
+        "regex": "Primary DNS Server.*$",
+        "expect": "@PRIMARY_DNS@"
+    },
+    "custom_item_23": {
+        "description": "DNS: A trusted secondary DNS server is configured",
+        "info": "It is strongly recommended to set both a primary and secondary DNS server on TiMOS/SR-OS devices.",
+        "solution": "Update the bof.cfg file on the CF media directly to set DNS servers.",
+        "reference": "800-53|SC-20,800-53r5|SC-20,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,QCSC-v1|5.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system information",
+        "regex": "Secondary DNS Server.*$",
+        "expect": "@SECONDARY_DNS@"
+    },
+    "custom_item_24": {
+        "description": "Check to see if IP filtering is in place",
+        "expect": "ip-filter"
+    },
+    "custom_item_25": {
+        "description": "Check to see if IP filtering is in place",
+        "not_expect": "no ip-filter"
+    },
+    "custom_item_26": {
+        "description": "ACLs: Filter for RFC 3330 addresses (0.0.0.0/8)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 0\\.0\\.0\\.0\\/8"
+    },
+    "custom_item_27": {
+        "description": "ACLs: Filter for RFC 3330 addresses (255.255.255.255/32)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 255\\.255\\.255\\.255\\/32"
+    },
+    "custom_item_28": {
+        "description": "ACLs: Filter for RFC 1918 addresses (10.0.0.0/8)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 10\\.0\\.0\\.0\\/8"
+    },
+    "custom_item_29": {
+        "description": "ACLs: Filter for RFC 3330 addresses (127.0.0.0/8)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 127\\.0\\.0\\.0\\/8"
+    },
+    "custom_item_30": {
+        "description": "ACLs: Filter for RFC 3330 addresses (169.254.0.0/16)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 169\\.254\\.0\\.0\\/16"
+    },
+    "custom_item_31": {
+        "description": "ACLs: Filter for RFC 1918 addresses (172.16.0.0/12)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 172\\.16\\.0\\.0\\/12"
+    },
+    "custom_item_32": {
+        "description": "ACLs: Filter for RFC 3330 addresses (192.0.2.0/24)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 192\\.0\\.2\\.0\\/24"
+    },
+    "custom_item_33": {
+        "description": "ACLs: Filter for RFC 3330 addresses (192.42.172.0/24)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 192\\.42\\.172\\.0\\/24"
+    },
+    "custom_item_34": {
+        "description": "ACLs: Filter for RFC 3330 addresses (192.0.0.0/24)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 192\\.0\\.0\\.0\\/24"
+    },
+    "custom_item_35": {
+        "description": "ACLs: Filter for RFC 1918 addresses (192.168.0.0/16)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 192\\.168\\.0\\.0\\/16"
+    },
+    "custom_item_36": {
+        "description": "ACLs: Filter for RFC 3330 addresses (198.18.0.0/15)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 198\\.18\\.0\\.0\\/15"
+    },
+    "custom_item_37": {
+        "description": "ACLs: Filter for RFC 3330 addresses (198.51.100.0/24)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 198\\.51\\.100\\.0\\/24"
+    },
+    "custom_item_38": {
+        "description": "ACLs: Filter for RFC 3330 addresses (203.0.113.0/24)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 203\\.0\\.113\\.0\\/24"
+    },
+    "custom_item_39": {
+        "description": "ACLs: Filter for RFC 3330 addresses (224.0.0.0/4)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 224\\.0\\.0\\.0\\/4"
+    },
+    "custom_item_40": {
+        "description": "ACLs: Filter for RFC 3330 addresses (240.0.0.0/4)",
+        "info": "ACLs (filters) can be used is to mitigate attacks at the data plane. Based on RFC1918/3330 certain blocks of IPs were designated for private networks and as such should not be routed on the Internet.",
+        "solution": "Run the following command on the device to configure these ACLs:\n                configure filter ip-filterentrycreate\n                descriptionmatch src-ip/action drop\n                exit",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "src-ip 240\\.0\\.0\\.0\\/4"
+    },
+    "custom_item_41": {
+        "description": "Check for VRRP",
+        "expect": "^\\s*vrrp\\s*\\d.*$"
+    },
+    "custom_item_42": {
+        "description": "uRPF: Unicast Reverse Path Forwarding (uRPF) is Enabled",
+        "info": "The Unicast RPF (uRPF) helps to mitigate problems that are caused by the introduction of malformed or spoofed IP source addresses into a network by discarding IP packets that lack a verifiable IP source address. For example, a number of common types of denial-of-service (DoS) attacks, including Smurf and Tribe Flood Network (TFN), can take advantage of forged or rapidly changing source IP addresses to allow attackers to thwart efforts to locate or filter the attacks. For Internet service providers (ISPs) that provide public access, Unicast RPF deflects such attacks by forwarding only packets that have source addresses that are valid and consistent with the IP routing table. This action protects the network of the ISP, its customer, and the rest of the Internet.",
+        "solution": "Run the following command on the device to enable urpf-check: configure service iesaddressurpf-check",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "urpf-check"
+    },
+    "custom_item_43": {
+        "description": "Check for VPLS services",
+        "expect": "^\\s*vpls\\s*$"
+    },
+    "custom_item_44": {
+        "description": "Spanning Tree: enable root-guard",
+        "info": "A feature that can be deployed to prevent an attacker from spoofing his or her system as the root bridge by sending announcements with a lower bridge priority and so becoming the root. The 'root-guard' feature allows an operator to block certain interfaces from becoming the root. This could be enabled, for example, on customer facing (untrusted) SAPs.",
+        "solution": "Run the following command on the device to configure root-guard: configure service vpls sap stp root-guard",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "root-guard",
+        "not_expect": "no root-guard"
+    },
+    "custom_item_45": {
+        "description": "Spanning Tree: enable edge-port",
+        "info": "Spanning Tree Auto-Edge is a feature that can be used in conjunction with Root-Guard. Auto-Edge is used when connecting to a non-STP enabled device were a loop cant occur and the port is brought into operation as soon as there is link. If an xSTP/BPDU is received on a edge port it looses its edge port status and STP is enabled and converges and xSTP/TCN is sent. If the BPDU bridge-id has a better priority then the port will go into blocking state. Auto-edge is enabled by default. Edge-Port feature enables a port to never part-take in the spanning tree decision process.",
+        "solution": "Run the following command on the device to configure edge-port: configure service vpls sap stp edge-port",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "edge-port",
+        "not_expect": "no edge-port"
+    },
+    "custom_item_46": {
+        "description": "Login: SSH is enabled",
+        "info": "SSH uses well known cryptographic algorithms to encrypt all data transmitted between the router and a user. TiMOS/SR-OS Configuration 'preserve-key' ensures that the initial key is maintained after the router is restarted for any reason. 'version 2' ensures that only SSH version 2 connections are accepted. Several attacks against version one have been reported and version 2 is considered more secure.",
+        "solution": "Run the following command on the device to enable SSH: configure system security ssh",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security ssh",
+        "regex": "Administrative State",
+        "expect": "Enabled"
+    },
+    "custom_item_47": {
+        "description": "Login: ssh - v1 is disabled",
+        "info": "SSH uses well known cryptographic algorithms to encrypt all data transmitted between the router and a user. TiMOS/SR-OS Configuration 'preserve-key' ensures that the initial key is maintained after the router is restarted for any reason. 'version 2' ensures that only SSH version 2 connections are accepted. Several attacks against version one have been reported and version 2 is considered more secure.",
+        "solution": "SSHv2 is configured by default in TiMOS/SR-OS. Run the following command on the device to enable SSHv2: configure system security version 2",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security ssh",
+        "regex": "SSH Protocol Version 1",
+        "expect": "Disabled"
+    },
+    "custom_item_48": {
+        "description": "Login: ssh - v2 and later is enabled",
+        "info": "SSH uses well known cryptographic algorithms to encrypt all data transmitted between the router and a user. TiMOS/SR-OS Configuration 'preserve-key' ensures that the initial key is maintained after the router is restarted for any reason. 'version 2' ensures that only SSH version 2 connections are accepted. Several attacks against version one have been reported and version 2 is considered more secure.",
+        "solution": "SSHv2 is configured by default in TiMOS/SR-OS. Run the following command on the device to enable SSHv2: configure system security version 2",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security ssh",
+        "regex": "SSH Protocol Version 2",
+        "expect": "Enabled"
+    },
+    "custom_item_49": {
+        "description": "Login: Telnet is disabled (IPv4)",
+        "info": "It is strongly recommended to disable the telnet service on the device if it is not required.",
+        "solution": "Run the following command on the device to disable telnet: configure system security no telnet-server",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "no telnet-server"
+    },
+    "custom_item_50": {
+        "description": "Login: Telnet is disabled (IPv6)",
+        "info": "It is strongly recommended to disable the telnet6 service on the device if it is not required.",
+        "solution": "Run the following command on the device to disable telnet6: configure system security no telnet6-server",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "no telnet6-server"
+    },
+    "custom_item_51": {
+        "description": "Login: FTP is disabled",
+        "info": "It is strongly recommended to disable the FTP service on the device if it is not required.",
+        "solution": "Run the following command on the device to disable ftp: configure system security no ftp-server",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "no ftp-server"
+    },
+    "custom_item_52": {
+        "description": "Login: Idle connections time out after 5 minutes or less",
+        "info": "Timeouts should be setup for any idle CLI and/or management connections. Typically a good rule of thumb is determine the length your support staff will typically use a session and how frequent they might have to authenticate during a typical work day.",
+        "solution": "Run the following command on the device to disable ftp: configure system login-control idle-timeout x (where x is your idle time limit)",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "idle-timeout",
+        "expect": "idle-timeout [1-5]\\s*$"
+    },
+    "custom_item_53": {
+        "description": "Login: ssh - limit consecutive logins to 16 or less",
+        "info": "SSH server has the functionality to control maximum allowed clients. Maximum spawned shells on the node can be controlled. From R10 onwards SSHv6 TTL security is also available to authenticate clients.",
+        "solution": "Run the following command on the device to limit connections:  configure system login-control ssh inbound-max-sessions",
+        "reference": "800-53|AC-10,800-53r5|AC-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "inbound-max-sessions .*$",
+        "expect": "inbound-max-sessions ([1-9]|1[0-6])\\s*$"
+    },
+    "custom_item_54": {
+        "description": "Login: Configure Pre-login Banner",
+        "info": "Login banners and there usage has been a topic of debate with several schools of thought.\n    a. Don't use one, at all, as it gives up too much information about your organization and the device.\n    b. Use one but just a 'Keep Out' sign\n    c. Use a fully detailed sign that indicates organization and usage policy\n    We are not providing legal advice on this issue, this is something each organization has to discuss and determine if this is a requirement for their organization. Legal advice should be sought to determine the best wording to fit your organizations needs. A banner will not stop a user who is insistent on accessing a system. It is also advisable not to indicate your organization name, as attackers will typically hold these as trophies in their owned file.",
+        "solution": "Run the following command on the device to implement a pre-login banner: configure system login-control pre-login-message",
+        "reference": "800-171|3.1.9,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8,NESA|M1.3.6,TBA-FIISB|45.2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "pre-login-message",
+        "expect": "@LOGIN_TEXT@"
+    },
+    "custom_item_55": {
+        "description": "Login: Exponential Backoff is set",
+        "info": "A malicious user may attempt to gain CLI access by means of a dictionary attack using a script to automatically attempt to login as an 'admin' user and using a dictionary list to test all possible passwords. Using the 'exponential-backoff' feature in the config>system>login-control context SR OS increases the delay between login attempts exponentially to mitigate attacks.\n\n    When trying to access the router, the user is only allowed three attempts per session, by default, to login to the system before the connectivity session is terminated. It is during that single connectivity session that the exponential backoff is utilized. Each time an invalid password is entered for a login account name, a delay is inserted before the next display of the login/password prompt. The first delay is 1 second, and each subsequent delay is 2 times the last delay (for example, 1 second, 2 seconds, 4 seconds). Once the connectivity session is terminated after the third failed login attempt, the exponential backoff timer is reset to 1 second.",
+        "solution": "Run the following command on the device to enable exponential backoff: configure system login-control exponential-backoff",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "^\\s*exponential-backoff\\s*$"
+    },
+    "custom_item_56": {
+        "description": "Login: Accounts are locked after 3 failed password attempts",
+        "info": "When a user exceeds the maximum number of attempts allowed (the default is 3 attempts) during a certain period of time (the default is 5 minutes) the account used during those attempts will be locked out for a pre-configured lock-out period (the default is 10 minutes). This can be used to mitigated brute force dictionary attacks.\n\n    A security event log will be generated as soon as a user account has exceeded the number of allowed attempts and the show>system>security>user command can be used to display the total number of failed attempts per user.\n\n    The account will be automatically re-enabled as soon as the lock-out period has expired.",
+        "solution": "Run the following command on the device to implement account lockout: configure system security password attemptstimelockout",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security password-options",
+        "regex": "Number of invalid attempts permitted per login\\s*:.*$",
+        "expect": "\\s+3\\s*$"
+    },
+    "custom_item_57": {
+        "description": "Password Complexity: Require at least one number",
+        "info": "Passwords should contain a mix of characters to make them harder to guess. Combinations of upper and lower case, numbers and special characters (such as #,$) should be used. Users should be encouraged to use Pass Phrases as they allow a user to remember a longer password.",
+        "solution": "Run the following command on the device to require at least one number as part of password complexity requirements: configure system security password complexity numeric",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "complexity .*numeric.*$"
+    },
+    "custom_item_58": {
+        "description": "Password Complexity: Require at least one uppercase and one lowercase letter",
+        "info": "Passwords should contain a mix of characters to make them harder to guess. Combinations of upper and lower case, numbers and special characters (such as #,$) should be used. Users should be encouraged to use Pass Phrases as they allow a user to remember a longer password.",
+        "solution": "Run the following command on the device to require at least one uppercase and one lowercase letter as part of password complexity requirements: configure system security password complexity mixed-case",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "complexity .*mixed-case.*$"
+    },
+    "custom_item_59": {
+        "description": "Password Complexity: Require at least one special character",
+        "info": "Passwords should contain a mix of characters to make them harder to guess. Combinations of upper and lower case, numbers and special characters (such as #,$) should be used. Users should be encouraged to use Pass Phrases as they allow a user to remember a longer password.",
+        "solution": "Run the following command on the device to require at leas one special character as part of password complexity requirements: configure system security password complexity special-character",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "complexity .*special-character.*"
+    },
+    "custom_item_60": {
+        "description": "Password Complexity: Require a minimum length of 8 characters",
+        "info": "Passwords should contain a mix of characters to make them harder to guess. Combinations of upper and lower case, numbers and special characters (such as #,$) should be used. Users should be encouraged to use Pass Phrases as they allow a user to remember a longer password.",
+        "solution": "Run the following command on the device to require a minumum length as part of password complexity requirements: configure system security password minimum-length",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "minimum-length (8|9|[\\d]{2,})"
+    },
+    "custom_item_61": {
+        "description": "Require Password Encryption",
+        "info": "Passwords should not be displayed in plain text format in configuration files or when viewed via the CLI. This prevents casual observers and unauthorized individuals gaining knowledge of other users passwords. The 'hash-control' command is used to enforce encryption of passwords in the configuration. Version 2 must be specified.",
+        "solution": "Run the following command on the device to enable password encryption: configure system security hash-control read-version all write-version 2",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "^.*hash-control.*$",
+        "expect": "hash-control read-version all write-version 2"
+    },
+    "custom_item_62": {
+        "description": "Disable unused network ports",
+        "info": "It is accepted best practice to disable network ports that are not in use.\n\n    NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show port detail",
+        "regex": "",
+        "expect": "Manual review required"
+    },
+    "custom_item_63": {
+        "description": "Authentication: enable remote authentication",
+        "info": "RADIUS or TACACS+ password management should be leveraged to ensure that a rogue node does not attempt a brute force logon attempt. This is a situation where a large number of logon attempts are made to a known user account.",
+        "solution": "Run the following command on the device to configure a remote RADIUS server: configure system securityserveraddresssecret",
+        "reference": "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security authentication",
+        "regex": "^(radius|tacplus)",
+        "expect": "^(radius|tacplus) admin status *: *up\\s*$"
+    },
+    "custom_item_64": {
+        "description": "Authentication: use a remote authentication server",
+        "info": "RADIUS or TACACS+ password management should be leveraged to ensure that a rogue node does not attempt a brute force logon attempt. This is a situation where a large number of logon attempts are made to a known user account.",
+        "solution": "Run the following command on the device to configure a remote RADIUS server: configure system securityserveraddresssecret",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "server 1 address.*hash2",
+        "expect": "server 1 address @PRIMARY_AUTH_SERVER@ secret \".*\" hash2\\s*$"
+    },
+    "custom_item_65": {
+        "description": "Authentication: a backup remote authentication server is available",
+        "info": "RADIUS or TACACS+ password management should be leveraged to ensure that a rogue node does not attempt a brute force logon attempt. This is a situation where a large number of logon attempts are made to a known user account.",
+        "solution": "Run the following command on the device to configure a remote RADIUS server: configure system securityserveraddresssecret",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "regex": "server [^1] address.*hash2\\s*$",
+        "expect": "server [\\d] address @SECONDARY_AUTH_SERVER@ secret \".*\" hash2\\s*$"
+    },
+    "custom_item_66": {
+        "description": "Authentication: local authentication is available as a last resort",
+        "info": "A local user account should be available in case RADIUS or TACACS+ servers are not reachable or available for authentication.",
+        "solution": "Configure at least one user account locally on the TiMOS/SR-OS device.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system security authentication",
+        "regex": "sequence :.*",
+        "expect": ".*local"
+    },
+    "custom_item_67": {
+        "description": "Time: System has a primary NTP server set",
+        "info": "Using NTP ensures network events are synchronized across devices for troubleshooting and malicious activity analyses. You should consider building a NTP environment with dedicated NTP server with a feed sourced from a Stratum-1 capable clock. Under no circumstance should an TiMOS/SR-OS device be used as the primary clock. It is recommended that all network devices be set to the same time to determine event timelines. This will save value time when compared to correlating device logs across your infrastructure.",
+        "solution": "Run the following command on the device to set a primary NTP server: configure system time ntp serverprefer",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system ntp servers",
+        "regex": "chosen.*",
+        "expect": "@PRIMARY_TIME_SERVER@"
+    },
+    "custom_item_68": {
+        "description": "Time: System has a secondary NTP server set",
+        "info": "Using NTP ensures network events are synchronized across devices for troubleshooting and malicious activity analyses. You should consider building a NTP environment with dedicated NTP server with a feed sourced from a Stratum-1 capable clock. Under no circumstance should an TiMOS/SR-OS device be used as the primary clock. It is recommended that all network devices be set to the same time to determine event timelines. This will save value time when compared to correlating device logs across your infrastructure.",
+        "solution": "Run the following command on the device to set a secondary NTP server: configure system time ntp server",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system ntp servers",
+        "regex": "candidate.*",
+        "expect": "@SECONDARY_TIME_SERVER@"
+    },
+    "custom_item_69": {
+        "description": "Time: Set system clock to UTC",
+        "info": "The system clock on the device should be set to use UTC as its timezone.",
+        "solution": "Run the following command on the device to set the timezone to UTC: configure system time zone UTC",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "zone UTC"
+    },
+    "custom_item_70": {
+        "description": "Time: Disable Daylight Savings Time adjustment",
+        "info": "The system clock on the device should not be adjusted for Daylight Savings Time.",
+        "solution": "Run the following command on the device to disable DST: configure system time no dst-zone",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "not_expect": "dst-zone"
+    },
+    "custom_item_71": {
+        "description": "Time: NTP servers use an authentication key",
+        "info": "Using NTP ensures network events are synchronized across devices for troubleshooting and malicious activity analyses. You should consider building a NTP environment with dedicated NTP server with a feed sourced from a Stratum-1 capable clock. Under no circumstance should an TiMOS/SR-OS device be used as the primary clock. It is recommended that all network devices be set to the same time to determine event timelines. This will save value time when compared to correlating device logs across your infrastructure.\n\n    TiMOS/SR-OS supports NTP messages with DES and MD5 authentication signatures to ensure that updates are not received from unauthorized source.",
+        "solution": "Run the following command on the device to configure an authentication key for NTP servers: configure system time ntp authentication-key 1 keyhash2 type",
+        "reference": "800-171|3.3.7,800-53|AU-8,800-53r5|AU-8,CN-L3|8.1.4.3(b),CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show system ntp",
+        "regex": "Auth\\s*Check\\s*:.*$",
+        "expect": "Yes"
+    },
+    "custom_item_72": {
+        "description": "SNMP is enabled",
+        "expect": "^\\s*snmp\\s*$"
+    },
+    "custom_item_73": {
+        "description": "SNMP: configure community strings",
+        "info": "SNMPv1 and SNMPv2c community strings are used to define the relationship between an SNMP manager and agent. The community string acts like a password to permit access to the agent. The access granted with a community string is restricted to the scope of the configured group.",
+        "solution": "Run the following command on the device to configure SNMPv3 community strings: configure system security snmp communityboth",
+        "reference": "800-171|3.5.2,800-53|IA-5c.,800-53r5|IA-5c.,CN-L3|7.1.2.7(d),CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5c.,NESA|T5.2.1,NESA|T5.2.3,NESA|T5.5.2,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "community \".*\" hash2 r version both"
+    },
+    "custom_item_74": {
+        "description": "SNMP: configure access groups to use privacy",
+        "info": "The exclusive use of SNMPv3 will ensure that only valid nodes can communicate with TiMOS/SR-OS devices. Used in conjunction with user access controls covered previously will eliminate possible configuration changes from unauthorized sources. Further, it ensures the communication between a SAM and a TiMOS/SR-OS device will be secured from snooping. This feature will contribute to the integrity of the operating environment.",
+        "solution": "Run the following command on the device to configure SNMPv3 for access groups: configure system security snmp access groupsecurity-level privacy",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "not_expect": "access group .* security-level (no-auth-no-privacy|auth-no-privacy)"
+    },
+    "custom_item_75": {
+        "description": "SNMP: Use SNMPv3 only",
+        "info": "The exclusive use of SNMPv3 will ensure that only valid nodes can communicate with TiMOS/SR-OS devices. Used in conjunction with user access controls covered previously will eliminate possible configuration changes from unauthorized sources. Further, it ensures the communication between a SAM and a TiMOS/SR-OS device will be secured from snooping. This feature will contribute to the integrity of the operating environment.",
+        "solution": "Run the following command on the device to configure SNMPv3 for access groups: configure system security snmp access groupsecurity-model usm",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "expect": "access group .* security-model usm"
+    },
+    "custom_item_76": {
+        "description": "Logging: Use an external syslog host",
+        "info": "Logging must be enabled to provide information for investigations of operational and security related events. This information should be logged to a remote syslog server to prevent tampering of the log files by an attacker (in an attempt to remove evidence of malicious activity) in the event that the router is compromised.\n\n    Remote syslog server is defined via the 'Syslog' command and that logging is directed to this syslog server via the 'log-id' command.\n\n    Log for main, security and change events to local file and syslog server. Detailed logging of all events should be enabled to provide as much information to operational and security groups as possible. Incidents are more easily investigated when detailed information is available. 'Info' is considered the preferable level of logging in most cases.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show log syslog @RSYSLOG_TARGET_INDEX@",
+        "regex": "IP\\s*Address\\s*:.*$",
+        "expect": "@RSYSLOG_SERVER@"
+    },
+    "custom_item_77": {
+        "description": "Logging: capture level is set to at least info",
+        "info": "Logging must be enabled to provide information for investigations of operational and security related events. This information should be logged to a remote syslog server to prevent tampering of the log files by an attacker (in an attempt to remove evidence of malicious activity) in the event that the router is compromised.\n\n    Remote syslog server is defined via the 'Syslog' command and that logging is directed to this syslog server via the 'log-id' command.\n\n    Log for main, security and change events to local file and syslog server. Detailed logging of all events should be enabled to provide as much information to operational and security groups as possible. Incidents are more easily investigated when detailed information is available. 'Info' is considered the preferable level of logging in most cases.",
+        "solution": "Consult the TiMOS/SR-OS Security Best Practices Guide for more information on this topic. The TiMOS/SR-OS Security Best Practices Guide is available from the Nokia/Alcatel-Lucent Customer Support Portal at https://support.alcatel-lucent.com/portal/web/support.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://infoproducts.alcatel-lucent.com/aces/cgi-bin/dbaccessfilename.cgi/9305050101_V1_SR-OS Security Best Practices v2.0.pdf",
+        "cmd": "show log syslog @RSYSLOG_TARGET_INDEX@",
+        "regex": "Severity\\s*Level\\s*:.*$",
+        "expect": "info"
+    }
+}

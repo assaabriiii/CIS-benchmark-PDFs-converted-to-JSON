@@ -1,0 +1,134 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "~/.mysql_history Exists",
+        "file": "~/.mysql_history"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "1.3 Disable MySQL Command History - .mysql_history",
+        "info": "On Linux/UNIX, the MySQL client logs statements executed interactively to a history file. The default MySQL Client file is named .mysql_history in the user's home directory. The files are split by language and named history.sql, history.js and history.py. Most interactive commands run in the MySQL client application are saved to a history file. The MySQL command history should be disabled.\n\nRationale:\n\nDisabling the MySQL command history reduces the probability of exposing sensitive information, such as password, encryption keys, or other sensitive data or information.",
+        "solution": "Perform the following steps to remediate this setting:\n\nRemove .mysql_history if it exists.\n\nUse either of the techniques below to prevent it from being created again:\n\nSet the MYSQL_HISTFILE environment variable to /dev/null. This will need to be placed in the shell's startup script.\n\nCreate $HOME/.mysql_history as a symbolic to /dev/null.\n\n> ln -s /dev/null $HOME/.mysql_history\n\nDefault Value:\n\nBy default, the MySQL command history file is located in $HOME/.mysql_history.",
+        "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|MP-6,800-53r5|MP-6,CSCv7|13.2,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|2A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "cmd": "for f in $(/bin/find / -name \".mysql_history\"); do /usr/bin/file $f | /bin/egrep -v \"symbolic link to '/dev/null'\" | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}' ; done",
+        "expect": "none"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "1.3 Disable MySQL Command History - ~/.mysql_history",
+        "info": "On Linux/UNIX, the MySQL client logs statements executed interactively to a history file. The default MySQL Client file is named .mysql_history in the user's home directory. The files are split by language and named history.sql, history.js and history.py. Most interactive commands run in the MySQL client application are saved to a history file. The MySQL command history should be disabled.\n\nRationale:\n\nDisabling the MySQL command history reduces the probability of exposing sensitive information, such as password, encryption keys, or other sensitive data or information.",
+        "solution": "Perform the following steps to remediate this setting:\n\nRemove .mysql_history if it exists.\n\nUse either of the techniques below to prevent it from being created again:\n\nSet the MYSQL_HISTFILE environment variable to /dev/null. This will need to be placed in the shell's startup script.\n\nCreate $HOME/.mysql_history as a symbolic to /dev/null.\n\n> ln -s /dev/null $HOME/.mysql_history\n\nDefault Value:\n\nBy default, the MySQL command history file is located in $HOME/.mysql_history.",
+        "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|MP-6,800-53r5|MP-6,CSCv7|13.2,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|2A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "file": "~/.mysql_history"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.5 Ensure Interactive Login is Disabled",
+        "info": "When created, the MySQL user may have interactive access to the operating system, which means that the MySQL user could login to the host as any other user would.\n\nRationale:\n\nPreventing the MySQL user from logging in interactively may reduce the impact of a compromised MySQL account. There is also more accountability as accessing the operating system where the MySQL server lies will require the user's own account. Interactive access by the MySQL user is unnecessary and should be disabled.\n\nImpact:\n\nThis setting will prevent the MySQL administrator from interactively logging into the operating system using the MySQL user. Instead, the administrator will need to log in using one's own account.",
+        "solution": "Execute one of the following commands in a terminal:\n\nusermod -s /bin/false mysql\n\nOr\n\nusermod -s /sbin/nologin mysql",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "cmd": "/usr/bin/getent passwd mysql | /usr/bin/egrep \"^.*[\\/bin\\/false|\\/sbin\\/nologin]$\" | /usr/bin/awk '{print} END {if (NR == 1) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "2.5 Ensure Non-Default, Unique Cryptographic Material is in Use",
+        "info": "The cryptographic material used by MySQL, such as digital certificates and encryption keys, should be used only for MySQL and only for one instance. Default cryptographic material should not be used since it is not unique to the instance.\n\nRationale:\n\nIf a cryptographic material is used on multiple MySQL instances and/or systems then a compromise of one may lead to the compromise of the network traffic of all servers which use the same cryptographic material. If an attacker gains access to shared cryptographic material, including default material, the attacker can reuse that material to impersonate the MySQL server or otherwise compromise its operations.",
+        "solution": "Generate new certificates, keys, and other cryptographic material as needed for each affected MySQL instance.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|2M,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "cmd": "/usr/bin/openssl x509 -in @PEM_FILE@ -subject -noout",
+        "expect": "(^subject=.*Auto_Generated_Server_Certificate|)"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - mysqld start-up",
+        "info": "This option prevents attaching arbitrary shared library functions as user-defined functions by checking for at least one corresponding method named _init, _deinit, _reset, _clear, or _add.\n\nRationale:\n\nPreventing shared libraries that do not contain user-defined functions from loading will reduce the attack surface of the server.",
+        "solution": "Perform the following to establish the recommended state:\n\nRemove --allow-suspicious-udfs from the mysqld start up command line.\n\nRemove allow-suspicious-udfs from the MySQL option file.\n\nDefault Value:\n\nOFF",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2M,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "cmd": "/usr/bin/my_print_defaults | /bin/grep allow-suspicious-udfs | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_8": {
+        "description": "/etc/my.cnf Exists",
+        "file": "/etc/my.cnf"
+    },
+    "custom_item_9": {
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - /etc/my.cnf",
+        "file": "/etc/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*="
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - /etc/my.cnf",
+        "info": "This option prevents attaching arbitrary shared library functions as user-defined functions by checking for at least one corresponding method named _init, _deinit, _reset, _clear, or _add.\n\nRationale:\n\nPreventing shared libraries that do not contain user-defined functions from loading will reduce the attack surface of the server.",
+        "solution": "Perform the following to establish the recommended state:\n\nRemove --allow-suspicious-udfs from the mysqld start up command line.\n\nRemove allow-suspicious-udfs from the MySQL option file.\n\nDefault Value:\n\nOFF",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2M,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "file": "/etc/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=[\\\\s]*FALSE"
+    },
+    "custom_item_11": {
+        "description": "/etc/mysql/my.cnf Exists",
+        "file": "/etc/mysql/my.cnf"
+    },
+    "custom_item_12": {
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - /etc/mysql/my.cnf",
+        "file": "/etc/mysql/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*="
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - /etc/mysql/my.cnf",
+        "info": "This option prevents attaching arbitrary shared library functions as user-defined functions by checking for at least one corresponding method named _init, _deinit, _reset, _clear, or _add.\n\nRationale:\n\nPreventing shared libraries that do not contain user-defined functions from loading will reduce the attack surface of the server.",
+        "solution": "Perform the following to establish the recommended state:\n\nRemove --allow-suspicious-udfs from the mysqld start up command line.\n\nRemove allow-suspicious-udfs from the MySQL option file.\n\nDefault Value:\n\nOFF",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2M,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "file": "/etc/mysql/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=[\\\\s]*FALSE"
+    },
+    "custom_item_14": {
+        "description": "SYSCONFDIR/my.cnf Exists",
+        "file": "@SYSCONFDIR@/my.cnf"
+    },
+    "custom_item_15": {
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - SYSCONFDIR/my.cnf",
+        "file": "@SYSCONFDIR@/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*="
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "4.3 Ensure 'allow-suspicious-udfs' Is Set to 'OFF' - SYSCONFDIR/my.cnf",
+        "info": "This option prevents attaching arbitrary shared library functions as user-defined functions by checking for at least one corresponding method named _init, _deinit, _reset, _clear, or _add.\n\nRationale:\n\nPreventing shared libraries that do not contain user-defined functions from loading will reduce the attack surface of the server.",
+        "solution": "Perform the following to establish the recommended state:\n\nRemove --allow-suspicious-udfs from the mysqld start up command line.\n\nRemove allow-suspicious-udfs from the MySQL option file.\n\nDefault Value:\n\nOFF",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2M,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3848",
+        "file": "@SYSCONFDIR@/my.cnf",
+        "regex": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=",
+        "expect": "^[\\\\s]*allow-suspicious-udfs[\\\\s]*=[\\\\s]*FALSE"
+    },
+    "custom_item_17": {
+        "description": "/etc/my.cnf Does not exist",
+        "file": "/etc/my.cnf"
+    },
+    "custom_item_18": {
+        "description": "/etc/mysql/my.cnf Does not exist",
+        "file": "/etc/mysql/my.cnf"
+    },
+    "custom_item_19": {
+        "description": "SYSCONFDIR/my.cnf Does not exist",
+        "file": "@SYSCONFDIR@/my.cnf"
+    }
+}

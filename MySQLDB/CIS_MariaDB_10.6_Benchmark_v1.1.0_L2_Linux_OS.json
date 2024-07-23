@@ -1,0 +1,83 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "~/.mysql_history Exists",
+        "cmd": "/bin/find / -name \".mysql_history\" | /usr/bin/awk '{ print } END { if (NR!=0) print \"none\" }'",
+        "expect": "none"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "1.3 Disable MariaDB Command History - .mysql_history",
+        "info": "On Unix, the mysql client writes a record of executed statements to a history file. By default, this file is named .mysql_history and is created in your home directory. To specify a different file, set the value of the MYSQL_HISTFILE environment variable.\n\nThe .mysql_history file should be protected with a restrictive access mode because sensitive information might be written to it, such as the text of SQL statements that contain passwords.\n\nRationale:\n\nDisabling the MariaDB Client and MariaDB Shell command history reduces the probability of exposing sensitive information, such as passwords, encryption keys, or other sensitive data or information.",
+        "solution": "For MariaDB Client perform the following steps to remediate this setting:\n\nRemove .mysql_history if it exists.\n\nUse either of the techniques below to prevent it from being created again:\n\nSet the MYSQL_HISTFILE environment variable to /dev/null. This will need to be placed in the shell's startup script.\n\nCreate .mysql_history as a symbolic to /dev/null.\n\n> ln -s /dev/null $HOME/.mysql_history\n\nDefault Value:\n\nBy default, the MariaDB command history file is located in /root/.mysql_history.",
+        "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|MP-6,800-53r5|MP-6,CSCv7|13.2,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|2A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "cmd": "a=$(for f in $(/bin/find / -name \".mysql_history\"); do /usr/bin/file $f | /bin/egrep -cv \"symbolic link to /dev/null\"; done;); if [ \"$a\" = \"0\" ]; then echo \"none\";else for g in $(/bin/find / -name \".mysql_history\"); do /usr/bin/file $g |/bin/egrep -v \"symbolic link to /dev/null\";done; fi",
+        "expect": "none"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "1.3 Disable MariaDB Command History - ~/.mysql_history",
+        "info": "On Unix, the mysql client writes a record of executed statements to a history file. By default, this file is named .mysql_history and is created in your home directory. To specify a different file, set the value of the MYSQL_HISTFILE environment variable.\n\nThe .mysql_history file should be protected with a restrictive access mode because sensitive information might be written to it, such as the text of SQL statements that contain passwords.\n\nRationale:\n\nDisabling the MariaDB Client and MariaDB Shell command history reduces the probability of exposing sensitive information, such as passwords, encryption keys, or other sensitive data or information.",
+        "solution": "For MariaDB Client perform the following steps to remediate this setting:\n\nRemove .mysql_history if it exists.\n\nUse either of the techniques below to prevent it from being created again:\n\nSet the MYSQL_HISTFILE environment variable to /dev/null. This will need to be placed in the shell's startup script.\n\nCreate .mysql_history as a symbolic to /dev/null.\n\n> ln -s /dev/null $HOME/.mysql_history\n\nDefault Value:\n\nBy default, the MariaDB command history file is located in /root/.mysql_history.",
+        "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|MP-6,800-53r5|MP-6,CSCv7|13.2,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|2A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "cmd": "/bin/find / -name \".mysql_history\" | /usr/bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "none"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.5 Ensure Interactive Login is Disabled",
+        "info": "When created, the MariaDB user may have interactive access to the operating system, which means that the MariaDB user could login to the host as any other user would.\n\nRationale:\n\nPreventing the MariaDB user from logging in interactively may reduce the impact of a compromised MariaDB account. There is also more accountability, as accessing the operating system where the MariaDB server lies will require the user's own account. Interactive access by the MariaDB user is unnecessary and should be disabled.\n\nImpact:\n\nThis setting will prevent the MariaDB administrator from interactively logging into the operating system using the MariaDB user. Instead, the administrator will need to log in using one's own account.",
+        "solution": "Execute one of the following commands in a terminal:\n\nusermod -s /bin/false mysql\n\nOr\n\nusermod -s /sbin/nologin mysql",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "cmd": "/usr/bin/getent passwd @MYSQL_USER@ | /usr/bin/egrep \"^.*[/bin/false|/sbin/nologin]$\" | /usr/bin/awk '{print} END {if (NR == 1) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "chroot",
+        "file": "@MARIADB_CNF@",
+        "regex": "(?<=^chroot=).+$",
+        "expect": "(?<=^chroot=).+$"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "systemctl",
+        "cmd": "systemctl status mariadb.service | /bin/grep 'Main PID'",
+        "expect": "^[\\\\s]*Main PID:[\\\\s]*[0-9]+[\\\\s]+\\\\(((?!root).)*\\\\)[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "docker",
+        "cmd": "docker ps",
+        "expect": "mariadb"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "allow-suspicious-udfs startup",
+        "cmd": "/bin/ps aux | /bin/grep [m]ariadbd | /bin/grep 'allow-suspicious-udfs' | /usr/bin/awk '{print} END {if (NR>0) print \"Fail\"; else print \"Pass\"}'",
+        "expect": "Pass"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "allow-suspicious-udfs option file",
+        "file": "@MARIADB_CNF@",
+        "regex": "allow-suspicious-udfs",
+        "expect": "allow-suspicious-udfs"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "4.9 Enable data-at-rest encryption in MariaDB",
+        "info": "Data-at-rest encryption protects the privacy of your information, prevents data breaches and helps meet regulatory requirements.\n\nRationale:\n\nFile system based encryption does a good job of protecting against data theft on devices unable to limit physical access. It does not, however, protect against users who have or gain access to the operating system, backups, over the network copies, etc. Encrypting data from MariaDB adds an additional layer of data protection.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "cmd": "/usr/bin/crontab -l | /bin/grep mariabackup | /bin/grep openssl | /usr/bin/awk '{print} END { if (NR>0) print \"Pass\"; else print \"Fail\"}'",
+        "expect": "Pass"
+    }
+}

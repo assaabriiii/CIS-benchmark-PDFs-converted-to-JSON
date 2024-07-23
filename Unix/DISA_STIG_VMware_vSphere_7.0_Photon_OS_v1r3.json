@@ -1,0 +1,1541 @@
+{
+    "custom_item_1": {
+        "system": "Linux",
+        "description": "PHTN-30-000033 - The Photon operating system must not have duplicate User IDs (UIDs).",
+        "info": "To ensure accountability and prevent unauthenticated access, organizational users must be uniquely identified and authenticated to prevent potential misuse and provide for nonrepudiation.",
+        "solution": "Navigate to and open:\n\n/etc/passwd\n\nConfigure each user account that has a duplicate UID with a unique UID.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256510r887204_rule,STIG-ID|PHTN-30-000033,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-256510",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "name": "passwd_duplicate_uid"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "PHTN-30-000094 - The Photon operating system must be configured so that all files have a valid owner and group owner.",
+        "info": "If files do not have valid user and group owners, unintended access to files could occur.",
+        "solution": "At the command line, run the following command for each returned file:\n\n# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256563r887363_rule,STIG-ID|PHTN-30-000094,SWIFT-CSCv1|2.3,Vuln-ID|V-256563",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "name": "find_orphan_files"
+    },
+    "custom_item_3": {
+        "description": "Photon OS is installed",
+        "file": "/etc/photon-release"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "useradd",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep useradd",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/useradd[\\\\s]+-p[\\\\s]+x[\\\\s]+-k[\\\\s]+useradd[\\\\s]*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "groupadd",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep groupadd",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/groupadd[\\\\s]+-p[\\\\s]+x[\\\\s]+-k[\\\\s]+groupadd[\\\\s]*$"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "PHTN-30-000002 - The Photon operating system must automatically lock an account when three unsuccessful logon attempts occur.",
+        "info": "By limiting the number of failed logon attempts, the risk of unauthorized system access via user password guessing, otherwise known as brute-force attacks, is reduced. Limits are imposed by locking the account.\n\nSatisfies: SRG-OS-000021-GPOS-00005, SRG-OS-000329-GPOS-00128",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-auth\n\nRemove any existing 'pam_tally2.so' line and add the following line after the 'pam_unix.so' statement:\n\nauth       required pam_tally2.so deny=3 onerr=fail audit even_deny_root unlock_time=900 root_unlock_time=300\n\nNavigate to and open:\n\n/etc/pam.d/system-account\n\nRemove any existing 'pam_tally2.so' line and add the following line after the 'pam_unix.so' statement:\n\naccount    required pam_tally2.so onerr=fail audit\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53|AC-7b.,800-53r5|AC-7a.,800-53r5|AC-7b.,CAT|II,CCI|CCI-000044,CCI|CCI-002238,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),CN-L3|8.1.4.1(b),DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,ITSG-33|AC-7b.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,Rule-ID|SV-256479r887111_rule,STIG-ID|PHTN-30-000002,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2,Vuln-ID|V-256479",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/grep pam_tally2 /etc/pam.d/system-auth",
+        "expect": "^[\\\\s]*auth[\\\\s]+required[\\\\s]+pam_tally2.so[\\\\s]+file=/var/log/tallylog[\\\\s]+deny=[1-3][\\\\s]+"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "banner /etc/issue",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep banner",
+        "expect": "^[\\\\s]*banner[\\\\s]+/etc/issue[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "banner text",
+        "file": "/etc/issue",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "PHTN-30-000004 - The Photon operating system must limit the number of concurrent sessions to 10 for all accounts and/or account types.",
+        "info": "Operating system management includes the ability to control the number of users and user sessions that utilize an operating system. Limiting the number of allowed users and sessions per user is helpful in reducing the risks related to denial-of-service attacks.",
+        "solution": "At the command line, run the following command:\n\n# echo '*       hard    maxlogins       10' >> /etc/security/limits.conf",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256481r887117_rule,STIG-ID|PHTN-30-000004,Vuln-ID|V-256481",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/security/limits.conf",
+        "regex": "^[\\\\s]*\\\\*[\\\\s]+hard[\\\\s]+maxlogins[\\\\s]+",
+        "expect": "^[\\\\s]*\\\\*[\\\\s]+hard[\\\\s]+maxlogins[\\\\s]+([1-9]|10)[\\\\s]*$"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "TMOUT duration",
+        "file": "/etc/profile.d/tmout.sh",
+        "regex": "^[\\\\s]*TMOUT[\\\\s]*=",
+        "expect": "^[\\\\s]*TMOUT[\\\\s]*=[\\\\s]*([1-8][0-9]{0,2}|900)[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "readonly",
+        "file": "/etc/profile.d/tmout.sh",
+        "regex": "^[\\\\s]*readonly[\\\\s]+TMOUT[\\\\s]*$",
+        "expect": "^[\\\\s]*readonly[\\\\s]+TMOUT[\\\\s]*$"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "export",
+        "file": "/etc/profile.d/tmout.sh",
+        "regex": "^[\\\\s]*export[\\\\s]+TMOUT[\\\\s]*$",
+        "expect": "^[\\\\s]*export[\\\\s]+TMOUT[\\\\s]*$"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "mesg",
+        "file": "/etc/profile.d/tmout.sh",
+        "regex": "^[\\\\s]*mesg[\\\\s]+",
+        "expect": "^[\\\\s]*mesg[\\\\s]+n[\\\\s]+2>[\\\\s]*/dev/null[\\\\s]*$"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "PHTN-30-000006 - The Photon operating system must have the sshd SyslogFacility set to 'authpriv'.",
+        "info": "Automated monitoring of remote access sessions allows organizations to detect cyberattacks and ensure ongoing compliance with remote access policies by auditing connection activities.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'SyslogFacility' line is uncommented and set to the following:\n\nSyslogFacility AUTHPRIV\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256483r887123_rule,STIG-ID|PHTN-30-000006,SWIFT-CSCv1|2.6,Vuln-ID|V-256483",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i syslogfacility",
+        "expect": "^[\\\\s]*(?i)syslogfacility[\\\\s]+AUTHPRIV(?-i)[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "PHTN-30-000007 - The Photon operating system must have sshd authentication logging enabled.",
+        "info": "Automated monitoring of remote access sessions allows organizations to detect cyberattacks and ensure ongoing compliance with remote access policies by auditing connection activities.\n\nShipping sshd authentication events to syslog allows organizations to use their log aggregators to correlate forensic activities among multiple systems.",
+        "solution": "Navigate to and open:\n\n/etc/rsyslog.conf\n\nAdd the following line:\n\nauthpriv.*   /var/log/auth.log\n\nNote: The path can be substituted for another suitable log destination.\n\nAt the command line, run the following command:\n\n# systemctl restart rsyslog.service",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256484r887126_rule,STIG-ID|PHTN-30-000007,SWIFT-CSCv1|2.6,Vuln-ID|V-256484",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/rsyslog.conf",
+        "regex": "^[\\\\s]*authpriv\\\\.\\\\*[\\\\s]+",
+        "expect": "^[\\\\s]*authpriv\\\\.\\\\*[\\\\s]+/.+$"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "PHTN-30-000008 - The Photon operating system must have the sshd LogLevel set to 'INFO'.",
+        "info": "Automated monitoring of remote access sessions allows organizations to detect cyberattacks and ensure ongoing compliance with remote access policies by auditing connection activities.\n\nThe INFO LogLevel is required, at least, to ensure the capturing of failed login events.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'LogLevel' line is uncommented and set to the following:\n\nLogLevel INFO\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256485r887129_rule,STIG-ID|PHTN-30-000008,SWIFT-CSCv1|2.6,Vuln-ID|V-256485",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i loglevel",
+        "expect": "^[\\\\s]*(?i)loglevel[\\\\s]+INFO(?-i)[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "PHTN-30-000009 - The Photon operating system must configure sshd to use approved encryption algorithms.",
+        "info": "Without confidentiality protection mechanisms, unauthorized individuals may gain access to sensitive information via a remote access session.\n\nOpenSSH on the Photon operating system is compiled with a FIPS-validated cryptographic module. The 'FipsMode' setting controls whether this module is initialized and used in FIPS 140-2 mode.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000393-GPOS-00173, SRG-OS-000396-GPOS-00176, SRG-OS-000250-GPOS-00093, SRG-OS-000423-GPOS-00187",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'FipsMode' line is uncommented and set to the following:\n\nFipsMode yes\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-171|3.13.8,800-171|3.13.11,800-53|AC-17(2),800-53|MA-4(6),800-53|SC-8,800-53|SC-13,800-53r5|AC-17(2),800-53r5|MA-4(6),800-53r5|SC-8,800-53r5|SC-13,CAT|III,CCI|CCI-000068,CCI|CCI-001453,CCI|CCI-002418,CCI|CCI-002450,CCI|CCI-002890,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ITSG-33|AC-17(2),ITSG-33|MA-4(6),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T2.3.4,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5e,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-256486r887132_rule,STIG-ID|PHTN-30-000009,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-256486",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i fipsmode",
+        "expect": "^[\\\\s]*(?i)fipsmode[\\\\s]+yes(?-i)[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "PHTN-30-000010 - The Photon operating system must configure auditd to log to disk.",
+        "info": "Without establishing what type of events occurred, it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.\n\nAudit record content must be shipped to a central location, but it must also be logged locally.\n\nSatisfies: SRG-OS-000037-GPOS-00015, SRG-OS-000039-GPOS-00017, SRG-OS-000040-GPOS-00018, SRG-OS-000041-GPOS-00019",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nEnsure the 'write_logs' line is uncommented and set to the following:\n\nwrite_logs = yes\n\nAt the command line, run the following command:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CCI|CCI-000132,CCI|CCI-000133,CCI|CCI-000134,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256487r887135_rule,STIG-ID|PHTN-30-000010,SWIFT-CSCv1|6.4,Vuln-ID|V-256487",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*write_logs[\\\\s]*=",
+        "expect": "^[\\\\s]*write_logs[\\\\s]*=[\\\\s]*yes[\\\\s]*$"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "PHTN-30-000011 - The Photon operating system must configure auditd to use the correct log format.",
+        "info": "To compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know exact, unfiltered details of the event in question.",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nEnsure the 'log_format' line is uncommented and set to the following:\n\nlog_format = RAW\n\nAt the command line, run the following command:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256488r887138_rule,STIG-ID|PHTN-30-000011,SWIFT-CSCv1|6.4,Vuln-ID|V-256488",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*log_format[\\\\s]*=",
+        "expect": "^[\\\\s]*log_format[\\\\s]*=[\\\\s]*RAW[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "loaded rules execve euid 64b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep execve",
+        "expect": "^[\\\\s]*-a[\\\\s]+always,exit[\\\\s]+-F[\\\\s]+arch=b64[\\\\s]+-S[\\\\s]+execve[\\\\s]+-C[\\\\s]+uid!=euid[\\\\s]+-F[\\\\s]+euid=0[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)execpriv[\\\\s]*$"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "loaded rules execve egid 64b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep execve",
+        "expect": "^[\\\\s]*-a[\\\\s]+always,exit[\\\\s]+-F[\\\\s]+arch=b64[\\\\s]+-S[\\\\s]+execve[\\\\s]+-C[\\\\s]+gid!=egid[\\\\s]+-F[\\\\s]+egid=0[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)execpriv[\\\\s]*$"
+    },
+    "custom_item_22": {
+        "system": "Linux",
+        "description": "loaded rules execve euid 32b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep execve",
+        "expect": "^[\\\\s]*-a[\\\\s]+always,exit[\\\\s]+-F[\\\\s]+arch=b32[\\\\s]+-S[\\\\s]+execve[\\\\s]+-C[\\\\s]+uid!=euid[\\\\s]+-F[\\\\s]+euid=0[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)execpriv[\\\\s]*$"
+    },
+    "custom_item_23": {
+        "system": "Linux",
+        "description": "loaded rules execve egid 32b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep execve",
+        "expect": "^[\\\\s]*-a[\\\\s]+always,exit[\\\\s]+-F[\\\\s]+arch=b32[\\\\s]+-S[\\\\s]+execve[\\\\s]+-C[\\\\s]+gid!=egid[\\\\s]+-F[\\\\s]+egid=0[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)execpriv[\\\\s]*$"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "PHTN-30-000013 - The Photon operating system must have the auditd service running.",
+        "info": "Event outcomes can include indicators of event success or failure and event-specific results (e.g., the security state of the information system after the event occurred). They also provide a means to measure the impact of an event and help authorized personnel to determine the appropriate response.\n\nSatisfies: SRG-OS-000042-GPOS-00021, SRG-OS-000062-GPOS-00031, SRG-OS-000255-GPOS-00096, SRG-OS-000363-GPOS-00150, SRG-OS-000365-GPOS-00152, SRG-OS-000445-GPOS-00199, SRG-OS-000446-GPOS-00200, SRG-OS-000461-GPOS-00205, SRG-OS-000467-GPOS-00211, SRG-OS-000465-GPOS-00209, SRG-OS-000474-GPOS-00219, SRG-OS-000475-GPOS-00220",
+        "solution": "At the command line, run the following commands:\n\n# systemctl enable auditd\n# systemctl start auditd",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.4.3,800-171|3.4.5,800-53|AU-3,800-53|AU-3(1),800-53|AU-12a.,800-53|AU-12c.,800-53|CM-3(5),800-53|CM-5(1),800-53|SI-6a.,800-53|SI-6b.,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-12a.,800-53r5|AU-12c.,800-53r5|CM-3(5),800-53r5|CM-5(1),800-53r5|SI-6a.,800-53r5|SI-6b.,CAT|II,CCI|CCI-000135,CCI|CCI-000169,CCI|CCI-000172,CCI|CCI-001487,CCI|CCI-001744,CCI|CCI-001814,CCI|CCI-002696,CCI|CCI-002699,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CN-L3|8.1.10.6(g),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.IP-3,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.1.2,ISO/IEC-27001|A.12.4.1,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-12a.,ITSG-33|AU-12c.,ITSG-33|CM-3,ITSG-33|CM-5(1),ITSG-33|SI-6a.,NESA|T3.2.3,NESA|T3.3.2,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|CM1,NIAv2|CM1a,NIAv2|CM1b,NIAv2|CM1c,NIAv2|SM8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv3.2.1|11.5,PCI-DSSv4.0|10.2.2,PCI-DSSv4.0|11.5.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|6.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256490r887144_rule,STIG-ID|PHTN-30-000013,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-256490",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/systemctl status auditd",
+        "expect": "^[\\\\s]*Active[\\\\s]*:[\\\\s]*active[\\\\s]*\\\\(running\\\\)"
+    },
+    "custom_item_25": {
+        "system": "Linux",
+        "description": "PHTN-30-000014 - The Photon operating system audit log must log space limit problems to syslog.",
+        "info": "It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. Without this notification, the security personnel may be unaware of an impending failure of the audit capability, and system operation may be adversely affected.\n\nSatisfies: SRG-OS-000046-GPOS-00022, SRG-OS-000344-GPOS-00135",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nEnsure the 'space_left_action' line is uncommented and set to the following:\n\nspace_left_action = SYSLOG\n\nAt the command line, run the following commands:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-171|3.3.4,800-53|AU-5a.,800-53|AU-5(2),800-53r5|AU-5a.,800-53r5|AU-5(2),CAT|II,CCI|CCI-000139,CCI|CCI-001858,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5a.,ITSG-33|AU-5(2),NESA|T3.6.2,NIAv2|GS7f,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256491r887147_rule,STIG-ID|PHTN-30-000014,Vuln-ID|V-256491",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*space_left_action[\\\\s]*=",
+        "expect": "^[\\\\s]*space_left_action[\\\\s]*=[\\\\s]*SYSLOG[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "system": "Linux",
+        "description": "disk_full_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*disk_full_action[\\\\s]*=",
+        "expect": "^[\\\\s]*disk_full_action[\\\\s]*=[\\\\s]*SYSLOG[\\\\s]*$"
+    },
+    "custom_item_27": {
+        "system": "Linux",
+        "description": "disk_error_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*disk_error_action[\\\\s]*=",
+        "expect": "^[\\\\s]*disk_error_action[\\\\s]*=[\\\\s]*SYSLOG[\\\\s]*$"
+    },
+    "custom_item_28": {
+        "system": "Linux",
+        "description": "admin_space_left_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*admin_space_left_action[\\\\s]*=",
+        "expect": "^[\\\\s]*admin_space_left_action[\\\\s]*=[\\\\s]*SYSLOG[\\\\s]*$"
+    },
+    "custom_item_29": {
+        "system": "Linux",
+        "description": "PHTN-30-000016 - The Photon operating system audit log must have correct permissions.",
+        "info": "Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit operating system activity.\n\nUnauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality.",
+        "solution": "At the command line, run the following command:\n\n#  chmod 0600Replacewith the log files more permissive than 0600.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256493r887153_rule,STIG-ID|PHTN-30-000016,Vuln-ID|V-256493",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "@AUDIT_LOG_PATH@/*",
+        "mask": "7177"
+    },
+    "custom_item_30": {
+        "system": "Linux",
+        "description": "PHTN-30-000017 - The Photon operating system audit log must be owned by root.",
+        "info": "Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit operating system activity.\n\nUnauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality.",
+        "solution": "At the command line, run the following command:\n\n#  chown root:rootReplacewith the log files not owned by root.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000163,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256494r887156_rule,STIG-ID|PHTN-30-000017,Vuln-ID|V-256494",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "@AUDIT_LOG_PATH@/*",
+        "owner": "root"
+    },
+    "custom_item_31": {
+        "system": "Linux",
+        "description": "PHTN-30-000018 - The Photon operating system audit log must be group-owned by root.",
+        "info": "Audit information includes all information (e.g., audit records, audit settings, audit reports) needed to successfully audit operating system activity.\n\nUnauthorized disclosure of audit records can reveal system and configuration data to attackers, thus compromising its confidentiality.",
+        "solution": "At the command line, run the following command:\n\n#  chown root:rootReplacewith the log files not group owned by root.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256495r887159_rule,STIG-ID|PHTN-30-000018,Vuln-ID|V-256495",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "@AUDIT_LOG_PATH@/*",
+        "group": "root"
+    },
+    "custom_item_32": {
+        "system": "Linux",
+        "description": "PHTN-30-000019 - The Photon operating system must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited.",
+        "info": "Without the capability to restrict the roles and individuals that can select which events are audited, unauthorized personnel may be able to prevent the auditing of critical events. Misconfigured audits may degrade the system's performance by overwhelming the audit log. Misconfigured audits may also make it more difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.",
+        "solution": "At the command line, run the following command:\n\n# chmod 640Replacewith any file with incorrect permissions.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12b.,800-53r5|AU-12b.,CAT|II,CCI|CCI-000171,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12b.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256496r887162_rule,STIG-ID|PHTN-30-000019,SWIFT-CSCv1|6.4,Vuln-ID|V-256496",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/*",
+        "mask": "137"
+    },
+    "custom_item_33": {
+        "system": "Linux",
+        "description": "loaded rules perm_mod 64b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep chmod",
+        "expect": "^[\\\\s]*-a[\\\\s]+(always,exit|exit,always)[\\\\s]+-F[\\\\s]+arch=b64[\\\\s]+-S[\\\\s]+(?=.*chmod)(?=.*fchmod)(?=.*chown)(?=.*fchown)(?=.*fchownat)(?=.*fchmodat).*[\\\\s]+-F[\\\\s]+auid>=1000[\\\\s]+-F[\\\\s]+auid!=(-1|4294967295)[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)perm_mod[\\\\s]*$"
+    },
+    "custom_item_34": {
+        "system": "Linux",
+        "description": "loaded rules perm_mod xattr 64b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep chmod",
+        "expect": "^[\\\\s]*-a[\\\\s]+(always,exit|exit,always)[\\\\s]+-F[\\\\s]+arch=b64[\\\\s]+-S[\\\\s]+(?=.*chmod)(?=.*fchmod)(?=.*chown)(?=.*fchown)(?=.*lchown)(?=.*setxattr)(?=.*lsetxattr)(?=.*fsetxattr)(?=.*removexattr)(?=.*lremovexattr)(?=.*fremovexattr)(?=.*fchownat)(?=.*fchmodat).*[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)perm_mod[\\\\s]*$"
+    },
+    "custom_item_35": {
+        "system": "Linux",
+        "description": "loaded rules perm_mod 32b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep chmod",
+        "expect": "^[\\\\s]*-a[\\\\s]+(always,exit|exit,always)[\\\\s]+-F[\\\\s]+arch=b32[\\\\s]+-S[\\\\s]+(?=.*chmod)(?=.*fchmod)(?=.*chown)(?=.*fchown)(?=.*fchownat)(?=.*fchmodat).*[\\\\s]+-F[\\\\s]+auid>=1000[\\\\s]+-F[\\\\s]+auid!=(-1|4294967295)[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)perm_mod[\\\\s]*$"
+    },
+    "custom_item_36": {
+        "system": "Linux",
+        "description": "loaded rules perm_mod xattr 32b",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep chmod",
+        "expect": "^[\\\\s]*-a[\\\\s]+(always,exit|exit,always)[\\\\s]+-F[\\\\s]+arch=b32[\\\\s]+-S[\\\\s]+(?=.*chmod)(?=.*fchmod)(?=.*chown)(?=.*fchown)(?=.*lchown)(?=.*setxattr)(?=.*lsetxattr)(?=.*fsetxattr)(?=.*removexattr)(?=.*lremovexattr)(?=.*fremovexattr)(?=.*fchownat)(?=.*fchmodat).*[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)perm_mod[\\\\s]*$"
+    },
+    "custom_item_37": {
+        "system": "Linux",
+        "description": "PHTN-30-000021 - The Photon operating system must enforce password complexity by requiring that at least one uppercase character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000192,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256498r887168_rule,STIG-ID|PHTN-30-000021,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256498",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+ucredit=-[1-9][0-9]*([\\\\s]|$)"
+    },
+    "custom_item_38": {
+        "system": "Linux",
+        "description": "PHTN-30-000022 - The Photon operating system must enforce password complexity by requiring that at least one lowercase character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000193,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256499r887171_rule,STIG-ID|PHTN-30-000022,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256499",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+lcredit=-[1-9][0-9]*([\\\\s]|$)"
+    },
+    "custom_item_39": {
+        "system": "Linux",
+        "description": "PHTN-30-000023 - The Photon operating system must enforce password complexity by requiring that at least one numeric character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000194,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256500r887174_rule,STIG-ID|PHTN-30-000023,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256500",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+dcredit=-[1-9][0-9]*([\\\\s]|$)"
+    },
+    "custom_item_40": {
+        "system": "Linux",
+        "description": "PHTN-30-000024 - The Photon operating system must require that new passwords are at least four characters different from the old password.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(b),800-53r5|IA-5(1)(b),CAT|II,CCI|CCI-000195,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(b),NESA|T5.2.3,NIAv2|AM22d,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256501r887177_rule,STIG-ID|PHTN-30-000024,SWIFT-CSCv1|4.1,Vuln-ID|V-256501",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+difok=([4-9]|[1-9][0-9])([\\\\s]|$)"
+    },
+    "custom_item_41": {
+        "system": "Linux",
+        "description": "PHTN-30-000025 - The Photon operating system must store only encrypted representations of passwords.",
+        "info": "Passwords need to be protected at all times, and encryption is the standard method for protecting passwords. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised.",
+        "solution": "Navigate to and open:\n\n/etc/login.defs\n\nAdd or replace the ENCRYPT_METHOD line as follows:\n\nENCRYPT_METHOD SHA512",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000196,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256502r887180_rule,STIG-ID|PHTN-30-000025,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-256502",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*(?i)ENCRYPT_METHOD(?-i)[\\\\s]+",
+        "expect": "^[\\\\s]*(?i)ENCRYPT_METHOD[\\\\s]+@PASSWORD_ENCRYPTION@(?-i)[\\\\s]*$"
+    },
+    "custom_item_42": {
+        "system": "Linux",
+        "description": "PHTN-30-000026 - The Photon operating system must use an OpenSSH server version that does not support protocol 1.",
+        "info": "A replay attack may enable an unauthorized user to gain access to the operating system. Authentication sessions between the authenticator and the operating system validating the user credentials must not be vulnerable to a replay attack.\n\nAn authentication process resists replay attacks if it is impractical to achieve a successful authentication by recording and replaying a previous authentication message.\n\nA privileged account is any information system account with authorizations of a privileged user.\n\nTechniques used to address this include protocols using nonces (e.g., numbers generated for a specific one-time use) or challenges (e.g., TLS, WS_Security). Additional techniques include time-synchronous or challenge-response one-time authenticators.\n\nSatisfies: SRG-OS-000074-GPOS-00042, SRG-OS-000112-GPOS-00057, SRG-OS-000113-GPOS-00058, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000395-GPOS-00175, SRG-OS-000425-GPOS-00189, SRG-OS-000426-GPOS-00190",
+        "solution": "Installing openssh manually is not supported by VMware for appliances. Revert to a previous backup or redeploy the appliance.",
+        "reference": "800-171|3.5.4,800-171|3.5.10,800-171|3.7.5,800-171|3.13.8,800-53|IA-2(8),800-53|IA-2(9),800-53|IA-5(1)(c),800-53|IA-7,800-53|MA-4c.,800-53|MA-4(7),800-53|SC-8(2),800-53r5|IA-2(8),800-53r5|IA-5(1)(c),800-53r5|IA-7,800-53r5|MA-4c.,800-53r5|MA-4(7),800-53r5|SC-8(2),CAT|II,CCI|CCI-000197,CCI|CCI-000803,CCI|CCI-000877,CCI|CCI-001941,CCI|CCI-001942,CCI|CCI-002420,CCI|CCI-002422,CCI|CCI-002891,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CN-L3|8.5.4.1(a),CSF|PR.AC-1,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.MA-2,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|IA-2(8),ITSG-33|IA-2(9),ITSG-33|IA-5(1)(c),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4c.,ITSG-33|MA-4(7),ITSG-33|SC-8(2),ITSG-33|SC-9(2),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T2.3.8,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.4.4,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM18,NIAv2|CY6,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-256503r887183_rule,STIG-ID|PHTN-30-000026,SWIFT-CSCv1|2.1,SWIFT-CSCv1|4.1,SWIFT-CSCv1|4.2,TBA-FIISB|26.1,TBA-FIISB|35.1,TBA-FIISB|36.1,TBA-FIISB|45.2.3,Vuln-ID|V-256503",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "rpm": "openssh-server-7.4.0-0",
+        "operator": "gte"
+    },
+    "custom_item_43": {
+        "system": "Linux",
+        "description": "PHTN-30-000027 - The Photon operating system must be configured so that passwords for new users are restricted to a 24-hour minimum lifetime.",
+        "info": "Enforcing a minimum password lifetime helps to prevent repeated password changes to defeat the password reuse or history enforcement requirement. If users are allowed to immediately and continually change their password, the password could be repeatedly changed in a short period of time to defeat the organization's policy regarding password reuse.",
+        "solution": "Navigate to and open:\n\n/etc/login.defs\n\nModify the 'PASS_MIN_DAYS' line to the following:\n\nPASS_MIN_DAYS   1",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CAT|II,CCI|CCI-000198,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256504r887186_rule,STIG-ID|PHTN-30-000027,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2,Vuln-ID|V-256504",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*PASS_MIN_DAYS[\\\\s]+",
+        "expect": "^[\\\\s]*PASS_MIN_DAYS[\\\\s]+@PASSWORD_MIN_DAYS@[\\\\s]*$"
+    },
+    "custom_item_44": {
+        "system": "Linux",
+        "description": "PHTN-30-000028 - The Photon operating system must be configured so that passwords for new users are restricted to a 90-day maximum lifetime.",
+        "info": "Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically. If the operating system does not limit the lifetime of passwords and force users to change their passwords, there is the risk that the operating system passwords could be compromised.",
+        "solution": "Navigate to and open:\n\n/etc/login.def\n\nModify the 'PASS_MAX_DAYS' line to the following:\n\nPASS_MAX_DAYS   90",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CAT|II,CCI|CCI-000199,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256505r887189_rule,STIG-ID|PHTN-30-000028,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2,Vuln-ID|V-256505",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*PASS_MAX_DAYS[\\\\s]+",
+        "expect": "^[\\\\s]*PASS_MAX_DAYS[\\\\s]+@PASSWORD_MAX_DAYS@[\\\\s]*$"
+    },
+    "custom_item_45": {
+        "system": "Linux",
+        "description": "PHTN-30-000029 - The Photon operating system must prohibit password reuse for a minimum of five generations.",
+        "info": "Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. If the information system or application allows the user to consecutively reuse their password when that password has exceeded its defined lifetime, the result is a password that is not changed per policy requirements.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following line after the 'password requisite pam_cracklib.so' statement:\n\npassword requisite pam_pwhistory.so enforce_for_root use_authtok remember=5 retry=3\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CAT|II,CCI|CCI-000200,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256506r887192_rule,STIG-ID|PHTN-30-000029,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3,Vuln-ID|V-256506",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+(required|requisite)[\\\\s]+pam_pwhistory.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+(required|requisite)[\\\\s]+pam_pwhistory.so[^#]*[\\\\s]+remember=5([\\\\s]|$)"
+    },
+    "custom_item_46": {
+        "system": "Linux",
+        "description": "PHTN-30-000030 - The Photon operating system must enforce a minimum eight-character password length.",
+        "info": "The shorter the password, the lower the number of possible combinations that need to be tested before the password is compromised.\n\nPassword complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Password length is one factor of several that helps to determine strength and how long it takes to crack a password. Use of more characters in a password helps to exponentially increase the time and/or resources required to compromise the password.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000205,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256507r887195_rule,STIG-ID|PHTN-30-000030,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256507",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+minlen=([89]|[1-9][0-9])([\\\\s]|$)"
+    },
+    "custom_item_47": {
+        "system": "Linux",
+        "description": "PHTN-30-000031 - The Photon operating system must require authentication upon booting into single-user and maintenance modes.",
+        "info": "If the system does not require authentication before it boots into single-user mode, anyone with console access to the system can trivially access all files on the system. GRUB2 is the boot loader for Photon OS and can be configured to require a password to boot into single-user mode or make modifications to the boot menu.\n\nNote: Photon does not support building grub changes via grub2-mkconfig.",
+        "solution": "At the command line, run the following command:\n\n# grub2-mkpasswd-pbkdf2\n\nEnter a secure password and ensure this password is stored for break-glass situations. The vCenter root account cannot be recovered without knowing this separate password. Copy the resulting encrypted string.\n\nAn example string is below:\n\ngrub.pbkdf2.sha512.10000.983A13DF3C51BB2B5130F0B86DDBF0DEA1AAF766BD1F16B7840F79CE3E35494C4B99F505C99C150071E563DF1D7FE1F45456D5960C4C79DAB6C49298B02A5558.5B2C49E12D43CC5A876F6738462DE4EFC24939D4BE486CDB72CFBCD87FDE93FBAFCB817E01B90F23E53C2502C3230502BC3113BE4F80B0AFC0EE956E735F7F86\n\nNavigate to and open:\n\n/boot/grub2/grub.cfg\n\nFind the line that begins with 'set rootpartition'. Below this line, paste the following on its own line:\n\nset superusers='root'\n\nBelow this, paste the following, substituting the encrypted string from the steps above:\n\npassword_pbkdf2 rootPhoton ships with one menuentry block by default. Copy that entire block and paste it right below itself.\n\nExample:\nmenuentry 'Photon' {\n    linux '/'$photon_linux root=$rootpartition net.ifnames=0 $photon_cmdline coredump_filter=0x37 consoleblank=0\n    if [ '$photon_initrd' ]; then\n        initrd '/'$photon_initrd\n    fi\n}\nmenuentry 'Photon' {\n    linux '/'$photon_linux root=$rootpartition net.ifnames=0 $photon_cmdline coredump_filter=0x37 consoleblank=0\n    if [ '$photon_initrd' ]; then\n        initrd '/'$photon_initrd\n    fi\n}\n\nModify the first menuentry block to add the '--unrestricted' option as follows:\n\nmenuentry 'Photon' --unrestricted {\n\nModify the second menuentry block to add the allowed user as follows:\n\nmenuentry 'Recover Photon' --users root {\n\nThis concludes the fix. To verify, here is an example grub.cfg snippet:\n\n...\nset rootpartition=PARTUUID=326e5b0f-42fb-471a-8209-18964c4a2ed3\nset superusers='root'\npassword_pbkdf2 root grub.pbkdf2.sha512.10000.983A13DF3C51BB2B5130F0B86DDBF0DEA1AAF766BD1F16B7840F79CE3E35494C4B99F505C99C150071E563DF1D7FE1F45456D5960C4C79DAB6C49298B02A5558.5B2C49E12D43CC5A876F6738462DE4EFC24939D4BE486CDB72CFBCD87FDE93FBAFCB817E01B90F23E53C2502C3230502BC3113BE4F80B0AFC0EE956E735F7F86\n\nmenuentry 'Photon' --unrestricted {\n    linux '/'$photon_linux root=$rootpartition net.ifnames=0 $photon_cmdline coredump_filter=0x37 consoleblank=0\n    if [ '$photon_initrd' ]; then\n        initrd '/'$photon_initrd\n    fi\n}\n\nmenuentry 'Recover Photon' --users root {\n    linux '/'$photon_linux root=$rootpartition net.ifnames=0 $photon_cmdline coredump_filter=0x37 consoleblank=0\n    if [ '$photon_initrd' ]; then\n        initrd '/'$photon_initrd\n    fi\n}",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256508r887198_rule,STIG-ID|PHTN-30-000031,TBA-FIISB|31.1,Vuln-ID|V-256508",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*password_pbkdf2[\\\\s]+",
+        "expect": "^[\\\\s]*password_pbkdf2[\\\\s]+root[\\\\s]+"
+    },
+    "custom_item_48": {
+        "system": "Linux",
+        "description": "sctp",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+sctp[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_49": {
+        "system": "Linux",
+        "description": "dccp",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+dccp[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_50": {
+        "system": "Linux",
+        "description": "dccp_ipv4",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+dccp_ipv4[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_51": {
+        "system": "Linux",
+        "description": "dccp_ipv6",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+dccp_ipv6[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_52": {
+        "system": "Linux",
+        "description": "ipx",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+ipx[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_53": {
+        "system": "Linux",
+        "description": "appletalk",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+appletalk[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_54": {
+        "system": "Linux",
+        "description": "decnet",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+decnet[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_55": {
+        "system": "Linux",
+        "description": "rds",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+rds[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_56": {
+        "system": "Linux",
+        "description": "tipc",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+tipc[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_57": {
+        "system": "Linux",
+        "description": "bluetooth",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+bluetooth[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_58": {
+        "system": "Linux",
+        "description": "usb-storage",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+usb_storage[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_59": {
+        "system": "Linux",
+        "description": "ieee1394",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+ieee1394[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_60": {
+        "system": "Linux",
+        "description": "cramfs",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+cramfs[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_61": {
+        "system": "Linux",
+        "description": "freevxfs",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+freevxfs[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_62": {
+        "system": "Linux",
+        "description": "jffs2",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+jffs2[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_63": {
+        "system": "Linux",
+        "description": "hfs",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+hfs[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_64": {
+        "system": "Linux",
+        "description": "hfsplus",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+hfsplus[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_65": {
+        "system": "Linux",
+        "description": "squashfs",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+squashfs[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_66": {
+        "system": "Linux",
+        "description": "udf",
+        "cmd": "/usr/sbin/modprobe --showconfig | grep '^install' | grep '/bin'",
+        "expect": "^[\\\\s]*install[\\\\s]+udf[\\\\s]+/bin/false[\\\\s]*$"
+    },
+    "custom_item_67": {
+        "system": "Linux",
+        "description": "PHTN-30-000035 - The Photon operating system must disable new accounts immediately upon password expiration.",
+        "info": "Inactive identifiers pose a risk to systems and applications because attackers may exploit an inactive identifier and potentially obtain undetected access to the system. Owners of inactive accounts will not notice if unauthorized access to their user account has been obtained.\n\nDisabling inactive accounts ensures accounts that may not have been responsibly removed are not available to attackers who may have compromised their credentials.",
+        "solution": "Navigate to and open:\n\n/etc/default/useradd\n\nRemove an existing 'INACTIVE' line and add the following line:\n\nINACTIVE=0",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4e.,800-53r5|IA-4e.,CAT|II,CCI|CCI-000795,CN-L3|7.1.2.7(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4e.,PCI-DSSv3.2.1|8.1.4,PCI-DSSv4.0|8.2.6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256511r887207_rule,STIG-ID|PHTN-30-000035,SWIFT-CSCv1|5,Vuln-ID|V-256511",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/default/useradd",
+        "regex": "^[\\\\s]*INACTIVE[\\\\s]*=",
+        "expect": "^[\\\\s]*INACTIVE[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_68": {
+        "system": "Linux",
+        "description": "PHTN-30-000036 - The Photon operating system must use Transmission Control Protocol (TCP) syncookies.",
+        "info": "A TCP SYN flood attack can cause a denial of service by filling a system's TCP connection table with connections in the SYN_RCVD state. Syncookies can be used to track a connection when a subsequent ACK is received, verifying the initiator is attempting a valid connection and is not a flood source. This feature is activated when a flood condition is detected and enables the system to continue servicing valid connection requests.\n\nSatisfies: SRG-OS-000142-GPOS-00071, SRG-OS-000420-GPOS-00186",
+        "solution": "At the command line, run the following commands:\n\n# sed -i -e '/^net.ipv4.tcp_syncookies/d' /etc/sysctl.conf\n# echo net.ipv4.tcp_syncookies=1>>/etc/sysctl.conf\n# /sbin/sysctl --load",
+        "reference": "800-53|SC-5,800-53|SC-5(2),800-53r5|SC-5,800-53r5|SC-5(2),CAT|II,CCI|CCI-001095,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-256512r887210_rule,STIG-ID|PHTN-30-000036,SWIFT-CSCv1|6.4,Vuln-ID|V-256512",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/sbin/sysctl net.ipv4.tcp_syncookies",
+        "expect": "^[\\\\s]*net.ipv4.tcp_syncookies[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_69": {
+        "system": "Linux",
+        "description": "PHTN-30-000037 - The Photon operating system must configure sshd to disconnect idle Secure Shell (SSH) sessions.",
+        "info": "Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on a console or console port that has been left unattended.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'ClientAliveInterval' line is uncommented and set to the following:\n\nClientAliveInterval 900\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-256513r887213_rule,STIG-ID|PHTN-30-000037,SWIFT-CSCv1|2.6,Vuln-ID|V-256513",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i clientaliveinterval",
+        "expect": "^[\\\\s]*(?i)clientaliveinterval(?-i)[\\\\s]+900[\\\\s]*$"
+    },
+    "custom_item_70": {
+        "system": "Linux",
+        "description": "PHTN-30-000038 - The Photon operating system must configure sshd to disconnect idle Secure Shell (SSH) sessions.",
+        "info": "Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on a console or console port that has been left unattended.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'ClientAliveCountMax' line is uncommented and set to the following:\n\nClientAliveCountMax 0\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-256514r887216_rule,STIG-ID|PHTN-30-000038,SWIFT-CSCv1|2.6,Vuln-ID|V-256514",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i clientalivecountmax",
+        "expect": "^[\\\\s]*(?i)clientalivecountmax(?-i)[\\\\s]+0[\\\\s]*$"
+    },
+    "custom_item_71": {
+        "system": "Linux",
+        "description": "PHTN-30-000040 - The Photon operating system '/var/log' directory must be owned by root.",
+        "info": "Only authorized personnel should be aware of errors and the details of the errors. Error messages are an indicator of an organization's operational state and can provide sensitive information to an unprivileged attacker.",
+        "solution": "At the command line, run the following command:\n\n# chown root:root /var/log",
+        "reference": "800-53|SI-11b.,800-53r5|SI-11b.,CAT|II,CCI|CCI-001314,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11c.,Rule-ID|SV-256515r887219_rule,STIG-ID|PHTN-30-000040,Vuln-ID|V-256515",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/var/log",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_72": {
+        "system": "Linux",
+        "description": "PHTN-30-000041 - The Photon operating system messages file must have the correct ownership and file permissions.",
+        "info": "Only authorized personnel should be aware of errors and the details of the errors. Error messages are an indicator of an organization's operational state and can provide sensitive information to an unprivileged attacker.",
+        "solution": "At the command line, run the following commands:\n\n# chown root:root /var/log/messages\n\n# chmod 0640 /var/log/messages",
+        "reference": "800-53|SI-11b.,800-53r5|SI-11b.,CAT|II,CCI|CCI-001314,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11c.,Rule-ID|SV-256516r887222_rule,STIG-ID|PHTN-30-000041,Vuln-ID|V-256516",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/var/log/messages",
+        "owner": "root",
+        "mask": "7137",
+        "group": "root"
+    },
+    "custom_item_73": {
+        "system": "Linux",
+        "description": "usermod",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/usr/sbin/usermod'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/usermod[\\\\s]+-p[\\\\s]+x[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)usermod[\\\\s]*$"
+    },
+    "custom_item_74": {
+        "system": "Linux",
+        "description": "groupmod",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/usr/sbin/groupmod'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/groupmod[\\\\s]+-p[\\\\s]+x[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)groupmod[\\\\s]*$"
+    },
+    "custom_item_75": {
+        "system": "Linux",
+        "description": "passwd",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/etc/passwd'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/etc/passwd[\\\\s]+-p[\\\\s]+wa[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)passwd[\\\\s]*$"
+    },
+    "custom_item_76": {
+        "system": "Linux",
+        "description": "shadow",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/etc/shadow'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/etc/shadow[\\\\s]+-p[\\\\s]+wa[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)shadow[\\\\s]*$"
+    },
+    "custom_item_77": {
+        "system": "Linux",
+        "description": "group",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/etc/group'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/etc/group[\\\\s]+-p[\\\\s]+wa[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)group[\\\\s]*$"
+    },
+    "custom_item_78": {
+        "system": "Linux",
+        "description": "gshadow",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/etc/gshadow'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/etc/gshadow[\\\\s]+-p[\\\\s]+wa[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)gshadow[\\\\s]*$"
+    },
+    "custom_item_79": {
+        "system": "Linux",
+        "description": "PHTN-30-000044 - The Photon operating system must audit all account disabling actions.",
+        "info": "When operating system accounts are disabled, user accessibility is affected. Accounts are used for identifying individual users or operating system processes. To detect and respond to events affecting user accessibility and system processing, operating systems must audit account disabling actions.",
+        "solution": "Navigate to and open:\n\n/etc/audit/rules.d/audit.STIG.rules\n\nAdd the following lines:\n\n-w /usr/bin/passwd -p x -k passwd\n\nAt the command line, run the following command to load the new audit rules:\n\n# /sbin/augenrules --load\n\nNote: A new 'audit.STIG.rules' file is provided for placement in '/etc/audit/rules.d' that contains all rules needed for auditd.\n\nNote: An older 'audit.STIG.rules' may exist if the file exists and references older 'GEN' SRG IDs. This file can be removed and replaced as necessary with an updated one.",
+        "reference": "800-171|3.1.1,800-53|AC-2(4),800-53r5|AC-2(4),CAT|II,CCI|CCI-001404,CN-L3|7.1.3.2(d),CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(4),NESA|T5.2.2,NIAv2|AM9a,NIAv2|AM9b,NIAv2|AM9c,NIAv2|AM9d,NIAv2|AM9e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-256519r887231_rule,STIG-ID|PHTN-30-000044,TBA-FIISB|36.2.3,Vuln-ID|V-256519",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/usr/bin/passwd'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/bin/passwd[\\\\s]+-p[\\\\s]+x[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)passwd[\\\\s]*$"
+    },
+    "custom_item_80": {
+        "system": "Linux",
+        "description": "userdel",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/usr/sbin/userdel'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/userdel[\\\\s]+-p[\\\\s]+x[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)userdel[\\\\s]*$"
+    },
+    "custom_item_81": {
+        "system": "Linux",
+        "description": "groupdel",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep '/usr/sbin/groupdel'",
+        "expect": "^[\\\\s]*-w[\\\\s]+/usr/sbin/groupdel[\\\\s]+-p[\\\\s]+x[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)groupdel[\\\\s]*$"
+    },
+    "custom_item_82": {
+        "system": "Linux",
+        "description": "PHTN-30-000046 - The Photon operating system must initiate auditing as part of the boot process.",
+        "info": "Each process on the system carries an 'auditable' flag, which indicates whether its activities can be audited. Although auditd takes care of enabling this for all processes that launch after it starts, adding the kernel argument ensures the flag is set at boot for every process on the system. This includes processes created before auditd starts.",
+        "solution": "Navigate to and open:\n\n/boot/grub2/grub.cfg\n\nLocate the boot command line arguments. An example follows:\n\nlinux /$photon_linux root=$rootpartition $photon_cmdline $systemd_cmdline\n\nAdd 'audit=1' to the end of the line so it reads as follows:\n\nlinux /$photon_linux root=$rootpartition $photon_cmdline $systemd_cmdline audit=1\n\nNote: Do not copy/paste in this example argument line. This may change in future releases. Find the similar line and append 'audit=1' to it.\n\nReboot the system for the change to take effect.",
+        "reference": "800-53|AU-14(1),800-53r5|AU-14(1),CAT|II,CCI|CCI-001464,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-14,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256521r887237_rule,STIG-ID|PHTN-30-000046,SWIFT-CSCv1|6.4,Vuln-ID|V-256521",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/proc/cmdline",
+        "regex": "[\\\\s]audit",
+        "expect": "[\\\\s]audit=1([\\\\s]|$)"
+    },
+    "custom_item_83": {
+        "system": "Linux",
+        "description": "PHTN-30-000047 - The Photon operating system audit files and directories must have correct permissions.",
+        "info": "Protecting audit information includes identifying and protecting the tools used to view and manipulate log data. Therefore, protecting audit tools is necessary to prevent unauthorized operations on audit information.",
+        "solution": "At the command line, run the following command:\n\n# chown root:root /etc/audit/auditd.conf",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-001493,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256522r887240_rule,STIG-ID|PHTN-30-000047,Vuln-ID|V-256522",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_84": {
+        "system": "Linux",
+        "description": "auditctl",
+        "file": "/usr/sbin/auditctl",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_85": {
+        "system": "Linux",
+        "description": "auditd",
+        "file": "/usr/sbin/auditd",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_86": {
+        "system": "Linux",
+        "description": "ausearch",
+        "file": "/usr/sbin/aureport",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_87": {
+        "system": "Linux",
+        "description": "ausearch",
+        "file": "/usr/sbin/ausearch",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_88": {
+        "system": "Linux",
+        "description": "autrace",
+        "file": "/usr/sbin/autrace",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_89": {
+        "system": "Linux",
+        "description": "PHTN-30-000050 - The Photon operating system must enforce password complexity by requiring that at least one special character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-001619,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256524r887246_rule,STIG-ID|PHTN-30-000050,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-256524",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+(required|requisite)[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+(required|requisite)[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+ocredit=-[1-9][0-9]*([\\\\s]|$)"
+    },
+    "custom_item_90": {
+        "system": "Linux",
+        "description": "PHTN-30-000051 - The Photon operating system package files must not be modified.",
+        "info": "Protecting the integrity of the tools used for auditing purposes is a critical step toward ensuring the integrity of audit information. Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.\n\nWithout confidence in the integrity of the auditing system and tools, the information it provides cannot be trusted.",
+        "solution": "If the audit system binaries have been altered, the system must be taken offline and the information system security manager (ISSM) notified immediately.\n\nReinstalling the audit tools is not supported. The appliance should be restored from a backup or redeployed once the root cause is remediated.",
+        "reference": "800-171|3.3.8,800-53|AU-9(3),800-53r5|AU-9(3),CAT|II,CCI|CCI-001496,CN-L3|8.1.4.3(d),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(3),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256525r887249_rule,STIG-ID|PHTN-30-000051,TBA-FIISB|37.3.3,Vuln-ID|V-256525",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/rpm -V audit | /usr/bin/grep \"^..5\" | /usr/bin/grep -v \"^...........c\" | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_91": {
+        "system": "Linux",
+        "description": "PHTN-30-000054 - The Photon operating system must audit the execution of privileged functions.",
+        "info": "Misuse of privileged functions, either intentionally or unintentionally by authorized users, or by unauthorized external entities that have compromised information system accounts, is a serious and ongoing concern and can have significant adverse impacts on organizations. Auditing the use of privileged functions is one way to detect such misuse and identify the risk from insider threats and the advanced persistent threat.\n\nSatisfies: SRG-OS-000327-GPOS-00127, SRG-OS-000471-GPOS-00215",
+        "solution": "At the command line, run the following command to obtain a list of setuid files:\n\n# find / -xdev -perm -4000 -type f -o -perm -2000 -type f | sort\n\nExecute the following for each setuid file found in the first command that does not have a corresponding line in the audit rules:\n\nNavigate to and open:\n\n/etc/audit/rules.d/audit.STIG.rules\n\nAdd the following line:\n\n-a always,exit -F path=-F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged\n\nExecute the following command to load the new audit rules:\n\n# /sbin/augenrules --load\n\nNote: A new 'audit.STIG.rules' file is provided for placement in '/etc/audit/rules.d' that contains all rules needed for auditd.\n\nNote: An older 'audit.STIG.rules' may exist if the file exists and references older 'GEN' SRG IDs. This file can be removed and replaced as necessary with an updated one.",
+        "reference": "800-171|3.1.7,800-171|3.3.1,800-171|3.3.2,800-53|AC-6(9),800-53|AU-12c.,800-53r5|AC-6(9),800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CCI|CCI-002234,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.2(d),CN-L3|8.1.4.3(a),CN-L3|8.1.10.6(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ISO/IEC-27001|A.12.4.3,ITSG-33|AC-6,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SM8,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256526r918960_rule,STIG-ID|PHTN-30-000054,SWIFT-CSCv1|5.1,SWIFT-CSCv1|6.4,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|45.1.1,Vuln-ID|V-256526",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "IFS=$'\\\\n'; LINES=$(find / -xdev -path /var/lib/containerd -prune -o \\\\( -perm -4000 -type f -o -perm -2000 \\\\) -type f | sort); for LINE in $LINES; do LINE=\"-a always,exit -F path=$LINE -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged\"; if [ $(/sbin/auditctl -l | /bin/egrep -- \"^$LINE\" | wc -l) -eq 0 ] ; then echo \"$LINE - not found in output of auditctl -l\"; fi; done",
+        "expect": "^((?!not found in).)*$"
+    },
+    "custom_item_92": {
+        "system": "Linux",
+        "description": "PHTN-30-000055 - The Photon operating system must configure auditd to keep five rotated log files.",
+        "info": "Audit logs are most useful when accessible by date, rather than size. This can be accomplished through a combination of an audit log rotation cron job, setting a reasonable number of logs to keep, and configuring auditd to not rotate the logs on its own. This ensures audit logs are accessible to the information system security officer (ISSO) in the event of a central log processing failure.",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nAdd or change the 'num_logs' line as follows:\n\nnum_logs = 5\n\nAt the command line, run the following commands:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256527r887255_rule,STIG-ID|PHTN-30-000055,Vuln-ID|V-256527",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*num_logs[\\\\s]*=",
+        "expect": "^[\\\\s]*num_logs[\\\\s]*=[\\\\s]*5[\\\\s]*$"
+    },
+    "custom_item_93": {
+        "system": "Linux",
+        "description": "PHTN-30-000056 - The Photon operating system must configure auditd to keep logging in the event max log file size is reached.",
+        "info": "Audit logs are most useful when accessible by date, rather than size. This can be accomplished through a combination of an audit log rotation cron job, setting a reasonable number of logs to keep, and configuring auditd to not rotate the logs on its own. This ensures audit logs are accessible to the information system security officer (ISSO) in the event of a central log processing failure.\n\nIf another solution is not used to rotate auditd logs, auditd can be configured to rotate logs.",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nAdd or change the 'max_log_file_action' line as follows:\n\nmax_log_file_action = IGNORE\n\nNote: This can also be set to 'ROTATE' if another tool is not used to rotate auditd logs.\n\nAt the command line, run the following commands:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256528r887258_rule,STIG-ID|PHTN-30-000056,Vuln-ID|V-256528",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*max_log_file_action[\\\\s]*=",
+        "expect": "^[\\\\s]*max_log_file_action[\\\\s]*=[\\\\s]*(IGNORE|ROTATE)[\\\\s]*$"
+    },
+    "custom_item_94": {
+        "system": "Linux",
+        "description": "PHTN-30-000057 - The Photon operating system must configure auditd to log space limit problems to syslog.",
+        "info": "If security personnel are not notified immediately when storage volume reaches 75 percent utilization, they are unable to plan for audit record storage capacity expansion.",
+        "solution": "Navigate to and open:\n\n/etc/audit/auditd.conf\n\nEnsure the 'space_left' line is uncommented and set to the following:\n\nspace_left = 75\n\nAt the command line, run the following commands:\n\n# killproc auditd -TERM\n# systemctl start auditd",
+        "reference": "800-171|3.3.4,800-53|AU-5(1),800-53r5|AU-5(1),CAT|II,CCI|CCI-001855,CN-L3|7.1.3.7(e),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(1),NESA|T3.3.1,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256529r887261_rule,STIG-ID|PHTN-30-000057,TBA-FIISB|37.3.2,Vuln-ID|V-256529",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*space_left[\\\\s]*=",
+        "expect": "^[\\\\s]*space_left[\\\\s]*=[\\\\s]*75[\\\\s]*$"
+    },
+    "custom_item_95": {
+        "system": "Linux",
+        "description": "PHTN-30-000059 - The Photon operating system RPM package management tool must cryptographically verify the authenticity of all software packages during installation.",
+        "info": "Installation of any nontrusted software, patches, service packs, device drivers, or operating system components can significantly affect the overall security of the operating system. Ensuring all packages' cryptographic signatures are valid prior to installation ensures the provenance of the software and protects against malicious tampering.",
+        "solution": "Open the file containing 'nosignature' with a text editor and remove the option.",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|II,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-256530r887264_rule,STIG-ID|PHTN-30-000059,Vuln-ID|V-256530",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/usr/lib/rpm/rpmrc /etc/rpmrc ~root/.rpmrc",
+        "regex": "nosignature",
+        "expect": "nosignature"
+    },
+    "custom_item_96": {
+        "system": "Linux",
+        "description": "PHTN-30-000060 - The Photon operating system RPM package management tool must cryptographically verify the authenticity of all software packages during installation.",
+        "info": "Installation of any nontrusted software, patches, service packs, device drivers, or operating system components can significantly affect the overall security of the operating system. Cryptographically verifying the authenticity of all software packages during installation ensures the software has not been tampered with and has been provided by a trusted vendor.",
+        "solution": "Navigate to and open:\n\n/etc/tdnf/tdnf.conf\n\nRemove any existing 'gpgcheck' setting and add the following line:\n\ngpgcheck=1",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|II,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-256531r887267_rule,STIG-ID|PHTN-30-000060,Vuln-ID|V-256531",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/tdnf/tdnf.conf",
+        "regex": "^[\\\\s]*gpgcheck[\\\\s]*=",
+        "expect": "^[\\\\s]*gpgcheck[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_97": {
+        "system": "Linux",
+        "description": "PHTN-30-000061 - The  Photon operating system YUM repository must cryptographically verify the authenticity of all software packages during installation.",
+        "info": "Installation of any nontrusted software, patches, service packs, device drivers, or operating system components can significantly affect the overall security of the operating system. Cryptographically verifying the authenticity of all software packages during installation ensures the software has not been tampered with and has been provided by a trusted vendor.",
+        "solution": "Open the file where 'gpgcheck' is not set to '1' with a text editor.\n\nRemove any existing 'gpgcheck' setting and add the following line at the end of the file:\n\ngpgcheck=1",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|II,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-256532r887270_rule,STIG-ID|PHTN-30-000061,Vuln-ID|V-256532",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/yum.repos.d/*",
+        "regex": "^[\\\\s]*gpgcheck[\\\\s]*=",
+        "expect": "^[\\\\s]*gpgcheck[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_98": {
+        "system": "Linux",
+        "description": "PHTN-30-000062 - The Photon operating system must require users to reauthenticate for privilege escalation.",
+        "info": "Without reauthentication, users may access resources or perform tasks for which they do not have authorization.\n\nWhen operating systems provide the capability to escalate a functional capability, it is critical the user reauthenticate.\n\nSatisfies: SRG-OS-000373-GPOS-00156, SRG-OS-000373-GPOS-00157, SRG-OS-000373-GPOS-00158\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Check the configuration of the '/etc/sudoers' and '/etc/sudoers.d/*' files with the following command:\n\n# visudo\n\nOR\n\n# visudo -f /etc/sudoers.d/Remove any occurrences of 'NOPASSWD' tags associated with user accounts with a password hash.",
+        "reference": "800-53|IA-11,800-53r5|IA-11,CAT|II,CCI|CCI-002038,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),QCSC-v1|13.2,Rule-ID|SV-256533r887273_rule,STIG-ID|PHTN-30-000062,Vuln-ID|V-256533",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/grep -ihs nopasswd /etc/sudoers /etc/sudoers.d/* | /usr/bin/grep -v '^#' | /usr/bin/grep -v '^%'",
+        "expect": ""
+    },
+    "custom_item_99": {
+        "system": "Linux",
+        "description": "PHTN-30-000064 - The Photon operating system must configure sshd to use FIPS 140-2 ciphers.",
+        "info": "Privileged access contains control and configuration information and is particularly sensitive, so additional protections are necessary. This is maintained by using cryptographic mechanisms such as encryption to protect confidentiality.\n\nNonlocal maintenance and diagnostic activities are conducted by individuals communicating through an external network (e.g., the internet) or internal network. Local maintenance and diagnostic activities are carried out by individuals physically present at the information system or information system component and not communicating across a network connection.\n\nThis requirement applies to hardware/software diagnostic test equipment or tools. It does not cover hardware/software components that may support information system maintenance, yet are a part of the system (e.g., the software implementing 'ping,' 'ls,' 'ipconfig,' or the hardware and software implementing the monitoring port of an Ethernet switch).\n\nThe operating system can meet this requirement by leveraging a cryptographic module.\n\nSatisfies: SRG-OS-000394-GPOS-00174, SRG-OS-000424-GPOS-00188",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'Ciphers' line is uncommented and set to the following:\n\nCiphers aes128-ctr,aes128-gcm@openssh.com,aes192-ctr,aes256-gcm@openssh.com,aes256-ctr\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.7.5,800-171|3.13.8,800-53|MA-4(6),800-53|SC-8(1),800-53r5|MA-4(6),800-53r5|SC-8(1),CAT|III,CCI|CCI-002421,CCI|CCI-003123,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.MA-2,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|MA-4(6),ITSG-33|SC-8(1),NESA|T2.3.4,NESA|T5.4.4,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-256534r942493_rule,STIG-ID|PHTN-30-000064,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,TBA-FIISB|29.1,TBA-FIISB|45.2.3,Vuln-ID|V-256534",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i ciphers",
+        "expect": "^[\\\\s]*(?i)ciphers(?-i)[\\\\s]+aes128-ctr,aes128-gcm@openssh.com,aes192-ctr,aes256-gcm@openssh.com,aes256-ctr[\\\\s]*$"
+    },
+    "custom_item_100": {
+        "system": "Linux",
+        "description": "PHTN-30-000065 - The Photon operating system must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution.",
+        "info": "ASLR makes it more difficult for an attacker to predict the location of attack code they have introduced into a process's address space during an attempt at exploitation.\n\nASLR also makes it more difficult for an attacker to know the location of existing code to repurpose it using return-oriented programming (ROP) techniques.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Navigate to and open:\n\n/etc/sysctl.d/50-security-hardening.conf\n\nEnsure the 'randomize_va_space' is uncommented and set to the following:\n\nkernel.randomize_va_space=2\n\nAt the command line, run the following command:\n\n# sysctl --system",
+        "reference": "800-53|SI-16,800-53r5|SI-16,CAT|II,CCI|CCI-002824,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,Rule-ID|SV-256535r887279_rule,STIG-ID|PHTN-30-000065,Vuln-ID|V-256535",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/cat /proc/sys/kernel/randomize_va_space",
+        "expect": "^[\\\\s]*2[\\\\s]*$"
+    },
+    "custom_item_101": {
+        "system": "Linux",
+        "description": "PHTN-30-000066 - The Photon operating system must remove all software components after updated versions have been installed.",
+        "info": "Previous versions of software components that are not removed from the information system after updates have been installed may be exploited by adversaries. Some information technology products may remove older versions of software automatically from the information system.",
+        "solution": "Navigate to and open:\n\n/etc/tdnf/tdnf.conf\n\nRemove any existing 'clean_requirements_on_remove' line and ensure the following line is present:\n\nclean_requirements_on_remove=true",
+        "reference": "800-171|3.14.1,800-53|SI-2(6),800-53r5|SI-2(6),CAT|II,CCI|CCI-002617,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-256536r887282_rule,STIG-ID|PHTN-30-000066,SWIFT-CSCv1|2.2,Vuln-ID|V-256536",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/tdnf/tdnf.conf",
+        "regex": "^[\\\\s]*(?i)clean_requirements_on_remove(?-i)[\\\\s]*=",
+        "expect": "^[\\\\s]*(?i)clean_requirements_on_remove[\\\\s]*=[\\\\s]*true(?-i)[\\\\s]*$"
+    },
+    "custom_item_102": {
+        "system": "Linux",
+        "description": "PHTN-30-000067 - The Photon operating system must generate audit records when the sudo command is used.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).\n\nSatisfies: SRG-OS-000458-GPOS-00203, SRG-OS-000463-GPOS-00207",
+        "solution": "Navigate to and open:\n\n/etc/audit/rules.d/audit.STIG.rules\n\nAdd the following line:\n\n-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>=1000 -F auid!=4294967295 -F key=privileged\n\nExecute the following command to load the new audit rules:\n\n# /sbin/augenrules --load\n\nNote: A new 'audit.STIG.rules' file is provided for placement in '/etc/audit/rules.d' that contains all rules needed for auditd.\n\nNote: An older 'audit.STIG.rules' may exist if the file exists and references older 'GEN' SRG IDs. This file can be removed and replaced as necessary with an updated one.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256537r918962_rule,STIG-ID|PHTN-30-000067,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-256537",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep sudo",
+        "expect": "^[\\\\s]*-a[\\\\s]+always,exit[\\\\s]+(-S[\\\\s]+all[\\\\s]+)?-F[\\\\s]+path=/usr/bin/sudo[\\\\s]+-F[\\\\s]+perm=x[\\\\s]+-F[\\\\s]+auid>=1000[\\\\s]+-F[\\\\s]+auid!=(-1|4294967295)[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)privileged[\\\\s]*$"
+    },
+    "custom_item_103": {
+        "system": "Linux",
+        "description": "/var/log/faillog",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep faillog",
+        "expect": "^[\\\\s]*-w[\\\\s]+/var/log/faillog[\\\\s]+-p[\\\\s]+wa[\\\\s]*$"
+    },
+    "custom_item_104": {
+        "system": "Linux",
+        "description": "/var/log/lastlog",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep lastlog",
+        "expect": "^[\\\\s]*-w[\\\\s]+/var/log/lastlog[\\\\s]+-p[\\\\s]+wa[\\\\s]*$"
+    },
+    "custom_item_105": {
+        "system": "Linux",
+        "description": "/var/log/tallylog",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep tallylog",
+        "expect": "^[\\\\s]*-w[\\\\s]+/var/log/tallylog[\\\\s]+-p[\\\\s]+wa[\\\\s]*$"
+    },
+    "custom_item_106": {
+        "system": "Linux",
+        "description": "PHTN-30-000069 - The Photon operating system must audit the 'insmod' module",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).\n\nSatisfies: SRG-OS-000471-GPOS-00216, SRG-OS-000477-GPOS-00222",
+        "solution": "Navigate to and open:\n\n/etc/audit/rules.d/audit.STIG.rules\n\nAdd the following lines:\n\n-w /sbin/insmod -p x\n\nExecute the following command to load the new audit rules:\n\n# /sbin/augenrules --load\n\nNote: A new 'audit.STIG.rules' file is provided for placement in '/etc/audit/rules.d' that contains all rules needed for auditd.\n\nNote: An older 'audit.STIG.rules' may exist if the file exists and references older 'GEN' SRG IDs. This file can be removed and replaced as necessary with an updated one.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256539r887291_rule,STIG-ID|PHTN-30-000069,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-256539",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep insmod",
+        "expect": "^[\\\\s]*-w[\\\\s]+/sbin/insmod[\\\\s]+-p[\\\\s]+x[\\\\s]*$"
+    },
+    "custom_item_107": {
+        "system": "Linux",
+        "description": "PHTN-30-000070 - The Photon operating system auditd service must generate audit records for all account creations, modifications, disabling, and termination events.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).",
+        "solution": "Navigate to and open:\n\n/etc/audit/rules.d/audit.STIG.rules\n\nAdd the following line:\n\n-w /etc/security/opasswd -p wa -k opasswd\n\nExecute the following command to load the new audit rules:\n\n# /sbin/augenrules --load\n\nNote: A new 'audit.STIG.rules' file is provided for placement in '/etc/audit/rules.d' that contains all rules needed for auditd.\n\nNote: An older 'audit.STIG.rules' may exist if the file exists and references older 'GEN' SRG IDs. This file can be removed and replaced as necessary with an updated one.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256540r887294_rule,STIG-ID|PHTN-30-000070,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-256540",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/auditctl -l | /usr/bin/grep /etc/security/opasswd",
+        "expect": "^[\\\\s]*-w[\\\\s]+/etc/security/opasswd[\\\\s]+-p[\\\\s]+[a-z]*w[a-z]*[\\\\s]+(-k[\\\\s]+|-F[\\\\s]+key=)opasswd[\\\\s]*$"
+    },
+    "custom_item_108": {
+        "system": "Linux",
+        "description": "PHTN-30-000071 - The Photon operating system must use the 'pam_cracklib' module.",
+        "info": "If the operating system allows the user to select passwords based on dictionary words, this increases the chances of password compromise by increasing the opportunity for successful guesses and brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256541r887297_rule,STIG-ID|PHTN-30-000071,SWIFT-CSCv1|2.3,Vuln-ID|V-256541",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so"
+    },
+    "custom_item_109": {
+        "system": "Linux",
+        "description": "PHTN-30-000072 - The Photon operating system must set the 'FAIL_DELAY' parameter.",
+        "info": "Limiting the number of logon attempts over a certain time interval reduces the chances that an unauthorized user may gain access to an account.",
+        "solution": "Navigate to and open:\n\n/etc/login.defs\n\nAdd the following line after the last auth statement:\n\nFAIL_DELAY 4",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256542r887300_rule,STIG-ID|PHTN-30-000072,SWIFT-CSCv1|2.3,Vuln-ID|V-256542",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*FAIL_DELAY[\\\\s]+",
+        "expect": "^[\\\\s]*FAIL_DELAY[\\\\s]+@PASSWORD_FAIL_DELAY@[\\\\s]*$"
+    },
+    "custom_item_110": {
+        "system": "Linux",
+        "description": "PHTN-30-000073 - The Photon operating system must enforce a delay of at least four seconds between logon prompts following a failed logon attempt.",
+        "info": "Limiting the number of logon attempts over a certain time interval reduces the chances that an unauthorized user may gain access to an account.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-auth\n\nRemove any existing 'pam_faildelay' line and add the following line at the end of the file:\n\nauth       optional pam_faildelay.so delay=4000000\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256543r887303_rule,STIG-ID|PHTN-30-000073,SWIFT-CSCv1|2.3,Vuln-ID|V-256543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-auth",
+        "regex": "^[\\\\s]*auth[\\\\s]+optional[\\\\s]+pam_faildelay.so[\\\\s]+",
+        "expect": "^[\\\\s]*auth[\\\\s]+optional[\\\\s]+pam_faildelay.so[^#]*[\\\\s]+delay=4000000([\\\\s]|$)"
+    },
+    "custom_item_111": {
+        "system": "Linux",
+        "description": "/etc/audit/auditd.conf freq",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*freq[\\\\s]*=",
+        "expect": "^[\\\\s]*freq[\\\\s]*=[\\\\s]*50[\\\\s]*$"
+    },
+    "custom_item_112": {
+        "system": "Linux",
+        "description": "/etc/audit/auditd.conf flush",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*flush[\\\\s]*=",
+        "expect": "^[\\\\s]*flush[\\\\s]*=[\\\\s]*INCREMENTAL_ASYNC[\\\\s]*$"
+    },
+    "custom_item_113": {
+        "system": "Linux",
+        "description": "PHTN-30-000075 - The Photon operating system must create a home directory for all new local interactive user accounts.",
+        "info": "If local interactive users are not assigned a valid home directory, there is no place for the storage and control of files they should own.",
+        "solution": "Navigate to and open:\n\n/etc/login.defs\n\nEnsure the following is present and any existing 'CREATE_HOME' line is removed:\n\nCREATE_HOME     yes",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256545r887309_rule,STIG-ID|PHTN-30-000075,SWIFT-CSCv1|2.3,Vuln-ID|V-256545",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*CREATE_HOME[\\\\s]+",
+        "expect": "^[\\\\s]*CREATE_HOME[\\\\s]+@CREATE_HOME@[\\\\s]*$"
+    },
+    "custom_item_114": {
+        "system": "Linux",
+        "description": "PHTN-30-000076 - The Photon operating system must disable the debug-shell service.",
+        "info": "The debug-shell service is intended to diagnose systemd-related boot issues with various 'systemctl' commands. Once enabled and following a system reboot, the root shell will be available on tty9. This service must remain disabled until and unless otherwise directed by VMware support.",
+        "solution": "At the command line, run the following commands:\n\n# systemctl stop debug-shell.service\n# systemctl disable debug-shell.service\n\nReboot for changes to take effect.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256546r887312_rule,STIG-ID|PHTN-30-000076,SWIFT-CSCv1|2.3,Vuln-ID|V-256546",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/systemctl is-enabled debug-shell.service",
+        "expect": "^[\\\\s]*disabled[\\\\s]*$"
+    },
+    "custom_item_115": {
+        "system": "Linux",
+        "description": "PHTN-30-000078 - The Photon operating system must configure sshd to disallow Generic Security Service Application Program Interface (GSSAPI) authentication.",
+        "info": "GSSAPI authentication is used to provide additional authentication mechanisms to applications. Allowing GSSAPI authentication through Secure Shell (SSH) exposes the system's GSSAPI to remote hosts, increasing the attack surface of the system.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'GSSAPIAuthentication' line is uncommented and set to the following:\n\nGSSAPIAuthentication no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256547r887315_rule,STIG-ID|PHTN-30-000078,SWIFT-CSCv1|2.3,Vuln-ID|V-256547",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i gssapiauthentication",
+        "expect": "^[\\\\s]*(?i)gssapiauthentication[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_116": {
+        "system": "Linux",
+        "description": "PHTN-30-000079 - The Photon operating system must configure sshd to disable environment processing.",
+        "info": "Enabling environment processing may enable users to bypass access restrictions in some configurations and must therefore be disabled.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'PermitUserEnvironment' line is uncommented and set to the following:\n\nPermitUserEnvironment no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256548r887318_rule,STIG-ID|PHTN-30-000079,SWIFT-CSCv1|2.3,Vuln-ID|V-256548",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i permituserenvironment",
+        "expect": "^[\\\\s]*(?i)permituserenvironment[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_117": {
+        "system": "Linux",
+        "description": "PHTN-30-000080 - The Photon operating system must configure sshd to disable X11 forwarding.",
+        "info": "X11 is an older, insecure graphics forwarding protocol. It is not used by Photon and should be disabled as a general best practice to limit attack surface area and communication channels.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'X11Forwarding' line is uncommented and set to the following:\n\nX11Forwarding no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256549r887321_rule,STIG-ID|PHTN-30-000080,SWIFT-CSCv1|2.3,Vuln-ID|V-256549",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i x11forwarding",
+        "expect": "^[\\\\s]*(?i)x11forwarding[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_118": {
+        "system": "Linux",
+        "description": "PHTN-30-000081 - The Photon operating system must configure sshd to perform strict mode checking of home directory configuration files.",
+        "info": "If other users have access to modify user-specific Secure Shell (SSH) configuration files, they may be able to log on to the system as another user.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'StrictModes' line is uncommented and set to the following:\n\nStrictModes yes\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256550r887324_rule,STIG-ID|PHTN-30-000081,SWIFT-CSCv1|2.3,Vuln-ID|V-256550",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i strictmodes",
+        "expect": "^[\\\\s]*(?i)strictmodes[\\\\s]+yes(?-i)[\\\\s]*$"
+    },
+    "custom_item_119": {
+        "system": "Linux",
+        "description": "PHTN-30-000082 - The Photon operating system must configure sshd to disallow Kerberos authentication.",
+        "info": "If Kerberos is enabled through Secure Shell (SSH), sshd provides a means of access to the system's Kerberos implementation. Vulnerabilities in the system's Kerberos implementation may then be subject to exploitation. To reduce the attack surface of the system, the Kerberos authentication mechanism within SSH must be disabled.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'KerberosAuthentication' line is uncommented and set to the following:\n\nKerberosAuthentication no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256551r887327_rule,STIG-ID|PHTN-30-000082,SWIFT-CSCv1|2.3,Vuln-ID|V-256551",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i kerberosauthentication",
+        "expect": "^[\\\\s]*(?i)kerberosauthentication[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_120": {
+        "system": "Linux",
+        "description": "PHTN-30-000083 - The Photon operating system must configure sshd to disallow authentication with an empty password.",
+        "info": "Blank passwords are one of the first things an attacker checks for when probing a system. Even is the user somehow has a blank password on the operating system, sshd must not allow that user to log in.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'PermitEmptyPasswords' line is uncommented and set to the following:\n\nPermitEmptyPasswords no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256552r887330_rule,STIG-ID|PHTN-30-000083,SWIFT-CSCv1|2.3,Vuln-ID|V-256552",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i permitemptypasswords",
+        "expect": "^[\\\\s]*(?i)permitemptypasswords[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_121": {
+        "system": "Linux",
+        "description": "PHTN-30-000084 - The Photon operating system must configure sshd to disallow compression of the encrypted session stream.",
+        "info": "If compression is allowed in a Secure Shell (SSH) connection prior to authentication, vulnerabilities in the compression software could result in compromise of the system from an unauthenticated connection.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'Compression' line is uncommented and set to the following:\n\nCompression no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256553r887333_rule,STIG-ID|PHTN-30-000084,SWIFT-CSCv1|2.3,Vuln-ID|V-256553",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i compression",
+        "expect": "^[\\\\s]*(?i)compression[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_122": {
+        "system": "Linux",
+        "description": "PHTN-30-000085 - The Photon operating system must configure sshd to display the last login immediately after authentication.",
+        "info": "Providing users with feedback on the last time they logged on via Secure Shell (SSH) facilitates user recognition and reporting of unauthorized account use.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'PrintLastLog' line is uncommented and set to the following:\n\nPrintLastLog yes\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256554r887336_rule,STIG-ID|PHTN-30-000085,SWIFT-CSCv1|2.3,Vuln-ID|V-256554",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i printlastlog",
+        "expect": "^[\\\\s]*(?i)printlastlog[\\\\s]+yes(?-i)[\\\\s]*$"
+    },
+    "custom_item_123": {
+        "system": "Linux",
+        "description": "PHTN-30-000086 - The Photon operating system must configure sshd to ignore user-specific trusted hosts lists.",
+        "info": "Secure Shell (SSH) trust relationships enable trivial lateral spread after a host compromise and therefore must be explicitly disabled. Individual users can have a local list of trusted remote machines, which must also be ignored while disabling host-based authentication generally.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'IgnoreRhosts' line is uncommented and set to the following:\n\nIgnoreRhosts yes\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256555r887339_rule,STIG-ID|PHTN-30-000086,SWIFT-CSCv1|2.3,Vuln-ID|V-256555",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i ignorerhosts",
+        "expect": "^[\\\\s]*(?i)ignorerhosts[\\\\s]+yes(?-i)[\\\\s]*$"
+    },
+    "custom_item_124": {
+        "system": "Linux",
+        "description": "PHTN-30-000087 - The Photon operating system must configure sshd to ignore user-specific 'known_host' files.",
+        "info": "Secure Shell (SSH) trust relationships enable trivial lateral spread after a host compromise and therefore must be explicitly disabled. Individual users can have a local list of trusted remote machines that must also be ignored while disabling host-based authentication generally.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'IgnoreUserKnownHosts' line is uncommented and set to the following:\n\nIgnoreUserKnownHosts yes\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256556r887342_rule,STIG-ID|PHTN-30-000087,SWIFT-CSCv1|2.3,Vuln-ID|V-256556",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i ignoreuserknownhosts",
+        "expect": "^[\\\\s]*(?i)ignoreuserknownhosts[\\\\s]+yes(?-i)[\\\\s]*$"
+    },
+    "custom_item_125": {
+        "system": "Linux",
+        "description": "PHTN-30-000088 - The Photon operating system must configure sshd to limit the number of allowed login attempts per connection.",
+        "info": "By setting the login attempt limit to a low value, an attacker will be forced to reconnect frequently, which severely limits the speed and effectiveness of brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'MaxAuthTries' line is uncommented and set to the following:\n\nMaxAuthTries 6\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256557r887345_rule,STIG-ID|PHTN-30-000088,SWIFT-CSCv1|2.3,Vuln-ID|V-256557",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i maxauthtries",
+        "expect": "^[\\\\s]*(?i)maxauthtries(?-i)[\\\\s]+6[\\\\s]*$"
+    },
+    "custom_item_126": {
+        "system": "Linux",
+        "description": "PHTN-30-000089 - The Photon operating system must be configured so the x86 Ctrl-Alt-Delete key sequence is disabled on the command line.",
+        "info": "When the Ctrl-Alt-Del target is enabled, a locally logged-on user who presses Ctrl-Alt-Delete, when at the console, can reboot the system. If accidentally pressed, as could happen in the case of a mixed operating system environment, this can create the risk of short-term loss of systems availability due to unintentional reboot.",
+        "solution": "At the command line, run the following command:\n\n# systemctl mask ctrl-alt-del.target",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256558r942495_rule,STIG-ID|PHTN-30-000089,SWIFT-CSCv1|2.3,Vuln-ID|V-256558",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/systemctl status ctrl-alt-del.target",
+        "expect": "^[\\\\s]*Loaded:[\\\\s]+masked[\\\\s]+"
+    },
+    "custom_item_127": {
+        "system": "Linux",
+        "description": "/etc/skel/.bash_logout root:root 750",
+        "file": "/etc/skel/.bash_logout",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_128": {
+        "system": "Linux",
+        "description": "/etc/skel/.bash_profile root:root 644",
+        "file": "/etc/skel/.bash_profile",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_129": {
+        "system": "Linux",
+        "description": "/etc/skel/.bashrc root:root 750",
+        "file": "/etc/skel/.bashrc",
+        "owner": "root",
+        "mask": "027",
+        "group": "root"
+    },
+    "custom_item_130": {
+        "system": "Linux",
+        "description": "PHTN-30-000091 - The Photon operating system must be configured so the '/root' path is protected from unauthorized access.",
+        "info": "If the '/root' path is accessible to users other than root, unauthorized users could change the root partitions files.",
+        "solution": "At the command line, run the following commands:\n\n# chmod 700 /root\n# chown root:root /root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256560r887354_rule,STIG-ID|PHTN-30-000091,SWIFT-CSCv1|2.3,Vuln-ID|V-256560",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/root",
+        "owner": "root",
+        "mask": "077",
+        "group": "root"
+    },
+    "custom_item_131": {
+        "system": "Linux",
+        "description": "PHTN-30-000092 - The Photon operating system must be configured so that all global initialization scripts are protected from unauthorized modification.",
+        "info": "Local initialization files are used to configure the user's shell environment upon login. Malicious modification of these files could compromise accounts upon login.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod o-w# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256561r887357_rule,STIG-ID|PHTN-30-000092,SWIFT-CSCv1|2.3,Vuln-ID|V-256561",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/find /etc/bash.bashrc /etc/profile /etc/profile.d/ -xdev -type f -a '(' -perm -002 -o -not -user root -o -not -group root ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_132": {
+        "system": "Linux",
+        "description": "PHTN-30-000093 - The Photon operating system must be configured so that all system startup scripts are protected from unauthorized modification.",
+        "info": "If system startup scripts are accessible to unauthorized modification, this could compromise the system on startup.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod o-w# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256562r887360_rule,STIG-ID|PHTN-30-000093,SWIFT-CSCv1|2.3,Vuln-ID|V-256562",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/find /etc/rc.d/* -xdev -type f -a '(' -perm -002 -o -not -user root -o -not -group root ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_133": {
+        "system": "Linux",
+        "description": "PHTN-30-000095 - The Photon operating system must be configured so the '/etc/cron.allow' file is protected from unauthorized modification.",
+        "info": "If cron files and folders are accessible to unauthorized users, malicious jobs may be created.",
+        "solution": "At the command line, run the following commands:\n\n# chmod 600 /etc/cron.allow\n# chown root:root /etc/cron.allow",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256564r887366_rule,STIG-ID|PHTN-30-000095,SWIFT-CSCv1|2.3,Vuln-ID|V-256564",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/cron.allow",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_134": {
+        "system": "Linux",
+        "description": "PHTN-30-000096 - The Photon operating system must be configured so that all cron jobs are protected from unauthorized modification.",
+        "info": "If cron files and folders are accessible to unauthorized users, malicious jobs may be created.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod 644# chown root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256565r887369_rule,STIG-ID|PHTN-30-000096,SWIFT-CSCv1|2.3,Vuln-ID|V-256565",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/find /etc/cron.d/ /etc/cron.daily/ /etc/cron.hourly/ /etc/cron.monthly/ /etc/cron.weekly/ -xdev -type f -a '(' -perm -002 -o -not -user root ')' -exec ls -ld {} \\\\; 2>/dev/null | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_135": {
+        "system": "Linux",
+        "description": "/etc/cron.d root:root 755",
+        "file": "/etc/cron.d",
+        "owner": "root",
+        "mask": "022",
+        "group": "root"
+    },
+    "custom_item_136": {
+        "system": "Linux",
+        "description": "/etc/cron.daily root:root 755",
+        "file": "/etc/cron.daily",
+        "owner": "root",
+        "mask": "022",
+        "group": "root"
+    },
+    "custom_item_137": {
+        "system": "Linux",
+        "description": "/etc/cron.hourly root:root 755",
+        "file": "/etc/cron.hourly",
+        "owner": "root",
+        "mask": "022",
+        "group": "root"
+    },
+    "custom_item_138": {
+        "system": "Linux",
+        "description": "/etc/cron.monthly root:root 755",
+        "file": "/etc/cron.monthly",
+        "owner": "root",
+        "mask": "022",
+        "group": "root"
+    },
+    "custom_item_139": {
+        "system": "Linux",
+        "description": "/etc/cron.weekly root:root 755",
+        "file": "/etc/cron.weekly",
+        "owner": "root",
+        "mask": "022",
+        "group": "root"
+    },
+    "custom_item_140": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_141": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_142": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_143": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.all.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.all.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv6.conf.all.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_144": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.default.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.default.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv6.conf.default.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_145": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.eth0.accept_source_route 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.eth0.accept_source_route",
+        "expect": "^[\\\\s]*net.ipv6.conf.eth0.accept_source_route[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_146": {
+        "system": "Linux",
+        "description": "PHTN-30-000099 - The Photon operating system must not respond to IPv4 Internet Control Message Protocol (ICMP) echoes sent to a broadcast address.",
+        "info": "Responding to broadcast (ICMP) echoes facilitates network mapping and provides a vector for amplification attacks.",
+        "solution": "At the command line, run the following commands:\n\n# sed -i -e '/^net.ipv4.icmp_echo_ignore_broadcasts/d' /etc/sysctl.conf\n# echo net.ipv4.icmp_echo_ignore_broadcasts=1>>/etc/sysctl.conf\n# /sbin/sysctl --load",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256568r887378_rule,STIG-ID|PHTN-30-000099,SWIFT-CSCv1|2.3,Vuln-ID|V-256568",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/sbin/sysctl net.ipv4.icmp_echo_ignore_broadcasts",
+        "expect": "^[\\\\s]*net.ipv4.icmp_echo_ignore_broadcasts[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_147": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.accept_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.accept_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_148": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.accept_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.accept_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_149": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.accept_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.accept_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.accept_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_150": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.secure_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.secure_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.secure_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_151": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.secure_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.secure_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.secure_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_152": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.secure_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.secure_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.secure_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_153": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.send_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.send_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_154": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.send_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.send_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_155": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.send_redirects 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.send_redirects",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.send_redirects[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_156": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.log_martians 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.log_martians",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.log_martians[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_157": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.log_martians 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.log_martians",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.log_martians[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_158": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.log_martians 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.log_martians",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.log_martians[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_159": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.rp_filter 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.rp_filter",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_160": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.rp_filter 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.rp_filter",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_161": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.rp_filter 1",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.rp_filter",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.rp_filter[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_162": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.all.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.all.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv4.conf.all.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_163": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.default.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.default.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv4.conf.default.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_164": {
+        "system": "Linux",
+        "description": "net.ipv4.conf.eth0.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv4.conf.eth0.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv4.conf.eth0.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_165": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.all.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.all.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv6.conf.all.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_166": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.default.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.default.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv6.conf.default.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_167": {
+        "system": "Linux",
+        "description": "net.ipv6.conf.eth0.mc_forwarding 0",
+        "cmd": "/sbin/sysctl net.ipv6.conf.eth0.mc_forwarding",
+        "expect": "^[\\\\s]*net.ipv6.conf.eth0.mc_forwarding[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_168": {
+        "system": "Linux",
+        "description": "PHTN-30-000106 - The Photon operating system must not perform IPv4 packet forwarding.",
+        "info": "Routing protocol daemons are typically used on routers to exchange network topology information with other routers. If this software is used when not required, system network information may be unnecessarily transmitted across the network.",
+        "solution": "At the command line, run the following commands:\n\n# sed -i -e '/^net.ipv4.ip_forward/d' /etc/sysctl.conf\n# echo net.ipv4.ip_forward=0>>/etc/sysctl.conf\n# /sbin/sysctl --load",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256575r887399_rule,STIG-ID|PHTN-30-000106,SWIFT-CSCv1|2.3,Vuln-ID|V-256575",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/sbin/sysctl net.ipv4.ip_forward",
+        "expect": "^[\\\\s]*net.ipv4.ip_forward[\\\\s]*=[\\\\s]*0[\\\\s]*$"
+    },
+    "custom_item_169": {
+        "system": "Linux",
+        "description": "PHTN-30-000107 - The Photon operating system must send Transmission Control Protocol (TCP) timestamps.",
+        "info": "TCP timestamps are used to provide protection against wrapped sequence numbers. It is possible to calculate system uptime (and boot time) by analyzing TCP timestamps. These calculated uptimes can help a bad actor in determining likely patch levels for vulnerabilities.",
+        "solution": "At the command line, run the following commands:\n\n# sed -i -e '/^net.ipv4.tcp_timestamps/d' /etc/sysctl.conf\n# echo net.ipv4.tcp_timestamps=1>>/etc/sysctl.conf\n# /sbin/sysctl --load",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256576r887402_rule,STIG-ID|PHTN-30-000107,SWIFT-CSCv1|2.3,Vuln-ID|V-256576",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/sbin/sysctl net.ipv4.tcp_timestamps",
+        "expect": "^[\\\\s]*net.ipv4.tcp_timestamps[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_170": {
+        "system": "Linux",
+        "description": "PHTN-30-000108 - The Photon operating system must be configured to protect the Secure Shell (SSH) public host key from unauthorized modification.",
+        "info": "If a public host key file is modified by an unauthorized user, the SSH service may be compromised.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod 644# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256577r918964_rule,STIG-ID|PHTN-30-000108,SWIFT-CSCv1|2.3,Vuln-ID|V-256577",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/ssh/*key.pub",
+        "owner": "root",
+        "mask": "133",
+        "group": "root"
+    },
+    "custom_item_171": {
+        "system": "Linux",
+        "description": "PHTN-30-000109 - The Photon operating system must be configured to protect the Secure Shell ( SSH) private host key from unauthorized access.",
+        "info": "If an unauthorized user obtains the private SSH host key file, the host could be impersonated.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod 600# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256578r942497_rule,STIG-ID|PHTN-30-000109,SWIFT-CSCv1|2.3,Vuln-ID|V-256578",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/ssh/*key",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_172": {
+        "system": "Linux",
+        "description": "PHTN-30-000110 - The Photon operating system must enforce password complexity on the root account.",
+        "info": "Password complexity rules must apply to all accounts on the system, including root. Without specifying the 'enforce_for_root flag', 'pam_cracklib' does not apply complexity rules to the root user. While root users can find ways around this requirement, given its superuser power, it is necessary to attempt to force compliance.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the following, replacing any existing 'pam_cracklib.so' line:\n\npassword requisite pam_cracklib.so dcredit=-1 ucredit=-1 lcredit=-1 ocredit=-1 minlen=8 minclass=4 difok=4 retry=3 maxsequence=0 enforce_for_root\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256579r887411_rule,STIG-ID|PHTN-30-000110,SWIFT-CSCv1|2.3,Vuln-ID|V-256579",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[\\\\s]+",
+        "expect": "^[\\\\s]*password[\\\\s]+requisite[\\\\s]+pam_cracklib.so[^#]*[\\\\s]+enforce_for_root([\\\\s]|$)"
+    },
+    "custom_item_173": {
+        "system": "Linux",
+        "description": "PHTN-30-000111 - The Photon operating system must protect all boot configuration files from unauthorized modification.",
+        "info": "Boot configuration files control how the system boots, including single-user mode, auditing, log levels, etc. Improper or malicious configurations can negatively affect system security and availability.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod 644# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256580r887414_rule,STIG-ID|PHTN-30-000111,SWIFT-CSCv1|2.3,Vuln-ID|V-256580",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/find /boot/*.cfg -xdev -type f -a '(' -perm 002 -o -not -user root -o -not -group root ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_174": {
+        "system": "Linux",
+        "description": "PHTN-30-000112 - The Photon operating system must protect sshd configuration from unauthorized access.",
+        "info": "The 'sshd_config' file contains all the configuration items for sshd. Incorrect or malicious configuration of sshd can allow unauthorized access to the system, insecure communication, limited forensic trail, etc.",
+        "solution": "At the command line, run the following commands:\n\n# chmod 600 /etc/ssh/sshd_config\n# chown root:root /etc/ssh/sshd_config",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256581r887417_rule,STIG-ID|PHTN-30-000112,SWIFT-CSCv1|2.3,Vuln-ID|V-256581",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/ssh/sshd_config",
+        "owner": "root",
+        "mask": "177",
+        "group": "root"
+    },
+    "custom_item_175": {
+        "system": "Linux",
+        "description": "PHTN-30-000113 - The Photon operating system must protect all 'sysctl' configuration files from unauthorized access.",
+        "info": "The 'sysctl' configuration file specifies values for kernel parameters to be set on boot. Incorrect or malicious configuration of these parameters can have a negative effect on system security.",
+        "solution": "At the command line, run the following commands for each returned file:\n\n# chmod 600# chown root:root",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256582r887420_rule,STIG-ID|PHTN-30-000113,SWIFT-CSCv1|2.3,Vuln-ID|V-256582",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/find /etc/sysctl.conf /etc/sysctl.d/* -xdev -type f -a '(' -perm 002 -o -not -user root -o -not -group root ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_176": {
+        "system": "Linux",
+        "description": "PHTN-30-000114 - The Photon operating system must set the 'umask' parameter correctly.",
+        "info": "The 'umask' value influences the permissions assigned to files when they are created. The 'umask' setting in 'login.defs' controls the permissions for a new user's home directory. By setting the proper 'umask', home directories will only allow the new user to read and write files there.",
+        "solution": "Navigate to and open:\n\n/etc/login.defs\n\nEnsure the 'UMASK' line is uncommented and set to the following:\n\nUMASK 077",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256583r918968_rule,STIG-ID|PHTN-30-000114,SWIFT-CSCv1|2.3,Vuln-ID|V-256583",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/login.defs",
+        "regex": "^[\\\\s]*UMASK[\\\\s]+",
+        "expect": "^[\\\\s]*UMASK[\\\\s]+@LOGIN_DEFS_UMASK@[\\\\s]*$"
+    },
+    "custom_item_177": {
+        "system": "Linux",
+        "description": "PHTN-30-000115 - The Photon operating system must configure sshd to disallow HostbasedAuthentication.",
+        "info": "Secure Shell (SSH) trust relationships enable trivial lateral spread after a host compromise and therefore must be explicitly disabled.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'HostbasedAuthentication' line is uncommented and set to the following:\n\nHostbasedAuthentication no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256584r887426_rule,STIG-ID|PHTN-30-000115,SWIFT-CSCv1|2.3,Vuln-ID|V-256584",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i hostbasedauthentication",
+        "expect": "^[\\\\s]*(?i)hostbasedauthentication[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_178": {
+        "system": "Linux",
+        "description": "PHTN-30-000117 - The Photon operating system must store only encrypted representations of passwords.",
+        "info": "Passwords must be protected at all times via strong, one-way encryption. If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised. If they are encrypted with a weak cipher, those passwords are much more vulnerable to offline brute-force attacks.",
+        "solution": "Navigate to and open:\n\n/etc/pam.d/system-password\n\nAdd the argument 'sha512' to the 'password' line:\n\npassword required pam_unix.so sha512 shadow try_first_pass\n\nNote: On vCenter appliances, the equivalent file must be edited under '/etc/applmgmt/appliance', if one exists, for the changes to persist after a reboot.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000196,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256585r887429_rule,STIG-ID|PHTN-30-000117,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-256585",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/pam.d/system-password",
+        "regex": "^[\\\\s]*password[\\\\s]+required[\\\\s]+pam_unix.so[^#]*[\\\\s]+sha512",
+        "expect": "^[\\\\s]*password[\\\\s]+required[\\\\s]+pam_unix.so[^#]*[\\\\s]+sha512([\\\\s]|$)"
+    },
+    "custom_item_179": {
+        "system": "Linux",
+        "description": "PHTN-30-000118 - The Photon operating system must ensure the old passwords are being stored.",
+        "info": "Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. If the information system or application allows the user to consecutively reuse their password when that password has exceeded its defined lifetime, the result is a password that is not changed per policy requirements.",
+        "solution": "At the command line, run the following commands:\n\n# touch /etc/security/opasswd\n# chown root:root /etc/security/opasswd\n# chmod 0600 /etc/security/opasswd",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CAT|II,CCI|CCI-000200,CSF|PR.AC-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256586r887432_rule,STIG-ID|PHTN-30-000118,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3,Vuln-ID|V-256586",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/etc/security/opasswd"
+    },
+    "custom_item_180": {
+        "system": "Linux",
+        "description": "PHTN-30-000119 - The Photon operating system must configure sshd to restrict AllowTcpForwarding.",
+        "info": "While enabling Transmission Control Protocol (TCP) tunnels is a valuable function of sshd, this feature is not appropriate for use on single-purpose appliances.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'AllowTcpForwarding' line is uncommented and set to the following:\n\nAllowTcpForwarding no\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256587r887435_rule,STIG-ID|PHTN-30-000119,SWIFT-CSCv1|2.3,Vuln-ID|V-256587",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i allowtcpforwarding",
+        "expect": "^[\\\\s]*(?i)allowtcpforwarding[\\\\s]+no(?-i)[\\\\s]*$"
+    },
+    "custom_item_181": {
+        "system": "Linux",
+        "description": "PHTN-30-000120 - The Photon operating system must configure sshd to restrict LoginGraceTime.",
+        "info": "By default, sshd unauthenticated connections are left open for two minutes before being closed. This setting is too permissive as no legitimate login would need such an amount of time to complete a login. Quickly terminating idle or incomplete login attempts will free resources and reduce the exposure any partial logon attempts may create.",
+        "solution": "Navigate to and open:\n\n/etc/ssh/sshd_config\n\nEnsure the 'LoginGraceTime' line is uncommented and set to the following:\n\nLoginGraceTime 30\n\nAt the command line, run the following command:\n\n# systemctl restart sshd.service",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256588r887438_rule,STIG-ID|PHTN-30-000120,SWIFT-CSCv1|2.3,Vuln-ID|V-256588",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/grep -i logingracetime",
+        "expect": "^[\\\\s]*(?i)logingracetime[\\\\s]+30(?-i)[\\\\s]*$"
+    },
+    "custom_item_182": {
+        "system": "Linux",
+        "description": "PHTN-30-000240 - The Photon operating system must implement NIST FIPS-validated cryptography for the following: to provision digital signatures, generate cryptographic hashes, and protect unclassified information requiring confidentiality and cryptographic protection in accordance with applicable federal laws, Executive Orders, directives, policies, regulations, and standards.",
+        "info": "Use of weak or untested encryption algorithms undermines the purposes of using encryption to protect data. The operating system must implement cryptographic modules adhering to the higher standards approved by the federal government because this provides assurance they have been tested and validated.",
+        "solution": "Navigate to and open:\n\n/boot/grub2/grub.cfg\n\nLocate the kernel command line, which will start with 'linux', and add 'fips=1' to the end. For example:\n\nlinux /$photon_linux audit=1 root=$rootpartition $photon_cmdline coredump_filter=0x37 consoleblank=0 $systemd_cmdline fips=1\n\nReboot the system for the change to take effect.\n\nNote: The 'fipsify' package must be installed for FIPS mode to work properly.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-256589r887441_rule,STIG-ID|PHTN-30-000240,Vuln-ID|V-256589",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "file": "/boot/grub2/grub.cfg",
+        "regex": "^[\\\\s]*linux[\\\\s]+",
+        "expect": "^[\\\\s]*linux[\\\\s]+.*fips=1"
+    },
+    "custom_item_183": {
+        "system": "Linux",
+        "description": "PHTN-30-000245 - The Photon operating system must disable systemd fallback Domain Name System (DNS).",
+        "info": "Systemd contains an ability to set fallback DNS servers. This is used for DNS lookups in the event no system-level DNS servers are configured or other DNS servers are specified in the systemd 'resolved.conf' file. If uncommented, this configuration contains Google DNS servers by default and could result in DNS leaking information unknowingly in the event DNS is absent or misconfigured at the system level.",
+        "solution": "Navigate to and open:\n\n/etc/systemd/resolved.conf\n\nAdd or update the 'FallbackDNS' entry to the following:\n\nFallbackDNS=\n\nRestart the systemd resolved service by running the following command:\n\n# systemctl restart systemd-resolved\n\nNote: If this option is not given, a compiled-in list of DNS servers is used instead, which is undesirable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_7-0_vCA_Photon_OS_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256590r887444_rule,STIG-ID|PHTN-30-000245,SWIFT-CSCv1|2.3,Vuln-ID|V-256590",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y24M01_STIG.zip",
+        "cmd": "/usr/bin/resolvectl status | grep 'FallbackDNS'",
+        "expect": "^[\\\\s]*(?i)fallbackdns(?-i)[\\\\s]*=([\\\\s]*$|$)"
+    }
+}

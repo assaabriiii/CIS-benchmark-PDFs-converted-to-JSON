@@ -1,0 +1,309 @@
+{
+    "custom_item_1": {
+        "description": "CISC-ND-000010 - The Cisco router must be configured to limit the number of concurrent management sessions to an organization-defined number.",
+        "info": "Device management includes the ability to control the number of administrators and management sessions that manage a device. Limiting the number of allowed administrators and sessions per administrator based on account type, role, or access type is helpful in limiting risks related to DoS attacks.\n\nThis requirement addresses concurrent sessions for administrative accounts and does not address concurrent sessions by a single administrator via multiple administrative accounts. The maximum number of concurrent sessions should be defined based upon mission needs and the operational environment for each system. At a minimum, limits must be set for SSH, HTTPS, account of last resort, and root account sessions.",
+        "solution": "Configure the router to limit the number of concurrent management sessions to an organization-defined number as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#ssh server session-limit 2",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-216522r879511_rule,STIG-ID|CISC-ND-000010,STIG-Legacy|SV-105509,STIG-Legacy|V-96371,Vuln-ID|V-216522",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "ssh server session-limit (@SSH_SESSION_LIMIT@|2)$"
+    },
+    "custom_item_2": {
+        "description": "line default",
+        "context": "line default",
+        "item": "(transport input ssh|access-class ingress @MANAGEMENT_NET@)",
+        "min_occurrences": "2"
+    },
+    "custom_item_3": {
+        "description": "vty-pool",
+        "item": "vty-pool default [0-9]+ [0-9]+"
+    },
+    "custom_item_4": {
+        "description": "access-class deny",
+        "context": "ipv4 access-list @MANAGEMENT_NET@",
+        "item": "deny ipv4 any any log-input"
+    },
+    "custom_item_5": {
+        "description": "access-class permit",
+        "context": "ipv4 access-list @MANAGEMENT_NET@",
+        "item": "permit ipv4 .*"
+    },
+    "custom_item_6": {
+        "description": "server host",
+        "item": "(radius|tacacs)-server host [^ ]+"
+    },
+    "custom_item_7": {
+        "description": "aaa auth",
+        "item": "aaa authentication login @LOGIN_AUTHENTICATION_LIST@ group (radius|tacacs\\+) local"
+    },
+    "custom_item_8": {
+        "description": "line default",
+        "context": "line default",
+        "item": "login authentication @LOGIN_AUTHENTICATION_LIST@"
+    },
+    "custom_item_9": {
+        "description": "line console",
+        "context": "line console",
+        "item": "login authentication @LOGIN_AUTHENTICATION_LIST@"
+    },
+    "custom_item_10": {
+        "description": "CISC-ND-000160 - The Cisco router must be configured to display the Standard Mandatory DoD Notice and Consent Banner before granting access to the device.",
+        "info": "Display of the DoD-approved use notification before granting access to the network device ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users.",
+        "solution": "Configure the Cisco router to display the Standard Mandatory DoD Notice and Consent Banner before granting access as shown in the following example:\n\nRP/0/0/CPU0:R3(config)#banner login #\nEnter TEXT message. End with the character '#'.\nYou are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n\nBy using this IS (which includes any device attached to this IS), you consent to the following conditions:\n\n-The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.\n\n-At any time, the USG may inspect and seize data stored on this IS.\n\n-Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG-authorized purpose.\n\n-This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.\n\n-Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details. #\nRP/0/0/CPU0:R3(config)#end",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-216525r879547_rule,STIG-ID|CISC-ND-000160,STIG-Legacy|SV-105521,STIG-Legacy|V-96383,TBA-FIISB|45.2.4,Vuln-ID|V-216525",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "banner login",
+        "content": "@BANNER_LOGIN@"
+    },
+    "custom_item_11": {
+        "description": "CISC-ND-000250 - The Cisco router must be configured to generate audit records when successful/unsuccessful attempts to logon with access privileges occur.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).",
+        "solution": "Configure the Cisco router to log all logon attempts as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#logging buffered informational\nRP/0/0/CPU0:R3(config)#logging 10.1.22.2 severity info",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216526r879561_rule,STIG-ID|CISC-ND-000250,STIG-Legacy|SV-105531,STIG-Legacy|V-96393,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-216526",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "logging (buffered informational|[^ ]+ severity info)",
+        "min_occurrences": "2"
+    },
+    "custom_item_12": {
+        "description": "CISC-ND-000280 - The Cisco router must produce audit records containing information to establish when (date and time) the events occurred.",
+        "info": "It is essential for security personnel to know what is being done, what was attempted, where it was done, when it was done, and by whom it was done in order to compile an accurate risk assessment. Logging the date and time of each detected event provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured network device. In order to establish and correlate the series of events leading up to an outage or attack, it is imperative the date and time are recorded in all log records.",
+        "solution": "Configure the router to include the date and time on all log records as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#service timestamps log datetime localtime",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216527r879564_rule,STIG-ID|CISC-ND-000280,STIG-Legacy|SV-105533,STIG-Legacy|V-96395,SWIFT-CSCv1|6.4,Vuln-ID|V-216527",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "service timestamps log datetime (msec )?localtime"
+    },
+    "custom_item_13": {
+        "description": "CISC-ND-000290 - The Cisco router must produce audit records containing information to establish where the events occurred.",
+        "info": "In order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know where events occurred, such as device hardware components, device software modules, session identifiers, filenames, host names, and functionality.\n\nAssociating information about where the event occurred within the network device provides a means of investigating an attack; recognizing resource utilization or capacity thresholds; or identifying an improperly configured device.",
+        "solution": "Configure the log-input parameter after any deny statements to provide the location as to where packets have been dropped via an ACL.\n\nRP/0/0/CPU0:R3(config)#ipv4 access-list BLOCK_INBOUND\nRP/0/0/CPU0:R3(config-ipv4-acl)#deny icmp any any  log-input",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000132,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216528r929028_rule,STIG-ID|CISC-ND-000290,STIG-Legacy|SV-105535,STIG-Legacy|V-96397,SWIFT-CSCv1|6.4,Vuln-ID|V-216528",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "context": "ipv4 access-list [^ ]+",
+        "item": "deny.*log-input"
+    },
+    "custom_item_14": {
+        "description": "check for telnet",
+        "item": "telnet (ipv4 server|vrf)"
+    },
+    "custom_item_15": {
+        "description": "check for http client",
+        "item": "http client vrf"
+    },
+    "custom_item_16": {
+        "description": "check for ipv4 services",
+        "item": "service ipv4 ((tcp|udp)-small-servers)"
+    },
+    "custom_item_17": {
+        "description": "check for call-home",
+        "item": "(service )?call-home"
+    },
+    "custom_item_18": {
+        "description": "username",
+        "item": "username [^ ]+",
+        "max_occurrences": "1"
+    },
+    "custom_item_19": {
+        "description": "username groups",
+        "context": "username [^ ]+",
+        "item": "group root-(system|lr)"
+    },
+    "custom_item_20": {
+        "description": "aaa auth",
+        "item": "aaa authentication login default group (radius|tacacs\\+) local"
+    },
+    "custom_item_21": {
+        "description": "CISC-ND-000530 - The Cisco router must be configured to implement replay-resistant authentication mechanisms for network access to privileged accounts.",
+        "info": "A replay attack may enable an unauthorized user to gain access to the application. Authentication sessions between the authenticator and the application validating the user credentials must not be vulnerable to a replay attack.\n\nAn authentication process resists replay attacks if it is impractical to achieve a successful authentication by recording and replaying a previous authentication message.\n\nTechniques used to address this include protocols using nonces (e.g., numbers generated for a specific one-time use) or challenges (e.g., TLS, WS_Security). Additional techniques include time-synchronous or challenge-response one-time authenticators.",
+        "solution": "Configure the router to use SSH version 2 as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#ssh server v2",
+        "reference": "800-171|3.5.4,800-53|IA-2(8),800-53r5|IA-2(8),CAT|II,CCI|CCI-001941,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(8),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM18,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-216531r879597_rule,STIG-ID|CISC-ND-000530,STIG-Legacy|SV-105551,STIG-Legacy|V-96413,SWIFT-CSCv1|4.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-216531",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "ssh server v2"
+    },
+    "custom_item_22": {
+        "description": "line console",
+        "context": "line console",
+        "item": "exec-timeout [1-5] [0-9]+"
+    },
+    "custom_item_23": {
+        "description": "line default",
+        "context": "line default",
+        "item": "(exec-timeout [1-5] [0-9]+|transport input ssh)",
+        "min_occurrences": "2"
+    },
+    "custom_item_24": {
+        "description": "logging buffered",
+        "item": "logging buffered [0-9]+"
+    },
+    "custom_item_25": {
+        "description": "logging archive",
+        "context": "logging archive",
+        "item": "(device harddisk|severity notifications|file-size|archive-size)",
+        "min_occurrences": "4"
+    },
+    "custom_item_26": {
+        "description": "CISC-ND-001000 - The Cisco router must be configured to generate an alert for all audit failure events.",
+        "info": "It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. Without a real-time alert, security personnel may be unaware of an impending failure of the audit capability and system operation may be adversely affected.\n\nAlerts provide organizations with urgent messages. Real-time alerts provide these messages immediately (i.e., the time from event detection to alert occurs in seconds or less).",
+        "solution": "Configure the Cisco router to send critical to emergency log messages to the syslog server as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#logging 10.1.12.7 severity critical\n\nNote: The parameter 'critical' can replaced with a lesser severity level (i.e., error, warning, notice, informational).",
+        "reference": "800-171|3.3.4,800-53|AU-5(2),800-53r5|AU-5(2),CAT|II,CCI|CCI-001858,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(2),NESA|T3.6.2,NIAv2|GS7f,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216534r879733_rule,STIG-ID|CISC-ND-001000,STIG-Legacy|SV-105585,STIG-Legacy|V-96447,Vuln-ID|V-216534",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "logging @SYSLOG_SERVER@ .+ severity (critical|error|warning|notice|informational)"
+    },
+    "custom_item_27": {
+        "description": "NTP_SERVER_1",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_1@"
+    },
+    "custom_item_28": {
+        "description": "NTP_SERVER_2",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_2@"
+    },
+    "custom_item_29": {
+        "description": "CISC-ND-001040 - The Cisco router must record time stamps for audit records that meet a granularity of one second for a minimum degree of precision.",
+        "info": "Without sufficient granularity of time stamps, it is not possible to adequately determine the chronological order of records. Time stamps generated by the application include date and time. Granularity of time measurements refers to the degree of synchronization between information system clocks and reference clocks.",
+        "solution": "Configure the Cisco router to record time stamps that meet a granularity of one second as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#service timestamps log datetime localtime",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CAT|II,CCI|CCI-001889,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216536r879748_rule,STIG-ID|CISC-ND-001040,STIG-Legacy|SV-105589,STIG-Legacy|V-96451,TBA-FIISB|37.4,Vuln-ID|V-216536",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "service timestamps log datetime (msec )?localtime"
+    },
+    "custom_item_30": {
+        "description": "clock timezone",
+        "item": "clock timezone [^ ]+"
+    },
+    "custom_item_31": {
+        "description": "service timestamps",
+        "item": "service timestamps log datetime"
+    },
+    "custom_item_32": {
+        "description": "snmp-server group",
+        "item": "snmp-server group @SNMP_V3_GROUP@ v3 auth read @SNMP_V3_READ_VIEW@ write @SNMP_V3_WRITE_VIEW@"
+    },
+    "custom_item_33": {
+        "description": "snmp-server user",
+        "item": "snmp-server user @SNMP_V3_USER@ @SNMP_V3_GROUP@ v3 auth (sha|md5) [^ ]+"
+    },
+    "custom_item_34": {
+        "description": "snmp-server view V3READ",
+        "item": "snmp-server view @SNMP_V3_READ_VIEW@ [^ ]+ included"
+    },
+    "custom_item_35": {
+        "description": "snmp-server view V3WRITE",
+        "item": "snmp-server view @SNMP_V3_WRITE_VIEW@ [^ ]+ included"
+    },
+    "custom_item_36": {
+        "description": "snmp-server host",
+        "item": "snmp-server host @SNMP_HOST_IP@ version 3 auth @SNMP_V3_USER@"
+    },
+    "custom_item_37": {
+        "description": "snmp-server group",
+        "item": "snmp-server group @SNMP_V3_GROUP@ v3 priv read @SNMP_V3_READ_VIEW@ write @SNMP_V3_WRITE_VIEW@"
+    },
+    "custom_item_38": {
+        "description": "snmp-server user",
+        "item": "snmp-server user @SNMP_V3_USER@ @SNMP_V3_GROUP@ v3 auth (sha|md5) [^ ]+ priv [^ ]+"
+    },
+    "custom_item_39": {
+        "description": "ntp authenticate",
+        "context": "ntp",
+        "item": "authenticate"
+    },
+    "custom_item_40": {
+        "description": "ntp authentication-key",
+        "context": "ntp",
+        "item": "authentication-key ([0-9]+) md5 (([^ ]+)|([^ ]+) ([0-9]+))"
+    },
+    "custom_item_41": {
+        "description": "ntp trusted-key",
+        "context": "ntp",
+        "item": "trusted-key ([0-9]+)"
+    },
+    "custom_item_42": {
+        "description": "ntp NTP_SERVER_1 authentication-key",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_1@ key ([0-9]+)"
+    },
+    "custom_item_43": {
+        "description": "ntp NTP_SERVER_2 authentication-key",
+        "context": "ntp",
+        "item": "server @NTP_SERVER_2@ key ([0-9]+)"
+    },
+    "custom_item_44": {
+        "description": "CISC-ND-001200 - The Cisco router must be configured to use FIPS-validated Keyed-Hash Message Authentication Code (HMAC) to protect the integrity of remote maintenance sessions.",
+        "info": "Unapproved mechanisms that are used for authentication to the cryptographic module are not verified and therefore cannot be relied upon to provide confidentiality or integrity, and DoD data may be compromised.\n\nNonlocal maintenance and diagnostic activities are those activities conducted by individuals communicating through a network, either an external network (e.g., the Internet) or an internal network.\n\nCurrently, HMAC is the only FIPS-approved algorithm for generating and verifying message/data authentication codes in accordance with FIPS 198-1. Products that are FIPS 140-2 validated will have an HMAC that meets specification; however, the option must be configured for use as the only message authentication code use d for authentication to cryptographic modules.",
+        "solution": "Configure the router to use SSH version 2 as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#ssh server v2",
+        "reference": "800-171|3.7.5,800-53|MA-4(6),800-53r5|MA-4(6),CAT|I,CCI|CCI-002890,CSF|PR.MA-2,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|MA-4(6),NESA|T2.3.4,NESA|T5.4.4,QCSC-v1|5.2.2,Rule-ID|SV-216541r879784_rule,STIG-ID|CISC-ND-001200,STIG-Legacy|SV-105611,STIG-Legacy|V-96473,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-216541",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "ssh server v2"
+    },
+    "custom_item_45": {
+        "description": "CISC-ND-001210 - The Cisco router must be configured to implement cryptographic mechanisms to protect the confidentiality of remote maintenance sessions.",
+        "info": "This requires the use of secure protocols instead of their unsecured counterparts, such as SSH instead of telnet, SCP instead of FTP, and HTTPS instead of HTTP. If unsecured protocols (lacking cryptographic mechanisms) are used for sessions, the contents of those sessions will be susceptible to eavesdropping, potentially putting sensitive data (including administrator passwords) at risk of compromise and potentially allowing hijacking of maintenance sessions.",
+        "solution": "Configure the router to use SSH version 2 as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#ssh server v2",
+        "reference": "800-171|3.7.5,800-53|MA-4(6),800-53r5|MA-4(6),CAT|I,CCI|CCI-003123,CSF|PR.MA-2,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|MA-4(6),NESA|T2.3.4,NESA|T5.4.4,QCSC-v1|5.2.2,Rule-ID|SV-216542r879785_rule,STIG-ID|CISC-ND-001210,STIG-Legacy|SV-105613,STIG-Legacy|V-96475,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-216542",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "ssh server v2"
+    },
+    "custom_item_46": {
+        "description": "CISC-ND-001310 - The Cisco router must be configured to off-load log records onto a different system than the system being audited.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.\n\nOff-loading is a common process in information systems with limited audit storage capacity.",
+        "solution": "Configure the Cisco router to send log records to a syslog server as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#logging 10.1.12.7 severity info",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216543r879886_rule,STIG-ID|CISC-ND-001310,STIG-Legacy|SV-105615,STIG-Legacy|V-96477,Vuln-ID|V-216543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "logging @SYSLOG_SERVER@ .+ severity (critical|error|warning|notice|informational)"
+    },
+    "custom_item_47": {
+        "description": "server host",
+        "item": "(radius|tacacs)-server host [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_48": {
+        "description": "aaa authentication login",
+        "item": "aaa authentication login @LOGIN_AUTHENTICATION_LIST@ group (radius|tacacs\\+) local"
+    },
+    "custom_item_49": {
+        "description": "line default",
+        "context": "line default",
+        "item": "login authentication @LOGIN_AUTHENTICATION_LIST@"
+    },
+    "custom_item_50": {
+        "description": "line console",
+        "context": "line console",
+        "item": "login authentication @LOGIN_AUTHENTICATION_LIST@"
+    },
+    "custom_item_51": {
+        "description": "CISC-ND-001410 - The Cisco router must be configured to back up the configuration when changes occur.",
+        "info": "System-level information includes default and customized settings and security attributes, including ACLs that relate to the network device configuration, as well as software required for the execution and operation of the device. Information system backup is a critical step in ensuring system integrity and availability. If the system fails and there is no backup of the system-level information, a denial of service condition is possible for all who utilize this critical network component.\n\nThis control requires the network device to support the organizational central backup process for system-level information associated with the network device. This function may be provided by the network device itself; however, the preferred best practice is a centralized backup rather than each network device performing discrete backups.",
+        "solution": "Configure the Cisco router to send the configuration to an TFTP or FTP server when a configuration change occurs as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#configuration commit auto-save filename tftp:// 10.1.3.18",
+        "reference": "800-171|3.4.2,800-171|3.8.9,800-53|CM-6b.,800-53|CP-9b.,800-53r5|CM-6b.,800-53r5|CP-9b.,CAT|II,CCI|CCI-000366,CCI|CCI-000537,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.IP-4,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CM-6b.,ITSG-33|CP-9b.,NESA|T3.2.1,NESA|T3.5.1,Rule-ID|SV-216545r916221_rule,STIG-ID|CISC-ND-001410,STIG-Legacy|SV-105629,STIG-Legacy|V-96491,SWIFT-CSCv1|2.3,Vuln-ID|V-216545",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "configuration commit auto-save [^ ]+ (ftp|tftp):"
+    },
+    "custom_item_52": {
+        "description": "crypto pki trustpoint",
+        "item": "(crypto pki trustpoint [^ ]+|Manual Review Required)",
+        "min_occurrences": "2"
+    },
+    "custom_item_53": {
+        "description": "enrollment",
+        "context": "crypto pki trustpoint [^ ]+",
+        "item": "(enrollment [^ ]+|Manual Review Required)",
+        "min_occurrences": "2"
+    },
+    "custom_item_54": {
+        "description": "CISC-ND-001450 - The Cisco router must be configured to send log data to at least two syslog servers for the purpose of forwarding alerts to the administrators and the information system security officer (ISSO).",
+        "info": "The aggregation of log data kept on a syslog server can be used to detect attacks and trigger an alert to the appropriate security personnel. The stored log data can used to detect weaknesses in security that enable the network IA team to find and address these weaknesses before breaches can occur. Reviewing these logs, whether before or after a security breach, are important in showing whether someone is an internal employee or an outside threat.",
+        "solution": "Configure the router to send log messages to the syslog servers as shown in the example below.\n\nRP/0/0/CPU0:R3(config)#logging 10.1.3.22 severity info\nRP/0/0/CPU0:R3(config)#logging 10.1.3.23 severity info",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|I,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-216547r916078_rule,STIG-ID|CISC-ND-001450,STIG-Legacy|SV-105635,STIG-Legacy|V-96497,Vuln-ID|V-216547",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "item": "logging @SYSLOG_SERVER@ .+ severity (critical|error|warning|notice|informational)",
+        "min_occurrences": "2"
+    },
+    "custom_item_55": {
+        "description": "CISC-ND-001470 - The Cisco router must be running an IOS release that is currently supported by Cisco Systems.",
+        "info": "Network devices running an unsupported operating system lack current security fixes required to mitigate the risks associated with recent vulnerabilities. Running a supported release also enables operations to maintain a stable and reliable network provided by improved quality of service and security features.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Upgrade the router to a supported release.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Cisco_IOS-XR_Router_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-216549r879887_rule,STIG-ID|CISC-ND-001470,STIG-Legacy|SV-105639,STIG-Legacy|V-96501,SWIFT-CSCv1|2.3,Vuln-ID|V-216549",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_IOS-XR_Router_Y24M01_STIG.zip",
+        "cmd": "show version",
+        "item": "Manual Review Required"
+    }
+}

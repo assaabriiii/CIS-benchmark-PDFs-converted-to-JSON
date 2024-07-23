@@ -1,0 +1,263 @@
+{
+    "custom_item_1": {
+        "description": "Verify that NET Framework 4 is installed.",
+        "reg_key": "HKLM\\Software\\Microsoft\\Net Framework Setup\\Ndp\\V4",
+        "reg_item": "Install"
+    },
+    "custom_item_2": {
+        "description": "Registry key StrongName Verification exists",
+        "value_data": "HKLM\\Software\\Microsoft\\Strongname\\Verification"
+    },
+    "custom_item_3": {
+        "description": "APPNET0031 - Digital signatures assigned to strongly named assemblies must be verified.",
+        "info": "A strong name consists of the assembly's identity, simple text name, version number, and culture information (if provided)-plus a public key and a digital signature.  Strong names serve to identify the author of the code.  If digital signatures used to sign strong name assemblies are not verified, any self signed code can be impersonated.  This can lead to a loss of system integrity.",
+        "solution": "Use regedit to remove the values stored in Windows registry key HKLM\\Software\\Microsoft\\StrongName\\Verification. There should be no assemblies or hash values listed under this registry key.\n\nAll assemblies must require strong name verification in a production environment.\n\nStrong name assemblies that do not require verification in a development or test environment must have documented approvals from the IAO.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-225223r954872_rule,STIG-ID|APPNET0031,STIG-Legacy|SV-7438,STIG-Legacy|V-7055,Vuln-ID|V-225223",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "HKLM\\Software\\Microsoft\\Strongname\\Verification"
+    },
+    "custom_item_4": {
+        "description": "APPNET0046 - The Trust Providers Software Publishing State must be set to 0x23C00.",
+        "info": "Microsoft Windows operating systems provide a feature called Authenticode.  Authenticode technology and its underlying code signing mechanisms serve to provide a structure to identify software publishers and ensure that software applications have not been tampered with.  Authenticode technology relies on digital certificates and is based on Public Key Cryptography Standards (PKCS) #7 (encrypted key specification), PKCS #10 (certificate request formats), X.509 (certificate specification), and Secure Hash Algorithm (SHA) and MD5 hash algorithms.\n\nThe manner in which the Authenticode technology validates a certificate and determines what is considered a valid certificate can be modified to meet the mission of the Microsoft Windows system.  Each facade of certificate validation is controlled through the bits that makeup the hexadecimal value for the Authenticode setting.  An improper setting will allow non-valid certificates to be accepted and can put the integrity of the system into jeopardy.\n\nThe hexadecimal value of 0x23C00 will implement the following certificate enforcement policy:\n- Trust the Test Root = FALSE\n- Use expiration date on certificates = TRUE\n- Check the revocation list = TRUE\n- Offline revocation server OK (Individual) = TRUE\n- Offline revocation server OK (Commercial) = TRUE\n- Java offline revocation server OK (Individual) = TRUE\n- Java offline revocation server OK (Commercial) = TRUE\n- Invalidate version 1 signed objects = FALSE\n- Check the revocation list on Time Stamp Signer = FALSE\n- Only trust items found in the Trust DB = FALSE",
+        "solution": "This fix must be performed for each user on the system.\n\nUsing regedit, change the hexadecimal value of the 'HKEY_USER\\[UNIQUE USER SID VALUE]\\Software\\Microsoft\\Windows\\CurrentVersion\\WinTrust\\Trust Providers\\Software Publishing\\State' registry key to 0x23C00.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-225224r954872_rule,STIG-ID|APPNET0046,STIG-Legacy|SV-7444,STIG-Legacy|V-7061,Vuln-ID|V-225224",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "023C00",
+        "reg_key": "HKU\\Software\\Microsoft\\Windows\\Currentversion\\Wintrust\\Trust Providers\\Software Publishing",
+        "reg_item": "State",
+        "reg_ignore_hku_users": "S-1-5-18,S-1-5-19,S-1-5-20"
+    },
+    "custom_item_5": {
+        "description": "APPNET0048 - Developer certificates used with the .NET Publisher Membership Condition must be approved by the ISSO.",
+        "info": "A .Net assembly will satisfy the Publisher Membership Condition if it is signed with a software publisher's Authenticode X.509v3 digital certificate that can be verified by the Windows operating system as having a chain of trust that leads to a trusted root certificate stored in the user's certificate store. The Publisher Membership Condition can be used to identify an organization, developer, vendor, or other entity as the ultimate source of the assembly, even if the code itself was obtained from a third party, such as a mirror site. Access to system resources, such as file systems or printers, may then be granted to the assembly based on the trust relationship with the identified entity.\n\nCertificates used to sign assemblies so the Publisher Member Condition may be applied must originate from a trusted source. Using a certificate that is not from a trusted source could potentially violate system integrity and confidentiality.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Trust must be established when utilizing Publishers Membership Condition. All publisher's certificates must have documented approvals from the ISSO.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-225225r954872_rule,STIG-ID|APPNET0048,STIG-Legacy|SV-7446,STIG-Legacy|V-7063,Vuln-ID|V-225225",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "Publisher .* FullTrust",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*\\caspol.exe) | Select-Object -Last 1 Directory | ForEach-Object { $cmd = $($_.Directory.ToString() + '\\caspol.exe'); & $cmd -m -lg}| Select-String -Pattern 'Publisher.*FullTrust'"
+    },
+    "custom_item_6": {
+        "description": "APPNET0052 - Encryption keys used for the .NET Strong Name Membership Condition must be protected.",
+        "info": "The Strong Name Membership condition requires that member assemblies be defined with Strong Names. A strong name consists of the assembly's identity, simple text name, version number, and culture information (if provided) - plus a public key and a digital signature. If assemblies do not have a strong name assigned, the assembly cannot be unique and the author of the code cannot be uniquely identified. In order to create the strong name, the developer must use a cryptographic key pair to sign the assembly. If the developer does not protect the key, the key can be stolen and used to sign any application, including malware applications. This could adversely affect application integrity and confidentiality.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ask the Systems Programmer how the private keys used to sign the assembly are protected.\n\nPrivate keys are simply values stored as strings of data. Keys can be stored in files on the file system or in a centralized data repository.\n\nAdequate protection methods include, but are not limited to:\n- utilizing centralized key management;\n- using strict file permissions to limit access; and\n- tying strong pass phrases to the key.\n\nThe private key(s) used to sign the assembly must be protected. Utilize centralized key management or strict file permissions along with strong pass phrases and/or other well-established industry practices for managing and controlling access to private keys.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-225226r954874_rule,STIG-ID|APPNET0052,STIG-Legacy|SV-7450,STIG-Legacy|V-7067,Vuln-ID|V-225226",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "StrongName .* FullTrust",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*\\caspol.exe) | Select-Object -Last 1 Directory | ForEach-Object { $cmd = $($_.Directory.ToString() + '\\caspol.exe'); & $cmd -m -lg}| Select-String -Pattern 'StrongName.*FullTrust'"
+    },
+    "custom_item_7": {
+        "description": "APPNET0061 - .Net Framework versions installed on the system must be supported.",
+        "info": "Unsupported software introduces risks and violates DoD policy.  Applications utilizing unsupported versions of .NET introduce substantial risk to the host, network, and the enclave by virtue of the fact they leverage an architecture that is no longer updated by the vendor.  This introduces potential application integrity, availability, or confidentiality issues.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove unsupported versions of the .NET Framework and upgrade legacy applications that utilize unsupported versions of the .NET framework.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-225229r955845_rule,STIG-ID|APPNET0061,STIG-Legacy|SV-55642,STIG-Legacy|V-18395,SWIFT-CSCv1|2.3,Vuln-ID|V-225229",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*) | Where-Object { $_.Name -like 'Mscorlib.dll'} | Select-Object -ExpandProperty VersionInfo"
+    },
+    "custom_item_8": {
+        "description": "Check for 32 bit on 64 bit.",
+        "value_data": "HKLM\\Software\\Wow6432Node"
+    },
+    "custom_item_9": {
+        "description": "32 bit",
+        "reg_key": "HKLM\\Software\\Wow6432Node\\Microsoft\\.Netframework",
+        "reg_item": "AllowStrongNameBypass"
+    },
+    "custom_item_10": {
+        "description": "64 bit",
+        "reg_key": "HKLM\\Software\\Microsoft\\.Netframework",
+        "reg_item": "AllowStrongNameBypass"
+    },
+    "custom_item_11": {
+        "description": "APPNET0063 - .NET must be configured to validate strong names on full-trust assemblies.",
+        "info": "The 'bypassTrustedAppStrongNames' setting specifies whether the bypass feature that avoids validating strong names for full-trust assemblies is enabled. By default the bypass feature is enabled in .Net 4, therefore strong names are not validated for correctness when the assembly/program is loaded. Not validating strong names provides a faster application load time but at the expense of performing certificate validation.\n\nFull trust assemblies are .Net applications launched from the local host. Strong names are digital signatures tied to .Net applications/assemblies.  .Net 4 considers applications installed locally to be fully trusted by default and grants these applications full permissions to access host resources.\n\nThe bypass feature applies to any assembly signed with a strong name and having the following characteristics:\n\n    Fully trusted without the StrongName evidence (for example, has MyComputer zone evidence).\n\n    Loaded into a fully trusted AppDomain.\n\n    Loaded from a location under the ApplicationBase property of that AppDomain.\n\n    Not delay-signed.\n\nNot validating the certificates used to sign strong name assemblies will provide a faster application load time, but falsely assumes that signatures used to sign the application are to be implicitly trusted.  Not validating strong name certificates introduces an integrity risk to the system.",
+        "solution": "For 32 bit production systems:\nSet 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework\\AllowStrongNameBypass' to a 'DWORD' value of '0'.\nOn 64-bit production systems:\nSet 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\.NETFramework\\ AllowStrongNameBypass' and 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework\\ AllowStrongNameBypass' to a 'DWORD' value of '0'.\nOr, obtain documented ISSO risk acceptance for each .Net application installed on the system.\n\nApproval documentation will include complete list of all installed .Net applications, application versions, and acknowledgement of ISSO trust of each installed application.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(a),800-53r5|IA-5(2)(a),CAT|II,CCI|CCI-000185,CSF|PR.AC-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(a),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-225231r954872_rule,STIG-ID|APPNET0063,STIG-Legacy|SV-40977,STIG-Legacy|V-30935,Vuln-ID|V-225231",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "reg_key": "HKLM\\Software\\Microsoft\\.Netframework",
+        "reg_item": "AllowStrongNameBypass"
+    },
+    "custom_item_12": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_13": {
+        "description": "applications",
+        "value_data": "channel ref='http*' port='443'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'http*' -and $_.Node.port -ne '443' } | Select-Object Path"
+    },
+    "custom_item_14": {
+        "description": "machine",
+        "value_data": "channel ref='http*' port='443'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'http*' -and $_.Node.port -ne '443' } | Select-Object Path"
+    },
+    "custom_item_15": {
+        "description": "APPNET0060 - Remoting Services HTTP channels must utilize authentication and encryption.",
+        "info": "Note: Microsoft recommends using the Windows Communication Framework (WCF) rather than using .Net remoting. New development projects should refrain from using .Net remoting capabilities whenever possible.\n\n.NET remoting provides the capability to build widely distributed applications. The application components may reside all on one computer or they may be spread out across the enclave. .NET client applications can make remoting calls to use objects in other processes on the same computer or on any other computer that is reachable over the network. .NET remoting can also be used to communicate with other application domains within the same process. Remoting is achieved via the exposure of endpoints that can be used to establish remote connectivity.\n\nNormally when application code attempts to access a protected resource, a stack walk is performed to ensure that all stack frames have permission to access the resource. However, with .Net 4.0, when a call is made on a remote object, this stack walk is not performed across the remoting boundary. The .Net remoting infrastructure requires FullTrust permission to execute on either the client or the server.\n\nDue to the fact that FullTrust permission is required, Remoting endpoints should be authenticated and encrypted in order to protect the system and the data.\n\nMicrosoft provides three different 'channels' that are used for remoting. They are HTTP, TCP, and IPC.\n\nAny unauthorized use of a remoting application provides unauthorized access with FullTrust permissions to the system. This can potentially result in a loss of system integrity or confidentiality.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If .NET remoting with HTTP channel is not used, this fix is Not Applicable.\n\nEnsure encryption and message integrity are used for HTTP remoting channels.\n\nThe HTTP channel only supports encryption and message integrity when the remote object is hosted in Internet Information Services (IIS) using TLS.\n\nHTTP channels are protected via TLS (HTTPS).Change the channel ref parameter to utilize a TLS port and leverage TLS on the remote IIS server.",
+        "reference": "800-171|3.13.15,800-53|SC-23,800-53r5|SC-23,CAT|II,CCI|CCI-001184,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-225228r956033_rule,STIG-ID|APPNET0060,STIG-Legacy|SV-7453,STIG-Legacy|V-7070,Vuln-ID|V-225228",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "channel ref='http*' port='443'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'http*' -and $_.Node.port -ne '443' } | Select-Object Path"
+    },
+    "custom_item_16": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_17": {
+        "description": "applications",
+        "value_data": "enforceFIPSPolicy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/enforceFIPSPolicy' | Where-Object { $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_18": {
+        "description": "machine",
+        "value_data": "enforceFIPSPolicy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/enforceFIPSPolicy' | Where-Object { $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_19": {
+        "description": "APPNET0062 - The .NET CLR must be configured to use FIPS approved encryption modules.",
+        "info": "FIPS encryption is configured via .NET configuration files.  There are numerous configuration files that affect different aspects of .Net behavior.  The .NET config files are described below.\n\nMachine Configuration Files:\nThe machine configuration file, Machine.config, contains settings that apply to an entire computer. This file is located in the %SYSTEMROOT%\\Microsoft.NET\\Framework\\v4.0.30319\\Config directory for 32 bit .NET 4 installations and %SYSTEMROOT%\\Microsoft.NET\\Framework64\\v4.0.30319\\Config for 64 bit systems.   Machine.config contains configuration settings for machine-wide assembly binding, built-in remoting channels, and ASP.NET.\n\nApplication Configuration Files:\nApplication configuration files contain settings specific to an application. If checking these files, a .NET review of a specific .NET application is most likely being conducted. These files contain configuration settings that the Common Language Runtime reads (such as assembly binding policy, remoting objects, and so on), and settings that the application can read.\n\nThe name and location of the application configuration file depends on the application's host, which can be one of the following:\n\nExecutable-hosted application configuration files.\n\nThe configuration file for an application hosted by the executable host is in the same directory as the application. The name of the configuration file is the name of the application with a .config extension. For example, an application called myApp.exe can be associated with a configuration file called myApp.exe.config.\n\nInternet Explorer-hosted application configuration files.\n\nIf an application hosted in Internet Explorer has a configuration file, the location of this file is specified in atag with the following syntax.In this tag, 'location' represents a URL that point to the configuration file. This sets the application base. The configuration file must be located on the same web site as the application.\n\n.NET 4.0 allows the CLR runtime to be configured to ignore FIPS encryption requirements.  If the CLR is not configured to use FIPS encryption modules, insecure encryption modules might be employed which could introduce an application confidentiality or integrity issue.",
+        "solution": "Examine the .NET CLR configuration files to find the runtime element and then the 'enforceFIPSPolicy' element.\n\nExample:Delete the 'enforceFIPSPolicy' runtime element, change the setting to 'true' or there must be documented IAO approvals for the FIPS setting.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-225230r954668_rule,STIG-ID|APPNET0062,STIG-Legacy|SV-40966,STIG-Legacy|V-30926,Vuln-ID|V-225230",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "enforceFIPSPolicy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/enforceFIPSPolicy' | Where-Object { $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_20": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_21": {
+        "description": "applications",
+        "value_data": "NetFx40_LegacySecurityPolicy enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/NetFx40_LegacySecurityPolicy' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_22": {
+        "description": "machine",
+        "value_data": "NetFx40_LegacySecurityPolicy enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/NetFx40_LegacySecurityPolicy' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_23": {
+        "description": "APPNET0064 - .Net applications that invoke NetFx40_LegacySecurityPolicy must apply previous versions of .NET STIG guidance.",
+        "info": "CAS policy is .NET runtime version-specific.  In .NET Framework version 4, CAS policy is disabled by default however; it can be re-enabled by using the NetFx40_LegacySecurityPolicy setting on a per application basis. Caspol.exe is provided by Microsoft to set security policy on .Net applications prior to version 4.0. This requirement does not apply to the caspol.exe assembly or other assemblies provided with the Windows OS or the Windows Secure Host Baseline (SHB).\n\nWhen invoking the NetFx40_LegacySecurityPolicy setting in .NET 4, earlier versions of the .NET Framework CAS policy will become active therefore previous .NET STIG guidance that applies to the reactivated versions must also be applied.\n\nFailure to apply applicable versions of STIG guidance can result in the loss of system confidentiality, integrity or availability.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Apply the .NET Framework Security Checklist for .Net versions 1 through 3.5 when utilizing the NetFx40_LegacySecurityPolicy setting.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-225232r955845_rule,STIG-ID|APPNET0064,STIG-Legacy|SV-40979,STIG-Legacy|V-30937,SWIFT-CSCv1|2.3,Vuln-ID|V-225232",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "NetFx40_LegacySecurityPolicy enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/NetFx40_LegacySecurityPolicy' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_24": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_25": {
+        "description": "applications",
+        "value_data": "loadFromRemoteSources enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/loadFromRemoteSources' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_26": {
+        "description": "machine",
+        "value_data": "loadFromRemoteSources enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/loadFromRemoteSources' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_27": {
+        "description": "APPNET0065 - Trust must be established prior to enabling the loading of remote code in .Net 4.",
+        "info": "In the .NET Framework version 3.5 and earlier versions, if an application assembly loaded code/objects from a remote location, that assembly would run partially trusted with a permissions grant set that depended on the zone in which it was loaded. For example, if an assembly was loaded from a web site, it was loaded into the Internet zone and granted the Internet permission set. In other words, it was executed in an Internet sandbox.\n\nIf the same program is run in the .NET Framework version 4, an exception is thrown which effectively states; either explicitly create a sandbox for the assembly or run it in full trust.\n\nTheelement specifies the assemblies that run partially trusted in earlier versions of the .NET Framework will be run fully trusted in the .NET Framework 4.\n\nIf loadFromRemoteSources is set to true, the remotely loaded application code is granted full trust.  This could create an integrity vulnerability on the system.  The required method to address this is to explicitly create a sandboxed environment for the remotely loaded code to run in rather than allowing remotely loaded code to run with full trust.\n\nThe appropriate level of trust must be established prior to enabling the loading of remote code in .Net 4 applications and that code must be run in a controlled environment.  The following is an example of the use of loadFromRemoteSources.NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": ".Net application code loaded from a remote source must be run in a controlled environment.\n\nA controlled environment consists of a sandbox, such as running in an Internet Explorer host environment or employing OS based software access controls, such as AppLocker or Software Security Policies, when application design permits.\n\nObtain documented IAO approvals for all remotely loaded code.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CAT|II,CCI|CCI-002530,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),QCSC-v1|5.2.1,Rule-ID|SV-225233r955677_rule,STIG-ID|APPNET0065,STIG-Legacy|SV-41010,STIG-Legacy|V-30968,Vuln-ID|V-225233",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "loadFromRemoteSources enabled='false'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.exe.config'} | Select-Xml -XPath '/configuration/runtime/loadFromRemoteSources' | Where-Object { $_.Node.enabled -ne 'false' } | Select-Object Path"
+    },
+    "custom_item_28": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_29": {
+        "description": "applications",
+        "value_data": "defaultProxy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '//defaultProxy' | Where-Object { ($_.Node.enabled -and $_.Node.enabled -ne 'true') -or ($_.Node.proxy -and $_.Node.proxy.usesystemdefault -ne 'true') -or $_.Node.bypasslist -or $_.Node.module } | Select-Object Path"
+    },
+    "custom_item_30": {
+        "description": "machine",
+        "value_data": "defaultProxy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '//defaultProxy' | Where-Object { ($_.Node.enabled -and $_.Node.enabled -ne 'true') -or ($_.Node.proxy -and $_.Node.proxy.usesystemdefault -ne 'true') -or $_.Node.bypasslist -or $_.Node.module } | Select-Object Path"
+    },
+    "custom_item_31": {
+        "description": "APPNET0066 - .NET default proxy settings must be reviewed and approved.",
+        "info": "The .Net framework can be configured to utilize a different proxy or altogether bypass the default proxy settings in the client's browser.  This may lead to the framework using a proxy that is not approved for use.  If the proxy is malicious, this could lead to a loss of application integrity and confidentiality.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Open Windows explorer and search for all '*.exe.config' and 'machine.config' files.\n\nSearch each file for the 'defaultProxy' element.\n\nClear the values contained in the 'defaultProxy' element, and the 'bypasslist', 'module', and 'proxy' child elements.\n\nThe IAO must provide documented approvals of any non-default proxy servers.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-225234r955845_rule,STIG-ID|APPNET0066,STIG-Legacy|SV-41014,STIG-Legacy|V-30972,SWIFT-CSCv1|2.3,Vuln-ID|V-225234",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "defaultProxy enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config'} | Select-Xml -XPath '//defaultProxy' | Where-Object { ($_.Node.enabled -and $_.Node.enabled -ne 'true') -or ($_.Node.proxy -and $_.Node.proxy.usesystemdefault -ne 'true') -or $_.Node.bypasslist -or $_.Node.module } | Select-Object Path"
+    },
+    "custom_item_32": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_33": {
+        "description": "applications",
+        "value_data": "etwEnable enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like '*.config'} | Select-Xml -XPath '/configuration/runtime/etwEnable' | Where-Object { $_.Node.enabled -and $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_34": {
+        "description": "machine",
+        "value_data": "etwEnable enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.config'} | Select-Xml -XPath '/configuration/runtime/etwEnable' | Where-Object { $_.Node.enabled -and $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_35": {
+        "description": "APPNET0067 - Event tracing for Windows (ETW) for Common Language Runtime events must be enabled.",
+        "info": "Event tracing captures information about applications utilizing the .NET CLR and the .NET CLR itself. This includes security oriented information, such as Strong Name and Authenticode verification.\n\nBeginning with Windows Vista, ETW is enabled by default however, the .Net CLR and .Net applications can be configured to not utilize Event Tracing. If ETW event tracing is disabled, critical events that occurred within the runtime will not be captured in event logs.",
+        "solution": "Open Windows explorer and search for all .NET config files including application config files (*.exe.config).\n\nExamine the configuration settings for.\n\nEnable ETW Tracing by setting the etwEnable flag to 'true' or obtain documented IAO approvals.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-225235r954774_rule,STIG-ID|APPNET0067,STIG-Legacy|SV-41075,STIG-Legacy|V-31026,SWIFT-CSCv1|6.4,Vuln-ID|V-225235",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "etwEnable enabled='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like '*.config'} | Select-Xml -XPath '/configuration/runtime/etwEnable' | Where-Object { $_.Node.enabled -and $_.Node.enabled -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_36": {
+        "description": "Check for custom application path from UI variable.",
+        "value_data": "@CUSTOM_APP_PATH@"
+    },
+    "custom_item_37": {
+        "description": "applications",
+        "value_data": "channel ref='tcp*' secure='true'",
+        "powershell_args": "Get-ChildItem -Recurse @CUSTOM_APP_PATH@ | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'tcp*' -and $_.Node.secure -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_38": {
+        "description": "machine",
+        "value_data": "channel ref='tcp*' secure='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'tcp*' -and $_.Node.secure -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_39": {
+        "description": "APPNET0071 - Remoting Services TCP channels must utilize authentication and encryption.",
+        "info": "Note: Microsoft recommends using the Windows Communication Framework (WCF) rather than .Net remoting. New development projects should refrain from using .Net remoting capabilities whenever possible.\n\n.NET remoting provides the capability to build widely distributed applications. The application components may reside all on one computer or they may be spread out across the enclave. .NET client applications can make remoting calls to use objects in other processes on the same computer or on any other computer that is reachable over the network. .NET remoting can also be used to communicate with other application domains within the same process. Remoting is achieved via the exposure of endpoints that can be used to establish remote connectivity.\n\nNormally when application code attempts to access a protected resource, a stack walk is performed to ensure that all stack frames have permission to access the resource. However, with .Net 4.0, when a call is made on a remote object, this stack walk is not performed across the remoting boundary. The .Net remoting infrastructure requires FullTrust permission to execute on either the client or the server.\n\nDue to the fact that FullTrust permission is required, Remoting endpoints should be authenticated and encrypted in order to protect the system and the data.\n\nMicrosoft provides three different 'channels' that are used for remoting. They are HTTP, TCP, and IPC.\n\nAny unauthorized use of a remoting application provides unauthorized access with FullTrust permissions to the system. This can potentially result in a loss of system integrity or confidentiality.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If .NET remoting with TCP channel is not used, this fix is Not Applicable.\n\nEnsure encryption and message integrity are used for TCP remoting channels.\n\nTCP remoting connections are protected via the secure=true configuration parameter.Include the secure='true' flag in the channel ref parameter of the machine.config and [application name].exe.config file if the [application name].exe.config file exists on the system.",
+        "reference": "800-171|3.13.15,800-53|SC-23,800-53r5|SC-23,CAT|II,CCI|CCI-001184,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-225237r956035_rule,STIG-ID|APPNET0071,STIG-Legacy|SV-42341,STIG-Legacy|V-32025,Vuln-ID|V-225237",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "value_data": "channel ref='tcp*' secure='true'",
+        "powershell_args": "Get-ChildItem -Recurse (Join-Path -Path (Get-ChildItem Env:SystemRoot).Value -ChildPath Microsoft.NET\\Framework*\\v4.0*) | Where-Object { $_.Name -like 'machine.config' -or $_.Name -like '*.exe.config' } | Select-Xml -XPath '//formatter[@typeFilterLevel]' | Select-Object Path -Unique | Select-Xml -XPath '//channels/channel[@ref]' | Where-Object { $_.Node.ref -like 'tcp*' -and $_.Node.secure -ne 'true' } | Select-Object Path"
+    },
+    "custom_item_40": {
+        "description": "Check for 32 bit on 64 bit.",
+        "value_data": "HKLM\\Software\\Wow6432Node"
+    },
+    "custom_item_41": {
+        "description": "32 bit",
+        "reg_key": "HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\.NETFramework\\v4.0.30319",
+        "reg_item": "SchUseStrongCrypto"
+    },
+    "custom_item_42": {
+        "description": "64 bit",
+        "reg_key": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319",
+        "reg_item": "SchUseStrongCrypto"
+    },
+    "custom_item_43": {
+        "description": "APPNET0075 - Disable TLS RC4 cipher in .Net",
+        "info": "Use of the RC4 cipher in TLS could allow an attacker to perform man-in-the-middle attacks and recover plaintext from encrypted sessions. Applications that target .Net version 4.x running on multiple Windows versions could be vulnerable to these types of attacks. The registry settings in this requirement will prevent .Net applications that target the 4.x framework from selecting and utilizing the Schannel.dll RC4 cipher for TLS connections. Applications that use TLS when connecting to remote systems will perform a handshake and negotiate the TLS version and cipher that is to be used between the client and the server. This is standard protocol for all TLS connections. If the server and client are not configured to use the same TLS version and cipher, the TLS connection may fail. Applications should be tested with these registry settings prior to production implementation of the fix in order to avoid application outages.",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MS_Dot_Net_Framework,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-225238r955585_rule,STIG-ID|APPNET0075,STIG-Legacy|SV-96209,STIG-Legacy|V-81495,SWIFT-CSCv1|2.3,Vuln-ID|V-225238",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MS_DotNet_Framework_4-0_V2R4_STIG.zip",
+        "reg_key": "HKLM\\SOFTWARE\\Microsoft\\.NETFramework\\v4.0.30319",
+        "reg_item": "SchUseStrongCrypto"
+    }
+}

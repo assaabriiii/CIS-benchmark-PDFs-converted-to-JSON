@@ -1,0 +1,691 @@
+{
+    "custom_item_1": {
+        "description": "MacOS 10.12 Sierra is installed",
+        "cmd": "/usr/bin/sw_vers | /usr/bin/grep 'ProductVersion'",
+        "expect": "^ProductVersion[\\\\s]*:[\\\\s]*@PLATFORM_VERSION@"
+    },
+    "custom_item_2": {
+        "description": "1.1 Verify all Apple provided software is current",
+        "info": "Software vendors release security patches and software updates for their products when security vulnerabilities are discovered. There is no simple way to complete this action without a network connection to an Apple software repository. Please ensure appropriate access for this control. This check is only for what Apple provides through software update.\n\nRationale:\n\nIt is important that these updates be applied in a timely manner to prevent unauthorized persons from exploiting the identified vulnerabilities.\n\nImpact:\n\nMissing patches can lead to more exploit opportunities.",
+        "solution": "Perform the following to ensure the system is configured as prescribed:\n\nChoose Apple menu > App Store - If prompted, enter an admin name and password.\n\nInstall all available updates and software patches that are applicable.\n\nAlternatively:\n\nIn Terminal, run the following:\n\nsoftwareupdate -l\n\n\n\nIn Terminal, run the following for any packages that show up in step 1:\n\nsudo softwareupdate -i",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/softwareupdate -l 2>&1",
+        "expect": "No new software available"
+    },
+    "custom_item_3": {
+        "description": "1.2 Enable Auto Update",
+        "info": "Auto Update verifies that your system has the newest security patches and software updates. If 'Automatically check for updates' is not selected background updates for new malware definition files from Apple for XProtect and Gatekeeper will not occur.\n\nhttp://macops.ca/os-x-admins-your-clients-are-not-getting-background-security-updates/\n\nhttps://derflounder.wordpress.com/2014/12/17/forcing-xprotect-blacklist-updates-on-mavericks-and-yosemite/\n\nRationale:\n\nIt is important that a system has the newest updates applied so as to prevent unauthorized persons from exploiting identified vulnerabilities.\n\nImpact:\n\nWithout automatic update, updates may not be made in a timely manner and the system will be exposed to additional risk.",
+        "solution": "Perform the following to implement the prescribed state:\nOpen a terminal session and enter the following command to enable the auto update feature:\n\nsudo defaults write /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled -int 1",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "AutomaticCheckEnabled",
+        "plist_name": "/Library/Preferences/com.apple.SoftwareUpdate"
+    },
+    "custom_item_4": {
+        "description": "1.3 Enable app update installs",
+        "info": "Ensure that application updates are installed after they are available from Apple. These updates do not require reboots or admin privileges for end users.\n\nRationale:\n\nPatches need to be applied in a timely manner to reduce the risk of vulnerabilities being exploited\n\nImpact:\n\nUnpatched software may be exploited",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen a terminal session and enter the following command to enable the auto update feature:\n\nsudo defaults write /Library/Preferences/com.apple.commerce AutoUpdate -bool TRUE\n\nThe remediation requires a log out and log in to show in the GUI. Please note that.",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "AutoUpdate",
+        "plist_name": "/Library/Preferences/com.apple.commerce"
+    },
+    "custom_item_5": {
+        "description": "1.4 Enable system data files and security update installs - 'ConfigDataInstall'",
+        "info": "Ensure that system and security updates are installed after they are available from Apple. This setting enables definition updates for XProtect and Gatekeeper, with this setting in place new malware and adware that Apple has added to the list of malware or untrusted software will not execute. These updates do not require reboots or end user admin rights.\n\nhttp://www.thesafemac.com/tag/xprotect/\n\nhttps://support.apple.com/en-us/HT202491\n\nRationale:\n\nPatches need to be applied in a timely manner to reduce the risk of vulnerabilities being exploited\n\nImpact:\n\nUnpatched software may be exploited",
+        "solution": "Perform the following to implement the prescribed state:\nOpen a terminal session and enter the following command to enable install system data files and security updates:\n\nsudo defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true && sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "ConfigDataInstall",
+        "plist_name": "/Library/Preferences/com.apple.SoftwareUpdate"
+    },
+    "custom_item_6": {
+        "description": "1.4 Enable system data files and security update installs - 'CriticalUpdateInstall'",
+        "info": "Ensure that system and security updates are installed after they are available from Apple. This setting enables definition updates for XProtect and Gatekeeper, with this setting in place new malware and adware that Apple has added to the list of malware or untrusted software will not execute. These updates do not require reboots or end user admin rights.\n\nhttp://www.thesafemac.com/tag/xprotect/\n\nhttps://support.apple.com/en-us/HT202491\n\nRationale:\n\nPatches need to be applied in a timely manner to reduce the risk of vulnerabilities being exploited\n\nImpact:\n\nUnpatched software may be exploited",
+        "solution": "Perform the following to implement the prescribed state:\nOpen a terminal session and enter the following command to enable install system data files and security updates:\n\nsudo defaults write /Library/Preferences/com.apple.SoftwareUpdate ConfigDataInstall -bool true && sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate CriticalUpdateInstall -bool true",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "CriticalUpdateInstall",
+        "plist_name": "/Library/Preferences/com.apple.SoftwareUpdate"
+    },
+    "custom_item_7": {
+        "description": "1.5 Enable macOS update installs",
+        "info": "Ensure that macOS updates are installed after they are available from Apple. This setting enables macOS updates to be automatically installed. Some environments will want to approve and test updates before they are delivered. It is best practice to test first where updates can and have caused disruptions to operations. Automatic updates should be turned off where changes are tightly controlled and there are mature testing and approval processes. Automatic updates should not be turned off so the admin can call the users first to let them know it's ok to install. A dependable repeatable process involving a patch agent or remote management tool should be in place before auto-updates are turned off.\n\nRationale:\n\nPatches need to be applied in a timely manner to reduce the risk of vulnerabilities being exploited\n\nImpact:\n\nUnpatched software may be exploited",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen a terminal session and enter the following command to enable install system data files and security updates:\n\nsudo defaults write /Library/Preferences/com.apple.commerce AutoUpdateRestartRequired -bool TRUE",
+        "reference": "800-171|3.14.1,800-53|SI-2(5),800-53r5|SI-2(5),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|NS26b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "AutoUpdateRestartRequired",
+        "plist_name": "/Library/Preferences/com.apple.commerce"
+    },
+    "custom_item_8": {
+        "description": "2.1.1 Turn off Bluetooth, if no paired devices exist",
+        "regex": "0",
+        "plist_item": "ControllerPowerState",
+        "plist_name": "/Library/Preferences/com.apple.Bluetooth"
+    },
+    "custom_item_9": {
+        "description": "2.1.1 Turn off Bluetooth, if no paired devices exist",
+        "info": "Bluetooth devices use a wireless communications system that replaces the cables used by other peripherals to connect to a system. It is by design a peer-to-peer network technology and typically lacks centralized administration and security enforcement infrastructure.\n\nRationale:\n\nBluetooth is particularly susceptible to a diverse set of security vulnerabilities involving identity detection, location tracking, denial of service, unintended control and access of data and voice channels, and unauthorized device control and data access.\n\nImpact:\n\nThere have been many Bluetooth exploits, while Bluetooth can be hardened it does create a local wireless network that can be attacked to compromise both devices and information. Apple has emphasized the ease of use in Bluetooth devices so it is generally expected that Bluetooth will be used. Turning off Bluetooth with this control will also disable the Bluetooth sharing capability that is more strongly recommended against in control 2.4.7.",
+        "solution": "Perform the following to implement the prescribed state:\n\nIn a Terminal, run the following commands:\n\nsudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0\n\nsudo killall -HUP blued",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "ControllerPowerState",
+        "plist_name": "/Library/Preferences/com.apple.Bluetooth"
+    },
+    "custom_item_10": {
+        "description": "2.1.1 Turn off Bluetooth, if no paired devices exist",
+        "info": "Bluetooth devices use a wireless communications system that replaces the cables used by other peripherals to connect to a system. It is by design a peer-to-peer network technology and typically lacks centralized administration and security enforcement infrastructure.\n\nRationale:\n\nBluetooth is particularly susceptible to a diverse set of security vulnerabilities involving identity detection, location tracking, denial of service, unintended control and access of data and voice channels, and unauthorized device control and data access.\n\nImpact:\n\nThere have been many Bluetooth exploits, while Bluetooth can be hardened it does create a local wireless network that can be attacked to compromise both devices and information. Apple has emphasized the ease of use in Bluetooth devices so it is generally expected that Bluetooth will be used. Turning off Bluetooth with this control will also disable the Bluetooth sharing capability that is more strongly recommended against in control 2.4.7.",
+        "solution": "Perform the following to implement the prescribed state:\n\nIn a Terminal, run the following commands:\n\nsudo defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0\n\nsudo killall -HUP blued",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/system_profiler | /usr/bin/grep 'Bluetooth:' -A 20 | /usr/bin/grep Connectable",
+        "expect": "Connectable: Yes"
+    },
+    "custom_item_11": {
+        "description": "2.1.2 Turn off Bluetooth 'Discoverable' mode when not pairing devices",
+        "info": "When Bluetooth is set to discoverable mode, the Mac sends a signal indicating that it's available to pair with another Bluetooth device. When a device is 'discoverable' it broadcasts information about itself and its location. Starting with OS X 10.9 Discoverable mode is enabled while the Bluetooth System Preference is open and turned off once closed. Systems that have the Bluetooth System Preference open at the time of audit will show as Discoverable.\n\nRationale:\n\nWhen in the discoverable state an unauthorized user could gain access to the system by pairing it with a remote device.\n\nImpact:\n\nThe system will need to be made Discoverable in order to easily pair Bluetooth peripherals",
+        "solution": "Perform the following to implement the prescribed state:\nStarting with OS X (10.9) Bluetooth is only set to Discoverable when the Bluetooth System Preference is selected. To ensure that the computer is not Discoverable do not leave that preference open.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/system_profiler SPBluetoothDataType | /usr/bin/grep -i discoverable",
+        "expect": "Discoverable:[\\\\s]*Off"
+    },
+    "custom_item_12": {
+        "description": "2.1.3 Show Bluetooth status in menu bar",
+        "info": "By showing the Bluetooth status in the menu bar, a small Bluetooth icon is placed in the menu bar. This icon quickly shows the status of Bluetooth, and can allow the user to quickly turn Bluetooth on or off.\n\nRationale:\n\nEnabling 'Show Bluetooth status in menu bar' is a security awareness method that helps understand the current state of Bluetooth, including whether it is enabled, Discoverable, what paired devices exist and are currently active.\n\nImpact:\n\nBluetooth is a useful wireless tool that has been widely exploited when configured improperly. The user should have insight into the Bluetooth status.",
+        "solution": "In System Preferences: Bluetooth, turn Show Bluetooth Status In Menu Bar on.\nAlternatively run the following in the command line:\n\ndefaults write com.apple.systemuiserver menuExtras -array-add '/System/Library/CoreServices/Menu Extras/Bluetooth.menu'\n\nIf the remediation is run multiple times multiple instances of the Bluetooth status will appear after rebooting the system. Command-click and drag the unwanted icons off the menu bar\nhttp://osxdaily.com/2012/01/05/remove-icons-menu-bar-mac-os-x/",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read com.apple.systemuiserver menuExtras | /usr/bin/grep Bluetooth.menu",
+        "expect": "/System/Library/CoreServices/Menu Extras/Bluetooth\\\\.menu"
+    },
+    "custom_item_13": {
+        "description": "2.2.1 Enable 'Set time and date automatically' - Set time and date automatically",
+        "info": "Correct date and time settings are required for authentication protocols, file creation, modification dates and log entries.\n\nNote: If your organization has internal time servers, enter them here. Enterprise mobile devices may need to use a mix of internal and external time servers. If multiple servers are required use the Date & Time System Preference with each server separated by a space.\n\nRationale:\n\nKerberos may not operate correctly if the time on the Mac is off by more than 5 minutes. This in turn can affect Apple's single sign-on feature, Active Directory logons, and other features.\n\nImpact:\n\nApple's automatic time update solution will enable an NTP server that is not controlled by the Application Firewall. Turning on 'Set time and date automatically' allows other computers to connect to set their time and allows for exploit attempts against ntpd. It also allows for more accurate network detection and OS fingerprinting\n\nCurrent testing shows scanners can easily determine the MAC address and the OS vendor. More extensive OS fingerprinting may be possible.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Date & Time\n\nSelect Set date and time automatically\n\nAlternatively run the following commands:\n\nsudo systemsetup -setnetworktimeserversudo systemsetup -setusingnetworktime on",
+        "reference": "800-171|3.3.7,800-53|AU-8(1),800-53r5|SC-45(1),CN-L3|8.1.4.3(b),CSCv6|6.1,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.4,ITSG-33|AU-8(1),LEVEL|1A,NESA|T3.6.7,NIAv2|NS44,NIAv2|NS45,NIAv2|NS46,NIAv2|NS47,PCI-DSSv3.2.1|10.4,PCI-DSSv3.2.1|10.4.1,PCI-DSSv3.2.1|10.4.3,PCI-DSSv4.0|10.6,PCI-DSSv4.0|10.6.1,PCI-DSSv4.0|10.6.2,PCI-DSSv4.0|10.6.3,QCSC-v1|8.2.1,QCSC-v1|13.2,TBA-FIISB|37.4",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/systemsetup -getusingnetworktime",
+        "expect": "Network Time:[\\\\s]*On"
+    },
+    "custom_item_14": {
+        "description": "2.2.2 Ensure time set is within appropriate limits",
+        "info": "Correct date and time settings are required for authentication protocols, file creation, modification dates and log entries. Ensure that time on the computer is within acceptable limits. Truly accurate time is measured within milliseconds, for this audit a drift under four and a half minutes passes the control check. Since Kerberos is one of the important features of macOS integration into Directory systems the guidance here is to warn you before there could be an impact to operations. From the perspective of accurate time this check is not strict, it may be too great for your organization, adjust to a smaller offset value as needed.\n\nRationale:\n\nKerberos may not operate correctly if the time on the Mac is off by more than 5 minutes. This in turn can affect Apple's single sign-on feature, Active Directory logons, and other features. Audit check is for more than 4 minutes and 30 seconds ahead or behind.\n\nImpact:\n\nAccurate time is required for many computer functions.",
+        "solution": "Perform the following to implement the prescribed state:\n\nIn Terminal, run the following command:\n\nsudo systemsetup -getnetworktimeserver\n\n\n\nUse 'Network Time Server:'to capture drift\n\nsudo ntpdate -svAdditional Information:\n\nThe associated check will fail if no network connection is available.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "ntpdate -svd `sudo /usr/sbin/systemsetup -getnetworktimeserver | cut -d ' ' -f 4` | egrep offset",
+        "expect": "offset[\\\\s]+(-)?([0-9]{1,2}|1[0-9]{2}|2[0-6][0-9]|270)\\\\."
+    },
+    "custom_item_15": {
+        "description": "2.3.1 Set an inactivity interval of 20 minutes or less for the screen saver",
+        "info": "A locking screensaver is one of the standard security controls to limit access to a computer and the current user's session when the computer is temporarily unused or unattended. In macOS the screensaver starts after a value selected in a drop down menu, 10 minutes and 20 minutes are both options and either is acceptable. Any value can be selected through the command line or script but a number that is not reflected in the GUI can be problematic. 20 minutes is the default for new accounts.\n\nRationale:\n\nSetting an inactivity interval for the screensaver prevents unauthorized persons from viewing a system left unattended for an extensive period of time.\n\nImpact:\n\nIf the screensaver is not set users may leave the computer available for an unauthorized person to access information.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Desktop & Screen Saver\n\nSelect Screen__Saver\n\nSet Start after to 20 minutes or less\n\nAlternatively:\n\nIn Terminal, run one of the the following commands:\n\ndefaults -currentHost write com.apple.screensaver idleTime -int 600\ndefaults -currentHost write com.apple.screensaver idleTime -int 1200\n\nThere are anomalies if the command line is used to make the setting something other than what is available in the GUI Menu. Choose either 10 minutes or 20 minutes,",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1A,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": ".* = ([1-9]|[1-9][0-9]|[1-9][0-9][0-9]|1[0-1][0-9][0-9]|1200)$",
+        "plist_item": "idleTime",
+        "plist_name": "com.apple.screensaver",
+        "plist_user": "all"
+    },
+    "custom_item_16": {
+        "description": "2.3.3 Set a screen corner to Start Screen Saver",
+        "info": "The intent of this control is to resemble control-alt-delete on Windows Systems as a means of quickly locking the screen. If the user of the system is stepping away from the computer the best practice is to lock the screen and setting a hot corner is an appropriate method.\n\nRationale:\n\nEnsuring the user has a quick method to lock their screen may reduce opportunity for individuals in close physical proximity of the device to see screen contents.",
+        "solution": "In System Preferences: Desktop & Screen Saver: Screen Saver: Hot Corners, make sure at least one Active Screen Corner is set to Start Screen Saver. Make sure the user knows about this feature.\nThe screen corners can be set using the defaults command, but the permutations of combinations are many. The plist file to check is ~/Library/Preferences/com.apple.dock and the keys are\n\nwvous-bl-corner\nwvous-br-corner\nwvous-tl-corner\nwvous-tr-corner\n\nThere are also modifier keys to check and various values for each of these keys. A value of 5 means the corner will start the screen saver. The corresponding wvous-xx-modifier key should be set to 0.",
+        "reference": "800-171|3.1.10,800-53|AC-11a.,800-53r5|AC-11a.,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11a.,LEVEL|1A,NESA|T2.3.8,NESA|T2.3.9,NIAv2|AM23a,NIAv2|AM23b,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read ~/Library/Preferences/com.apple.dock | /usr/bin/grep -i corner",
+        "expect": "\".*-corner\"[\\\\s]*=[\\\\s]*5;$"
+    },
+    "custom_item_17": {
+        "description": "2.4.1 Disable Remote Apple Events",
+        "info": "Apple Events is a technology that allows one program to communicate with other programs. Remote Apple Events allows a program on one computer to communicate with a program on a different computer.\n\nRationale:\n\nDisabling Remote Apple Events mitigates the risk of an unauthorized program gaining access to the system.\n\nImpact:\n\nWith remote Apple events turned on, an AppleScript program running on another Mac can interact with the local computer.",
+        "solution": "Perform the following to implement the prescribed state:\nRun the following command in Terminal:\n\nsudo systemsetup -setremoteappleevents off",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/systemsetup -getremoteappleevents",
+        "expect": "^Remote Apple Events:[\\\\s]*Off"
+    },
+    "custom_item_18": {
+        "description": "2.4.2 Disable Internet Sharing",
+        "info": "Internet Sharing uses the open source natd process to share an internet connection with other computers and devices on a local network. This allows the Mac to function as a router and share the connection to other, possibly unauthorized, devices.\n\nRationale:\n\nDisabling Internet Sharing reduces the remote attack surface of the system.\n\nImpact:\n\nInternet sharing allows the computer to function as a router and other computers to use it for access. This can expose both the computer itself and the networks it is accessing to unacceptable access from unapproved devices.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Sharing\n\nUncheck Internet Sharing",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read /Library/Preferences/SystemConfiguration/com.apple.nat | /usr/bin/grep -i Enabled | /usr/bin/grep -v 0 | /usr/bin/awk '{print} END {if (NR == 0) print\"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_19": {
+        "description": "2.4.3 Disable Screen Sharing",
+        "info": "Screen sharing allows a computer to connect to another computer on a network and display the computer's screen. While sharing the computer's screen, the user can control what happens on that computer, such as opening documents or applications, opening, moving, or closing windows, and even shutting down the computer.\n\nRationale:\n\nDisabling screen sharing mitigates the risk of remote connections being made without the user of the console knowing that they are sharing the computer.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Sharing\n\nUncheck Screen Sharing",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl load /System/Library/LaunchDaemons/com.apple.screensharing.plist",
+        "expect": "Service[\\\\s]+is[\\\\s]+disabled"
+    },
+    "custom_item_20": {
+        "description": "2.4.4 Disable Printer Sharing",
+        "info": "By enabling Printer sharing the computer is set up as a print server to accept print jobs from other computers. Dedicated print servers or direct IP printing should be used instead.\n\nRationale:\n\nDisabling Printer Sharing mitigates the risk of attackers attempting to exploit the print server to gain access to the system.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Sharing\n\nUncheck Printer Sharing",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/system_profiler SPPrintersDataType",
+        "expect": "(The[\\\\s]*printers[\\\\s]*list[\\\\s]*is[\\\\s]*empty|Shared:[\\\\s]+No)"
+    },
+    "custom_item_21": {
+        "description": "2.4.5 Disable Remote Login",
+        "info": "Remote Login allows an interactive terminal connection to a computer.\n\nRationale:\n\nDisabling Remote Login mitigates the risk of an unauthorized person gaining access to the system via Secure Shell (SSH). While SSH is an industry standard to connect to posix servers, the scope of the benchmark is for Apple macOS clients, not servers.\n\nmacOS does have an IP based firewall available (pf, ipfw has been deprecated) that is not enabled or configured. There are more details and links in section 7.5. macOS no longer has TCP Wrappers support built-in and does not have strong Brute-Force password guessing mitigations, or frequent patching of openssh by Apple. Most macOS computers are mobile workstations, managing IP based firewall rules on mobile devices can be very resource intensive. All of these factors can be parts of running a hardened SSH server.\n\n\n\n\nImpact:\n\nThe SSH server built-in to macOS should not be enabled on a standard user computer, particularly one that changes locations and IP addresses. A standard user that runs local applications including email, web browser and productivity tools should not use the same device as a server. There are Enterprise management tool-sets that do utilize SSH, if they are in use, the computer should be locked down to only respond to known trusted IP addresses and appropriate admin service accounts.\n\nFor macOS computers that are being used for specialized functions there are several options to harden the SSH server to protect against unauthorized access including brute force attacks. There are some basic criteria that need to be considered:\n\nDo not open an SSH server to the internet without controls in place to mitigate SSH brute force attacks, this is particularly important for systems bound to Directory environments. It is great to have controls in place to protect the system but if they trigger after the user is already locked out of their account they are not optimal. If authorization happens after authentication directory accounts for users that don't even use the system can be locked out.\n\nDo not use SSH key pairs when there is no insight to the security on the client system that will authenticate into the server with a private key. If an attacker gets access to the remote system and can find the key they may not need a password or a key logger to access the SSH server.\n\nDetailed instructions on hardening an SSH server, if needed, are available in the CIS Linux Benchmarks but it is beyond the scope of this benchmark",
+        "solution": "Perform the following to implement the prescribed state:\nRun the following command in Terminal:\n\nsudo systemsetup -setremotelogin off\n\nAdditional Information:\n\nman sshd_config",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-17,800-53r5|AC-17,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17,LEVEL|1A,NESA|T5.4.5,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.6",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/systemsetup -getremotelogin",
+        "expect": "^Remote[\\\\s]*Login:[\\\\s]*Off$"
+    },
+    "custom_item_22": {
+        "description": "2.4.6 Disable DVD or CD Sharing",
+        "info": "DVD or CD Sharing allows users to remotely access the system's optical drive.\n\nRationale:\n\nDisabling DVD or CD Sharing minimizes the risk of an attacker using the optical drive as a vector for attack and exposure of sensitive data.\n\nImpact:\n\nMany Apple devices are now sold without optical drives and drive sharing may be needed for legacy optical media.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Sharing\n\nUncheck DVD or CD Sharing",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl list | /usr/bin/egrep ODSAgent | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_23": {
+        "description": "2.4.7 Disable Bluetooth Sharing",
+        "info": "Bluetooth Sharing allows files to be exchanged with Bluetooth enabled devices.\n\nRationale:\n\nDisabling Bluetooth Sharing minimizes the risk of an attacker using Bluetooth to remotely attack the system.\n\nImpact:\n\nControl 2.1.1 discusses disabling Bluetooth if no paired devices exist. There is a general expectation that Bluetooth peripherals will be used by most users in Apple's ecosystem, it is possible that sharing is required and Bluetooth peripherals are not. Bluetooth must be enabled if sharing is an acceptable use case.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Sharing\n\nUncheck Bluetooth Sharing",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "system_profiler SPBluetoothDataType | grep State | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "(none|State:[\\\\s]*Disabled)"
+    },
+    "custom_item_24": {
+        "description": "2.4.8 Disable File Sharing - AppleFileServer",
+        "info": "Apple's File Sharing uses a combination of SMB (Windows sharing) and AFP (Mac sharing)\n\nTwo common ways to share files using File Sharing are:\n\nApple File Protocol (AFP) AFP automatically uses encrypted logins, so this method of sharing files is fairly secure. The entire hard disk is shared to administrator user accounts. Individual home folders are shared to their respective user accounts. Users' 'Public' folders (and the 'Drop Box' folder inside) are shared to any user account that has sharing access to the computer (i.e. anyone in the 'staff' group, including the guest account if it is enabled).\n\nServer Message Block (SMB), Common Internet File System (CIFS) When Windows (or possibly Linux) computers need to access file shared on a Mac, SMB/CIFS file sharing is commonly used. Apple warns that SMB sharing stores passwords is a less secure fashion than AFP sharing and anyone with system access can gain access to the password for that account. When sharing with SMB, each user that will access the Mac must have SMB enabled.\n\nRationale:\n\nBy disabling file sharing, the remote attack surface and risk of unauthorized access to files stored on the system is reduced.\n\nImpact:\n\nFile Sharing can be used to share documents with other users but hardened servers should be used rather than user endpoints. Turning on file sharing increases the visibility and attack surface of a system unnecessarily.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal to turn off AFP from the command line:\n\nsudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist\n\nRun the following command in Terminal to turn off SMB sharing from the CLI:\n\nsudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl list | /usr/bin/grep AppleFileServer | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_25": {
+        "description": "2.4.8 Disable File Sharing - SMB",
+        "info": "Apple's File Sharing uses a combination of SMB (Windows sharing) and AFP (Mac sharing)\n\nTwo common ways to share files using File Sharing are:\n\nApple File Protocol (AFP) AFP automatically uses encrypted logins, so this method of sharing files is fairly secure. The entire hard disk is shared to administrator user accounts. Individual home folders are shared to their respective user accounts. Users' 'Public' folders (and the 'Drop Box' folder inside) are shared to any user account that has sharing access to the computer (i.e. anyone in the 'staff' group, including the guest account if it is enabled).\n\nServer Message Block (SMB), Common Internet File System (CIFS) When Windows (or possibly Linux) computers need to access file shared on a Mac, SMB/CIFS file sharing is commonly used. Apple warns that SMB sharing stores passwords is a less secure fashion than AFP sharing and anyone with system access can gain access to the password for that account. When sharing with SMB, each user that will access the Mac must have SMB enabled.\n\nRationale:\n\nBy disabling file sharing, the remote attack surface and risk of unauthorized access to files stored on the system is reduced.\n\nImpact:\n\nFile Sharing can be used to share documents with other users but hardened servers should be used rather than user endpoints. Turning on file sharing increases the visibility and attack surface of a system unnecessarily.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal to turn off AFP from the command line:\n\nsudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.AppleFileServer.plist\n\nRun the following command in Terminal to turn off SMB sharing from the CLI:\n\nsudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.smbd.plist",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl list | /usr/bin/grep smbd | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_26": {
+        "description": "2.4.9 Disable Remote Management",
+        "info": "Remote Management is the client portion of Apple Remote Desktop (ARD). Remote Management can be used by remote administrators to view the current Screen, install software, report on, and generally manage client Macs.\n\nThe screen sharing options in Remote Management are identical to those in the Screen Sharing section. In fact, only one of the two can be configured. If Remote Management is used, refer to the Screen Sharing section above on issues regard screen sharing.\n\nRemote Management should only be enabled when a Directory is in place to manage the accounts with access. Computers will be available on port 5900 on a macOS System and could accept connections from untrusted hosts depending on the configuration, definitely a concern for mobile systems.\n\nRationale:\n\nRemote management should only be enabled on trusted networks with strong user controls present in a Directory system. Mobile devices without strict controls are vulnerable to exploit and monitoring.\n\nImpact:\n\nMany organizations utilize ARD for client management.",
+        "solution": "In System Preferences: Sharing, turn off Remote Management.\n\nAdditional Information:\n\n/System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -help",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/ps -ef | /usr/bin/egrep ARDAgent | /usr/bin/grep -v egrep | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_27": {
+        "description": "2.5.1 Disable 'Wake for network access' - Wake for network access",
+        "info": "This feature allows other users to be able to access your computer's shared resources, such as shared printers or iTunes playlists, even when your computer is in sleep mode. In a closed network when only authorized devices could wake a computer it could be valuable to wake computers in order to do management push activity. Where mobile workstations and agents exist the device will more likely check in to receive updates when already awake. Mobile devices should not be listening for signals on unmanaged network where untrusted devices could send wake signals.\n\nRationale:\n\nDisabling this feature mitigates the risk of an attacker remotely waking the system and gaining access.\n\nImpact:\n\nManagement programs like Apple Remote Desktop Administrator use this feature to wake computers. If turned off, such management programs will not be able to wake a computer over the LAN. If the wake-on-LAN feature is needed, do not turn off this feature.\n\nThe control to prevent computer sleep has been retired for this version of the Benchmark. Forcing the computer to stay on and use energy in case a management push is needed is contrary to most current management processes. Only keep computers unslept if after hours pushes are required on closed LANs.",
+        "solution": "Perform the following to implement the prescribed state:\nRun the following command in Terminal:\n\nsudo pmset -a womp 0\n\nAdditional Information:\n\nman pmset",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|3.1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1A,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/pmset -g | /usr/bin/grep womp",
+        "expect": "^[\\\\s]*womp[\\\\s]*0$"
+    },
+    "custom_item_28": {
+        "description": "2.6.1.1 Enable FileVault",
+        "info": "FileVault secures a system's data by automatically encrypting its boot volume and requiring a password or recovery key to access it.\n\nRationale:\n\nEncrypting sensitive data minimizes the likelihood of unauthorized users gaining access to it.\n\nImpact:\n\nMounting a FileVaulted volume from an alternate boot source will require a valid password to decrypt it.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect FileVault\n\nSelect Turn on FileVault\n\n\n\n\nAdditional Information:\n\nFileVault may not be desirable on a virtual OS. As long as the hypervisor and file storage are encrypted the virtual OS does not need to be. Rather than checking if the OS is virtual and passing the control regardless of the encryption of the host system the normal check will be run. Security officials can evaluate the comprehensive controls outside of the OS being tested.",
+        "reference": "800-171|3.13.16,800-53|SC-28(1),800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv6|13.2,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28(1),LEVEL|1A,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/fdesetup status",
+        "expect": "FileVault[\\\\s]+is[\\\\s]+On."
+    },
+    "custom_item_29": {
+        "description": "2.6.1.2 Ensure all user storage CoreStorage volumes are encrypted",
+        "info": "Apple introduced Core Storage with 10.7. It is used as the default for formatting on macOS volumes prior to 10.13.\n\nAll HFS and Core Storage Volumes should be encrypted.\n\nRationale:\n\nIn order to protect user data from loss or tampering volumes carrying data should be encrypted.\n\nImpact:\n\nWhile FileVault protects the boot volume data may be copied to other attached storage and reduce the protection afforded by FileVault. Ensure all user volumes are encrypted to protect data.",
+        "solution": "Use Disk Utility to erase a disk and format as macOS Extended (Journaled, Encrypted)",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/diskutil ap list",
+        "expect": "FileVault[\\\\s]*:[\\\\s]*Yes"
+    },
+    "custom_item_30": {
+        "description": "2.6.2 Enable Gatekeeper",
+        "info": "Gatekeeper is Apple's application white-listing control that restricts downloaded applications from launching. It functions as a control to limit applications from unverified sources from running without authorization.\n\nRationale:\n\nDisallowing unsigned software will reduce the risk of unauthorized or malicious applications from running on the system.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect General\n\nSelect Allow applications downloaded from: Mac App Store and identified developers\n\nAlternatively, perform the following to ensure the system is configured as:\nRun the following command in Terminal:\n\nsudo spctl --master-enable",
+        "reference": "800-171|3.4.8,800-53|CM-7(4),800-53r5|CM-7(4),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS13a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/spctl --status",
+        "expect": "assessments[\\\\s]*enabled"
+    },
+    "custom_item_31": {
+        "description": "2.6.3 Enable Firewall",
+        "info": "A firewall is a piece of software that blocks unwanted incoming connections to a system. Apple has posted general documentation about the application firewall.\n\nhttp://support.apple.com/en-us/HT201642\n\nRationale:\n\nA firewall minimizes the threat of unauthorized users from gaining access to your system while connected to a network or the Internet.\n\nImpact:\n\nThe firewall may block legitimate traffic. Applications that are unsigned will require special handling.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect Firewall\n\nSelect Turn On Firewall\n\nAlternatively:\n\nRun the following command in Terminal:\n\ndefaults write /Library/Preferences/com.apple.alf globalstate - intWhereis:\n\n\n1 = on for specific services\n\n\n2 = on for essential services\n\nAdditional Information:\n\nhttp://docs.info.apple.com/article.html?artnum=306938",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1A,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "[12]",
+        "plist_item": "globalstate",
+        "plist_name": "/Library/Preferences/com.apple.alf"
+    },
+    "custom_item_32": {
+        "description": "2.6.4 Enable Firewall Stealth Mode",
+        "info": "While in Stealth mode the computer will not respond to unsolicited probes, dropping that traffic.\n\nhttp://support.apple.com/en-us/HT201642\n\nRationale:\n\nStealth mode on the firewall minimizes the threat of system discovery tools while connected to a network or the Internet.\n\nImpact:\n\nTraditional network discovery tools like ping will not succeed. Other network tools that measure activity and approved applications will work as expected.\n\nThis control aligns with the primary macOS use case of a laptop that is often connected to untrusted networks where host segregation may be non-existent. In that use case hiding from the other inmates is likely more than desirable. In use cases where use is only on trusted LANs with static IP addresses stealth mode may not be desirable.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect Firewall Options\n\nSelect Enable stealth mode\n\nAlternatively:\nRun the following command in Terminal:\n\nsudo /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on\n\nAdditional Information:\n\nhttp://osxdaily.com/2015/11/18/enable-stealth-mode-mac-os-x-firewall/",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1A,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/libexec/ApplicationFirewall/socketfilterfw --getstealthmode",
+        "expect": "Stealth mode enabled"
+    },
+    "custom_item_33": {
+        "description": "2.6.5 Review Application Firewall Rules",
+        "info": "A firewall is a piece of software that blocks unwanted incoming connections to a system. Apple has posted general documentation about the application firewall.\n\nhttp://support.apple.com/en-us/HT201642\n\nA computer should have a limited number of applications open to incoming connectivity. This rule will check for whether there are more than 10 rules for inbound connections.\n\nRationale:\n\nA firewall minimizes the threat of unauthorized users from gaining access to your system while connected to a network or the Internet. Which applications are allowed access to accept incoming connections through the firewall is important to understand.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect Firewall Options\n\nSelect unneeded rules\n\nSelect the minus sign below to delete them\n\nAlternatively:\n\nEdit and run the following command in Terminal to remove specific applications:\n\n/usr/libexec/ApplicationFirewall/socketfilterfw --removeWhereis the one to be removed",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|9.2,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1A,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/libexec/ApplicationFirewall/socketfilterfw --listapps | /usr/bin/grep Allow | /usr/bin/wc -l",
+        "expect": "^[\\\\s]*[0-9][\\\\s]*$"
+    },
+    "custom_item_34": {
+        "description": "2.8.2 Time Machine Volumes Are Encrypted",
+        "info": "One of the most important security tools for data protection on macOS is FileVault. With encryption in place it makes it difficult for an outside party to access your data if they get physical possession of the computer. One very large weakness in data protection with FileVault is the level of protection on backup volumes. If the internal drive is encrypted but the external backup volume that goes home in the same laptop bag is not it is self-defeating. Apple tries to make this mistake easily avoided by providing a checkbox to enable encryption when setting-up a time machine backup. Using this option does require some password management, particularly if a large drive is used with multiple computers. A unique complex password to unlock the drive can be stored in keychains on multiple systems for ease of use.\n\nWhile some portable drives may contain non-sensitive data and encryption may make interoperability with other systems difficult backup volumes should be protected just like boot volumes.\n\nRationale:\n\nBackup volumes need to be encrypted\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure that backup volumes are encrypted using the Time Machine control or using Disk Utility",
+        "reference": "800-171|3.13.16,800-53|SC-28(1),800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28(1),LEVEL|1A,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/tmutil destinationinfo",
+        "expect": ""
+    },
+    "custom_item_35": {
+        "description": "2.9 Pair the remote control infrared receiver if enabled",
+        "regex": "0",
+        "plist_item": "DeviceEnabled",
+        "plist_name": "/Library/Preferences/com.apple.driver.AppleIRController"
+    },
+    "custom_item_36": {
+        "description": "2.9 Pair the remote control infrared receiver if enabled",
+        "info": "An infrared receiver is a piece of hardware that sends information from an infrared remote control to another device by receiving and decoding signals. If a remote is used with a computer, a specific remote, or 'pair', can be set-up to work with the computer. This will allow only the paired remote to work on that computer. If a remote is needed the receiver should only be accessible by a paired device. Many models do not have infrared hardware. The audit check looks for the hardware first.\n\nRationale:\n\nAn infrared remote can be used from a distance to circumvent physical security controls. A remote could also be used to page through a document or presentation, thus revealing sensitive information. While Apple hardware that still supports infrared is uncommon and has not been manufactured in years it still does exist. This control checks first for the presence of an IR receiver so systems that do not have IR will quickly pass this control check.",
+        "solution": "Perform one of the following to implement the prescribed state:\nDisable the remote control infrared receiver:\n\nOpen System Preferences\n\nSelect Security & Privacy\n\nSelect the General tab\n\nSelect Advanced\n\nCheck Disable remote control infrared receiver\n\nPair a remote control infrared receiver:\n\nHolding the remote close to the computer, point the remote at the front of the computer.\n\nPair the Apple Remote.\n\nIf you have an Apple Remote with seven buttons, press and hold both the Right and Menu buttons on the remote until the paired-remote icon appears on your screen\n\nIf you have an Apple Remote with six buttons, press and hold both the Next and Menu buttons on the remote until the paired-remote icon appears on your screen\n\nTo disable the IR Receiver through the command line\n\ndefaults read /Library/Preferences/com.apple.driver.AppleIRController DeviceEnabled -bool no",
+        "reference": "800-171|3.1.18,800-53|AC-19,800-53r5|AC-19,CSF|PR.AC-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read /Library/Preferences/com.apple.driver.AppleIRController | /usr/bin/grep UIDFilter | /usr/bin/grep none | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "^[\\\\s]*none[\\\\s]*$"
+    },
+    "custom_item_37": {
+        "description": "2.10 Enable Secure Keyboard Entry in terminal.app",
+        "info": "Secure Keyboard Entry prevents other applications on the system and/or network from detecting and recording what is typed into Terminal.\n\nRationale:\n\nEnabling Secure Keyboard Entry minimizes the risk of a key logger from detecting what is entered in Terminal.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen Terminal\n\nSelect Terminal\n\nSelect Secure Keyboard Entry\n\nAdditional Information:\n\nhttp://docs.info.apple.com/article.html?path=Terminal/2.1/en/5386.html",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "SecureKeyboardEntry",
+        "plist_name": "com.apple.Terminal",
+        "plist_user": "all"
+    },
+    "custom_item_38": {
+        "description": "3.1 Enable security auditing",
+        "info": "macOS's audit facility, auditd, receives notifications from the kernel when certain system calls, such as open, fork, and exit, are made. These notifications are captured and written to an audit log.\n\nRationale:\n\nLogs generated by auditd may be useful when investigating a security incident as they may help reveal the vulnerable application and the actions taken by a malicious actor.",
+        "solution": "Perform the following to implement the prescribed state:\nRun the following command in Terminal:\n\nsudo launchctl load -w /System/Library/LaunchDaemons/com.apple.auditd.plist",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl list | /usr/bin/grep -i auditd",
+        "expect": "com.apple.auditd"
+    },
+    "custom_item_39": {
+        "description": "3.3 Ensure security auditing retention",
+        "info": "The macOS audit capability contains important information to investigate security or operational issues. This resource is only completely useful if it is retained long enough to allow technical staff to find the root cause of anomalies in the records.\n\nRetention can be set to respect both size and longevity. To retain as much as possible under a certain size the recommendation is to use:\n\nexpire-after:60d OR 1G\n\nMore info in the man page man audit_control\n\nRationale:\n\nThe audit records need to be retained long enough to be reviewed as necessary.\n\nImpact:\n\nThe recommendation is that at least 60 days or 1 gigabyte of audit records are retained. Systems that very little remaining disk space may have issues retaining sufficient data.",
+        "solution": "Edit the /etc/security/audit_control file so that:\nexpire-after is at least 60d OR 1G",
+        "reference": "800-53|AU-11,800-53r5|AU-11,CSCv6|6.3,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,LEVEL|1A,NESA|M5.2.3,NESA|T3.6.2,NIAv2|SM7,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "file": "/etc/security/audit_control",
+        "regex": "^expire-after:",
+        "expect": "^expire-after:(([6-9][0-9]|[1-9][0-9]{2,})[Dd]|[1-9][0-9]{0,}G)"
+    },
+    "custom_item_40": {
+        "description": "3.4 Control access to audit records - /etc/security/audit_control",
+        "info": "The audit system on macOS writes important operational and security information that can be both useful for an attacker and a place for an attacker to attempt to obfuscate unwanted changes that were recorded. As part of defense-in-depth the /etc/security/audit_control configuration and the files in /var/audit should be owned only by root with group wheel with read only rights and no other access allowed. macOS ACLs should not be used for these files.\n\nRationale:\n\nAudit records should never be changed except by the system daemon posting events. Records may be viewed or extracts manipulated but the authoritative files should be protected from unauthorized changes.\n\nImpact:\n\nThis control is only checking the default configuration to ensure that unwanted access to audit records is not available.",
+        "solution": "If the system has different access controls on the audit logs and the changes cannot be traced a new install may be prudent. Check for signs of file tampering as well as unapproved OS changes.\n\nAdditional Information:\n\nFrom ls man page\n\n-e      Print the Access Control List (ACL) associated with the file, if\n\n             present, in long (-l) output.\n\nMore info:\n\nhttps://www.techrepublic.com/blog/apple-in-the-enterprise/introduction-to-os-x-access-control-lists-acls\n\nhttp://ahaack.net/technology/OS-X-Access-Control-Lists-ACL.html",
+        "reference": "CSCv6|3.1,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "file": "/etc/security/audit_control",
+        "owner": "root",
+        "mask": "337",
+        "group": "wheel"
+    },
+    "custom_item_41": {
+        "description": "3.4 Control access to audit records - /var/audit",
+        "info": "The audit system on macOS writes important operational and security information that can be both useful for an attacker and a place for an attacker to attempt to obfuscate unwanted changes that were recorded. As part of defense-in-depth the /etc/security/audit_control configuration and the files in /var/audit should be owned only by root with group wheel with read only rights and no other access allowed. macOS ACLs should not be used for these files.\n\nRationale:\n\nAudit records should never be changed except by the system daemon posting events. Records may be viewed or extracts manipulated but the authoritative files should be protected from unauthorized changes.\n\nImpact:\n\nThis control is only checking the default configuration to ensure that unwanted access to audit records is not available.",
+        "solution": "If the system has different access controls on the audit logs and the changes cannot be traced a new install may be prudent. Check for signs of file tampering as well as unapproved OS changes.\n\nAdditional Information:\n\nFrom ls man page\n\n-e      Print the Access Control List (ACL) associated with the file, if\n\n             present, in long (-l) output.\n\nMore info:\n\nhttps://www.techrepublic.com/blog/apple-in-the-enterprise/introduction-to-os-x-access-control-lists-acls\n\nhttp://ahaack.net/technology/OS-X-Access-Control-Lists-ACL.html",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSCv6|3.1,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,LEVEL|1A,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "file": "/var/audit",
+        "owner": "root",
+        "mask": "337",
+        "group": "wheel"
+    },
+    "custom_item_42": {
+        "description": "3.5 Retain install.log for 365 or more days",
+        "info": "macOS writes information pertaining to system-related events to the file /var/log/install.log and has a configurable retention policy for this file. The default logging setting limits the file size of the logs and the maximum size for all logs. The default allows for an errant application to fill the log files and does not enforce sufficient log retention. The Benchmark recommends a value based on standard use cases. The value should align with local requirements within the organization.\n\nThe default value has an 'all_max' file limitation, no reference to a minimum retention and a less precise rotation argument.\n\nThe maximum file size limitation string should be removed 'all_max='\n\nAn organization appropriate retention should be added 'ttl='\n\nThe rotation should be set with time stamps 'rotate=utc' or 'rotate=local'\n\nRationale:\n\nArchiving and retaining install.log for at least a year is beneficial in the event of an incident as it will allow the user to view the various changes to the system along with the date and time they occurred.\n\nImpact:\n\nWithout log files system maintenance and security forensics cannot be properly performed.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal:\n\nsudo vim /etc/asl/com.apple.install\n\n\n\nReplace or edit the current setting with a compliant setting\n\n* file /var/log/install.log mode=0640 format=bsd rotate=utc compress file_max=5M ttl=365",
+        "reference": "800-53|AU-11,800-53r5|AU-11,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,LEVEL|1A,NESA|M5.2.3,NESA|T3.6.2,NIAv2|SM7,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/grep -i install\\\\.log /etc/asl/com.apple.install | /usr/bin/grep -i ttl",
+        "expect": "ttl=(36[5-9]|3[7-9][0-9]|[4-9]\\d{2,}|[1-9]\\d{3,})"
+    },
+    "custom_item_43": {
+        "description": "3.6 Ensure Firewall is configured to log",
+        "info": "The socketfilter firewall is what is used when the firewall is turned on in the Security PreferencePane. In order to appropriately monitor what access is allowed and denied logging must be enabled.\n\nRationale:\n\nIn order to troubleshoot the successes and failures of a firewall logging should be enabled.\n\nImpact:\n\nDetailed logging may result in excessive storage.",
+        "solution": "Run\n\n/usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on\n\nAdditional Information:\n\nMore info:\n\nhttp://krypted.com/tag/socketfilterfw/",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/libexec/ApplicationFirewall/socketfilterfw --getloggingmode | /usr/bin/grep on | /usr/bin/awk \\'{print} END {if (NR == 0) print \"fail\"}\\'",
+        "expect": "Log mode is on"
+    },
+    "custom_item_44": {
+        "description": "Check to see if there's a wireless adapter on the system",
+        "cmd": "/usr/sbin/networksetup -listallhardwareports | /usr/bin/grep 'Hardware Port: Wi-fi'",
+        "expect": "Hardware Port: Wi-fi"
+    },
+    "custom_item_45": {
+        "description": "4.2 Enable 'Show Wi-Fi status in menu bar' - Show Wi-Fi status in menu bar",
+        "info": "The Wi-Fi status in the menu bar indicates if the system's wireless internet capabilities are enabled. If so, the system will scan for available wireless networks to connect to. At the time of this revision all computers Apple builds have wireless network capability, which has not always been the case. This control only pertains to systems that have a wireless NIC available. Operating systems running in a virtual environment may not score as expected either.\n\nRationale:\n\nEnabling 'Show Wi-Fi status in menu bar' is a security awareness method that helps mitigate public area wireless exploits by making the user aware of their wireless connectivity status.\n\nImpact:\n\nThe user of the system should have a quick check on their wireless network status available",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Network\n\nCheck Show Wi-Fi status in menu bar\n\nAlternatively run the following in the command line:\n\nOpen /System/Library/CoreServices/Menu/Extras/AirPort.menu/\n\nAdditional Information:\n\nAirPort is Apple's marketing name for its 802.11b, g, and n wireless interfaces.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read com.apple.systemuiserver menuExtras | /usr/bin/grep 'Air[Pp]ort\\\\.menu'",
+        "expect": "/System/Library/CoreServices/Menu Extras/Air[Pp]ort\\\\.menu"
+    },
+    "custom_item_46": {
+        "description": "4.4 Ensure http server is not running",
+        "info": "macOS used to have a graphical front-end to the embedded Apache web server in the Operating System. Personal web sharing could be enabled to allow someone on another computer to download files or information from the user's computer. Personal web sharing from a user endpoint has long been considered questionable and Apple has removed that capability from the GUI. Apache however is still part of the Operating System and can be easily turned on to share files and provide remote connectivity to an end user computer. Web sharing should only be done through hardened web servers and appropriate cloud services.\n\nRationale:\n\nWeb serving should not be done from a user desktop. Dedicated webservers or appropriate cloud storage should be used. Open ports make it easier to exploit the computer.\n\nImpact:\n\nThe web server is both a point of attack for the system and a means for unauthorized file transfers.",
+        "solution": "Ensure that the Web Server is not running and is not set to start at boot\nStop the Web Server\n\nsudo apachectl stop\n\nEnsure that the web server will not auto-start at boot\n\nsudo defaults write /System/Library/LaunchDaemons/org.apache.httpd Disabled -bool true",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/ps -ef | /usr/bin/grep -i httpd | /usr/bin/grep -v grep | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_47": {
+        "description": "4.5 Ensure FTP server is not running",
+        "info": "macOS used to have a graphical front-end to the embedded FTP server in the Operating System. FTP sharing could be enabled to allow someone on another computer to download files or information from the user's computer. Running an FTP server from a user endpoint has long been considered questionable and Apple has removed that capability from the GUI. The FTP server however is still part of the Operating System and can be easily turned on to share files and provide remote connectivity to an end user computer. FTP servers meet a specialized need to distribute files without strong authentication and should only be done through hardened servers. Cloud services or other distribution methods should be considered\n\nRationale:\n\nFTP servers should not be run on an end user desktop. Dedicated servers or appropriate cloud storage should be used. Open ports make it easier to exploit the computer.\n\nImpact:\n\nThe FTP server is both a point of attack for the system and a means for unauthorized file transfers. The FTP server is another avenue to attempt brute forcing password for existing valid users.",
+        "solution": "Ensure that the FTP Server is not running and is not set to start at boot\nStop the ftp Server\n\nsudo -s launchctl unload -w /System/Library/LaunchDaemons/ftp.plist",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/launchctl list | /usr/bin/egrep ftpd | /usr/bin/cut -d'.' -f3 | /usr/bin/egrep '^ftpd' | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_48": {
+        "description": "4.6 Ensure nfs server is not running",
+        "info": "macOS can act as an NFS fileserver. NFS sharing could be enabled to allow someone on another computer to mount shares and gain access to information from the user's computer. File sharing from a user endpoint has long been considered questionable and Apple has removed that capability from the GUI. NFSD is still part of the Operating System and can be easily turned on to export shares and provide remote connectivity to an end user computer.\n\nRationale:\n\nFile serving should not be done from a user desktop, dedicated servers should be used. Open ports make it easier to exploit the computer.\n\nImpact:\n\nThe nfs server is both a point of attack for the system and a means for unauthorized file transfers.",
+        "solution": "Ensure that the NFS Server is not running and is not set to start at boot\nStop the NFS Server\n\nsudo nfsd disable\n\nRemove the exported Directory listing\n\nrm /etc/exports",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/ps -ef | /usr/bin/grep -i nfsd | /usr/bin/grep -v grep | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_49": {
+        "description": "5.1.1 Secure Home Folders",
+        "info": "By default macOS allows all valid users into the top level of every other users home folder, and restricts access to the Apple default folders within. Another user on the same system can see you have a 'Documents' folder but cannot see inside it. This configuration does work for personal file sharing but can expose user files to standard accounts on the system.\n\nThe best parallel for Enterprise environments is that everyone who has a Dropbox account can see everything that is at the top level but can't see your pictures, in the parallel with macOS they can see into every new Directory that is created because of the default permissions.\n\nHome folders should be restricted to access only by the user. Sharing should be used on dedicated servers or cloud instances that are managing access controls. Some environments may encounter problems if execute rights are removed as well as read and write. Either no access or execute only for group or others is acceptable\n\nRationale:\n\nAllowing all users to view the top level of all networked user's home folder may not be desirable since it may lead to the revelation of sensitive information.\n\nImpact:\n\nIf implemented, users will not be able to use the 'Public' folders in other users' home folders. 'Public' folders with appropriate permissions would need to be set up in the /Shared folder.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun one of the following commands in Terminal:\n\nsudo chmod -R og-rwx /Users/sudo chmod -R og-rw /Users/Substitute user name in.\n\nThis command has to be run for each user account with a local home folder.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/find /Users -type d ! -perm -1000 -maxdepth 1 -a -perm +0066 | /usr/bin/egrep -v '^/Users$' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_50": {
+        "description": "5.1.2 Check System Wide Applications for appropriate permissions",
+        "info": "Applications in the System Applications Directory (/Applications) should be world executable since that is their reason to be on the system. They should not be world writable and allow any process or user to alter them for other processes or users to then execute modified versions\n\nRationale:\n\nUnauthorized modifications of applications could lead to the execution of malicious code.\n\nImpact:\n\nApplications changed will no longer be world writable",
+        "solution": "Change permissions so that 'Others' can only execute. (Example Below)\n\nsudo chmod -R o-w /Applications/BadPermissions.app/",
+        "reference": "800-171|3.1.5,800-53|AC-6(7)(b),800-53r5|AC-6(7)(b),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.5,ITSG-33|AC-6,LEVEL|1A,NESA|M1.1.3,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/find /Applications -iname '*\\.app' -type d -perm -2 -ls | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_51": {
+        "description": "5.1.3 Check System folder for world writable files",
+        "info": "Software sometimes insists on being installed in the /System Directory and have inappropriate world writable permissions.\n\nRationale:\n\nFolders in /System should not be world writable. The audit check excludes the 'Drop Box' folder that is part of Apple's default user template.",
+        "solution": "Change permissions so that 'Others' can only execute. (Example Below)\n\nsudo chmod -R o-w /Bad/Directory",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/find /System -type d -perm -2 -ls | /usr/bin/grep -v 'Public/Drop Box' | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_52": {
+        "description": "5.2.1 Configure account lockout threshold",
+        "info": "The account lockout threshold specifies the amount of times a user can enter an incorrect password before a lockout will occur.\n\nEnsure that a lockout threshold is part of the password policy on the computer\n\nRationale:\n\nThe account lockout feature mitigates brute-force password attacks on the system.\n\nImpact:\n\nThe number of incorrect log on attempts should be reasonably small to minimize the possibility of a successful password attack, while allowing for honest errors made during a normal user log on.",
+        "solution": "Run the following command to set the maximum number of failed login attempts to less than or equal to 5:\n\n$ sudo pwpolicy -a-setaccountpolicies 'maxFailedLoginAttempts='\n\nexample:\n\n$ sudo pwpolicy -a firstuser -setglobalpolicy 'maxFailedLoginAttempts=5'",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CN-L3|8.1.4.1(b),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,LEVEL|1A,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/grep -A 1 'policyAttributeMaximumFailedAuthentications' | /usr/bin/tail -1 | /usr/bin/cut -d'>' -f2 | /usr/bin/cut -d '<' -f1",
+        "expect": "^@PASSWORD_LOCKOUT_THRESHOLD@$"
+    },
+    "custom_item_53": {
+        "description": "5.2.2 Set a minimum password length",
+        "info": "A minimum password length is the fewest number of characters a password can contain to meet a system's requirements.\n\nEnsure that a minimum of a 15 character password is part of the password policy on the computer.\n\nWhere the confidentiality of encrypted information in FileVault is more of a concern requiring a longer password or passphrase may be sufficient rather than imposing additional complexity requirements that may be self-defeating.\n\nRationale:\n\nInformation systems that are not protected with strong password schemes including passwords of minimum length provide a greater opportunity for attackers to crack the password and gain access to the system.\n\nImpact:\n\nShort passwords can be easily attacked.",
+        "solution": "Run the following command to set the password length to greater than or equal to 15:\n\n$ sudo pwpolicy -a-setaccountpolicies 'minChars==15>'\n\nexample:\n\n$ sudo pwpolicy -a firstuser -setglobalpolicy 'minChars=15'",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|1A,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/egrep 'Must be a minimum of'",
+        "expect": "must[\\\\s]+be[\\\\s]+a[\\\\s]+minimum[\\\\s]+of[\\\\s]+@PASSWORD_MINIMUM_LENGTH@[\\\\s]+characters"
+    },
+    "custom_item_54": {
+        "description": "5.2.7 Password Age",
+        "info": "Over time passwords can be captured by third parties through mistakes, phishing attacks, third party breaches or merely brute force attacks. To reduce the risk of exposure and to decrease the incentives of password reuse (passwords that are not forced to be changed periodically generally are not ever changed) users should reset passwords periodically. This control uses 365 days as the acceptable value, some organizations may be more or less restrictive. This control mainly exists to mitigate against password reuse of the macOS account password in other realms that may be more prone to compromise. Attackers take advantage of exposed information to attack other accounts.\n\nRationale:\n\nPasswords should be changed periodically to reduce exposure\n\nImpact:\n\nRequired password changes will lead to some locked computers requiring admin assistance",
+        "solution": "Run the following command to require that passwords expire after at most 365 days:\n\n$ sudo pwpolicy -a-setaccountpolicies 'maxMinutesUntilChangePassword='\n\nexample:\n\n$ sudo pwpolicy -a firstuser -setglobalpolicy 'maxMinutesUntilChangePassword=43200'",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),LEVEL|1A,NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/egrep policyAttributeExpiresEveryNDays -A1",
+        "expect": "integer.*@PASSWORD_AGE@"
+    },
+    "custom_item_55": {
+        "description": "5.2.8 Password History",
+        "info": "Over time passwords can be captured by third parties through mistakes, phishing attacks, third party breaches or merely brute force attacks. To reduce the risk of exposure and to decrease the incentives of password reuse (passwords that are not forced to be changed periodically generally are not ever changed) users must reset passwords periodically. This control ensures that previous passwords are not reused immediately by keeping a history of previous passwords hashes. Ensure that password history checks are part of the password policy on the computer. This control checks whether a new password is different than the previous 15.\n\nThe latest NIST guidance based on exploit research referenced in this section details how one of the greatest risks is password exposure rather than password cracking. Passwords should be changed to a new unique value whenever a password might have been exposed to anyone other than the account holder. Attackers have maintained persistent control based on predictable password change patterns and substantially different patterns should be used in case of a leak.\n\nRationale:\n\nOld passwords should not be reused\n\nImpact:\n\nRequired password changes will lead to some locked computers requiring admin assistance",
+        "solution": "Run the following command to require that the passwords must to be different from at least the last 15 passwords:\n\n$ sudo pwpolicy -a-setaccountpolicies 'usingHistory==15>'\n\nexample:\n\n$ sudo pwpolicy -a firstuser -setglobalpolicy 'usingHistory=15'",
+        "reference": "800-171|3.5.2,800-53|IA-5f.,800-53r5|IA-5f.,CN-L3|8.1.4.1(a),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5f.,LEVEL|1A,NESA|T5.5.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/pwpolicy -getaccountpolicies | /usr/bin/egrep -A 1 'policyAttributePasswordHistoryDepth'",
+        "expect": "@PASSWORD_HISTORY@"
+    },
+    "custom_item_56": {
+        "description": "5.3 Reduce the sudo timeout period",
+        "info": "The sudo command allows the user to run programs as the root user. Working as the root user allows the user an extremely high level of configurability within the system.\n\nRationale:\n\nThe sudo command stays logged in as the root user for five minutes before timing out and re-requesting a password. This five minute window should be eliminated since it leaves the system extremely vulnerable. This is especially true if an exploit were to gain access to the system, since they would be able to make changes as a root user.\n\nImpact:\n\nUsers with sudo rights will have to enter their password after every sudo command with no grace period allowed.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal:\n\nsudo visudo\n\n\n\nIn the '# Override built-in defaults' section, add the line:\n\nDefaults timestamp_timeout=0\n\n\n\n\nAdditional Information:\n\n# sudoers file.\n\n#\n\n# This file MUST be edited with the 'visudo' command as root.\n\n# Failure to use 'visudo' may result in syntax or file permission errors\n\n# that prevent sudo from running.\n\n#\n\n# See the sudoers man page for the details on how to write a sudoers file.\n\n#\n\n# Host alias specification\n\n# User alias specification\n\n# Cmnd alias specification\n\n# Defaults specification\n\nDefaults env_reset\n\nDefaults timestamp_timeout=0\n\nDefaults env_keep += 'BLOCKSIZE'\n\nDefaults env_keep += 'COLORFGBG COLORTERM'\n\nDefaults env_keep += '__CF_USER_TEXT_ENCODING'\n\nDefaults env_keep += 'CHARSET LANG LANGUAGE LC_ALL LC_COLLATE LC_CTYPE'\n\nDefaults env_keep += 'LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME'\n\nDefaults env_keep += 'LINES COLUMNS'\n\nDefaults env_keep += 'LSCOLORS'\n\nDefaults env_keep += 'SSH_AUTH_SOCK'\n\nDefaults env_keep += 'TZ'\n\nDefaults env_keep += 'DISPLAY XAUTHORIZATION XAUTHORITY'\n\nDefaults env_keep += 'EDITOR VISUAL'\n\nDefaults env_keep += 'HOME MAIL'\n\n# Runas alias specification\n\n# User privilege specification\n\nroot ALL=(ALL) ALL\n\n%admin ALL=(ALL) ALL\n\n# Uncomment to allow people in group wheel to run all commands\n\n# %wheel ALL=(ALL) ALL\n\n# Same thing without a password\n\n# %wheel ALL=(ALL) NOPASSWD: ALL\n\n# Samples\n\n# %users ALL=/sbin/mount /cdrom,/sbin/umount /cdrom\n\n# %users localhost=/sbin/shutdown -h now",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1A,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/cat /etc/sudoers | /usr/bin/grep -v '#[\\\\s]*Defaults' | /usr/bin/grep timestamp",
+        "expect": "Defaults[\\\\s]*timestamp_timeout[\\\\s]*=[\\\\s]*0"
+    },
+    "custom_item_57": {
+        "description": "5.4 Use a separate timestamp for each user/tty combo",
+        "info": "In combination with removing the sudo timeout grace period a further mitigation should be in place to reduce the possibility of a a background process using elevated rights when a user elevates to root in an explicit context or tty. With the included sudo 1.8 introduced in 10.12 the default value is to have tty tickets for each interface so that root access is limited to a specific terminal. The default configuration can be overwritten or not configured correctly on earlier versions of macOS.\n\nRationale:\n\nAdditional mitigation should be in place to reduce the risk of privilege escalation of background processes.",
+        "solution": "Remove 'Defaults !tty_tickets' from the /etc/sudoers file using visudo\n\nAdditional Information:\n\nhttps://github.com/jorangreef/sudo-prompt/issues/33\n\nhttps://derflounder.wordpress.com/2016/09/21/tty_tickets-option-now-on-by-default-for-macos-sierras-sudo-tool\n\nhttp://rixstep.com/2/20050521,00.shtml",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1A,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "file": "/etc/sudoers",
+        "regex": "^[\\\\s]*Defaults[\\\\s]+!tty_tickets",
+        "expect": "^[\\\\s]*Defaults[\\\\s]+!tty_tickets"
+    },
+    "custom_item_58": {
+        "description": "5.8 Do not enable the 'root' account - root account",
+        "info": "The root account is a superuser account that has access privileges to perform any actions and read/write to any file on the computer. With some Linux distros the system administrator may commonly uses the root account to perform administrative functions.\n\nRationale:\n\nEnabling and using the root account puts the system at risk since any successful exploit or mistake while the root account is in use could have unlimited access privileges within the system. Using the sudo command allows users to perform functions as a root user while limiting and password protecting the access privileges. By default the root account is not enabled on a macOS computer. An administrator can escalate privileges using the sudo command (use -s or -i to get a root shell).\n\nImpact:\n\nSome legacy posix software might expect an available root account.",
+        "solution": "Open System Preferences, Uses & Groups. Click the lock icon to unlock it. In the Network Account Server section, click Join or Edit. Click Open Directory Utility. Click the lock icon to unlock it. Select the Edit menu > Disable Root User.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/dscl . -read /Users/root AuthenticationAuthority",
+        "expect": "(No such key: AuthenticationAuthority|Disabled)"
+    },
+    "custom_item_59": {
+        "description": "5.9 Disable automatic login",
+        "info": "The automatic login feature saves a user's system access credentials and bypasses the login screen, instead the system automatically loads to the user's desktop screen.\n\nRationale:\n\nDisabling automatic login decreases the likelihood of an unauthorized person gaining access to a system.\n\nImpact:\n\nIf Automatic login is not disabled an unauthorized user could login without supplying a user password or credential.",
+        "solution": "Perform the following to implement the prescribed state:\nRun the following command in Terminal:\n\nsudo defaults delete /Library/Preferences/com.apple.loginwindow autoLoginUser",
+        "reference": "800-53|AC-14a.,800-53r5|AC-14a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-14a.,LEVEL|1A,NESA|T5.6.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read /Library/Preferences/com.apple.loginwindow | /usr/bin/grep autoLoginUser | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_60": {
+        "description": "5.10 Require a password to wake the computer from sleep or screen saver",
+        "info": "Sleep and screensaver modes are low power modes that reduces electrical consumption while the system is not in use.\n\nRationale:\n\nPrompting for a password when waking from sleep or screensaver mode mitigates the threat of an unauthorized person gaining access to a system in the user's absence.\n\nImpact:\n\nWithout a screenlock in place anyone with physical access to the computer would be logged in and able to use the active users session.",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal: The current user will need to log off and on for changes to take effect.\n\ndefaults write com.apple.screensaver askForPassword -int 1\n\n\n\nThe current user will need to log off and on for changes to take effect.\n\nAdditional Information:\n\nThis only protects the system when the screen saver is running.",
+        "reference": "800-171|3.1.10,800-53|AC-11,800-53r5|AC-11,CN-L3|8.1.4.1(b),CSCv6|16.5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11,LEVEL|1A,NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "askForPassword",
+        "plist_name": "com.apple.screensaver",
+        "plist_user": "all"
+    },
+    "custom_item_61": {
+        "description": "5.12 Require an administrator password to access system-wide preferences",
+        "info": "System Preferences controls system and user settings on a macOS Computer. System Preferences allows the user to tailor their experience on the computer as well as allowing the System Administrator to configure global security settings. Some of the settings should only be altered by the person responsible for the computer.\n\nRationale:\n\nBy requiring a password to unlock System-wide System Preferences the risk is mitigated of a user changing configurations that affect the entire system and requires an admin user to re-authenticate to make changes\n\nImpact:\n\nIf Automatic login is not disabled an unauthorized user could login without supplying a user password or credential.",
+        "solution": "In System Preferences: Security, General tab under Advanced, check 'Require an administrator password to access system-wide preferences'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|3.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/security authorizationdb read system.preferences | /usr/bin/grep 'shared' -A1",
+        "expect": ""
+    },
+    "custom_item_62": {
+        "description": "5.13 Disable ability to login to another user's active and locked session",
+        "info": "macOS has a privilege that can be granted to any user that will allow that user to unlock active user's sessions.\n\nRationale:\n\nDisabling the admins and/or user's ability to log into another user's active and locked session prevents unauthorized persons from viewing potentially sensitive and/or personal information.\n\nImpact:\n\nWhile Fast user switching is a workaround for some lab environments especially where there is even less of an expectation of privacy this setting change may impact some maintenance workflows",
+        "solution": "Edit the Authorization Database 'authorizationdb' by replacing 'authenticate-session-owner-or-admin' with 'use-login-window-ui'\nReferences\nhttps://derflounder.wordpress.com/2014/02/16/managing-the-authorization-database-in-os-x-mavericks/\nhttps://www.jamf.com/jamf-nation/discussions/18195/system-login-screensaver",
+        "reference": "800-53|AC-10,800-53r5|AC-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,LEVEL|1A,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/grep -i 'group=admin,wheel fail_safe' /etc/pam.d/screensaver | /usr/bin/awk '{print} END {if (NR == 0) print \"none\"}'",
+        "expect": "none"
+    },
+    "custom_item_63": {
+        "description": "5.14 Create a custom message for the Login Screen",
+        "info": "An access warning informs the user that the system is reserved for authorized use only, and that the use of the system may be monitored.\n\nRationale:\n\nAn access warning may reduce a casual attacker's tendency to target the system. Access warnings may also aid in the prosecution of an attacker by evincing the attacker's knowledge of the system's private status, acceptable use policy, and authorization requirements.\n\nImpact:\n\nIf users are not informed of their responsibilities there may be unapproved activity. Users that are not approved for access may take the lack of a warning banner as implied consent to access.",
+        "solution": "Perform the following to implement the prescribed state:\n\nTo add text with elevated privileges:\n\nsudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText 'your text here'\n\n\n\nTo remove the text with elevated privileges:\n\nsudo defaults delete /Library/Preferences/com.apple.loginwindow LoginwindowText",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,LEVEL|1A,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,TBA-FIISB|45.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "@ACCESS_WARNING@",
+        "plist_item": "LoginwindowText",
+        "plist_name": "/Library/Preferences/com.apple.loginwindow"
+    },
+    "custom_item_64": {
+        "description": "5.16 Do not enter a password-related hint",
+        "info": "Password hints help the user recall their passwords for various systems and/or accounts. In most cases, password hints are simple and closely related to the user's password.\n\nRationale:\n\nPassword hints that are closely related to the user's password are a security vulnerability, especially in the social media age. Unauthorized users are more likely to guess a user's password if there is a password hint. The password hint is very susceptible to social engineering attacks and information exposure on social media networks",
+        "solution": "Open System Preferences\n\nSelect Users & Groups\n\nHighlight the user\n\nSelect Change Password\n\nVerify that no text is entered in the Password hint box\n\nAdditional Information:\n\nOrganizations might consider entering an organizational help desk phone number or other text (such as a warning to the user). A help desk number is only appropriate for organizations with trained help desk personnel that are validating user identities for password resets.",
+        "reference": "800-171|3.5.11,800-53|IA-6,800-53r5|IA-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),ITSG-33|IA-6,ITSG-33|IA-6a.,LEVEL|1M,NESA|T5.5.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "RetriesUntilHint",
+        "plist_name": "/Library/Preferences/com.apple.loginwindow"
+    },
+    "custom_item_65": {
+        "description": "5.20 System Integrity Protection status",
+        "info": "System Integrity Protection is a security feature introduced in OS X 10.11 El Capitan. System Integrity Protection restricts access to System domain locations and restricts runtime attachment to system processes. Any attempt to attempt to inspect or attach to a system process will fail. Kernel Extensions are now restricted to /Library/Extensions and are required to be signed with a Developer ID.\n\nRationale:\n\nRunning without System Integrity Protection on a production system runs the risk of the modification of system binaries or code injection of system processes that would otherwise be protected by SIP.\n\nImpact:\n\nSystem binaries and processes could become compromised",
+        "solution": "Perform the following while booted in macOS Recovery Partition.\n\nSelect Terminal from the Utilities menu\n\nRun the following command in Terminal:\n\n/usr/bin/csrutil enable\n\n\n\nThe output should be:\n\nSuccessfully enabled System Integrity Protection. Please restart the machine for the changes to take effect.\n\n\n\nReboot.\n\nIf a change is to the status is attempted from the booted Operating System rather than the recovery partition an error will be generated.\ncsrutil: failed to modify system integrity configuration. This tool needs to be executed from the Recovery OS.",
+        "reference": "800-53|SI-7(1),800-53r5|SI-7(1),CN-L3|7.1.3.5(b),CSF|PR.DS-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|SI-7(1),LEVEL|1A,NESA|T7.3.3,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/csrutil status",
+        "expect": "System Integrity Protection status: enabled"
+    },
+    "custom_item_66": {
+        "description": "6.1.1 Display login window as name and password",
+        "info": "The login window prompts a user for his/her credentials, verifies their authorization level and then allows or denies the user access to the system.\n\nRationale:\n\nPrompting the user to enter both their username and password makes it twice as hard for unauthorized users to gain access to the system since they must discover two attributes.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Users and Groups\n\nSelect Login Options\n\nSelect Name and Password\n\nAlternatively:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/com.apple.loginwindow SHOWFULLNAME -bool yes",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "1",
+        "plist_item": "SHOWFULLNAME",
+        "plist_name": "/Library/Preferences/com.apple.loginwindow"
+    },
+    "custom_item_67": {
+        "description": "6.1.2 Disable 'Show password hints' - Show password hints",
+        "info": "Password hints are user created text displayed when an incorrect password is used for an account.\n\nRationale:\n\nPassword hints make it easier for unauthorized persons to gain access to systems by providing information to anyone that the user provided to assist remembering the password. This info could include the password itself or other information that might be readily discerned with basic knowledge of the end user.\n\nImpact:\n\nThe user can set the hint to any value including the password itself or clues that allow trivial social engineering attacks.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Users & Groups\n\nSelect Login Options\n\nUncheck Show password hints\n\nAlternatively:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/com.apple.loginwindow RetriesUntilHint -int 0",
+        "reference": "800-171|3.5.11,800-53|IA-6,800-53r5|IA-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(d),ITSG-33|IA-6,ITSG-33|IA-6a.,LEVEL|1A,NESA|T5.5.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "RetriesUntilHint",
+        "plist_name": "/Library/Preferences/com.apple.loginwindow"
+    },
+    "custom_item_68": {
+        "description": "6.1.3 Disable guest account login",
+        "info": "The guest account allows users access to the system without having to create an account or password. Guest users are unable to make setting changes, cannot remotely login to the system and all created files, caches, and passwords are deleted upon logging out.\n\nRationale:\n\nDisabling the guest account mitigates the risk of an untrusted user doing basic reconnaissance and possibly using privilege escalation attacks to take control of the system.\n\nImpact:\n\nA guest user can use that access to find out additional information about the system and might be able to use privilege escalation vulnerabilities to establish greater access.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Users & Groups\n\nSelect Guest User\n\nUncheck Allow guests to log in to this computer\n\nAlternatively:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO\n\nAdditional Information:\n\nBy default, the guest account is enabled for access to sharing services, but is not allowed to log in to the computer.\n\nThe guest account does not need a password when it is enabled to log in to the computer.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1A,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "GuestEnabled",
+        "plist_name": "/Library/Preferences/com.apple.loginwindow.plist"
+    },
+    "custom_item_69": {
+        "description": "6.1.4 Disable 'Allow guests to connect to shared folders' - AFP Sharing",
+        "info": "Allowing guests to connect to shared folders enables users to access selected shared folders and their contents from different computers on a network.\n\nRationale:\n\nNot allowing guests to connect to shared folders mitigates the risk of an untrusted user doing basic reconnaissance and possibly use privilege escalation attacks to take control of the system.\n\nImpact:\n\nUnauthorized users could access shared files on the system.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Users & Groups\n\nSelect Guest User\n\nUncheck Allow guests to connect to shared folders\n\nAlternatively:\nFor AFP sharing:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool no\n\nFor SMB sharing:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool no",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "guestAccess",
+        "plist_name": "/Library/Preferences/com.apple.AppleFileServer"
+    },
+    "custom_item_70": {
+        "description": "6.1.4 Disable 'Allow guests to connect to shared folders' - SMB Sharing",
+        "info": "Allowing guests to connect to shared folders enables users to access selected shared folders and their contents from different computers on a network.\n\nRationale:\n\nNot allowing guests to connect to shared folders mitigates the risk of an untrusted user doing basic reconnaissance and possibly use privilege escalation attacks to take control of the system.\n\nImpact:\n\nUnauthorized users could access shared files on the system.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen System Preferences\n\nSelect Users & Groups\n\nSelect Guest User\n\nUncheck Allow guests to connect to shared folders\n\nAlternatively:\nFor AFP sharing:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool no\n\nFor SMB sharing:\nRun the following command in Terminal:\n\nsudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool no",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "AllowGuestAccess",
+        "plist_name": "/Library/Preferences/SystemConfiguration/com.apple.smb.server"
+    },
+    "custom_item_71": {
+        "description": "6.1.5 Remove Guest home folder",
+        "info": "In the previous two controls the guest account login has been disabled and sharing to guests has been disabled as well. There is no need for the legacy Guest home folder to remain in the file system. When normal user accounts are removed you have the option to archive it, leave it in place or delete. In the case of the guest folder the folder remains in place without a GUI option to remove it. If at some point in the future a Guest account is needed it will be re-created. The presence of the Guest home folder can cause automated audits to fail when looking for compliant settings within all User folders as well. Rather than ignoring the folders continued existence it is best removed.\n\nRationale:\n\nThe Guest home folders are unneeded after the Guest account is disabled and could be used inappropriately.\n\nImpact:\n\nThe Guest account should not be necessary after it is disabled and it will be automatically re-created if the Guest account is re-eanbled",
+        "solution": "Perform the following to implement the prescribed state:\n\nRun the following command in Terminal:\n\nrm -R /Users/Guest\n\n\n\nMake sure there is no ouput",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/bin/ls /Users/ | /usr/bin/grep Guest",
+        "expect": ""
+    },
+    "custom_item_72": {
+        "description": "6.2 Turn on filename extensions",
+        "info": "A filename extension is a suffix added to a base filename that indicates the base filename's file format.\n\nRationale:\n\nVisible filename extensions allows the user to identify the file type and the application it is associated with which leads to quick identification of misrepresented malicious files.\n\nImpact:\n\nThe user of the system can open files of unknown or unexpected filetypes if the extension is not visible.",
+        "solution": "Perform the following to implement the prescribed state:\n\nSelect Finder\n\nSelect Preferences\n\nCheck Show all filename extensions\n\nAlternatively, use the following command:\n\ndefaults write NSGlobalDomain AppleShowAllExtensions -bool true",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read NSGlobalDomain AppleShowAllExtensions",
+        "expect": "^1$"
+    },
+    "custom_item_73": {
+        "description": "6.3 Disable the automatic run of safe files in Safari",
+        "info": "Safari will automatically run or execute what it considers safe files. This can include installers and other files that execute on the operating system. Safari bases file safety by using a list of filetypes maintained by Apple. The list of files include text, image, video and archive formats that would be run in the context of the OS rather than the browser.\n\nRationale:\n\nHackers have taken advantage of this setting via drive-by attacks. These attacks occur when a user visits a legitimate website that has been corrupted. The user unknowingly downloads a malicious file either by closing an infected pop-up or hovering over a malicious banner. An attacker can create a malicious file that will fall within Safari's safe file list that will download and execute without user input.\n\nImpact:\n\nApple considers many files that the operating system itself auto-executes as 'safe files.' Many of these files could be malicious and could execute locally without the user even knowing that a file of a specific type had been download.",
+        "solution": "Perform the following to implement the prescribed state:\n\nOpen Safari\n\nSelect Safari from the menu bar\n\nSelect Preferences\n\nSelect General\n\nUncheck Open 'safe' files after downloading\n\nAlternatively run the following command in Terminal:\n\ndefaults write com.apple.Safari AutoOpenSafeDownloads -boolean no",
+        "reference": "800-171|3.13.13,800-53|SC-18(3),800-53r5|SC-18(3),CSF|DE.CM-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-18(3),LEVEL|1A,NIAv2|NS26f,QCSC-v1|3.2,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "regex": "0",
+        "plist_item": "AutoOpenSafeDownloads",
+        "plist_name": "com.apple.Safari",
+        "plist_user": "all"
+    },
+    "custom_item_74": {
+        "description": "7.14 Apple File System (APFS)",
+        "info": "With the release of macOS 10.12 Apple has included a developer preview of a new file system called APFS. Many features desired in a modern file system are ready for use and some will be available when the release version is available in 2017. At this time the file system cannot be used for boot volumes or with FileVault. Filesystem formatting and manipulation is only available in the command line and not the GUI and there are some reported gaps with the encryption capabilities. Until the filesystem supports boot volumes, FileVault, OS integrated encryption and key management as well as GUI management it should not be used with production systems.\n\nAPFS is part of macOS 10.13 and is expected to be used there. It is still recommended not to use on 10.12 systems.\n\nFor more information on APFS\n\nhttps://developer.apple.com/library/prerelease/content/documentation/FileManagement/Conceptual/APFS_Guide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40016999-CH1-DontLinkElementID_18\n\nhttp://arstechnica.com/apple/2016/09/macos-10-12-sierra-the-ars-technica-review/8/\n\nRationale:\n\nAPFS in macOS 10.12 has limitations that were resolved in macOS 10.13. The unfinished feature set argue agains the use of APFS in production systems that are not running 10.13 or higher.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure that if found the use of a the filesystem is not in contradiction of organizational policies. If required ensure information is backed up and reformat the drive to Journaled HFS+.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/sbin/diskutil list | /usr/bin/grep -i apfs",
+        "expect": ""
+    },
+    "custom_item_75": {
+        "description": "7.17 AirDrop security considerations",
+        "info": "AirDrop is Apple's built-in on demand ad hoc file exchange system that is compatible with both macOS and iOS. It uses Bluetooth LE for discovery that limits connectivity to macOS or iOS users that are in close proximity. Depending on the setting it allows everyone or only Contacts to share files when they are nearby to each other.\n\nIn many ways this technology is far superior to the alternatives. The file transfer is done over a TLS encrypted session, does not require any open ports that are required for file sharing, does not leave file copies on email servers or within cloud storage, and allows for the service to be mitigated so that only people already trusted and added to contacts can interact with you.\n\nEven with all of these positives some environments may wish to disable AirDrop. Organizations where Bluetooth and Wireless are not used will disable AirDrop by blocking it's necessary interfaces. Organizations that have disabled USB and other pluggable storage mechanisms and have blocked all unmanaged cloud and transfer solutions for DLP may want to disable AirDrop as well.\n\nAirDrop should be used with Contacts only to limit attacks.\n\nMore info:\n\nhttps://www.imore.com/how-apple-keeps-your-airdrop-files-private-and-secure\n\nhttps://en.wikipedia.org/wiki/AirDrop\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3092",
+        "cmd": "/usr/bin/defaults read com.apple.NetworkBrowser DisableAirDrop",
+        "expect": "Manual Review"
+    }
+}

@@ -1,0 +1,174 @@
+{
+    "custom_item_1": {
+        "description": "Check if kubelet is running",
+        "name": "kubelet"
+    },
+    "custom_item_2": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_3": {
+        "description": "Check if API Server is running",
+        "cmd": "ps -ef | egrep '/etcd[2]?([[:space:]]|$)' | grep -v grep",
+        "expect": "etcd[2]?[\\\\s]"
+    },
+    "custom_item_4": {
+        "description": "Check if kubectl exists",
+        "file": "@KUBECTL_PATH@/kubectl"
+    },
+    "custom_item_5": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "1.6.3 Create network segmentation using Network Policies",
+        "info": "Use network policies to isolate your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints. 'NetworkPolicy' resources use labels to select pods and define whitelist rules which allow traffic to the selected pods in addition to what is allowed by the isolation policy for a given namespace.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create 'NetworkPolicy' objects as you need them.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-171|3.14.6,800-171|3.14.7,800-53|CA-9,800-53|SC-7(22),800-53|SI-4,800-53r5|CA-9,800-53r5|SC-7(22),800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CN-L3|8.1.10.6(j),CSCv6|14.1,CSCv7|14.1,CSCv7|14.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.AM-3,CSF|ID.RA-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SI-4,LEVEL|2S,NESA|M1.2.2,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get networkpolicy --namespace=kube-system --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "1.6.3 Create network segmentation using Network Policies",
+        "info": "Use network policies to isolate your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints. 'NetworkPolicy' resources use labels to select pods and define whitelist rules which allow traffic to the selected pods in addition to what is allowed by the isolation policy for a given namespace.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create 'NetworkPolicy' objects as you need them.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-171|3.14.6,800-171|3.14.7,800-53|CA-9,800-53|SC-7(22),800-53|SI-4,800-53r5|CA-9,800-53r5|SC-7(22),800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CN-L3|8.1.10.6(j),CSCv6|14.1,CSCv7|14.1,CSCv7|14.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.AM-3,CSF|ID.RA-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SI-4,LEVEL|2S,NESA|M1.2.2,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get networkpolicy --namespace=kube-system",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "1.6.4 Ensure that the seccomp profile is set to docker/default in your pod definitions",
+        "info": "Enable 'docker/default' seccomp profile in your pod definitions.\n\nRationale:\n\nSeccomp (secure computing mode) is used to restrict the set of system calls applications can make, allowing cluster administrators greater control over the security of workloads running in the cluster. Kubernetes disables seccomp profiles by default for historical reasons. You should enable it to ensure that the workloads have restricted actions available within the container.",
+        "solution": "Seccomp is an alpha feature currently. By default, all alpha features are disabled. So, you would need to enable alpha features in the apiserver by passing ''--feature-gates=AllAlpha=true'' argument.\n\nEdit the '/etc/kubernetes/apiserver' file on the master node and set the 'KUBE_API_ARGS' parameter to ''--feature-gates=AllAlpha=true''\n\nKUBE_API_ARGS='--feature-gates=AllAlpha=true'\n\nBased on your system, restart the 'kube-apiserver' service. For example:\n\nsystemctl restart kube-apiserver.service\n\nUse 'annotations' to enable the 'docker/default' seccomp profile in your pod definitions. An example is as below:\n\napiVersion: v1\nkind: Pod\nmetadata:\n name: trustworthy-pod\n annotations:\n seccomp.security.alpha.kubernetes.io/pod: docker/default\nspec:\n containers:\n - name: trustworthy-container\n image: sotrustworthy:latest",
+        "reference": "CSCv6|5,LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "file": "@APISERVER_FILE@",
+        "regex": "seccomp",
+        "expect": "seccomp.security.alpha.kubernetes.io/pod[\\\\s]*:[\\\\s]*docker/default"
+    },
+    "custom_item_9": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - psp",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - rolebinding",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get rolebinding --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - clusterrolebinding",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get clusterrolebinding --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - psp",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - rolebinding",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get rolebinding",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "1.6.8 Place compensating controls in the form of PSP and RBAC for privileged containers usage - clusterrolebinding",
+        "info": "Use Pod Security Policies (PSP) and RBAC authorization to mitigate the risk arising from using privileged containers.\n\nRationale:\n\nA number of components used by Kubernetes clusters currently make use of privileged containers (e.g. Container Network Interface plugins). Privileged containers pose a risk to the underlying host infrastructure. You should use PSP and RBAC or other forms of authorization to mitigate the risk arising out of such privileged container usage. PSPs should be in place to restrict access to create privileged containers to specific roles only, and access to those roles should be restricted using RBAC role bindings.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Kubernetes documentation and setup PSP and RBAC authorization for your cluster.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get clusterrolebinding",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_16": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "1.7.6 Do not admit root containers",
+        "info": "Do not generally permit containers to be run as the root user.\n\nRationale:\n\nContainers may run as any Linux user. Containers which run as the root user, whilst constrained by Container Runtime security features still have a escalated likelihood of container breakout.\n\nIdeally, all containers should run as a defined non-UID 0 user.\n\nThere should be at least one PodSecurityPolicy (PSP) defined which does not permit root users in a container.\n\nIf you need to run root containers, this should be defined in a separate PSP and you should carefully check RBAC controls to ensure that only limited service accounts and users are given permission to access that PSP.",
+        "solution": "Create a PSP as described in the Kubernetes documentation, ensuring that the '.spec.runAsUser.rule' is set to either 'MustRunAsNonRoot' or 'MustRunAs' with the range of UIDs not including 0.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp --kubeconfig @KUBECONFIG@ -o=custom-columns=name:.metadata.name,rule:.spec.runAsUser.rule,min:.spec.runAsUser.ranges.min",
+        "expect": "^.*[\\\\s](MustRunAs[\\\\s]+[1-9][0-9]*|MustRunAsNonRoot[\\\\s]+)$"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "1.7.6 Do not admit root containers",
+        "info": "Do not generally permit containers to be run as the root user.\n\nRationale:\n\nContainers may run as any Linux user. Containers which run as the root user, whilst constrained by Container Runtime security features still have a escalated likelihood of container breakout.\n\nIdeally, all containers should run as a defined non-UID 0 user.\n\nThere should be at least one PodSecurityPolicy (PSP) defined which does not permit root users in a container.\n\nIf you need to run root containers, this should be defined in a separate PSP and you should carefully check RBAC controls to ensure that only limited service accounts and users are given permission to access that PSP.",
+        "solution": "Create a PSP as described in the Kubernetes documentation, ensuring that the '.spec.runAsUser.rule' is set to either 'MustRunAsNonRoot' or 'MustRunAs' with the range of UIDs not including 0.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp -o=custom-columns=name:.metadata.name,rule:.spec.runAsUser.rule,min:.spec.runAsUser.ranges.min",
+        "expect": "^.*[\\\\s](MustRunAs[\\\\s]+[1-9][0-9]*|MustRunAsNonRoot[\\\\s]+)$"
+    },
+    "custom_item_19": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "1.7.7 Do not admit containers with dangerous capabilities",
+        "info": "Do not generally permit containers with potentially dangerous capabilities.\n\nRationale:\n\nContainers run with a default set of capabilities as assigned by the Container Runtime. By default this can include potentially dangerous capabilities. By default with Docker as the container runtime the NET_RAW capability is enabled which may be misused by malicious containers.\n\nIdeally, all containers should drop this capability.\n\nThere should be at least one PodSecurityPolicy (PSP) defined which prevents containers with the NET_RAW capability from launching.\n\nIf you need to run containers with this capability, this should be defined in a separate PSP and you should carefully check RBAC controls to ensure that only limited service accounts and users are given permission to access that PSP.",
+        "solution": "Create a PSP as described in the Kubernetes documentation, ensuring that the '.spec.requiredDropCapabilities' is set to include either 'NET_RAW' or 'ALL'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp --kubeconfig @KUBECONFIG@ -o=custom-columns=name:.metadata.name,requiredDropCapabilities:.spec.requiredDropCapabilities",
+        "expect": "^.*[\\\\s]\\\\[[A-z\\\\s]*(ALL|NET_RAW)[A-z\\\\s]*\\\\]$"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "1.7.7 Do not admit containers with dangerous capabilities",
+        "info": "Do not generally permit containers with potentially dangerous capabilities.\n\nRationale:\n\nContainers run with a default set of capabilities as assigned by the Container Runtime. By default this can include potentially dangerous capabilities. By default with Docker as the container runtime the NET_RAW capability is enabled which may be misused by malicious containers.\n\nIdeally, all containers should drop this capability.\n\nThere should be at least one PodSecurityPolicy (PSP) defined which prevents containers with the NET_RAW capability from launching.\n\nIf you need to run containers with this capability, this should be defined in a separate PSP and you should carefully check RBAC controls to ensure that only limited service accounts and users are given permission to access that PSP.",
+        "solution": "Create a PSP as described in the Kubernetes documentation, ensuring that the '.spec.requiredDropCapabilities' is set to include either 'NET_RAW' or 'ALL'.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2S,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2421",
+        "cmd": "@KUBECTL_PATH@/kubectl get psp -o=custom-columns=name:.metadata.name,requiredDropCapabilities:.spec.requiredDropCapabilities",
+        "expect": "^.*[\\\\s]\\\\[[A-z\\\\s]*(ALL|NET_RAW)[A-z\\\\s]*\\\\]$"
+    },
+    "custom_item_22": {
+        "system": "Linux",
+        "description": "CIS_Kubernetes_v1.4.1_Level_2.audit from CIS Kubernetes Benchmark v1.4.1",
+        "info": "NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,SWIFT-CSCv1|2.3",
+        "name": "kubelet"
+    }
+}

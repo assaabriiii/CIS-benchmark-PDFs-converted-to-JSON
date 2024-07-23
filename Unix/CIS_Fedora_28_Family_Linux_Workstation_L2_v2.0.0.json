@@ -1,0 +1,1369 @@
+{
+    "custom_item_1": {
+        "description": "Fedora 28 is installed",
+        "file": "/etc/fedora-release",
+        "regex": "^[\\\\s]*Fedora release @PLATFORM_VERSION@",
+        "expect": "^[\\\\s]*Fedora release @PLATFORM_VERSION@.*"
+    },
+    "custom_item_2": {
+        "description": "modprobe - usb-storage",
+        "cmd": "/sbin/modprobe -n -v usb-storage | /bin/awk '{print} END {if (NR == 0) print \"fail\"}'",
+        "expect": "install /bin/(true|false)"
+    },
+    "custom_item_3": {
+        "description": "lsmod - usb-storage",
+        "cmd": "/sbin/lsmod | /bin/grep usb-storage | /bin/awk '{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "pass"
+    },
+    "custom_item_4": {
+        "description": "lsmod - squashfs",
+        "cmd": "/sbin/lsmod | /bin/grep squashfs | /bin/awk \\'{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_5": {
+        "description": "blacklist - squashfs",
+        "file": "/etc/modprobe.d/*",
+        "regex": "^blacklist[\\\\s]+squashfs",
+        "expect": "^blacklist[\\\\s]+squashfs[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_6": {
+        "description": "modprobe - squashfs",
+        "cmd": "/sbin/modprobe -n -v squashfs | /bin/grep \"^install\" | /bin/awk \\'{print} END {if (NR == 0) print \"fail\"}\\'",
+        "expect": "^install /bin/(true|false)$"
+    },
+    "custom_item_7": {
+        "description": "modprobe - udf",
+        "cmd": "/sbin/modprobe -n -v udf | /bin/grep \"^install\" | /bin/awk '{print} END {if (NR == 0) print \"fail\"}'",
+        "expect": "^install /bin/(true|false)$"
+    },
+    "custom_item_8": {
+        "description": "blacklist - udf",
+        "file": "/etc/modprobe.d/*",
+        "regex": "^blacklist[\\\\s]+udf",
+        "expect": "^blacklist[\\\\s]+udf[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_9": {
+        "description": "lsmod - udf",
+        "cmd": "/sbin/lsmod | /bin/grep udf | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_10": {
+        "description": "1.1.3.1 Ensure separate partition exists for /var",
+        "info": "The /var directory is used by daemons and other system services to temporarily store dynamic data. Some directories created by these processes may be world-writable.\n\nThe reasoning for mounting /var on a separate partition is as follow.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /var directory may contain world-writable files and directories, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole. In addition, other operations on the system could fill up the disk unrelated to /var and cause unintended behavior across the system as the disk is full. See man auditd.conf for details.\n\nFine grained control over the mount\n\nConfiguring /var as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. Other options allow for specific behaviour. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection from exploitation\n\nAn example of exploiting /var may be an attacker establishing a hard-link to a system setuid program and wait for it to be updated. Once the program was updated, the hard-link would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/findmnt -kn /var",
+        "expect": "^[\\\\s]*/var[\\\\s]+"
+    },
+    "custom_item_11": {
+        "description": "1.1.4.1 Ensure separate partition exists for /var/tmp",
+        "info": "The /var/tmp directory is a world-writable directory used for temporary storage by all users and some applications. Temporary file residing in /var/tmp is to be preserved between reboots.\n\nThe reasoning for mounting /var/tmp on a separate partition is as follow.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /var/tmp directory may contain world-writable files and directories, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole. In addition, other operations on the system could fill up the disk unrelated to /var/tmp and cause the potential disruption to daemons as the disk is full.\n\nFine grained control over the mount\n\nConfiguring /var/tmp as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. Other options allow for specific behavior. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection from exploitation\n\nAn example of exploiting /var/tmp may be an attacker establishing a hard-link to a system setuid program and wait for it to be updated. Once the program was updated, the hard-link would be broken and the attacker would have his own copy of the program. If the program happened to have a security vulnerability, the attacker could continue to exploit the known flaw.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/tmp\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/findmnt --kernel /var/tmp",
+        "expect": "^[\\\\s]*/var/tmp[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_12": {
+        "description": "1.1.5.1 Ensure separate partition exists for /var/log",
+        "info": "The /var/log directory is used by system services to store log data.\n\nThe reasoning for mounting /var/log on a separate partition is as follow.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /var/log directory contain the log files that can grow quite large, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole.\n\nFine grained control over the mount\n\nConfiguring /var/log as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. Other options allow for specific behavior. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection of log data\n\nAs /var/log contains log files, care should be taken to ensure the security and integrity of the data and mount point.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/log\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/findmnt --kernel /var/log",
+        "expect": "^[\\\\s]*/var/log[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_13": {
+        "description": "1.1.6.1 Ensure separate partition exists for /var/log/audit",
+        "info": "The auditing daemon, auditd stores log data in the /var/log/audit directory.\n\nThe reasoning for mounting /var/log/audit on a separate partition is as follow.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /var/log/audit directory contain the audit.log file that can grow quite large, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole. In addition, other operations on the system could fill up the disk unrelated to /var/log/audit and cause auditd to trigger it's space_left_action as the disk is full. See man auditd.conf for details.\n\nFine grained control over the mount\n\nConfiguring /var/log/audit as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. Other options allow for specific behavior. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection of audit data\n\nAs /var/log/audit contains audit logs, care should be taken to ensure the security and integrity of the data and mount point.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /var/log/audit\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/findmnt --kernel /var/log/audit",
+        "expect": "^[\\\\s]*/var/log/audit[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_14": {
+        "description": "1.1.7.1 Ensure separate partition exists for /home",
+        "info": "The /home directory is used to support disk storage needs of local users.\n\nThe reasoning for mounting /home on a separate partition is as follow.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /home directory contains user generated data, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole. In addition, other operations on the system could fill up the disk unrelated to /home and impact all local users.\n\nFine grained control over the mount\n\nConfiguring /home as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. In the case of /home options such as usrquota/grpquota may be considered to limit the impact that users can have on each other with regards to disk resource exhaustion. Other options allow for specific behavior. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection of user data\n\nAs /home contains user data, care should be taken to ensure the security and integrity of the data and mount point.",
+        "solution": "For new installations, during installation create a custom partition setup and specify a separate partition for /home\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.\n\nImpact:\n\nResizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/findmnt --kernel /home",
+        "expect": "^[\\\\s]*/home[\\\\s]+.+[\\\\s]+.+"
+    },
+    "custom_item_15": {
+        "description": "1.1.9 Disable Automounting",
+        "info": "autofs allows automatic mounting of devices, typically including CD/DVDs and USB drives.\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in system even if they lacked permissions to mount it themselves.",
+        "solution": "If there are no other packages that depends on autofs remove the package with:\n\n# dnf remove autofs\n\nRun the following command to disable autofs if it is required:\n\n# systemctl --now disable autofs\n\nImpact:\n\nThe use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations is considered adequate there is little value add in turning off automounting.",
+        "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|8.5,CSCv8|10.3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|2A,NESA|T1.4.1",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/systemctl is-enabled autofs | /bin/awk '{print} END {if(NR==0) print \"disabled\" }'",
+        "expect": "^(disabled|masked|static)$"
+    },
+    "custom_item_16": {
+        "description": "/etc/selinux/config",
+        "file": "/etc/selinux/config",
+        "regex": "(?i)^[\\\\s]*SELINUX[\\\\s]*=",
+        "expect": "(?i)^[\\\\s]*SELINUX[\\\\s]*=[\\\\s]*enforcing[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "description": "getenforce",
+        "cmd": "/sbin/getenforce",
+        "expect": "(?i)^[\\\\s]*enforcing[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "description": "1.8.5 Ensure automatic mounting of removable media is disabled",
+        "info": "By default GNOME automatically mounts removable media when inserted as a convenience to the user.\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in system even if they lacked permissions to mount it themselves.",
+        "solution": "Ensure that automatic mounting of media is disabled for all GNOME users:\n\n# cat << EOF >> /etc/dconf/db/local.d/00-media-automount\n[org/gnome/desktop/media-handling]\nautomount=false\nautomount-open=false\nEOF\n\nApply the changes with:\n\n# dconf update\n\nImpact:\n\nThe use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations is considered adequate there is little value add in turning off automounting.",
+        "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|8.5,CSCv8|10.3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|2A,NESA|T1.4.1",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/gsettings get org.gnome.desktop.media-handling automount",
+        "expect": "^[\\\\s]*(false|No[\\\\s]+schemas[\\\\s]+installed)"
+    },
+    "custom_item_19": {
+        "description": "rpm check avahi-autoipd",
+        "rpm": "avahi-autoipd-0.0.0-0",
+        "operator": "lte"
+    },
+    "custom_item_20": {
+        "description": "avahi",
+        "rpm": "avahi-0.0.0-0",
+        "operator": "lte"
+    },
+    "custom_item_21": {
+        "description": "modprobe sctp - install",
+        "cmd": "/bin/sheltie modprobe -n -v sctp | /bin/grep -E '(sctp|install)'",
+        "expect": "install /bin/(true|false)"
+    },
+    "custom_item_22": {
+        "description": "check if sctp is loaded",
+        "file": "/proc/modules",
+        "regex": "^[\\\\s]*sctp[\\\\s]*",
+        "expect": "^[\\\\s]*sctp[\\\\s]*"
+    },
+    "custom_item_23": {
+        "system": "Linux",
+        "description": "modprobe - dccp",
+        "cmd": "/sbin/modprobe -n -v dccp",
+        "expect": "(install /bin/true|FATAL: Module dccp not found)"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "lsmod - dccp",
+        "cmd": "/sbin/lsmod | /bin/grep dccp | /bin/awk \\'{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}\\'",
+        "expect": "^pass$"
+    },
+    "custom_item_25": {
+        "description": "4.1.1.1 Ensure auditd is installed",
+        "info": "auditd is the userspace component to the Linux Auditing System. It's responsible for writing audit records to the disk\n\nThe capturing of system events provides system administrators with information to allow them to determine if unauthorized access to their system is occurring.",
+        "solution": "Run the following command to Install auditd\n\n# dnf install audit",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "rpm": "audit-0.0.0-0",
+        "operator": "gt"
+    },
+    "custom_item_26": {
+        "description": "4.1.1.2 Ensure auditd service is enabled",
+        "info": "Turn on the auditd daemon to record system events.\n\nThe capturing of system events provides system administrators with information to allow them to determine if unauthorized access to their system is occurring.",
+        "solution": "Run the following command to enable auditd :\n\n# systemctl --now enable auditd",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/systemctl is-enabled auditd | /bin/awk '{print} END {if(NR==0) print \"disabled\" }'",
+        "expect": "^enabled$"
+    },
+    "custom_item_27": {
+        "description": "4.1.1.3 Ensure auditing for processes that start prior to auditd is enabled",
+        "info": "Configure grub2 so that processes that are capable of being audited can be audited even if they start up prior to auditd startup.\n\nAudit events need to be captured on processes that start up prior to auditd so that potential malicious activity cannot go undetected.",
+        "solution": "Run the following command to add audit=1 to GRUB_CMDLINE_LINUX :\n\n# grubby --update-kernel ALL --args 'audit=1'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "#!/bin/bash\n  {\n  l_output=\"\" l_output2=\"\" l_gout=\"\"\n  l_gparameters=\"audit=1\"\n\n\tl_gpfile=\"$(find /boot -type f \\\\( -name 'grubenv' -o -name 'grub.conf' -o -name 'grub.cfg' \\\\) -exec grep -Pl -- '^\\\\h*(kernelopts=|linux|kernel)' {} +)\"\n\t[ -f \"$l_gpfile\" ] && l_gout=\"$(grep -P -- \"\\\\b$l_gparameters\\\\b\" \"$l_gpfile\")\"\n\tl_lout=\"$(grep -Ps -- \"\\\\b$l_gparameters\\\\b\" /boot/loader/entries/*)\"\n\tif [ -n \"$l_gout\" ] || [ -n \"$l_lout\" ]; then\n\t\t[ -n \"$l_gout\" ] && l_output=\"$l_output\\\\n - Grub parameter: \\\\\"$l_gparameters\\\\\" exists in: \\\\\"$l_gpfile\\\\\"\"\n\t\t[ -n \"$l_lout\" ] && l_output=\"$l_output\\\\n - Grub parameter: \\\\\"$l_gparameters\\\\\" exists in: \\\\\"$(grep -Pls -- \"\\\\b$l_gparameters\\\\b\" /boot/loader/entries/*)\\\\\"\"\n\telse\n\t\tl_output2=\"$l_output2\\\\n - Grub parameter: \\\\\"$l_gparameters\\\\\" is not set\"\n\tfi\n\n# If l_output2 is not set, then we pass\nif [ -z \"$l_output2\" ]; then\n\techo -e \"\\\\n- Audit Result:\\\\n  ** PASS **\\\\n$l_output\\\\n\"\nelse\n\techo -e \"\\\\n- Audit Result:\\\\n  ** FAIL **\\\\n - Reason(s) for audit failure:\\\\n$l_output2\\\\n\"\n\t[ -n \"$l_output\" ] && echo -e \"\\\\n- Correctly set:\\\\n$l_output\\\\n\"\nfi\n}",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_28": {
+        "description": "4.1.1.4 Ensure audit_backlog_limit is sufficient",
+        "info": "The backlog limit has a default setting of 64\n\nDuring boot if audit=1 then the backlog will hold 64 records. If more that 64 records are created during boot, auditd records will be lost and potential malicious activity could go undetected.",
+        "solution": "Run the following command to add audit_backlog_limit=to GRUB_CMDLINE_LINUX:\n\n# grubby --update-kernel ALL --args 'audit_backlog_limit='\n\nExample:\n\n# grubby --update-kernel ALL --args 'audit_backlog_limit=8192'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/sbin/grubby --info=ALL | /bin/grep -Po '\\\\baudit_backlog_limit=@BACKLOG_SIZE@\\\\b' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_29": {
+        "description": "4.1.2.1 Ensure audit log storage size is configured",
+        "info": "Configure the maximum size of the audit log file. Once the log reaches the maximum size, it will be rotated and a new log file will be started.\n\nIt is important that an appropriate size is determined for log files so that they do not impact the system and audit data is not lost.",
+        "solution": "Set the following parameter in /etc/audit/auditd.conf in accordance with site policy:\n\nmax_log_file =",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*max_log_file[\\\\s]*=",
+        "expect": "^[\\\\s]*max_log_file[\\\\s]*=[\\\\s]*@MAX_AUDIT_LOG_FILE_SIZE@[\\\\s]*$"
+    },
+    "custom_item_30": {
+        "description": "4.1.2.2 Ensure audit logs are not automatically deleted",
+        "info": "The max_log_file_action setting determines how to handle the audit log file reaching the max file size. A value of keep_logs will rotate the logs but never delete old logs.\n\nIn high security contexts, the benefits of maintaining a long audit history exceed the cost of storing the audit history.",
+        "solution": "Set the following parameter in /etc/audit/auditd.conf:\n\nmax_log_file_action = keep_logs",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*max_log_file_action[\\\\s]*=",
+        "expect": "^[\\\\s]*max_log_file_action[\\\\s]*=[\\\\s]*(?i)keep_logs(?-i)[\\\\s]*$"
+    },
+    "custom_item_31": {
+        "description": "auditd.conf - space_left_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*(?i)space_left_action(?-i)[\\\\s]*=[\\\\s]*",
+        "expect": "^[\\\\s]*(?i)space_left_action(?-i)[\\\\s]*=[\\\\s]*(?i)email(?-i)[\\\\s]*$"
+    },
+    "custom_item_32": {
+        "description": "auditd.conf - action_mail_acct",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*(?i)action_mail_acct(?-i)[\\\\s]*=",
+        "expect": "^[\\\\s]*(?i)action_mail_acct(?-i)[\\\\s]*=[\\\\s]*(?i)root(?-i)[\\\\s]*$"
+    },
+    "custom_item_33": {
+        "description": "auditd.conf - admin_space_left_action",
+        "file": "/etc/audit/auditd.conf",
+        "regex": "^[\\\\s]*admin_space_left_action[\\\\s]*=",
+        "expect": "^[\\\\s]*admin_space_left_action[\\\\s]*=[\\\\s]*(?i)(halt|single)(?-i)[\\\\s]*$"
+    },
+    "custom_item_34": {
+        "description": "auditctl /etc/sudoers",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sudoers/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_35": {
+        "description": "/etc/sudoers.d",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sudoers\\\\.d/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_36": {
+        "description": "/etc/sudoers",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sudoers/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_37": {
+        "description": "auditctl /etc/sudoers.d",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sudoers\\\\.d/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_38": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_39": {
+        "description": "auditctl b64",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"/^ *-a *always,exit/ &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_40": {
+        "description": "b32",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"/^ *-a *always,exit/ &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_41": {
+        "description": "b64",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"/^ *-a *always,exit/ &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_42": {
+        "description": "auditctl b32",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"/^ *-a *always,exit/ &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_43": {
+        "description": "b32",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"/^ *-a *always,exit/ &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_44": {
+        "description": "auditctl b32",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"/^ *-a *always,exit/ &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -S/ &&/mount/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_45": {
+        "description": "auditctl utmp",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/  &&/\\\\/var\\\\/run\\\\/utmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_46": {
+        "description": "utmp",
+        "cmd": "/bin/awk '/^ *-w/  &&/\\\\/var\\\\/run\\\\/utmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_47": {
+        "description": "auditctl wtmp",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/  &&/\\\\/var\\\\/log\\\\/wtmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_48": {
+        "description": "btmp",
+        "cmd": "/bin/awk '/^ *-w/  &&/\\\\/var\\\\/log\\\\/btmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_49": {
+        "description": "auditctl btmp",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/  &&/\\\\/var\\\\/log\\\\/btmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_50": {
+        "description": "wtmp",
+        "cmd": "/bin/awk '/^ *-w/  &&/\\\\/var\\\\/log\\\\/wtmp/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "pass"
+    },
+    "custom_item_51": {
+        "description": "auditctl faillock",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ && /\\\\/var\\\\/run\\\\/faillock/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_52": {
+        "description": "faillock",
+        "cmd": "/bin/awk '/^ *-w/ && /\\\\/var\\\\/run\\\\/faillock/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_53": {
+        "description": "lastlog",
+        "cmd": "/bin/awk '/^ *-w/ && /\\\\/var\\\\/log\\\\/lastlog/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_54": {
+        "description": "auditctl lastlog",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ && /\\\\/var\\\\/log\\\\/lastlog/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' ",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_55": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_56": {
+        "description": "b32 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b32/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules  | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_57": {
+        "description": "auditctl b64 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b64/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_58": {
+        "description": "auditctl b32 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b32/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_59": {
+        "description": "b64 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b64/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules  | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_60": {
+        "description": "b32 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b32/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules  | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_61": {
+        "description": "auditctl b32 unlink",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/)  &&/ -F *arch=b32/  &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/)  &&/ -F *auid>=${UID_MIN}/  &&/ -S/  &&(/unlink/||/rename/||/unlinkat/||/renameat/)  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_62": {
+        "description": "*.rules /etc/selinux",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/selinux/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_63": {
+        "description": "*.rules /usr/share/selinux",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/usr\\\\/share\\\\/selinux/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_64": {
+        "description": "auditctl /etc/selinux",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/selinux/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_65": {
+        "description": "auditctl /usr/share/selinux",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/usr\\\\/share\\\\/selinux/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_66": {
+        "description": "/etc/audit/rules.d/*.rules",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/chcon/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_67": {
+        "description": "auditctl",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/chcon/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_68": {
+        "description": "/etc/audit/rules.d/*.rules",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/setfacl/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_69": {
+        "description": "auditctl",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/setfacl/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_70": {
+        "description": "/etc/audit/rules.d/*.rules",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/chacl/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_71": {
+        "description": "auditctl",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/bin\\\\/chacl/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_72": {
+        "description": "/etc/audit/rules.d/*.rules",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/sbin\\\\/usermod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_73": {
+        "description": "auditctl",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk  \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *perm=x/ &&/ -F *path=\\\\/usr\\\\/sbin\\\\/usermod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/) \" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf  \"ERROR: Variable 'UID_MIN' is unset. \\\\n \"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_74": {
+        "description": "auditctl create_module",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/create_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "pass"
+    },
+    "custom_item_75": {
+        "description": "/usr/bin/kmod",
+        "cmd": "{\n UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs)\n [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) \\\\\n &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) \\\\\n &&/ -F *auid>=${UID_MIN}/ \\\\\n &&/ -F *perm=x/ \\\\\n &&/ -F *path=\\\\/usr\\\\/bin\\\\/kmod/ \\\\\n &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules \\\\\n || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"\n} | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_76": {
+        "description": "auditctl delete_module",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/delete_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_77": {
+        "description": "on disk init_module",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/init_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_78": {
+        "description": "auditctl query_module",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/query_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_79": {
+        "description": "on disk finit_module",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/finit_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_80": {
+        "description": "on disk query_module",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/query_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_81": {
+        "description": "on disk create_module",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/create_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_82": {
+        "description": "kmod symlinks",
+        "cmd": "#!/bin/bash\n      {\n        S_LINKS=$(ls -l /usr/sbin/lsmod /usr/sbin/rmmod /usr/sbin/insmod /usr/sbin/modinfo /usr/sbin/modprobe /usr/sbin/depmod | grep -vE \" -> (\\\\.\\\\.)?/bin/kmod\" || true) && if [[ \"${S_LINKS}\" != \"\" ]]; then printf \"Issue with symlinks: ${S_LINKS}\\\\n\"; else printf \"OK\\\\n\"; fi\n      }",
+        "expect": "^OK$"
+    },
+    "custom_item_83": {
+        "description": "auditctl /usr/bin/kmod",
+        "cmd": "{\nUID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs)\n [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) \\\\\n &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) \\\\\n &&/ -F *auid>=${UID_MIN}/ \\\\\n &&/ -F *perm=x/ \\\\\n &&/ -F *path=\\\\/usr\\\\/bin\\\\/kmod/ \\\\\n &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" \\\\\n || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"\n} | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_84": {
+        "description": "auditctl init_module",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/init_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_85": {
+        "description": "on disk delete_module",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/delete_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_86": {
+        "description": "auditctl finit_module",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b(32|64)/ &&/ -S/ &&/finit_module/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_87": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_88": {
+        "description": "/etc/audit/rules.d/*.rules b32",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_89": {
+        "description": "auditctl b64",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_90": {
+        "description": "/etc/audit/rules.d/*.rules b64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_91": {
+        "description": "auditctl b32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_92": {
+        "description": "/etc/audit/rules.d/*.rules b32",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_93": {
+        "description": "auditctl b32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&(/ -C *euid!=uid/||/ -C *uid!=euid/) &&/ -S *execve/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_94": {
+        "description": "4.1.3.20 Ensure the audit configuration is immutable",
+        "info": "Set system audit so that audit rules cannot be modified with auditctl Setting the flag \"-e 2\" forces audit to be put in immutable mode. Audit changes can only be made on system reboot.\n\nNote: This setting will require the system to be rebooted to update the active auditd configuration settings.\n\nIn immutable mode, unauthorized users cannot execute changes to the audit system to potentially hide malicious activity and then put the audit rules back. Users would most likely notice a system reboot and that could alert administrators of an attempt to make unauthorized audit changes.",
+        "solution": "Edit or create the file /etc/audit/rules.d/99-finalize.rules and add the line -e 2 at the end of the file:\n\nExample:\n\n# printf -- \"-e 2\" >> /etc/audit/rules.d/99-finalize.rules\n\nLoad audit rules\n\nMerge and load the rules into active configuration:\n\n# augenrules --load\n\nCheck if reboot is required.\n\n# if [[ $(auditctl -s | grep \"enabled\") =~ \"2\" ]]; then printf \"Reboot required to load rules\\n\"; fi",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,800-53r5|MP-2,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(b),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|6.2,CSCv7|6.3,CSCv8|3.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-2,CSF|PR.PT-3,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T3.6.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,SWIFT-CSCv1|6.4,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/grep -Ph -- '^\\\\h*-e\\\\h+2\\\\b' /etc/audit/rules.d/*.rules | tail -1",
+        "expect": "^[\\\\s]*-e[\\\\s]+2[\\\\s]*$"
+    },
+    "custom_item_95": {
+        "description": "4.1.3.21 Ensure the running and on disk configuration is the same",
+        "info": "The Audit system have both on disk and running configuration. It is possible for these configuration settings to differ.\n\nNote: Due to the limitations of augenrules and auditctl it is not absolutely guaranteed that loading the rule sets via augenrules --load will result in all rules being loaded or even that the user will be informed if there was a problem loading the rules.\n\nConfiguration differences between what is currently running and what is on disk could cause unexpected problems or may give a false impression of compliance requirements.",
+        "solution": "If the rules are not aligned across all three () areas, run the following command to merge and load all rules:\n\n# augenrules --load\n\nCheck if reboot is required.\n\nif [[ $(auditctl -s | grep \"enabled\") =~ \"2\" ]]; then echo \"Reboot required to load rules\"; fi",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/sbin/augenrules --check",
+        "expect": "^[\\\\s]*/sbin/augenrules:[\\\\s]*No change[\\\\s]*$"
+    },
+    "custom_item_96": {
+        "description": "sudo log",
+        "cmd": "SUDO_LOG_FILE_ESCAPED=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\"//g' -e 's|/|\\\\\\\\/|g'); [ -n \"${SUDO_LOG_FILE_ESCAPED}\" ] && awk \"/^ *-w/ &&/\"${SUDO_LOG_FILE_ESCAPED}\"/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_97": {
+        "description": "auditctl sudo log",
+        "cmd": "SUDO_LOG_FILE_ESCAPED=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\"//g' -e 's|/|\\\\\\\\/|g'); [ -n \"${SUDO_LOG_FILE_ESCAPED}\" ] && auditctl -l | /bin/awk \"/^ *-w/ &&/\"${SUDO_LOG_FILE_ESCAPED}\"/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_98": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_99": {
+        "description": "auditctl clock_settime x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_100": {
+        "description": "auditctl clock_settime x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_101": {
+        "description": "adjtimex x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_102": {
+        "description": "adjtimex x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_103": {
+        "description": "settimeofday x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_104": {
+        "description": "settimeofday x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_105": {
+        "description": "auditctl settimeofday x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_106": {
+        "description": "auditctl settimeofday x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_107": {
+        "description": "/etc/localtime",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/localtime/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_108": {
+        "description": "clock_settime x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_109": {
+        "description": "clock_settime x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_110": {
+        "description": "auditctl /etc/localtime",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/localtime/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_111": {
+        "description": "auditctl adjtimex x64",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_112": {
+        "description": "auditctl adjtimex x64",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_113": {
+        "description": "auditctl clock_settime x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_114": {
+        "description": "adjtimex x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_115": {
+        "description": "settimeofday x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_116": {
+        "description": "auditctl settimeofday x32",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/settimeofday/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_117": {
+        "description": "/etc/localtime",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/localtime/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_118": {
+        "description": "clock_settime x64",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/clock_settime/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_119": {
+        "description": "auditctl /etc/localtime",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/localtime/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_120": {
+        "description": "auditctl adjtimex x64",
+        "cmd": "auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/adjtimex/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_121": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_122": {
+        "description": "auditctl /etc/issue",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_123": {
+        "description": "/etc/issue.net",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue.net/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_124": {
+        "description": "auditctl b64 sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_125": {
+        "description": "/etc/issue",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_126": {
+        "description": "auditctl b32 sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_127": {
+        "description": "/etc/sysconfig/network-scripts",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network-scripts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_128": {
+        "description": "auditctl /etc/issue.net",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue.net/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_129": {
+        "description": "auditctl /etc/sysconfig/network-scripts",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network-scripts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_130": {
+        "description": "/etc/sysconfig/network",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_131": {
+        "description": "b32 sethostname",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_132": {
+        "description": "auditctl /etc/hosts",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/hosts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_133": {
+        "description": "b64 sethostname",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_134": {
+        "description": "auditctl /etc/sysconfig/network",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_135": {
+        "description": "/etc/hosts",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/hosts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_136": {
+        "description": "auditctl /etc/issue",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_137": {
+        "description": "/etc/issue.net",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue.net/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_138": {
+        "description": "/etc/issue",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_139": {
+        "description": "auditctl b32 sethostname",
+        "cmd": "/sbin/auditctl -l | /bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_140": {
+        "description": "/etc/sysconfig/network-scripts",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network-scripts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_141": {
+        "description": "auditctl /etc/issue.net",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/issue.net/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_142": {
+        "description": "auditctl /etc/sysconfig/network-scripts",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network-scripts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_143": {
+        "description": "/etc/sysconfig/network",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_144": {
+        "description": "b32 sethostname",
+        "cmd": "/bin/awk '(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&/ -S/ &&/sethostname/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_145": {
+        "description": "auditctl /etc/hosts",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/hosts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_146": {
+        "description": "auditctl /etc/sysconfig/network",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/sysconfig\\\\/network/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_147": {
+        "description": "/etc/hosts",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/hosts/ &&/ +-p *wa/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_148": {
+        "description": "auditctl",
+        "cmd": "RUNNING=$(/sbin/auditctl -l); [ -n \"${RUNNING}\" ] && for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \"noexec|nosuid\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \"${PARTITION}\" -xdev -perm /6000 -type f); do printf -- \"${RUNNING}\" | /bin/grep -q \"${PRIVILEGED}\" && printf \"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\" || printf \"Warning: '${PRIVILEGED}' not found in running configuration.\\\\n\"; done; done | /bin/awk '{print} END { if ($1 ~ \"Warning\") print \"Fail - Warnings found\"; else print \"Pass - No warning entries found\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_149": {
+        "description": "/etc/audit/rules.d",
+        "cmd": "for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \"noexec|nosuid\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \"${PARTITION}\" -xdev -perm /6000 -type f); do /bin/grep -qr \"${PRIVILEGED}\" /etc/audit/rules.d && printf \"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\" || printf \"Warning: '${PRIVILEGED}' not found in on disk configuration.\\\\n\"; done; done | /bin/awk '{print} END { if ($1 ~ \"Warning\") print \"Fail - Warnings found\"; else print \"Pass - No warning entries found\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+    },
+    "custom_item_150": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_151": {
+        "description": "auditctl b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_152": {
+        "description": "auditctl b64 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_153": {
+        "description": "auditctl b64 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_154": {
+        "description": "auditctl b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_155": {
+        "description": "b64 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_156": {
+        "description": "b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_157": {
+        "description": "b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_158": {
+        "description": "b64 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_159": {
+        "description": "auditctl b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_160": {
+        "description": "auditctl b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_161": {
+        "description": "b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_162": {
+        "description": "b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_163": {
+        "description": "/etc/shadow",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/shadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_164": {
+        "description": "/etc/gshadow",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/gshadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_165": {
+        "description": "/etc/group",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/group/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_166": {
+        "description": "/etc/passwd",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/passwd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_167": {
+        "description": "auditctl /etc/security/opasswd",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/security\\\\/opasswd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_168": {
+        "description": "auditctl /etc/group",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/group/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_169": {
+        "description": "auditctl /etc/shadow",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/shadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_170": {
+        "description": "auditctl /etc/passwd",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/passwd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_171": {
+        "description": "/etc/security/opasswd",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/security\\\\/opasswd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_172": {
+        "description": "auditctl /etc/gshadow",
+        "cmd": "auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/gshadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_173": {
+        "description": "OS 64bit check",
+        "cmd": "/bin/uname -a | /bin/grep x86_64 | /bin/awk '{print} END {if (NR > 0) print \"found\"}'",
+        "expect": "^found$"
+    },
+    "custom_item_174": {
+        "description": "auditctl b32 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_175": {
+        "description": "b64 fchownat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_176": {
+        "description": "auditctl b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_177": {
+        "description": "auditctl b64 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_178": {
+        "description": "auditctl b32 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_179": {
+        "description": "b32 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_180": {
+        "description": "auditctl b32 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_181": {
+        "description": "b64 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_182": {
+        "description": "auditctl b32 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_183": {
+        "description": "auditctl b64 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_184": {
+        "description": "auditctl b64 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_185": {
+        "description": "b64 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_186": {
+        "description": "b32 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_187": {
+        "description": "auditctl b64 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_188": {
+        "description": "b32 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_189": {
+        "description": "auditctl b64 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_190": {
+        "description": "b32 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_191": {
+        "description": "b64 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_192": {
+        "description": "auditctl b32 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_193": {
+        "description": "b64 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_194": {
+        "description": "b64 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_195": {
+        "description": "b64 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_196": {
+        "description": "b64 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_197": {
+        "description": "b32 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_198": {
+        "description": "auditctl b64 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_199": {
+        "description": "auditctl b32 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_200": {
+        "description": "auditctl b64 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_201": {
+        "description": "b32 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_202": {
+        "description": "auditctl b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_203": {
+        "description": "auditctl b32 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_204": {
+        "description": "b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_205": {
+        "description": "b64 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_206": {
+        "description": "b32 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_207": {
+        "description": "b32 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_208": {
+        "description": "auditctl b32 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_209": {
+        "description": "auditctl b32 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_210": {
+        "description": "b32 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_211": {
+        "description": "auditctl b64 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_212": {
+        "description": "auditctl b64 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_213": {
+        "description": "auditctl b64 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_214": {
+        "description": "auditctl b32 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_215": {
+        "description": "auditctl b64 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_216": {
+        "description": "b32 fchownat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_217": {
+        "description": "auditctl b64 fchownat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_218": {
+        "description": "auditctl b32 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_219": {
+        "description": "b64 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_220": {
+        "description": "auditctl b32 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_221": {
+        "description": "b64 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_222": {
+        "description": "auditctl b64 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_223": {
+        "description": "auditctl b64 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_224": {
+        "description": "b64 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b64/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_225": {
+        "description": "auditctl b32 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_226": {
+        "description": "auditctl b32 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_227": {
+        "description": "auditctl b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_228": {
+        "description": "auditctl b32 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_229": {
+        "description": "b32 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_230": {
+        "description": "auditctl b32 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_231": {
+        "description": "auditctl b32 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_232": {
+        "description": "b32 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_233": {
+        "description": "b32 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_234": {
+        "description": "b32 fchmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_235": {
+        "description": "auditctl b32 fchmodat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchmodat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_236": {
+        "description": "b32 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_237": {
+        "description": "auditctl b32 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_238": {
+        "description": "b32 setxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/setxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_239": {
+        "description": "auditctl b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_240": {
+        "description": "auditctl b32 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_241": {
+        "description": "b32 fchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_242": {
+        "description": "b32 chown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_243": {
+        "description": "b32 fremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_244": {
+        "description": "auditctl b32 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_245": {
+        "description": "auditctl b32 removexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/removexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_246": {
+        "description": "b32 chmod",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/chmod/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_247": {
+        "description": "auditctl b32 lchown",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lchown/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_248": {
+        "description": "b32 fchownat",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fchownat/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_249": {
+        "description": "auditctl b32 lremovexattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lremovexattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_250": {
+        "description": "auditctl b32 fsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/fsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_251": {
+        "description": "auditctl b32 lsetxattr",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \"${UID_MIN}\" ] && auditctl -l | awk \"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -S/ &&/ -F *auid>=${UID_MIN}/ &&/lsetxattr/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}' || printf \"ERROR: Variable 'UID_MIN' is unset.\\\\n\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+    },
+    "custom_item_252": {
+        "description": "openssh-server is installed",
+        "rpm": "openssh-server-0.0.0-0",
+        "operator": "gt"
+    },
+    "custom_item_253": {
+        "description": "ssh config files - AllowTcpForwarding",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*.conf",
+        "regex": "^[\\\\s]*(?i)AllowTcpForwarding(?-i)[\\\\s]",
+        "expect": "^[\\\\s]*(?i)AllowTcpForwarding(?-i)[\\\\s]+\"?yes\"?[\\\\s]*$"
+    },
+    "custom_item_254": {
+        "description": "sshd -T - AllowTcpForwarding",
+        "cmd": "#!/bin/bash\n  {\n  ports=$(/bin/grep -s -P \"^(Port|Match)\" /etc/ssh/sshd_config /etc/sshd_config.d/*.conf | /bin/grep -P -o \"(Port|LocalPort)[\\\\s]+[\\\\d]+\" | /bin/awk '{print $2}; END {if (NR == 0) print \"22\"}' | /bin/uniq); for port in ${ports[@]}; do /sbin/sshd -T -C user=root -C host=\"$(hostname)\" -C addr=\"$(/bin/grep $(hostname) /etc/hosts | /bin/awk '{print $1}')\" -C lport=$port | echo \"port $port: $(/bin/grep -i ^allowtcpforwarding)\"; done | /bin/awk 'BEGIN {f=0} /allowtcpforwarding/i { if ($NF == \"yes\") f++; print $0} END {if (NR == 0) print \"Fail: no results returned\"; else if (f > 0) print \"Fail\"; else print \"Pass\" }'\n  }",
+        "expect": "^Pass$"
+    },
+    "custom_item_255": {
+        "description": "5.3.4 Ensure users must provide password for escalation",
+        "info": "The operating system must be configured so that users must provide a password for privilege escalation.\n\nWithout re-authentication, users may access resources or perform tasks for which they do not have authorization.\n\nWhen operating systems provide the capability to escalate a functional capability, it is critical the user re-authenticate.",
+        "solution": "Based on the outcome of the audit procedure, use visudo -fto edit the relevant sudoers file.\n\nRemove any line with occurrences of NOPASSWD tags in the file.\n\nImpact:\n\nThis will prevent automated processes from being able to elevate privileges. To include Ansible and AWS builds",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "file": "/etc/sudoers /etc/sudoers.d/*",
+        "regex": "^[^#]*NOPASSWD",
+        "expect": "^[^#]*NOPASSWD"
+    },
+    "custom_item_256": {
+        "description": "6.1.1 Audit system file permissions",
+        "info": "The RPM package manager has a number of useful options. One of these, the -V for RPM option, can be used to verify that system packages are correctly installed. The -V option can be used to verify a particular package or to verify all system packages. If no output is returned, the package is installed correctly. The following table describes the meaning of output from the verify option:\n\nCode Meaning\nS File size differs.\nM File mode differs (includes permissions and file type).\n5 The MD5 checksum differs.\nD The major and minor version numbers differ on a device file.\nL A mismatch occurs in a link.\nU The file ownership differs.\nG The file group owner differs.\nT The file time (mtime) differs.\n\nThe rpm -qf command can be used to determine which package a particular file belongs to. For example the following commands determines which package the /bin/bash file belongs to:\n\n# rpm -qf /bin/bash\nbash-4.1.2-29.el6.x86_64\n# rpm -S /bin/bash\nbash: /bin/bash\n\nTo verify the settings for the package that controls the /bin/bash file, run the following:\n\n# rpm -V bash-4.1.2-29.el6.x86_64\n.M....... /bin/bash\n# rpm --verify bash\n??5?????? c /etc/bash.bashrc\n\nNote that you can feed the output of the rpm -qf command to the rpm -V command:\n\n# rpm -V `rpm -qf /etc/passwd`\n.M...... c /etc/passwd\nS.5....T c /etc/printcap\n\nIt is important to confirm that packaged system files and directories are maintained with the permissions they were intended to have from the OS vendor.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Correct any discrepancies found and rerun the audit until output is clean or risk is mitigated or accepted.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3796",
+        "cmd": "/bin/rpm -Va --nomtime --nosize --nomd5 --nolinkto | /bin/awk '{ print } END { if (NR==0) print \"none\" }'",
+        "expect": "^none$"
+    }
+}

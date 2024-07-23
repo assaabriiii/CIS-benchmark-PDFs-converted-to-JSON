@@ -1,0 +1,42 @@
+{
+    "custom_item_1": {
+        "description": "VCTR-67-000023 - The vCenter Server must configure the vpxuser auto-password to be changed every 30 days.",
+        "info": "By default, the vpxuser password will be automatically changed by vCenter every 30 days. Ensure this setting meets site policies; if not, configure to meet password aging policies.\n\nNote: It is very important the password aging policy not be shorter than the default interval that is set to automatically change the vpxuser password, to preclude the possibility that vCenter might be locked out of an ESXi host.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters >> select a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'VirtualCenter.VimPasswordExpirationInDays' value to '30'.\n\nIf the value does not exist, create it by entering the values in the 'Key' and 'Value' fields and clicking 'Add'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server, run the following command:\n\nIf the setting already exists:\nGet-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays | Set-AdvancedSetting -Value 30\n\nIf the setting does not exist:\nNew-AdvancedSetting -Entity-Name VirtualCenter.VimPasswordExpirationInDays -Value 30",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-243089r879887_rule,STIG-ID|VCTR-67-000023,SWIFT-CSCv1|2.3,Vuln-ID|V-243089",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "VirtualCenter.VimPasswordExpirationInDays : ",
+        "expect": "VirtualCenter.VimPasswordExpirationInDays : 30$"
+    },
+    "custom_item_2": {
+        "description": "VCTR-67-000024 - The vCenter Server must configure the vpxuser password meets length policy.",
+        "info": "The vpxuser password default length is 32 characters. Ensure this setting meets site policies; if not, configure to meet password length policies.\n\nLonger passwords make brute-force password attacks more difficult. The vpxuser password is added by vCenter, meaning no manual intervention is normally required. The vpxuser password length must never be modified to less than the default length of 32 characters.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters >> select a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'config.vpxd.hostPasswordLength' value to '32'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server run the following command if the setting already exists:\n\nGet-AdvancedSetting -Entity-Name config.vpxd.hostPasswordLength | Set-AdvancedSetting -Value 32",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-243090r879887_rule,STIG-ID|VCTR-67-000024,SWIFT-CSCv1|2.3,Vuln-ID|V-243090",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.vpxd.hostPasswordLength : ",
+        "expect": "config.vpxd.hostPasswordLength : 32"
+    },
+    "custom_item_3": {
+        "description": "VCTR-67-000036 - The vCenter Server must produce audit records containing information to establish what type of events occurred.",
+        "info": "Without establishing what types of events occurred, it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.",
+        "solution": "From the vSphere Client, go to Hosts and Clusters >> select a vCenter Server >> Configure >> Settings >> Advanced Settings.\n\nClick 'Edit Settings' and configure the 'config.log.level' setting to 'info'.\n\nor\n\nFrom a PowerCLI command prompt while connected to the vCenter server, run the following command:\n\nGet-AdvancedSetting -Entity-Name config.log.level | Set-AdvancedSetting -Value info",
+        "reference": "800-53|SI-6d.,800-53r5|SI-6d.,CAT|II,CCI|CCI-002702,DISA_Benchmark|VMW_vSphere_6-7_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-6a.,Rule-ID|SV-243098r879845_rule,STIG-ID|VCTR-67-000036,Vuln-ID|V-243098",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "config.log.level : ",
+        "expect": "config.log.level : info"
+    },
+    "custom_item_4": {
+        "description": "VCTR-67-000067 - The vCenter Server must disable the Customer Experience Improvement Program (CEIP).",
+        "info": "The VMware CEIP sends VMware anonymized system information that is used to improve the quality, reliability, and functionality of VMware products and services. For confidentiality purposes, this feature must be disabled.",
+        "solution": "From the vSphere Client, go to Administration >> Deployment >> Customer Experience Improvement Program.\n\nClick the 'Leave' button.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_vCenter_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-243122r879887_rule,STIG-ID|VCTR-67-000067,SWIFT-CSCv1|2.3,Vuln-ID|V-243122",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "UserVars.HostClientCEIPOptIn : ",
+        "expect": "UserVars.HostClientCEIPOptIn : 2"
+    }
+}

@@ -1,0 +1,298 @@
+{
+    "custom_item_1": {
+        "description": "Review the list of Rackspace Tenants",
+        "info": "The Tenants and their current state will determine what services are available.",
+        "solution": "Review the list of Tenants. If any are unknown they should be investigated.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CCM-3|IVS-07,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,PCI-DSS|2.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "request": "getTenants",
+        "json_transform": ".tenants[] | \"Name: \\(.name), ID: \\(.id), Enabled: \\(.enabled)\""
+    },
+    "custom_item_2": {
+        "description": "Review the list of Current Rackspace Users",
+        "info": "Identifying and managing users is an important function in protecting your assets and information.",
+        "solution": "Users should be periodically reviewed. If any users are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CCM-3|IAM-02,CCM-3|IAM-09,CCM-3|IAM-11,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,PCI-DSS|3.5.1,PCI-DSS|7.1,PCI-DSS|7.1.1,PCI-DSS|7.1.2,PCI-DSS|7.1.3,PCI-DSS|7.2.1,PCI-DSS|7.2.2,PCI-DSS|8.5.1,PCI-DSS|12.5.4,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "request": "getUsers",
+        "json_transform": ".users[] | \"User Name: \\(.username), ID: \\(.id), Email: \\(.email), Enabled: \\(.enabled), RAX-AUTH:domainId: \\(.[\"RAX-AUTH:domainId\"]), RAX-AUTH:multiFactorEnabled: \\(.[\"RAX-AUTH:multiFactorEnabled\"]), RAX-AUTH:defaultRegion: \\(.[\"RAX-AUTH:defaultRegion\"])\""
+    },
+    "custom_item_3": {
+        "description": "Review the list of active Rackspace Role Names (RBAC)",
+        "info": "Identifying and managing roles assigned to users is an important function in protecting your assets and information.",
+        "solution": "Users and their roles should be periodically reviewed. If any user role assignments are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CCM-3|IAM-02,CCM-3|IAM-09,CCM-3|IAM-11,CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSS|3.5.1,PCI-DSS|7.1,PCI-DSS|7.1.1,PCI-DSS|7.1.2,PCI-DSS|7.1.3,PCI-DSS|7.2.1,PCI-DSS|7.2.2,PCI-DSS|8.5.1,PCI-DSS|12.5.4,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "request": "getRoles",
+        "json_transform": ".roles[] | \"Role Name: \\(.name)\""
+    },
+    "custom_item_4": {
+        "description": "Review the List of Rackspace Users with Admin Roles",
+        "info": "Identifying and managing admin roles assigned to users is an important function in protecting your assets and information.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Users and their roles should be periodically reviewed. If any user role assignments are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CCM-3|IAM-02,CCM-3|IAM-09,CCM-3|IAM-11,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,PCI-DSS|3.5.1,PCI-DSS|7.1,PCI-DSS|7.1.1,PCI-DSS|7.1.2,PCI-DSS|7.1.3,PCI-DSS|7.2.1,PCI-DSS|7.2.2,PCI-DSS|8.5.1,PCI-DSS|12.5.4,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "request": "getRoleUsers",
+        "json_transform": ".roles[] | \"Role: \\(.name), Users: \\([.users[].username] | join(\",\"))\"",
+        "regex": "Role:.*admin.*"
+    },
+    "custom_item_5": {
+        "description": "Review the List of Users with ROLE_NAME",
+        "info": "Identifying and managing roles assigned to users is an important function in protecting your assets and information.\n  Note - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Users and their roles should be periodically reviewed. If any user role assignments are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.1.1,800-53|AC-3(7),800-53r5|AC-3(7),CCM-3|IAM-02,CCM-3|IAM-09,CCM-3|IAM-11,CN-L3|7.1.2.2(g),CN-L3|7.1.3.2(c),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSS|3.5.1,PCI-DSS|7.1,PCI-DSS|7.1.1,PCI-DSS|7.1.2,PCI-DSS|7.1.3,PCI-DSS|7.2.1,PCI-DSS|7.2.2,PCI-DSS|8.5.1,PCI-DSS|12.5.4,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "request": "getRoleUsers",
+        "json_transform": ".roles[] | \"Role: \\(.name), Users: \\([.users[].username] | join(\",\"))\"",
+        "regex": "Role: @ROLE_NAME@"
+    },
+    "custom_item_6": {
+        "description": "Ensure that multi-factor authentication is enabled for all accounts",
+        "info": "Multi-factor authentication (MFA) provides an extra level of security for sign-in credentials. With MFA enabled, when users signs in to their Rackspace Cloud account, they will be prompted for their user name and password (the first factor - what they know), as well as for an SMS authentication code from their MFA assoicated phone device (the second factor - what they have).",
+        "solution": "Review the users who have MFA not enabled.",
+        "reference": "800-171|3.5.2,800-53|IA-5(11),800-53r5|IA-2(1),800-53r5|IA-2(2),CCM-3|IAM-02,CCM-3|IAM-09,CCM-3|IAM-11,CN-L3|7.1.3.1(f),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,NESA|T5.2.3,PCI-DSS|3.5.1,PCI-DSS|7.1,PCI-DSS|7.1.1,PCI-DSS|7.1.2,PCI-DSS|7.1.3,PCI-DSS|7.2.1,PCI-DSS|7.2.2,PCI-DSS|8.5.1,PCI-DSS|12.5.4,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.2,SWIFT-CSCv1|5.2",
+        "request": "getUsers",
+        "json_transform": ".users[] | \"User Name: \\(.username), Multi Factor Enabled: \\(.[\"RAX-AUTH:multiFactorEnabled\"])\"",
+        "regex": "Multi Factor Enabled:",
+        "expect": "Multi Factor Enabled: true"
+    },
+    "custom_item_7": {
+        "description": "Rackspace Servers and their details",
+        "info": "The Servers and their current state will determine what services are available.",
+        "solution": "Review the list of Servers. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getServers",
+        "json_transform": ".servers[] | \"Name: \\(.name), ID: \\(.id), Status: \\(.status), User_ID: \\(.user_id), Created: \\(.created), Updated: \\(.updated), Host_ID: \\(.hostId), Tenant_ID: \\(.tenant_id), Addresses: \\([.addresses.[].[].addr] | join(\",\"))\""
+    },
+    "custom_item_8": {
+        "description": "Rackspace Active Servers",
+        "info": "The Servers and their current state will determine what services are available.",
+        "solution": "Review the list of Servers. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getServers",
+        "json_transform": ".servers[] | select(.status==\"ACTIVE\") | \"Name: \\(.name), ID: \\(.id), Status: \\(.status), User_ID: \\(.user_id), Created: \\(.created), Updated: \\(.updated), Host_ID: \\(.hostId), Tenant_ID: \\(.tenant_id), Addresses: \\([.addresses.[].[].addr] | join(\",\"))\""
+    },
+    "custom_item_9": {
+        "description": "Rackspace Inactive Servers",
+        "info": "The Servers and their current state will determine what services are available.",
+        "solution": "Review the list of Servers. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getServers",
+        "json_transform": ".servers[] | select(.status!=\"ACTIVE\") | \"Name: \\(.name), ID: \\(.id), Status: \\(.status), User_ID: \\(.user_id), Created: \\(.created), Updated: \\(.updated), Host_ID: \\(.hostId), Tenant_ID: \\(.tenant_id), Addresses: \\([.addresses.[].[].addr] | join(\",\"))\""
+    },
+    "custom_item_10": {
+        "description": "Rackspace Servers created since the last scan",
+        "info": "The Servers and their current state will determine what services are available.\nNote - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Review the list of Servers. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getServers",
+        "json_transform": ".servers[] | select((.created | iso_8601_days_ago) < @SCAN_INTERVAL@) | \"Name: \\(.name), ID: \\(.id), Status: \\(.status), User_ID: \\(.user_id), Created: \\(.created), Updated: \\(.updated), Host_ID: \\(.hostId), Tenant_ID: \\(.tenant_id), Addresses: \\([.addresses.[].[].addr] | join(\",\"))\""
+    },
+    "custom_item_11": {
+        "description": "Rackspace Servers updated since the last scan",
+        "info": "The Servers and their current state will determine what services are available.\nNote - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Review the list of Servers. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getServers",
+        "json_transform": ".servers[] | select((.updated | iso_8601_days_ago) < @SCAN_INTERVAL@) | \"Name: \\(.name), ID: \\(.id), Status: \\(.status), User_ID: \\(.user_id), Created: \\(.created), Updated: \\(.updated), Host_ID: \\(.hostId), Tenant_ID: \\(.tenant_id), Addresses: \\([.addresses.[].[].addr] | join(\",\"))\""
+    },
+    "custom_item_12": {
+        "description": "Rackspace Server Flavors",
+        "info": "The Servers and their current state will determine what services are available.",
+        "solution": "Review the list of Server Flavors. If any are unknown they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getFlavors",
+        "json_transform": ".flavors[] | \"Name: \\(.name), ID: \\(.id), VCPUS: \\(.vcpus), Disk: \\(.disk), Ram: \\(.ram), Swap: \\(.swap)\""
+    },
+    "custom_item_13": {
+        "description": "Rackspace Server Images",
+        "info": "The Servers and their current state will determine what services are available.",
+        "solution": "Review the list of Server Images. If any are unknown they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getImages",
+        "json_transform": ".images[] | \"Name: \\(.name), ID: \\(.id), Links: \\([.links[].href] | join(\",\"))\""
+    },
+    "custom_item_14": {
+        "description": "Review the list of Databases Deployed In Rackspace",
+        "info": "The Databases and their current state will determine what services are available.",
+        "solution": "Review the list of Databases. If any are unknown or not in the expected state they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getDatabaseInstances",
+        "json_transform": ".instances[] | \"Name: \\(.name), Status: \\(.status), ID: \\(.id), Hostname: \\(.hostname), Volume Size: \\(.volume.size), Flavor ID: \\(.flavor.id), Datastore Version: \\(.datastore.version), Datastore Type: \\(.datastore.type)\""
+    },
+    "custom_item_15": {
+        "description": "Review the list of Rackspace Database Flavors",
+        "info": "The Databases and their current state will determine what services are available.",
+        "solution": "Review the list of Database Flavors. If any are unknown they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getDatabaseFlavors",
+        "json_transform": ".flavors[] | \"Name: \\(.name), ID: \\(.id), Ram: \\(.ram), Links: \\([.links[].href] | join(\",\"))\""
+    },
+    "custom_item_16": {
+        "description": "Review Users per Rackspace Database Instance",
+        "info": "Identifying and managing users is an important function in protecting your assets and information.",
+        "solution": "Users should be periodically reviewed. If any users are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CCM-3|IVS-07,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,PCI-DSS|2.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "request": "getDatabaseInstanceUsers",
+        "json_transform": ".instances[] | .name as $instance | .users[] | \"Instance: \\($instance), Host: \\(.host), Name: \\(.name), Database: \\(.databases[].name)\""
+    },
+    "custom_item_17": {
+        "description": "Rackspace Database Backups - Every DB instance backed up since the last scan.",
+        "info": "The Databases and their current state will determine what services are available. Recent backups ensure that relevant data is available in the event that the system needs to be restored.\nNote - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Update database backups for each database within today - X (scan_interval) days",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53r5|CP-9,CCM-3|BCR-02,CSF|PR.IP-4,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,NESA|M5.2.3,NESA|T2.2.4",
+        "request": "getDatabaseBackups",
+        "json_transform": ".instances[] | .name as $name | .backups[] | [select((.updated | iso_8601_days_ago) < @SCAN_INTERVAL@ )] as $relevant_backups | \"Recent Backups for \\($name) (Total = \\($relevant_backups | length))\"",
+        "not_expect": "Total[\\s]=[\\s]0"
+    },
+    "custom_item_18": {
+        "description": "Rackspace Database Backups created since the last scan",
+        "info": "The Databases and their current state will determine what services are available. Recent backups ensure that relevant data is available in the event that the system needs to be restored.\nNote - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Create database backups for each database within each scan interval period.",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53r5|CP-9,CCM-3|BCR-02,CSF|PR.IP-4,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,NESA|M5.2.3,NESA|T2.2.4",
+        "request": "getDatabaseBackups",
+        "json_transform": ".instances[] | .name as $name | .backups[] | select((.created | iso_8601_days_ago) < @SCAN_INTERVAL@ ) | \"Instance Name: \\($name), Name: \\(.name), Size: \\(.size), ID: \\(.id), Status: \\(.status), Updated: \\(.updated), Created: \\(.created), Instance ID: \\(.instance_id), Description: \\(.description), Datastore Version: \\(.datastore.version), Datastore Version ID: \\(.datastore.version_id), Datastore Type: \\(.datastore.type), Location Ref: \\(.locationRef)\""
+    },
+    "custom_item_19": {
+        "description": "Review the list of Database Backups",
+        "info": "The Databases and their current state will determine what services are available. Recent backups ensure that relevant data is available in the event that the system needs to be restored.",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53r5|CP-9,CCM-3|BCR-02,CSF|PR.IP-4,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,NESA|M5.2.3,NESA|T2.2.4",
+        "request": "getDatabaseBackups",
+        "json_transform": ".instances[] | .name as $name | .backups[] | \"Instance Name: \\($name), Name: \\(.name), Size: \\(.size), ID: \\(.id), Status: \\(.status), Updated: \\(.updated), Created: \\(.created), Instance ID: \\(.instance_id), Description: \\(.description), Datastore Version: \\(.datastore.version), Datastore Version ID: \\(.datastore.version_id), Datastore Type: \\(.datastore.type), Location Ref: \\(.locationRef)\""
+    },
+    "custom_item_20": {
+        "description": "Ensure that database instances do not allow root access",
+        "info": "The Databases and their current state will determine what services are available. Changes you make as a root user may cause detrimental effects to the database instance.",
+        "solution": "Review the list of Database Instances with 'root access enabled = true'. If any are found they should be investigated and if possible, root access should be disabled.",
+        "reference": "800-171|3.1.5,800-53|AC-6(5),800-53r5|AC-6(5),CCM-3|IVS-07,CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(5),NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM32,NIAv2|AM33,NIAv2|VL3a,PCI-DSS|2.2,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "request": "getDatabaseInstanceRootEnabled",
+        "json_transform": ".instances[] | \"Name: \\(.name), Root Enabled: \\(.rootEnabled)\"",
+        "regex": "Root Enabled:",
+        "not_expect": "Root Enabled: true"
+    },
+    "custom_item_21": {
+        "description": "Ensure that the 'skip_show_database' database flag for a Cloud Databases Mysql instance is set to '1'",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nskip_show_database - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Skip Show Database: \\(.instance.configuration.skip_show_database)\"",
+        "regex": "Skip Show Database:",
+        "expect": "Skip Show Database: 1",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1"
+    },
+    "custom_item_22": {
+        "description": "Ensure that the 'local-infile' database flag for a Cloud Databases Mysql instance is set to '0'",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nlocal-infile - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Local Infile: \\(.instance.configuration.\"local-infile\")\"",
+        "regex": "Local Infile:",
+        "expect": "Local Infile: 0",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1"
+    },
+    "custom_item_23": {
+        "description": "Ensure that the 'max_user_connections' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nmax_user_connections - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Max User Connections: \\(.instance.configuration.max_user_connections)\"",
+        "regex": "Max User Connections:",
+        "expect": "Max User Connections: @DBC_MAX_USER_CONN@",
+        "reference": "800-53|SC-5(2),800-53r5|SC-5(2),CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,SWIFT-CSCv1|6.4"
+    },
+    "custom_item_24": {
+        "description": "Ensure that the 'max_connections' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nmax_connections - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Max Connections: \\(.instance.configuration.max_connections)\"",
+        "regex": "Max Connections:",
+        "expect": "Max Connections: @DBC_MAX_CONN@",
+        "reference": "800-53|SC-5(2),800-53r5|SC-5(2),CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,SWIFT-CSCv1|6.4"
+    },
+    "custom_item_25": {
+        "description": "Ensure that the 'max_allowed_packet' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nmax_allowed_packet - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Max Allowed Packet: \\(.instance.configuration.max_allowed_packet)\"",
+        "regex": "Max Allowed Packet:",
+        "expect": "Max Allowed Packet: @DBC_MAX_ALLOW_PACKET@",
+        "reference": "800-53|SC-5(2),800-53r5|SC-5(2),CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,SWIFT-CSCv1|6.4"
+    },
+    "custom_item_26": {
+        "description": "Ensure that the 'max_connect_errors' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nmax_connect_errors - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Max Connect Errors: \\(.instance.configuration.max_connect_errors)\"",
+        "regex": "Max Connect Errors:",
+        "expect": "Max Connect Errors: @DBC_MAX_CONN_ERRS@",
+        "reference": "800-53|SC-5(2),800-53r5|SC-5(2),CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(2),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,SWIFT-CSCv1|6.4"
+    },
+    "custom_item_27": {
+        "description": "Ensure that the 'wait_timeout' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nwait_timeout - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), Wait Timeout: \\(.instance.configuration.wait_timeout)\"",
+        "regex": "Wait Timeout:",
+        "expect": "Wait Timeout: @DBC_WAIT_TIMEOUT@",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1"
+    },
+    "custom_item_28": {
+        "description": "Ensure that the 'sql_mode' database flag for a Cloud Databases Mysql instance is set",
+        "info": "RackSpace offers the option to create customized database configuration templates. These templates can be applied to any existing database instances and allow the user to modify system variable parameters from their default values. Establishing and maintaining baseline configurations is a security best practice.\n\nsql_mode - The current server SQL mode, which can be set dynamically.\n\nNOTE - Please use an appropriate value that matches the policy of your organization or leave the .audit variable in its default state if the system variable parameter is not applicable for your environment.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CCM-3|IVS-07,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,PCI-DSS|2.2,QCSC-v1|8.2.1",
+        "request": "getDatabaseInstanceConfiguration",
+        "json_transform": ".instances[] | \"Name: \\(.name), SQL Mode: \\(.instance.configuration.sql_mode)\"",
+        "regex": "SQL Mode:",
+        "expect": "SQL Mode: @DBC_SQL_MODE@"
+    },
+    "custom_item_29": {
+        "description": "Ensure that logins for Cloud Databases Mysql instance are restricted from the internet",
+        "info": "Identifying and managing users is an important function in protecting your assets and information.",
+        "solution": "Users should be periodically reviewed. If any users are not documented they should be investigated and/or removed.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CCM-3|IVS-07,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSS|2.2,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "request": "getDatabaseInstanceUsers",
+        "json_transform": ".instances[] | .name as $name | .users[] | \"Name: \\($name), User Name: \\(.name), Host: \\(.host)\"",
+        "regex": "Host:",
+        "not_expect": "Host: %"
+    },
+    "custom_item_30": {
+        "description": "Review the list of Domains",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.",
+        "solution": "Review the list of Domains. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getDNSDomains",
+        "json_transform": ".domains[] | \"Name: \\(.name), ID: \\(.id), Account ID: \\(.accountId), Email: \\(.emailAddress), Updated: \\(.updated), Created: \\(.created)\""
+    },
+    "custom_item_31": {
+        "description": "Review the list of all Domains created since the last scan",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.\n  Note - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Review the list of Domains. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getDNSDomains",
+        "json_transform": ".domains[] | select((.created | iso_8601_days_ago) < @SCAN_INTERVAL@) | \"Name: \\(.name), ID: \\(.id), Account ID: \\(.accountId), Email: \\(.emailAddress), Updated: \\(.updated), Created: \\(.created)\""
+    },
+    "custom_item_32": {
+        "description": "Review the list of all Domains updated since the last scan",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.\n  Note - This check uses a variable supplied at .audit scan time via the User Interface. Please ensure the variable value is populated correctly.",
+        "solution": "Review the list of Domains. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getDNSDomains",
+        "json_transform": ".domains[] | select((.updated | iso_8601_days_ago) < @SCAN_INTERVAL@) | \"Name: \\(.name), ID: \\(.id), Account ID: \\(.accountId), Email: \\(.emailAddress), Updated: \\(.updated), Created: \\(.created)\""
+    },
+    "custom_item_33": {
+        "description": "Rackspace Networks and their attached subnets",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.",
+        "solution": "Review the list of Networks. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getCloudNetworks",
+        "json_transform": ".networks[] | \"Name: \\(.name), ID: \\(.id), Subnets: \\(.subnets[])\""
+    },
+    "custom_item_34": {
+        "description": "Rackspace Subnet Details",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.",
+        "solution": "Review the list of Subnet Details. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getCloudSubnets",
+        "json_transform": ".subnets[] | \"ID: \\(.id), CIDR: \\(.cidr), Gateway IP: \\(.gateway_ip), IP Version: \\(.ip_version), Name: \\(.name), DHCP Enabled: \\(.enable_dhcp), Network ID: \\(.network_id), Tenant ID: \\(.tenant_id), Allocation Pool: \\(.allocation_pools[].start) - \\(.allocation_pools[].end)\""
+    },
+    "custom_item_35": {
+        "description": "Review the list of Ports and their details",
+        "info": "Different security requirements mandate different security controls. It is a security best practice to segment infrastructure into zones that impose similar security controls.",
+        "solution": "Review the list of Ports. If any are missing or undocumented they should be investigated.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CCM-3|IVS-07,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv6|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,NESA|T1.2.1,NESA|T1.2.2,PCI-DSS|2.2",
+        "request": "getCloudPorts",
+        "json_transform": ".ports[] | \"ID: \\(.id), Status: \\(.status), Admin State Up: \\(.admin_state_up), Network ID: \\(.network_id), Tenant ID: \\(.tenant_id), Device Owner: \\(.device_owner), Mac_address: \\(.mac_address), Fixed IPs: \\(.fixed_ips[])\""
+    }
+}

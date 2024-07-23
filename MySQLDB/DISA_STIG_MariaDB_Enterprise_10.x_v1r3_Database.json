@@ -1,0 +1,472 @@
+{
+    "custom_item_1": {
+        "description": "MADB-10-000100 - MariaDB must limit the number of concurrent sessions to an organization-defined number per user for all accounts and/or account types.",
+        "info": "Database management includes the ability to control the number of users and user sessions utilizing MariaDB. Unlimited concurrent connections to MariaDB could allow a successful Denial of Service (DoS) attack by exhausting connection resources; and a system can also fail or be degraded by an overload of legitimate users. Limiting the number of concurrent sessions per user is helpful in reducing these risks.\n\nThis requirement addresses concurrent session control for a single account. It does not address concurrent sessions by a single user via multiple system accounts; and it does not deal with the total number of sessions across all accounts.\n\nThe capability to limit the number of concurrent sessions per user must be configured in or added to MariaDB (for example, by use of a logon trigger), when this is technically feasible. Note that it is not sufficient to limit sessions via a web server or application server alone, because legitimate users and adversaries can potentially connect to MariaDB by other means.\n\nThe organization will need to define the maximum number of concurrent sessions by account type, by account, or a combination thereof. In deciding on the appropriate number, it is important to consider the work requirements of the various types of users. For example, 2 might be an acceptable limit for general users accessing the database via an application; but 10 might be too few for a database administrator using a database management GUI tool, where each query tab and navigation pane may count as a separate session.\n\n(Sessions may also be referred to as connections or logons, which for the purposes of this requirement are synonyms.)\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To limit the number of connections allowed by a specific user, as a user with appropriate privileges, run the following SQL:\n\nMariaDB> GRANT USAGE ON *.* TO  'username'@'host'  WITH MAX_USER_CONNECTIONS number_of_connections;",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|III,CCI|CCI-000054,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-253666r879511_rule,STIG-ID|MADB-10-000100,Vuln-ID|V-253666",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT user, max_user_connections FROM mysql.user;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_2": {
+        "description": "MADB-10-000400 - MariaDB must protect against a user falsely repudiating having performed organization-defined actions.",
+        "info": "Nonrepudiation of actions taken is required in order to maintain data integrity. Examples of particular actions taken by individuals include creating information, sending a message, approving information (e.g., indicating concurrence or signing a contract), and receiving a message.\n\nNonrepudiation protects against later claims by a user of not having created, modified, or deleted a particular data item or collection of data in the database.\n\nIn designing a database, the organization must define the types of data and the user actions that must be protected from repudiation. The implementation must then include building audit features into the application data tables and configuring MariaDB's audit tools to capture the necessary audit trail. Design and implementation also must ensure that applications pass individual user identification to MariaDB, even where the application connects to MariaDB with a standard, shared account.\n\nIt is recommended to not allow shared accounts, including root. The root user is known by all attackers, and often used in attempted attacks on the database servers.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove shared accounts which are not documented and have been determined to not be necessary.\n\nMariaDB> DROP USER 'user'@'hostname';",
+        "reference": "800-53|AU-10,800-53r5|AU-10,CAT|II,CCI|CCI-000166,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-10,NESA|T4.3.1,NESA|T7.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253669r879554_rule,STIG-ID|MADB-10-000400,Vuln-ID|V-253669",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT user, host FROM mysql.user;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_3": {
+        "description": "MADB-10-000500 - MariaDB must provide audit record generation capability for DoD-defined auditable events within all DBMS/database components.",
+        "info": "Without the capability to generate audit records, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within MariaDB (e.g., process, module). Certain specific application functionalities may be audited as well. The list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records.\n\nDoD has defined the list of events for which MariaDB will provide an audit record generation capability as the following:\n\n(i) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels);\n\n(ii) Access actions, such as successful and unsuccessful logon attempts, privileged activities, or other system-level access, starting and ending time for user access to the system, concurrent logons from different workstations, successful and unsuccessful accesses to objects, all program initiations, and all direct access to the information system; and\n\n(iii) All account creation, modification, disabling, and termination actions.\n\nOrganizations may define additional events requiring continuous or ad hoc auditing.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure MariaDB to generate audit records for at least the DoD minimum set of events.\n\nEdit the mariadb-enterprise.cnf configuration file located in /etc/my.cnf.d/.\n\nUnder [mariadb], add the following:\n\nserver_audit_logging = ON\n\nSave the configuration file. This change will not take effect until MariaDB Enterprise Server is restarted.\n\nUsing the MariaDB Enterprise Audit plugin, MariaDB can be configured to audit these requests.\n\nThe MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters. Ex:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));\n\nMore information about MariaDB auditing can be found here: https://mariadb.com/docs/security/mariadb-enterprise-audit/",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12a.,800-53r5|AU-12a.,CAT|II,CCI|CCI-000169,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12a.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253670r879559_rule,STIG-ID|MADB-10-000500,SWIFT-CSCv1|6.4,Vuln-ID|V-253670",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_4": {
+        "description": "mysql.user",
+        "sql_request": "SELECT user, host, insert_priv, update_priv, delete_priv, drop_priv  FROM mysql.user  WHERE insert_priv = 'y' OR update_priv = 'y' OR delete_priv = 'y' OR drop_priv = 'y';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_5": {
+        "description": "mysql.db",
+        "sql_request": "SELECT user, host, insert_priv, update_priv, delete_priv, drop_priv FROM mysql.db WHERE db = 'mysql' AND (insert_priv = 'y' OR update_priv = 'y' OR delete_priv = 'y' OR drop_priv = 'y');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_6": {
+        "description": "mysql.tables_priv",
+        "sql_request": "SELECT user, host, db, table_name, grantor, table_priv, timestamp, column_priv FROM mysql.tables_priv WHERE db = 'mysql' AND table_name IN ('server_audit_filters','server_audit_users') AND (table_priv LIKE '%Insert%' OR table_priv LIKE '%Update%' OR table_priv LIKE '%Delete%' OR table_priv LIKE '%Drop%');",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_7": {
+        "description": "MADB-10-000900 - MariaDB must initiate session auditing upon startup.",
+        "info": "Session auditing is for use when a user's activities are under investigation. To be sure of capturing all activity during those periods when session auditing is in use, it must be in operation for the whole time MariaDB is running.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If not already exists, create a named filter with the required auditing for the user in question. Example:\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('session_auditing',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'table_event':[\n               'WRITE',\n               'CREATE',\n               'DROP',\n               'RENAME',\n               'ALTER'\n            ]\n         }'\n      ));\n\nThen assign the named filter to the user. Example:\n\nMariaDB> INSERT INTO mysql.server_audit_users (host, user, filtername) VALUES ('%', 'username', 'session_auditing');\n\nReload filters.\n\nMariaDB> SET GLOBAL server_audit_reload_filters = ON;",
+        "reference": "800-53|AU-14(1),800-53r5|AU-14(1),CAT|II,CCI|CCI-001464,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-14,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253674r879562_rule,STIG-ID|MADB-10-000900,SWIFT-CSCv1|6.4,Vuln-ID|V-253674",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT sau.host, sau.user, saf.filtername, JSON_DETAILED(saf.rule) FROM mysql.server_audit_filters saf JOIN mysql.server_audit_users sau ON saf.filtername = sau.filtername WHERE saf.filtername != 'default';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_8": {
+        "description": "MADB-10-003100 - Default demonstration and sample databases, database objects, and applications must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives. Examples include, but are not limited to, installing advertising software, demonstrations, or browser plugins not related to requirements or providing a wide array of functionality, not required for every mission, that cannot be disabled.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nDemonstration and sample database objects and applications present publicly known attack points for malicious users. These demonstration and sample objects are meant to provide simple examples of coding-specific functions and are not developed to prevent vulnerabilities from being introduced to the DBMS and host system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If a test database is found, this is a sign that the mysql_secure_installation script was not ran when the database software was installed. It is recommended to do so. This script will prompt the user to set the MariaDB root user's password, remove all anonymous users, disallow the root user from logging in remotely to the database, remove the test database and access to it, and then reload the privilege tables.\n\n$ mariadb-secure-installation\n\nreply Y to setting a root password if one is not already set.\n\nreply Y to Remove anonymous users\n\nreply Y to disallow root login remotely\n\nreply Y to Remove test database and access to it\n\nreply Y to Reload privilege tables now (this ensures that all changes made so far will take effect immediately)\n\nNote: For this request only the 'reply Y to Remove' test database and access to it is necessary, but 'Y' to all the questions is recommended.\n\nAlternatively, simply dropping the test database will remedy the finding.\n\nMariaDB> DROP DATABASE test;",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-253690r879587_rule,STIG-ID|MADB-10-003100,SWIFT-CSCv1|2.3,Vuln-ID|V-253690",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW DATABASES;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_9": {
+        "description": "MADB-10-003200 - Unused database components, DBMS software, and database objects must be removed.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for software products to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nDBMSs must adhere to the principles of least functionality by providing only essential capabilities.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To uninstall the plugin but leave the libraries in place:\n\nMariaDB> UNINSTALL PLUGIN plugin_name;\n\nTo uninstall the plugin and the associated libraries:\n\nMariaDB> UNINSTALL SONAME plugin_name;",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-253691r879587_rule,STIG-ID|MADB-10-003200,SWIFT-CSCv1|2.3,Vuln-ID|V-253691",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW PLUGINS;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_10": {
+        "description": "MADB-10-003400 - Access to external executables must be disabled or restricted.",
+        "info": "Information systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nIt is detrimental for applications to provide, or install by default, functionality exceeding requirements or mission objectives.\n\nApplications must adhere to the principles of least functionality by providing only essential capabilities.\n\nMariaDB may spawn additional external processes to execute procedures that are defined in MariaDB but stored in external host files (external procedures). The spawned process used to execute the external procedure may operate within a different OS security context than MariaDB and provide unauthorized access to the host system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To disable LOAD DATA LOCAL INFILE make the following update as the database administrator:\n\nEdit the mariadb-enterprise.cnf configuration file located in /etc/my.cnf.d/.\n\nUnder [mariadb], add the following:\n\nlocal_infile = 0\n\nSave the configuration file. This change will not take effect until MariaDB Enterprise Server is restarted.\n\nTo remove FILE and GRANT OPTION privileges use the right combination of the following commands:\n1. revoke FILE privilege from a user\nMariaDB> REVOKE FILE FROM 'user'@'host';\n\n2. revoke FILE privilege from a role\nMariaDB>  REVOKE FILE FROM role;\n\n3. revoke GRANT OPTION privilege from a user\nMariaDB> REVOKE GRANT OPTION FROM 'user'@'host';\n\n4. revoke a role grant from a user\nMariaDB>  REVOKE ROLE FROM grantee;",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-253692r879587_rule,STIG-ID|MADB-10-003400,SWIFT-CSCv1|2.3,Vuln-ID|V-253692",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'local_infile';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_11": {
+        "description": "MADB-10-003500 - MariaDB must be configured to prohibit or restrict the use of organization-defined functions, ports, protocols, and/or services, as defined in the PPSM CAL and vulnerability assessments.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols/services on information systems.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., email and web services); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the application must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or address authorized quality-of-life issues.\n\nDatabase Management Systems using ports, protocols, and services deemed unsafe are open to attack through those ports, protocols, and services. This can allow unauthorized access to the database and through the database to other components of the information system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Modify the MariaDB configuration file located within /etc/my.cnf.d/ and update the variable port to an acceptable port. Restart MariaDB Enterprise Server.\n\nExample:\n\n[server]\nport = 4008",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-253693r879588_rule,STIG-ID|MADB-10-003500,SWIFT-CSCv1|2.3,Vuln-ID|V-253693",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%port%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_12": {
+        "description": "MADB-10-003600 - MariaDB must uniquely identify and authenticate organizational users (or processes acting on behalf of organizational users).",
+        "info": "To ensure accountability and prevent unauthenticated access, organizational users must be identified and authenticated to prevent potential misuse and compromise of the system.\n\nOrganizational users include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors). Organizational users (and any processes acting on behalf of users) must be uniquely identified and authenticated for all accesses, except the following:\n\n(i) Accesses explicitly identified and documented by the organization. Organizations document specific user actions that can be performed on the information system without identification or authentication; and\n(ii) Accesses that occur through authorized use of group authenticators without individual authentication. Organizations may require unique identification of individuals using shared accounts, for detailed accountability of individual activity.\n\nIt is recommended to not allow shared accounts, including root. The root user is known by all attackers, and often used in attempted attacks on the database servers.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove shared accounts which are not documented and have been determined to not be necessary.\n\nMariaDB> DROP USER 'user'@'hostname';",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253694r879589_rule,STIG-ID|MADB-10-003600,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-253694",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT user, host FROM mysql.user;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_13": {
+        "description": "MADB-10-003700 - If MariaDB authentication, using passwords, is employed, then MariaDB must enforce the DoD standards for password complexity.",
+        "info": "OS/enterprise authentication and identification must be used (SRG-APP-000023-DB-000001). Native MariaDB authentication may be used only when circumstances make it unavoidable; and must be documented and AO-approved.\n\nThe DoD standard for authentication is DoD-approved PKI certificates. Authentication based on User ID and Password may be used only when it is not possible to employ a PKI certificate and requires AO approval.\n\nIn such cases, the DoD standards for password complexity and lifetime must be implemented. DBMS products that can inherit the rules for these from the operating system or access control program (e.g., Microsoft Active Directory) must be configured to do so. For MariaDB, the rules must be enforced using available configuration parameters or custom code.\n\nBy default, MariaDB Enterprise Server has the simple_password_check plugin installed and enabled. However, the default password requirements are eight character minimum, one numeric character, and one special character.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Locate the MariaDB Enterprise Server configuration file (mariadb-enterprise.cnf) which contains the simple_password_check plugin variables within /etc/my.cnf.d/. Edit the variables.\n\nExample:\n\nsimple_password_check_digits = 2\nsimple_password_check_letters_same_case = 2\nsimple_password_check_minimal_length = 15\nsimple_password_check_other_characters = 2",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|I,CCI|CCI-000192,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253695r879601_rule,STIG-ID|MADB-10-003700,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-253695",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'simple_password_check_%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_14": {
+        "description": "MADB-10-003750 - If MariaDB authentication using passwords is employed, MariaDB must enforce the DoD standards for password lifetime.",
+        "info": "OS/enterprise authentication and identification must be used (SRG-APP-000023-DB-000001). Native MariaDB authentication may be used only when circumstances make it unavoidable and must be documented and AO-approved.\n\nThe DoD standard for authentication is DoD-approved PKI certificates. Authentication based on User ID and Password may be used only when it is not possible to employ a PKI certificate and requires AO approval.\n\nIn such cases, the DoD standards for password complexity and lifetime must be implemented. DBMS products that can inherit the rules for these from the operating system or access control program (e.g., Microsoft Active Directory) must be configured to do so. For MariaDB, the rules must be enforced using available configuration parameters or custom code.",
+        "solution": "Locate the MariaDB Enterprise Server configuration file (mariadb-enterprise.cnf) that contains the password variables within /etc/my.cnf.d/. Edit the variables.\n\nExample:\n\ndefault_password_lifetime = 60",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000192,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253696r879601_rule,STIG-ID|MADB-10-003750,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-253696",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'default_password_lifetime%';",
+        "sql_expect": "default_password_lifetime"
+    },
+    "custom_item_15": {
+        "description": "MADB-10-004200 - MariaDB must map PKI ID to an associated user account.",
+        "info": "The DoD standard for authentication is DoD-approved PKI certificates. Once a PKI is validated, it is mapped to the DBMS user account for the authentication identity and then can be used for authorization decisions.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Example command to create users with proper X509 certificate subject and issuer:\n\nMariaDB>CREATE USER 'janedoe'@'%' IDENTIFIED BY 'Some_Password_Here_$9'\nREQUIRE SUBJECT '/C=US/ST=Ohio/L=Columbus/O=MariaDB Corporation/CN=Jane Doe'\nAND ISSUER '/C=US/ST=Ohio/L=Columbus/O=MariaDB Corporation/CN=MariaDB CA';",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(c),800-53r5|IA-5(2)(c),CAT|II,CCI|CCI-000187,CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(c),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253701r879614_rule,STIG-ID|MADB-10-004200,Vuln-ID|V-253701",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT user, host, ssl_type, CAST(x509_issuer AS CHAR) AS issuer, CAST(x509_subject AS CHAR) AS subject FROM mysql.user;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_16": {
+        "description": "have_openssl",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%have_openssl';",
+        "sql_expect": "have_openssl"
+    },
+    "custom_item_17": {
+        "description": "version_ssl_library",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%version_ssl_library';",
+        "sql_expect": "version_ssl_library"
+    },
+    "custom_item_18": {
+        "description": "MADB-10-004500 - The MariaDB must uniquely identify and authenticate nonorganizational users (or processes acting on behalf of nonorganizational users).",
+        "info": "Nonorganizational users include all information system users other than organizational users, which include organizational employees or individuals the organization deems to have equivalent status of employees (e.g., contractors, guest researchers, individuals from allied nations).\n\nNonorganizational users must be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.\n\nAccordingly, a risk assessment is used in determining the authentication needs of the organization.\n\nScalability, practicality, and security are simultaneously considered in balancing the need to ensure ease of use for access to federal information and information systems with the need to protect and adequately mitigate risk to organizational operations, organizational assets, individuals, other organizations, and the nation.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove shared accounts which are not documented and have been determined to not be necessary.\n\nMariaDB> DROP USER 'user'@'hostname';",
+        "reference": "800-53|IA-8,800-53r5|IA-8,CAT|II,CCI|CCI-000804,CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-8,ITSG-33|IA-8a.,NESA|T4.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253704r879617_rule,STIG-ID|MADB-10-004500,SWIFT-CSCv1|2.8,Vuln-ID|V-253704",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT user, host FROM mysql.user;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_19": {
+        "description": "tcp_keepalive_interval",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'tcp_keepalive_interval';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_20": {
+        "description": "tcp_keepalive_probes",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'tcp_keepalive_probes';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_21": {
+        "description": "tcp_keepalive_time",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'tcp_keepalive_time';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_22": {
+        "description": "tcp_nodelay",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'tcp_nodelay';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_23": {
+        "description": "max_statement_time",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'max_statement_time';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_24": {
+        "description": "MADB-10-004900 - MariaDB must maintain the authenticity of communications sessions by guarding against man-in-the-middle attacks that guess at Session ID values.",
+        "info": "Unique session IDs help to reduce predictability of said identifiers. Unique session IDs address man-in-the-middle attacks, including session hijacking or insertion of false information into a session. If the attacker is unable to identify or guess the session information related to pending application traffic, they will have more difficulty in hijacking the session or otherwise manipulating valid sessions.\n\nWhen a user logs out, or when any other session termination event occurs, the DBMS must terminate the user session(s) to minimize the potential for sessions to be hijacked.",
+        "solution": "Modify the MariaDB configuration file located within /etc/my.cnf.d/ and set the variable require_secure_transport to 'ON' under the server section. Restart MariaDB Enterprise Server.\n\nExample:\n\n[server]\nrequire_secure_transport = ON",
+        "reference": "800-171|3.13.15,800-53|SC-23(3),800-53r5|SC-23(3),CAT|II,CCI|CCI-001188,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23(3),NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-253707r879639_rule,STIG-ID|MADB-10-004900,Vuln-ID|V-253707",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'require_secure_transport';",
+        "sql_expect": "require_secure_transport"
+    },
+    "custom_item_25": {
+        "description": "MADB-10-005000 - MariaDB must fail to a secure state if system initialization fails, shutdown fails, or aborts fail.",
+        "info": "Failure to a known state can address safety or security in accordance with the mission/business needs of the organization.\n\nFailure to a known secure state helps prevent a loss of confidentiality, integrity, or availability in the event of a failure of the information system or a component of the system.\n\nFailure to a known safe state helps prevent systems from failing to a state that may cause loss of data or unauthorized access to system resources. Systems that fail suddenly and with no incorporated failure state planning may leave the hosting system available but with a reduced security protection capability. Preserving information system state data also facilitates system restart and return to the operational mode of the organization with less disruption of mission/business processes.\n\nMariaDB must fail to a known consistent state. Transactions must be successfully completed or rolled back.\n\nIn general, security mechanisms must be designed so that a failure will follow the same execution path as disallowing the operation. For example, application security methods, such as isAuthorized(), isAuthenticated(), and validate(), must all return false if there is an exception during processing. If security controls can throw exceptions, they must be very clear about exactly what that condition means.\n\nAbort refers to stopping a program or function before it has finished naturally. The term abort refers to both requested and unexpected terminations.\n\nMariaDB is a fully functional ACID RDBMS with persistent storage, logs, rollback, recovery, and backup procedures. InnoDB is the default storage engine for MariaDB and all uncommitted transactions are rolled back upon restart from a failure. The process is automatic and all incomplete transactions will be rolled back to a consistent state to guarantee consistency. Users can also conduct a recovery to a point in time if needed.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If value of log_bin is 'OFF', modify the MariaDB configuration file. This can be found in /etc/my.cnf.d/.\n\nOptionally specify the location of the binary logs by specifying the full path for the binary logs.\n\n[mariadb]\nlog_bin=mariadb_bin",
+        "reference": "800-53|SC-24,800-53r5|SC-24,CAT|II,CCI|CCI-001190,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-24,ITSG-33|SC-24a.,QCSC-v1|5.2.1,Rule-ID|SV-253708r879640_rule,STIG-ID|MADB-10-005000,Vuln-ID|V-253708",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'log_bin';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_26": {
+        "description": "MADB-10-005100 - In the event of a system failure, MariaDB must preserve any information necessary to determine cause of failure and any information necessary to return to operations with least disruption to mission processes.",
+        "info": "Failure to a known state can address safety or security in accordance with the mission/business needs of the organization.\n\nFailure to a known secure state helps prevent a loss of confidentiality, integrity, or availability in the event of a failure of the information system or a component of the system.\n\nPreserving information system state information helps to facilitate system restart and return to the operational mode of the organization with less disruption of mission/business processes.\n\nSince it is usually not possible to test this capability in a production environment, systems must either be validated in a testing environment or prior to installation. This requirement is usually a function of the design of the IDPS component. Compliance can be verified by acceptance/validation processes or vendor attestation.\n\nMariaDB is a fully functional ACID RDBMS with persistent storage, logs, rollback, recovery, and backup procedures. InnoDB is the default storage engine for MariaDB and all uncommitted transactions are rolled back upon restart from a failure. The process is automatic and all incomplete transactions will be rolled back to a consistent state to guarantee consistency. Users can also conduct a recovery to a point in time if needed.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If value of log_bin is 'OFF', modify the MariaDB configuration file. This can be found in /etc/my.cnf.d/.\n\nOptionally specify the location of the binary logs by specifying the full path for the binary logs.\n\n[mariadb]\nlog_bin=mariadb_bin",
+        "reference": "800-53|SC-24,800-53r5|SC-24,CAT|II,CCI|CCI-001665,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-24,ITSG-33|SC-24a.,QCSC-v1|5.2.1,Rule-ID|SV-253709r879641_rule,STIG-ID|MADB-10-005100,Vuln-ID|V-253709",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'log_bin';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_27": {
+        "description": "MADB-10-007600 - MariaDB must record time stamps, in audit records and application data, that can be mapped to Coordinated Universal Time (UTC, formerly GMT).",
+        "info": "If time stamps are not consistently applied and there is no common time reference, it is difficult to perform forensic analysis.\n\nTime stamps generated by MariaDB must include date and time. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC.\n\nSome DBMS products offer a data type called TIMESTAMP that is not a representation of date and time. Rather, it is a database state counter and does not correspond to calendar and clock time. This requirement does not refer to that meaning of TIMESTAMP.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "On the OS command line run the following command to get the time zone the system is in:\n\ndate | awk '{print $5;}'\n\nIf the system is in UTC, to set the time zone for timestamps to UTC, modify the MariaDB configuration file located within /etc/my.cnf.d/ and set the variable time_zone to SYSTEM under the server section. Restart MariaDB Enterprise Server.\n\nExample:\n\n[server]\nTimezone  = SYSTEM\n\nIf the OS system timezone is not set to UTC, to set the time zone for timestamps to UTC, modify the MariaDB configuration file located within /etc/my.cnf.d/ and set the variable time_zone to UTC under the server section. Restart MariaDB Enterprise Server.\n\nExample:\n\n[server]\nTimezone  = UTC",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CAT|II,CCI|CCI-001890,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253730r879747_rule,STIG-ID|MADB-10-007600,TBA-FIISB|37.4,Vuln-ID|V-253730",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%zone%';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_28": {
+        "description": "MADB-10-008100 - MariaDB must disable network functions, ports, protocols, and services deemed by the organization to be nonsecure, in accord with the Ports, Protocols, and Services Management (PPSM) guidance.",
+        "info": "Use of nonsecure network functions, ports, protocols, and services exposes the system to avoidable threats.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To verify that mariadb system denies specific network functions, locate cnf file and specifically bind ip address to deny (or port):\n        $ ls -la /etc | grep my.cnf\n-rw-r--r--.   1 root root      301 Aug 25 12:45 my.cnf\n      bind-address = 127.0.0.1 #just an example\n\nTo specifically change default port (3306) is something different:  port = 1234\nbind = 10.10.10.10      #as an example\n\nAfter making changes to the .cnf file, stop and restart the database service.",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-253734r879756_rule,STIG-ID|MADB-10-008100,SWIFT-CSCv1|2.3,Vuln-ID|V-253734",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'port';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_29": {
+        "description": "MADB-10-008300 - MariaDB must prohibit the use of cached authenticators after an organization-defined time period.",
+        "info": "If cached authentication information is out-of-date, the validity of the authentication information may be questionable.\n\nEach connection to the MariaDB database requires the authentication of the user. The authentication remains in place for the connection until the connection is closed or the connection times out due to inactivity.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Verify that the idle_transaction_wait is set to a value greater than 0 or is set to the value needed by the administrator. The value of idle_transaction_wait can be validated by issuing SHOW VARIABLES. Example:\n\nLocate the MariaDB Enterprise Server configuration files in /etc/my.cnf.d/. Add the following:\n\nUnder the [mariadb] section:\n\nidle_transaction_timeout = 60\n\nAfter making changes to the .cnf file, stop and restart the database service.",
+        "reference": "800-171|3.5.2,800-53|IA-5(13),800-53r5|IA-5(13),CAT|II,CCI|CCI-002007,CSF|PR.AC-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-253736r879773_rule,STIG-ID|MADB-10-008300,Vuln-ID|V-253736",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'idle_transaction_timeout';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_30": {
+        "description": "MADB-10-009400 - MariaDB must be able to generate audit records when security objects are accessed.",
+        "info": "Changes to the security configuration must be tracked.\n\nThis requirement applies to situations where security data is retrieved or modified via data manipulation operations, as opposed to via specialized security functionality.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\n\nSELECT\nCREATE\nINSERT\nUPDATE\nDELETE\nEXECUTE\nALTER\nDROP\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253746r879863_rule,STIG-ID|MADB-10-009400,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253746",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_31": {
+        "description": "MADB-10-009500 - MariaDB must generate audit records when unsuccessful attempts to access security objects occur.",
+        "info": "Changes to the security configuration must be tracked.\n\nThis requirement applies to situations where security data is retrieved or modified via data manipulation operations, as opposed to via specialized security functionality.\n\nIn an SQL environment, types of access include, but are not necessarily limited to:\nSELECT\nCREATE\nINSERT\nUPDATE\nDELETE\nEXECUTE\nALTER\nDROP\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253747r879863_rule,STIG-ID|MADB-10-009500,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253747",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_32": {
+        "description": "MADB-10-009600 - MariaDB must generate audit records when categories of information (e.g., classification levels/security levels) are accessed.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253748r879865_rule,STIG-ID|MADB-10-009600,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253748",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_33": {
+        "description": "MADB-10-009700 - MariaDB must generate audit records when unsuccessful attempts to access categories of information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253749r879865_rule,STIG-ID|MADB-10-009700,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253749",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_34": {
+        "description": "MADB-10-009800 - MariaDB must generate audit records when privileges/permissions are added.",
+        "info": "Changes in the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized elevation or restriction of privileges could go undetected. Elevated privileges give users access to information and functionality that they should not have; restricted privileges wrongly deny access to authorized users.\n\nIn MariaDB, adding permissions is done via the GRANT command, or, in the negative, the REVOKE command.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253750r879866_rule,STIG-ID|MADB-10-009800,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253750",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_35": {
+        "description": "MADB-10-009900 - MariaDB must generate audit records when unsuccessful attempts to add privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn MariaDB, adding permissions is done via the GRANT command, or, in the negative, the REVOKE command.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253751r879866_rule,STIG-ID|MADB-10-009900,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253751",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_36": {
+        "description": "MADB-10-010000 - MariaDB must generate audit records when privileges/permissions are modified.",
+        "info": "Changes in the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized elevation or restriction of privileges could go undetected. Elevated privileges give users access to information and functionality that they should not have; restricted privileges wrongly deny access to authorized users.\n\nIn the MariaDB environment, modifying permissions is done via the GRANT, and REVOKE commands.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253752r879866_rule,STIG-ID|MADB-10-010000,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253752",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_37": {
+        "description": "MADB-10-010100 - MariaDB must generate audit records when unsuccessful attempts to modify privileges/permissions occur.",
+        "info": "Failed attempts to change the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized attempts to elevate or restrict privileges could go undetected.\n\nIn the MariaDB environment, modifying permissions is typically done via the GRANT, and REVOKE commands.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253753r879866_rule,STIG-ID|MADB-10-010100,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253753",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_38": {
+        "description": "MADB-10-010200 - MariaDB must generate audit records when security objects are modified.",
+        "info": "Changes in the database objects (tables, views, procedures, functions) that record and control permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized changes to the security subsystem could go undetected. The database could be severely compromised or rendered inoperative.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253754r879867_rule,STIG-ID|MADB-10-010200,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253754",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_39": {
+        "description": "MADB-10-010300 - MariaDB must generate audit records when unsuccessful attempts to modify security objects occur.",
+        "info": "Changes in the database objects (tables, views, procedures, functions) that record and control permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized changes to the security subsystem could go undetected. The database could be severely compromised or rendered inoperative.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253755r879867_rule,STIG-ID|MADB-10-010300,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253755",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_40": {
+        "description": "MADB-10-010400 - MariaDB must generate audit records when categories of information (e.g., classification levels/security levels) are modified.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253756r879869_rule,STIG-ID|MADB-10-010400,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253756",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_41": {
+        "description": "MADB-10-010500 - MariaDB must generate audit records when unsuccessful attempts to modify categories of information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "The MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253757r879869_rule,STIG-ID|MADB-10-010500,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253757",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_42": {
+        "description": "MADB-10-010600 - MariaDB must generate audit records when privileges/permissions are deleted.",
+        "info": "Changes in the permissions, privileges, and roles granted to users and roles must be tracked. Without an audit trail, unauthorized elevation or restriction of privileges could go undetected. Elevated privileges give users access to information and functionality that they should not have; restricted privileges wrongly deny access to authorized users.\n\nIn MariaDB, deleting permissions is typically done via the REVOKE command.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "No super/administrative users should not have access to modify tables within the mysql database. Verify users do not have access and revoke as necessary. Example:\n\nView user grants:\n\nMariaDB> SHOW GRANTS FOR 'username'@'host';\n\nIf user has INSERT, UPDATE, and/or DELETE on the mysql database or all databases, modify the user privileges as necessary.\n\nThe MariaDB Enterprise Audit plugin can be configured to audit these changes.\n\nUpdate necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253758r879870_rule,STIG-ID|MADB-10-010600,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253758",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_43": {
+        "description": "MADB-10-011000 - MariaDB must generate audit records when categories of information (e.g., classification levels/security levels) are deleted.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Update necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253762r879873_rule,STIG-ID|MADB-10-011000,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253762",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_44": {
+        "description": "MADB-10-011100 - MariaDB must generate audit records when unsuccessful attempts to delete categories of information (e.g., classification levels/security levels) occur.",
+        "info": "Changes in categories of information must be tracked. Without an audit trail, unauthorized access to protected data could go undetected.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nFor detailed information on categorizing information, refer to FIPS Publication 199, Standards for Security Categorization of Federal Information and Information Systems, and FIPS Publication 200, Minimum Security Requirements for Federal Information and Information Systems.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Update necessary audit filters to include query_event ALL. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ],\n            'query_event': [\n                'ALL'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253763r879873_rule,STIG-ID|MADB-10-011100,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253763",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_45": {
+        "description": "MADB-10-011200 - MariaDB must generate audit records when successful logons or connections occur.",
+        "info": "For completeness of forensic analysis, it is necessary to track who/what (a user or other principal) logs on to the DBMS.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the necessary filters to include  connect_events connect. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event': [\n               'CONNECT',\n               'DISCONNECT'\n            ]\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253764r879874_rule,STIG-ID|MADB-10-011200,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253764",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_46": {
+        "description": "MADB-10-011500 - MariaDB must generate audit records when unsuccessful attempts to execute privileged activities or other system-level access occur.",
+        "info": "Without tracking privileged activity, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nSystem documentation should include a definition of the functionality considered privileged.\n\nA privileged function in this context is any operation that modifies the structure of the database, its built-in logic, or its security settings. This would include all Data Definition Language (DDL) statements and all security-related statements. In an SQL environment, it encompasses, but is not necessarily limited to:\n\nCREATE\nALTER\nDROP\nGRANT\nREVOKE\n\nNote that it is particularly important to audit, and tightly control, any action that weakens the implementation of this requirement itself, since the objective is to have a complete audit trail of all administrative activity.\n\nTo aid in diagnosis, it is necessary to keep track of failed attempts in addition to the successful ones.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the necessary filters to include the desired logging actions. Exact steps vary depending on desired logging.\n\nExample named audit filter assigned to specific user:\n\nMariaDB> INSERT INTO mysql.server_audit_users (host, user, filtername)\n   VALUES ('%', 'user1', 'filter_example');\n\nMariaDB> SET GLOBAL server_audit_reload_filters=ON;",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253767r879875_rule,STIG-ID|MADB-10-011500,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253767",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_47": {
+        "description": "MADB-10-011700 - MariaDB must generate audit records when concurrent logons/connections by the same user from different workstations occur.",
+        "info": "For completeness of forensic analysis, it is necessary to track who logs on to MariaDB.\n\nConcurrent connections by the same user from multiple workstations may be valid use of the system; or such connections may be due to improper circumvention of the requirement to use the CAC for authentication; or they may indicate unauthorized account sharing; or they may be because an account has been compromised.\n\n(If the fact of multiple, concurrent logons by a given user can be reliably reconstructed from the log entries for other events (logons/connections; voluntary and involuntary disconnections), then it is not mandatory to create additional log entries specifically for this.)\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the necessary filters to include  connect_events connect. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event':'CONNECT'\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253769r879877_rule,STIG-ID|MADB-10-011700,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253769",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_48": {
+        "description": "default audit filter",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_49": {
+        "description": "named audit filter",
+        "sql_request": "SELECT sau.host, sau.user, saf.filtername, JSON_DETAILED(saf.rule) FROM mysql.server_audit_filters saf JOIN mysql.server_audit_users sau ON saf.filtername = sau.filtername WHERE saf.filtername != 'default';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_50": {
+        "description": "default audit filter",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_51": {
+        "description": "named audit filter",
+        "sql_request": "SELECT sau.host, sau.user, saf.filtername, JSON_DETAILED(saf.rule) FROM mysql.server_audit_filters saf JOIN mysql.server_audit_users sau ON saf.filtername = sau.filtername WHERE saf.filtername != 'default';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_52": {
+        "description": "MADB-10-012000 - MariaDB must generate audit records for all direct access to the database(s).",
+        "info": "In this context, direct access is any query, command, or call to MariaDB that comes from any source other than the application(s) that it supports. Examples would be the command line or a database management utility program. The intent is to capture all activity from administrative and nonstandard sources.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the necessary filters to include  connect_events connect. Example:\n\nMariaDB> DELETE FROM mysql.server_audit_filters WHERE filtername = 'default';\n\nMariaDB> INSERT INTO mysql.server_audit_filters (filtername, rule)\n   VALUES ('default',\n      JSON_COMPACT(\n         '{\n            'connect_event':'CONNECT'\n         }'\n      ));",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253772r879879_rule,STIG-ID|MADB-10-012000,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-253772",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT * FROM mysql.server_audit_filters;",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_53": {
+        "description": "have_openssl",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%have_openssl';",
+        "sql_expect": "have_openssl"
+    },
+    "custom_item_54": {
+        "description": "version_ssl_library",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%version_ssl_library';",
+        "sql_expect": "version_ssl_library"
+    },
+    "custom_item_55": {
+        "description": "have_openssl",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%have_openssl';",
+        "sql_expect": "have_openssl"
+    },
+    "custom_item_56": {
+        "description": "version_ssl_library",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%version_ssl_library';",
+        "sql_expect": "version_ssl_library"
+    },
+    "custom_item_57": {
+        "description": "have_openssl",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%have_openssl';",
+        "sql_expect": "have_openssl"
+    },
+    "custom_item_58": {
+        "description": "version_ssl_library",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE '%version_ssl_library';",
+        "sql_expect": "version_ssl_library"
+    },
+    "custom_item_59": {
+        "description": "MADB-10-012400 - MariaDB must off-load audit data to a separate log management facility; this must be continuous and in near real time for systems with a network connection to the storage facility and weekly or more often for stand-alone systems.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.\n\nOff-loading is a common process in information systems with limited audit storage capacity.\n\nMariaDB writes audit records to files in the file system, to other kinds of local repository, or directly to a centralized log management system. Whatever the method used, it must be compatible with off-loading the records to the centralized system.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To set up the audit logs to write to sylog:\n\nEdit the mariadb-enterprise.cnf file. Add the following under the [mariadb] section:\n\nserver_audit_output_type = 'syslog'\n\nAfter the .cnf file is updated and saved, the mariadb database service must be restarted.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-253776r879886_rule,STIG-ID|MADB-10-012400,Vuln-ID|V-253776",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'server_audit_output_type';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_60": {
+        "description": "MADB-10-012600 - MariaDB products must be a version supported by the vendor.",
+        "info": "Unsupported commercial and database systems should not be used because fixes to newly identified bugs will not be implemented by the vendor. The lack of support can result in potential vulnerabilities.\n\nSystems at unsupported servicing levels or releases will not receive security updates for new vulnerabilities, which leaves them subject to exploitation.\n\nWhen maintenance updates and patches are no longer available, the database software is no longer considered supported and should be upgraded or decommissioned.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove or decommission all unsupported software products.\n\nUpgrade MariaDB Enterprise to a supported version of the product.",
+        "reference": "800-53|SA-22a.,800-53r5|SA-22a.,CAT|I,CCI|CCI-003376,DISA_Benchmark|MariaDB_Enterprise_10-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),Rule-ID|SV-253778r944387_rule,STIG-ID|MADB-10-012600,Vuln-ID|V-253778",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_MariaDB_Enterprise_10-x_V1R3_STIG.zip",
+        "sql_request": "SELECT VERSION();",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_61": {
+        "description": "ssl ca",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'ssl_ca';",
+        "sql_expect": "^Manual Review Required$"
+    },
+    "custom_item_62": {
+        "description": "ssl cert",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'ssl_cert';",
+        "sql_expect": "^Manual Review Required$"
+    }
+}

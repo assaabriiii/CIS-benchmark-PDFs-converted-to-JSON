@@ -1,0 +1,159 @@
+{
+    "custom_item_1": {
+        "description": "MySQL 5.7 is installed",
+        "sql_request": "show variables like 'version' ;",
+        "sql_expect": "version"
+    },
+    "custom_item_2": {
+        "description": "MySQL 5.7 Enterprise Edition is installed",
+        "sql_request": "show variables like 'license' ;",
+        "sql_expect": "license"
+    },
+    "custom_item_3": {
+        "description": "2.1.5 Point-in-Time Recovery",
+        "info": "With binlogs it is possible to implement point-in-time recovery. This makes it possible to restore the changes between the last full backup and the point-in-time.\n\nEnabling binlogs is not sufficient. The binlogs need to be backed up to separate media. The restore procedure should be created and tested. The data in the binlog files may contain sensitive information which needs be stored in the proper location with restrictive permissions and may require encryption.\n\nRationale:\n\nUsing binlogs can reduce the amount of information lost when recovering from a backup.\n\nImpact:\n\nBinlogs can grow quite large and take up a large amount of space so auto remove needs to be put into place.",
+        "solution": "Enable binlogs and create and test a restore procedure.",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53|CP-10,800-53r5|CP-9,800-53r5|CP-10,CSCv7|10.2,CSCv8|11.2,CSF|PR.IP-4,CSF|RC.RP-1,CSF|RS.RP-1,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(ii),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,ITSG-33|CP-10,ITSG-33|CP-10a.,LEVEL|2M,NESA|M5.2.3,NESA|T2.2.4,QCSC-v1|5.2.3,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE, 'BINLOG - Log Expiration' as Note FROM performance_schema.global_variables where variable_name = 'binlog_expire_logs_seconds';",
+        "sql_expect": "binlog_expire_logs_seconds"
+    },
+    "custom_item_4": {
+        "description": "2.8 Lock Out Accounts if Not Currently in Use",
+        "info": "If users with accounts will not be using their account for some time, to reduce the risk of attacks or inappropriate account usage or if suspicions exist that an account might be under attack, disabling the account will secure it and once it's ready to resume use it can easily be re-enabled.\n\nRationale:\n\nOnly have active accounts that will be used.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To lock accounts - example:\n\nALTER USER 'jeffrey'@'localhost' ACCOUNT LOCK;\n\nTo unlock accounts - example\n\nALTER USER 'jeffrey'@'localhost' ACCOUNT UNLOCK;\n\nNote: Works for CREATE as well. It is good practice to LOCK an account if created ahead of time.\n\nDefault Value:\n\nAccounts are unlocked by default.",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.9,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|2M,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "select user, host, account_locked from mysql.user;",
+        "sql_expect": "ManualReviewRequired"
+    },
+    "custom_item_5": {
+        "description": "2.9 Ensure AES Encryption Mode for AES_ENCRYPT/AES_DECRYPT is Configured Correctly",
+        "info": "A block encryption mode with a Cipher Block Chaining (CBC) mode value and key length of 256 is recommended when using the AES_ENCRYPT() and AES_DECRYPT() functions for encryption.\n\nRationale:\n\nThe default for backward compatibility on upgraded MySQL databases is aes-128-ecb. Using 128-bit keys does not provide sufficient security. Regardless of whether breaking the lowest level is beyond existing technology, larger key sizes are needed to better protect data and satisfy regulations.\n\nImpact:\n\nConfiguring a key length of 256 may impact backwards compatibility.",
+        "solution": "Add the following lines to the MySQL server's /etc/my.cnf:\n\nFor example, if Block Encryption Mode for aes-256 CBC\n\nblock_encryption_mode=aes-256-cbc\n\nDefault Value:\n\naes-128-ecb",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "select @@block_encryption_mode;",
+        "sql_expect": "aes-256-(ECB|CBC|CFB1|CFB8|CFB128|OFB)"
+    },
+    "custom_item_6": {
+        "description": "auth_socket enabled",
+        "sql_request": " SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'auth%';",
+        "sql_expect": "auth_socket"
+    },
+    "custom_item_7": {
+        "description": "2.10 Ensure Socket Peer-Credential Authentication is Used Appropriately",
+        "info": "The server-side auth_socket authentication plugin, authenticates clients that connect to the MySQL server from the local host through the Unix socket file. Users authenticated by the auth_socket need not specify a password when connecting to the server. However, users authenticated by the auth_socket plugin are restricted from connecting remotely; they can only connect from the local host through the Unix socket file. This method is only suitable in situations where the server administrator OS account access is restricted.\n\nRationale:\n\nThis method may be desirable in specific cases, including:\n\nThe Linux system where MySQL is running is dedicated to the MySQL server and only the MySQL DBA and OS Admin have access.\n\nWhen control over user authentication is centralized in the operating system.\n\nIt is desirable that audit trails in the database and operating system can use the same user names.\n\nFor certain other narrow installation use cases auth_socket may be desirable.\n\nOnly local connections for a user.\n\nImpact:\n\nThings to consider when using the operating system to authenticate users:\n\nThe user must have an operating system account on the computer which must be accessed.\n\nIf a user has logged in using this method and steps away from the terminal, another user could easily log in because this user does not need any passwords or credentials. This could pose a serious security problem.\n\nWhen an operating system is used to authenticate database users, managing distributed database environments and database links requires special care. Special care must also be taken not to leave such a terminal unlocked and unattended. Hence, we recommend that you carefully evaluate your requirements before opting for auth_socket.\n\nThis will not work where distributed connections are required.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Add these options under the [mysqld] option group in the MySQL /etc/my.cnf:\n\nplugin-load-add=auth_socket.so\nauth_socket=FORCE_PLUS_PERMANENT\n\nFor example:\n\nFor an OS user which can login to MySQL using auth_socket:\n\nCREATE USER ''@'localhost' IDENTIFIED WITH auth_socket;\n\nThe user can then login using:\n\nmysql -u",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv8|6.6,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,LEVEL|2M,NESA|T1.2.1,NESA|T1.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "select user, host, plugin from mysql.user where plugin = 'auth_socket';",
+        "sql_expect": "ManualReviewRequired"
+    },
+    "custom_item_8": {
+        "description": "2.11 Ensure MySQL is Bound to an IP Address",
+        "info": "By default, the MySQL server accepts TCP/IP connections from MySQL user accounts on all server host IPv6 and IPv4 interfaces. You can make this configuration more restrictive by setting the bind_address configuration option to a specific IPv4 or IPv6 address so that the server only accepts TCP/IP connections on that address.\n\nRationale:\n\nLimiting the IP address provides additional controls and restrictions on how client applications can connect to MySQL. If not configured to a specific IP all IPs for this server can be used to connect to MySQL.",
+        "solution": "For example, to have the MySQL server only accept connections on a specific IPv4 address, add an entry similar to this under the [mysqld] option group in the MySQL /etc/my.cnf:\n\nbind_address=192.0.2.24\n\nIn this case, clients can connect to the server using --host=192.0.2.24. Connections on other server host addresses are not permitted.\n\nDefault Value:\n\nNot set.",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME = 'bind_address';",
+        "sql_expect": "bind_address"
+    },
+    "custom_item_9": {
+        "description": "2.12 Limit Accepted Transport Layer Security (TLS) Versions",
+        "info": "MySQL supports multiple protocols of TLS. The higher the version the stronger the security and/or better the performance.\n\nRationale:\n\nRequiring clients attempting to connect to MySQL to use higher versions of TLS to better protect data in transit.\n\nImpact:\n\nConnections attempting to use an unsupported version of TLS or Cipher will fail.",
+        "solution": "Set the version(s) of TLS you wish to accept in mysql.conf specify TLS and Ciphers.\n\nFor example to only accept TLS 1.3 set tls_version in my.conf:\n\ntls_version=TLSv1.3\n\nIf TLS 1.3 is not supported on the Operating System then set to TLS 1.2:\n\ntls_version=TLSv1.2\n\nNote: with this setting, only clients that support the specified TLS version(s) are able to establish an encrypted connection to the server.\n\nDefault Value:\n\nAll TLS and cipher versions are enabled by default.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SA-15,800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SA-15,800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv7|18.5,CSCv8|3.10,CSCv8|16.11,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.IP-2,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "select @@tls_version;",
+        "sql_expect": "^TLSv1\\.(2|3)(,|$)"
+    },
+    "custom_item_10": {
+        "description": "2.13 Require Client-Side Certificates (X.509)",
+        "info": "Client-side certificates may be used as proof of identity as well as to encrypt data in transit.\n\nRationale:\n\nRequiring client-side certificates provides additional validation of a user's identity, thus increasing the level of security, while also providing strong encryption.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "select user, host, ssl_type from mysql.user where user not in ('mysql.infoschema', 'mysql.session', 'mysql.sys');",
+        "sql_expect": "ManualReviewRequired"
+    },
+    "custom_item_11": {
+        "description": "2.14 Ensure Only Approved Ciphers are Used - ssl_cipher",
+        "info": "MySQL supports multiple encryption ciphers. Ciphers can vary in strength, speed and overhead.\n\nRationale:\n\nRequiring clients attempting to connect to MySQL to use strong ciphers protects data in transit.\n\nImpact:\n\nConnections attempting to use an unsupported cipher will fail.",
+        "solution": "Set ssl_cipher in the my.cnf to an approved cipher suite:\n\nssl_cipher='ECDHE-ECDSA-AES128-GCM-SHA256'",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME IN ('ssl_cipher');",
+        "sql_expect": "ssl_cipher"
+    },
+    "custom_item_12": {
+        "description": "4.9 Ensure 'sql_mode' Contains 'STRICT_ALL_TABLES'",
+        "info": "When data changing statements are made (i.e., INSERT, UPDATE), MySQL can handle invalid or missing values differently depending on whether strict SQL mode is enabled. When strict SQL mode is enabled, data may not be truncated or otherwise 'adjusted' to make the data changing statement work.\n\nRationale:\n\nWithout strict mode the server tries to proceed with the action when an error might have been a more secure choice. For example, by default MySQL will truncate data if it does not fit in a field, which can lead to unknown behavior, or be leveraged by an attacker to circumvent data validation.\n\nImpact:\n\nApplications relying on the MySQL database should be aware that STRICT_ALL_TABLES is in use, such that error conditions are handled appropriately.",
+        "solution": "Set STRICT_ALL_TABLES to the sql_mode in the server's global configuration, for example:\n\nSET GLOBAL sql_mode ='STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';\n\nDefault Value:\n\nONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SHOW VARIABLES LIKE 'sql_mode';",
+        "sql_expect": "sql_mode"
+    },
+    "custom_item_13": {
+        "description": "4.10 Use MySQL TDE for At-Rest Data Encryption",
+        "info": "Transparent Data Encryption (TDE) at-rest encryption protects your critical data by enabling data-at-rest encryption in the database. It protects the privacy of your information, prevents data breaches and helps meet regulatory requirements.\n\nRationale:\n\nFile system based encryption does a good job of protecting against data theft on devices unable to limit physical access. It does not, however, protect against users who have or gain access to the operating system, backups, over the network copies, etc. Encrypting data from mysqld adds an additional layer of data protection.",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE, 'AT REST ENCRYPTION' as Note, IF(VARIABLE_VALUE = 'AES', 'Encrypted', 'Not Encrypted') as IsEncrypted FROM performance_schema.global_variables where variable_name in ('audit_log_encryption');",
+        "sql_expect": "audit_log_encryption"
+    },
+    "custom_item_14": {
+        "description": "5.3 Ensure 'PROCESS' is Not Granted to Non-Administrative Users",
+        "info": "The PROCESS privilege found in the mysql.user table determines whether a given user can see statement execution information for all sessions.\n\nRationale:\n\nThe PROCESS privilege allows principals to view currently executing MySQL statements beyond their own, including statements used to manage passwords. This may be leveraged by an attacker to compromise MySQL or to gain access to potentially sensitive data.\n\nImpact:\n\nUsers denied the PROCESS privilege may also be denied use of SHOW ENGINE.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE PROCESS ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'PROCESS';",
+        "sql_expect": "\\'root\\':.+"
+    },
+    "custom_item_15": {
+        "description": "6.3 Ensure 'log_error_verbosity' is Set to '2'",
+        "info": "The log_error_verbosity system variable, set to 2 by default, specifies the verbosity of events sent to the MySQL error log. A value of 2 enables logging of error and warning messages, a value of 3 also includes informational logging, a value of 1 logs only errors.\n\nRationale:\n\nThis might help to detect malicious behavior by logging communication errors and aborted connections.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (my.cnf)\n\nEnsure the following line is found in the mysqld section\n\nlog_error_verbosity = 2\n\nDefault Value:\n\nThe option is enabled (3) - errors, warning, and information messages are logged - by default.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'log_error_verbosity';",
+        "sql_expect": "log_error_verbosity"
+    },
+    "custom_item_16": {
+        "description": "6.6 Ensure ALL Events are Audited - audit_log_filter",
+        "info": "This filter defines all events to be written to the audit log.\n\nRationale:\n\nThis filter to log all, and binding to all, users must be set to ensure all event information is written to the audit log.\n\nImpact:\n\nLogging all events can result in very large audit files. In the case where the database is extremely active it may be more appropriate to be more selective when defining audit filters.",
+        "solution": "Create Log All Filter:\n\nSELECT audit_log_filter_set_filter('log_all', '{ 'filter': { 'log': true } }');\n\nApply to all logins:\n\nSELECT audit_log_filter_set_user('%', 'log_all');",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.5.3,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53|IA-2(1),800-53|IA-2(2),800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.1.4.3(b),CN-L3|8.5.4.1(a),CSCv8|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-1,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(b),HIPAA|164.312(d),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|2A,NESA|T3.6.2,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|AM36,NIAv2|VL3c,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|6.4,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT * FROM mysql.audit_log_filter;",
+        "sql_expect": ".*"
+    },
+    "custom_item_17": {
+        "description": "6.6 Ensure ALL Events are Audited - audit_log_user",
+        "info": "This filter defines all events to be written to the audit log.\n\nRationale:\n\nThis filter to log all, and binding to all, users must be set to ensure all event information is written to the audit log.\n\nImpact:\n\nLogging all events can result in very large audit files. In the case where the database is extremely active it may be more appropriate to be more selective when defining audit filters.",
+        "solution": "Create Log All Filter:\n\nSELECT audit_log_filter_set_filter('log_all', '{ 'filter': { 'log': true } }');\n\nApply to all logins:\n\nSELECT audit_log_filter_set_user('%', 'log_all');",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.5.3,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53|IA-2(1),800-53|IA-2(2),800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.1.4.3(b),CN-L3|8.5.4.1(a),CSCv8|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-1,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(b),HIPAA|164.312(d),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|2A,NESA|T3.6.2,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|AM36,NIAv2|VL3c,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|6.4,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SELECT * FROM mysql.audit_log_user;",
+        "sql_expect": ".*"
+    },
+    "custom_item_18": {
+        "description": "6.7 Set audit_log_strategy to SYNCHRONOUS or SEMISYNCRONOUS",
+        "info": "The audit_log_strategy must be set to SYNCHRONOUS or SEMISYNCHRONOUS\n\nRationale:\n\nThis setting controls how information is written to the audit log. It can be set to SYNCHRONOUS to make it fully durable or other settings which are less durable but have less performance overhead.\n\nImpact:\n\nIf this setting is set to PERFORMANCE or ASYNCHRONOUS audit events might be lost in case of a crash or when the server somehow can't write to the audit log file.",
+        "solution": "To remediate this configuration:\n\nOpen the MySQL configuration file (my.cnf)\n\nNavigate to the mysqld section of the configuration file\n\nSet audit_log_strategy='SEMISYNCHRONOUS' (or SYNCHRONOUS)\n\nDefault Value:\n\nASYNCHRONOUS",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SHOW variables LIKE 'audit_log_strategy';",
+        "sql_expect": "audit_log_strategy"
+    },
+    "custom_item_19": {
+        "description": "9.3 Ensure 'master_info_repository' Is Set to 'TABLE'",
+        "info": "The master_info_repository setting determines to where a slave logs master status and connection information. The options are FILE or TABLE. Note also that this setting is associated with the sync_master_info setting as well.\n\nRationale:\n\nThe password which the client uses is stored in the master info repository, which by default is a plaintext file. The TABLE master info repository is a bit safer, but with filesystem access it's still possible to gain access to the password the slave is using.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (my.cnf)\n\nLocate master_info_repository\n\nSet the master_info_repository value to TABLE\n\nNote: If master_info_repository does not exist, add it to the configuration file.\n\nDefault Value:\n\nFILE",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3855",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'master_info_repository';",
+        "sql_expect": "master_info_repository"
+    }
+}

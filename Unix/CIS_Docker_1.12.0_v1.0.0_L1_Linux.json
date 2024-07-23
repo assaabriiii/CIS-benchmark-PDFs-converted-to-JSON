@@ -1,0 +1,179 @@
+{
+    "custom_item_1": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_2": {
+        "description": "1.1 Create a separate partition for containers",
+        "info": "http://www.projectatomic.io/docs/docker-storage-recommendation",
+        "solution": "For new installations, create a separate partition for /var/lib/docker mount point. For\nsystems that were previously installed, use the Logical Volume Manager (LVM) to create\npartitions.\nImpact-None.Default Value-By default, /var/lib/docker would be mounted under / or /var partitions based on\navailability.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CSCv7|14,CSCv8|3.12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "file": "/etc/fstab",
+        "regex": "^[\\\\s]*.*[\\\\s]+/var/lib/docker[\\\\s]",
+        "expect": "^[\\\\s]*.*[\\\\s]+/var/lib/docker[\\\\s]"
+    },
+    "custom_item_3": {
+        "description": "1.2 Use the updated Linux Kernel",
+        "info": "https://docs.docker.com/installation/binaries/#check-kernel-dependencies\n2.https://docs.docker.com/installation/#installation-list",
+        "solution": "Check out the Docker kernel and OS requirements and suitably choose your kernel and OS.Impact-None.Default Value-Not Applicable.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "/bin/uname -r",
+        "expect": "(^3\\\\.[1-9][0-9])|([4-9]\\\\.[0-9][0-9]*)|([1-9][0-9]+\\\\.[0-9][0-9]*)"
+    },
+    "custom_item_4": {
+        "description": "1.4 Remove all non-essential services from the host - Running Processes",
+        "info": "http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move all other services within containers controlled by Docker or to other systems.\nImpact-None.Default Value-Not Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "ps -ef",
+        "expect": ""
+    },
+    "custom_item_5": {
+        "description": "1.4 Remove all non-essential services from the host - Sockets",
+        "info": "http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move all other services within containers controlled by Docker or to other systems.\nImpact-None.Default Value-Not Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "ss -nlp",
+        "expect": ""
+    },
+    "custom_item_6": {
+        "description": "1.4 Remove all non-essential services from the host - DPKG",
+        "info": "http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move all other services within containers controlled by Docker or to other systems.\nImpact-None.Default Value-Not Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "dpkg -l",
+        "expect": ".*"
+    },
+    "custom_item_7": {
+        "description": "1.4 Remove all non-essential services from the host - RPM",
+        "info": "http://blog.docker.com/2013/08/containers-docker-how-secure-are-they/\n  NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move all other services within containers controlled by Docker or to other systems.\nImpact-None.Default Value-Not Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "/bin/rpm -qa",
+        "expect": ".*"
+    },
+    "custom_item_8": {
+        "description": "1.5 Keep Docker up to date",
+        "info": "https://docs.docker.com/installation/\n2.https://github.com/docker/docker/releases/latest\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Download and install the updated Docker software from official Docker repository.Impact-None.Default Value-Not Applicable",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1M,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "/usr/bin/docker version",
+        "expect": ".*"
+    },
+    "custom_item_9": {
+        "description": "1.6 Only allow trusted users to control Docker daemon",
+        "info": "https://docs.docker.com/articles/security/#docker-daemon-attack-surface\n2.https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful\n3.http://www.projectatomic.io/blog/2015/08/why-we-dont-let-non-root-users-run-docker-in-centos-fedora-or-rhel/",
+        "solution": "Remove any users from the 'docker' group that are not trusted. Additionally, do not create\na mapping of sensitive directories on host to container volumes.Impact-Rights to build and execute containers as normal user would be restricted.Default Value-Not Applicable",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "/usr/bin/awk -F: '$1 ~ /docker/ {print $4}' /etc/group",
+        "expect": "@DOCKER_GROUP_USERS@"
+    },
+    "custom_item_10": {
+        "description": "1.7 Audit docker daemon",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "Add a rule for Docker daemon.For example,Add the line as below line in /etc/audit/audit.rules file--w /usr/bin/docker -k dockerThen, restart the audit daemon. For example,service auditd restartImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.\nDefault Value-By default, Docker daemon is not audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep '/usr/bin/docker '",
+        "expect": "-w /usr/bin/docker -p rwxa -k docker"
+    },
+    "custom_item_11": {
+        "description": "1.8 Audit Docker files and directories - /var/lib/docker",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "Add a rule for /var/lib/docker directory.For example,Add the line as below in /etc/audit/audit.rules file--w /var/lib/docker -k dockerThen, restart the audit daemon. For example,service auditd restartImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.\nDefault Value-By default, Docker related files and directories are not audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /var/lib/docker",
+        "expect": "-w /var/lib/docker/ -p rwxa -k docker"
+    },
+    "custom_item_12": {
+        "description": "1.9 Audit Docker files and directories - /etc/docker",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "Add a rule for /etc/docker directory.For example,Add the line as below in /etc/audit/audit.rules file--w /etc/docker -k dockerThen, restart the audit daemon. For example,service auditd restartImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.Default Value-\nBy default, Docker related files and directories are not audited.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /etc/docker",
+        "expect": "-w /etc/docker/ -p rwxa -k docker"
+    },
+    "custom_item_13": {
+        "description": "1.10 Audit Docker files and directories - docker.service",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "If the file exists, add a rule for it.For example,Add the line as below in /etc/audit/audit.rules file--w /usr/lib/systemd/system/docker.service -k dockerThen, restart the audit daemon. For example,service auditd restart\nImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.Default Value-By default, Docker related files and directories are not audited. The file docker.service\nmay not be available on the system.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /usr/lib/systemd/system/docker\\\\.service",
+        "expect": "-w /usr/lib/systemd/system/docker\\\\.service -p rwxa -k docker"
+    },
+    "custom_item_14": {
+        "description": "1.11 Audit Docker files and directories - docker.socket",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "If the file exists, add a rule for it.For example,Add the line as below in /etc/audit/audit.rules file--w /usr/lib/systemd/system/docker.socket -k dockerThen, restart the audit daemon. For example,service auditd restart\nImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.Default Value-By default, Docker related files and directories are not audited. The file docker.socket may\nnot be available on the system.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /usr/lib/systemd/system/docker\\\\.socket",
+        "expect": "-w /usr/lib/systemd/system/docker\\\\.socket -p rwxa -k docker"
+    },
+    "custom_item_15": {
+        "description": "1.12 Audit Docker files and directories - /etc/default/docker",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html",
+        "solution": "Add a rule for /etc/default/docker file.For example,Add the line as below in /etc/audit/audit.rules file--w /etc/default/docker -k dockerThen, restart the audit daemon. For example,service auditd restartImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.\nDefault Value-By default, Docker related files and directories are not audited. The file\n/etc/default/docker may not be available on the system. In that case, this\nrecommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /etc/default/docker",
+        "expect": "-w /etc/default/docker[\\\\s]+"
+    },
+    "custom_item_16": {
+        "description": "1.13 Audit Docker files and directories - /etc/docker/daemon.json",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html\n2.https://docs.docker.com/engine/reference/commandline/daemon/#daemon-configuration-file",
+        "solution": "Add a rule for /etc/docker/daemon.json file.For example,Add the line as below in /etc/audit/audit.rules file--w /etc/docker/daemon.json -k dockerThen, restart the audit daemon. For example,service auditd restart\nImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.Default Value-By default, Docker related files and directories are not audited. The file\n/etc/docker/daemon.json may not be available on the system. In that case, this\nrecommendation is not applicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /etc/docker/daemon\\\\.json",
+        "expect": "-w /etc/docker/daemon\\\\.json -p rwxa -k docker"
+    },
+    "custom_item_17": {
+        "description": "1.14 Audit Docker files and directories - /usr/bin/docker-containerd",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html\n2.https://github.com/docker/docker/pull/20662\n3.https://containerd.tools/",
+        "solution": "Add a rule for /usr/bin/docker-containerd file.For example,Add the line as below in /etc/audit/audit.rules file--w /usr/bin/docker-containerd -k dockerThen, restart the audit daemon. For example,service auditd restart\nImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.Default Value-By default, Docker related files and directories are not audited. The file /usr/bin/docker-\ncontainerd may not be available on the system. In that case, this recommendation is not\napplicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /usr/bin/docker-containerd",
+        "expect": "-w /usr/bin/docker-containerd -p rwxa -k docker"
+    },
+    "custom_item_18": {
+        "description": "1.15 Audit Docker files and directories - /usr/bin/docker-runc",
+        "info": "https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Security_Guide/chap-system_auditing.html\n2.https://github.com/docker/docker/pull/20662\n3.https://containerd.tools/\n4.https://github.com/opencontainers/runc",
+        "solution": "Add a rule for /usr/bin/docker-runc file.For example,Add the line as below in /etc/audit/audit.rules file--w /usr/bin/docker-runc -k dockerThen, restart the audit daemon. For example,service auditd restartImpact-Auditing generates quite big log files. Ensure to rotate and archive them periodically. Also,\ncreate a separate partition of audit to avoid filling root file system.\nDefault Value-By default, Docker related files and directories are not audited. The file /usr/bin/docker-\nrunc may not be available on the system. In that case, this recommendation is not\napplicable.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|1A,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "auditctl -l | grep /usr/bin/docker-runc",
+        "expect": "-w /usr/bin/docker-runc -p rwxa -k docker"
+    },
+    "custom_item_19": {
+        "description": "6.4 Avoid image sprawl",
+        "info": "Do not keep a large number of container images on the same host. Use only tagged images\nas appropriate.Tagged images are useful to fall back from 'latest' to a specific version of an image in\nproduction. Images with unused or old tags may contain vulnerabilities that might be\nexploited, if instantiated. Additionally, if you fail to remove unused images from the system\nand there are various such redundant and unused images, the host filesystem may become\nfull and could lead to denial of service.",
+        "solution": "Keep the set of the images that you actually need and establish a workflow to remove old or\nstale images from the host. Additionally, use features such as pull-by-digest to get specific\nimages from the registry.Additionally, you can follow below set of steps to find out unused images on the system and\ndelete them.Step 1 Make a list of all image IDs that are currently instantiated by executing below\ncommand-\ndocker images --quiet | xargs docker inspect --format '{{ .Id }}- Image={{\n.Config.Image }}'Step 2- List all the images present on the system by executing below command-docker imagesStep 3- Compare the list of image IDs populated from Step 1 and Step 2 and find out images\nthat are currently not being instantiated.Step 4- Decide if you want to keep the images that are not currently in use. If not delete\nthem by executing below command-docker rmi $IMAGE_IDImpact-NoneDefault Value-Images and layered filesystems remain accessible on the host until the administrator\nremoves all tags that refer to those images or layers.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "/usr/bin/docker images;echo ' ';for i in $(/usr/bin/docker images | /usr/bin/awk '$3 !~ /IMAGE/ { print $3}'); do result=NOT_INSTANTIATED; for j in $(/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Image }}'); do j=$(echo $j | sed -e 's/^[^:]*://'); image_id=$(echo $j|cut -c 1-12); if [ \"$i\" = \"$image_id\" ]; then result=INSTANTIATED; fi; done;echo $i' - >' $result;done",
+        "expect": ""
+    },
+    "custom_item_20": {
+        "description": "6.5 Avoid container sprawl",
+        "info": "https://zeltser.com/security-risks-and-benefits-of-docker-application/\n2.http://searchsdn.techtarget.com/feature/Docker-networking-How-Linux-containers-will-change-your-network",
+        "solution": "Periodically check your container inventory per host and clean up the containers that are not needed using the below command-\ndocker rm $INSTANCE_ID\n\nFor example,\ndocker rm e3a7a1a97c58\nImpact-\nIf you keep way too few number of containers per host, then perhaps you are not utilizing your host resources very adequately.\nDefault Value-\nBy default, Docker does not restrict the number of containers you may have on a host.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1M,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2",
+        "see_also": "https://workbench.cisecurity.org/files/517",
+        "cmd": "a=$(/usr/bin/docker info 2>/dev/null | grep 'Containers' | cut -d' ' -f 2); b=$(/usr/bin/docker ps -q | wc -l); c=$(($a - $b)); echo $c",
+        "expect": "(^[0-9]$|^1[0-9]$|^2[0-5]$)"
+    }
+}

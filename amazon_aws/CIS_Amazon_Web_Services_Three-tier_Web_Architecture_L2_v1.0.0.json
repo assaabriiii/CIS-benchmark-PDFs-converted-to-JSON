@@ -1,0 +1,182 @@
+{
+    "custom_item_1": {
+        "description": "1.1 Ensure a customer created Customer Master Key (CMK) is created for the Web-tier",
+        "info": "AWS Key Management Service (KMS) by default provides service Customer Managed Keys (CMK). Customers also have the ability to create CMKs, which allows for configuration of key rotation and key policy which is applied to the customer created CMK.\n\n  You can use the key policy by itself to control who has access to the CMK and what actions each identity can perform. Controlling access this way specifies the full scope of access to the CMK in a single document (the key policy).\n\n  Customer created CMKs can be used for:\n\n* AWS Service level encryption(e.g. EBS, RDS, S3)\n* Key management for file/application level encryption\nEnsures principle of least privilege on key ownership & usage",
+        "solution": "Using the Amazon unified command line interface:\n\n* If there is no alias listed for Web tier, create new KMS key and note the \"KeyId\" element:\n\n  aws kms create-key\n\n* Create an alias for the Web tier key using the above KeyId:\n\n  aws kms create-alias --alias-name __ --target-key-id __",
+        "reference": "800-53|AC-1,800-53r5|AC-1,CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSF|ID.GV-1,CSF|ID.GV-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.9.1.1,ITSG-33|AC-1,LEVEL|2A,NESA|M1.2.2,NIAv2|AM29,NIAv2|AM30,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListAliases",
+        "regex": "alias/",
+        "expect": "alias/@WEB_TIER_KMS_ALIAS@"
+    },
+    "custom_item_2": {
+        "description": "1.2 Ensure a customer created Customer Master Key (CMK) is created for the App-tier",
+        "info": "AWS Key Management Service (KMS) by default provides service Customer Managed Keys (CMK). Customers also have the ability to create CMKs, which allows for configuration of key rotation and key policy which is applied to the customer created CMK.\n\n  You can use the key policy by itself to control who has access to the CMK and what actions each identity can perform. Controlling access this way specifies the full scope of access to the CMK in a single document (the key policy).\n\n  Customer created CMKs can be used for:\n\n* AWS Service level encryption(e.g. EBS, RDS, S3)\n* Key management for file/application level encryption\nEnsures principle of least privilege on key ownership & usage",
+        "solution": "Using the Amazon unified command line interface:\n\n* If there is no alias listed for App tier, create new KMS key and note the \"KeyId\" element:\n\n  aws kms create-key\n\n* Create an alias for the App tier key using the above KeyId:\n\n  aws kms create-alias --alias-name __ --target-key-id __",
+        "reference": "800-53|AC-1,800-53r5|AC-1,CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSF|ID.GV-1,CSF|ID.GV-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.9.1.1,ITSG-33|AC-1,LEVEL|2A,NESA|M1.2.2,NIAv2|AM29,NIAv2|AM30,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListAliases",
+        "regex": "alias/",
+        "expect": "alias/@APP_TIER_KMS_ALIAS@"
+    },
+    "custom_item_3": {
+        "description": "1.3 Ensure a customer created Customer Master Key (CMK) is created for the Database-Tier",
+        "info": "AWS Key Management Service (KMS) by default provides service Customer Managed Keys (CMK). Customers also have the ability to create CMKs, which allows for configuration of key rotation and key policy which is applied to the customer created CMK.\n\n  You can use the key policy by itself to control who has access to the CMK and what actions each identity can perform. Controlling access this way specifies the full scope of access to the CMK in a single document (the key policy).\n\n  Customer created CMKs can be used for:\n\n* AWS Service level encryption(e.g. EBS, RDS, S3)\n* Key management for file/application level encryption\nEnsures principle of least privilege on key ownership & usage",
+        "solution": "Using the Amazon unified command line interface:\n\n* If there is no alias listed for Data tier, create new KMS key and note the \"KeyId\" element:\n\n  aws kms create-key\n\n* Create an alias for the Data tier key using the above KeyId:\n\n  aws kms create-alias --alias-name __ --target-key-id <_data_tier_kms_key>_",
+        "reference": "800-53|AC-1,800-53r5|AC-1,CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSF|ID.GV-1,CSF|ID.GV-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.9.1.1,ITSG-33|AC-1,LEVEL|2A,NESA|M1.2.2,NIAv2|AM29,NIAv2|AM30,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListAliases",
+        "regex": "alias/",
+        "expect": "alias/@DATA_TIER_KMS_ALIAS@"
+    },
+    "custom_item_4": {
+        "description": "1.11 Ensure Web Tier ELB is using HTTPS listener",
+        "info": "A load balancer takes requests from clients and distributes them across the EC2 instances that are registered with the load balancer (also known as back-end instances).\n\n  A listener is a process that checks for connection requests. It is configured with a protocol and a port for front-end (client to load balancer) connections\n\n* Note: an HTTPS listener configured on the ELB is not mandatory if you are terminating SSL connections directly on the Web Tier EC2 instances, and using a TCP listener on the ELB (TCP pass-through)\nUsing an HTTPS Elastic Load Balancer listener will make sure the application traffic between the client and the Web Tier ELB is encrypted over the SSL\\TLS channel.",
+        "solution": "Using the Amazon unified command line interface:\n\n* If the ListenerDescription field is missing, add a new HTTPS listener configured with a SSL\\TLS certificate (the listener forwards traffic to the backend instances on port 80, but this can be modified by editing InstancePort=80):\n\n  aws elb create-load-balancer-listeners --load-balancer-name--listeners Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80, SSLCertificateId=",
+        "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeLoadBalancers",
+        "xsl_stmt": "",
+        "regex": "Protocol =",
+        "expect": "Protocol = (HTTPS|TCP)"
+    },
+    "custom_item_5": {
+        "description": "Describe Load Balancers - TCP pass-through",
+        "aws_action": "DescribeLoadBalancers",
+        "xsl_stmt": "",
+        "regex": "Protocol =",
+        "expect": "Protocol = TCP"
+    },
+    "custom_item_6": {
+        "description": "1.12 Ensure App Tier ELB have SSL\\TLS Certificate attached",
+        "info": "When you use HTTPS for your front-end listener, you must deploy an SSL/TLS certificate on your load balancer. The load balancer uses the certificate to terminate the connection and then decrypt requests from clients before sending them to the back-end instances.\n\n  The SSL\\TLS protocol uses an X.509 certificate (SSL\\TLS server certificate) to authenticate both the client and the back-end application. An X.509 certificate is a digital form of identification issued by a trusted certificate authority (CA) and contains identification information, a validity period, a public key, a serial number, and the digital signature of the issuer.\n\n  You can create a certificate using a Third Party Certificate Authority, AWS Certificate Manager or a self signed certificate like OpenSSL.\n\n* Note: an SSL certificate configured on the ELB is not mandatory if you are terminating SSL connections directly on the App Tier EC2 instances, and using a TCP listener on the ELB (TCP pass-through)\nAll the application traffic between the Web Tier instances and the App Tier ELB nodes should be encrypted using an SSL\\TLS certificate.",
+        "solution": "Using the Amazon unified command line interface:\n\n* Adding a HTTPS listener configured with a SSL\\TLS certificate (the listener forwards traffic to the backend instances on port 80, but this can be modified by editing InstancePort=80):\n\n  aws elb create-load-balancer-listeners --load-balancer-name--listeners Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80, SSLCertificateId=",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|2A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeLoadBalancers",
+        "xsl_stmt": "",
+        "regex": "SSL Certificate ID =",
+        "expect": "SSL Certificate ID = .*"
+    },
+    "custom_item_7": {
+        "description": "1.13 Ensure App Tier ELB have the latest SSL Security Policies configured",
+        "info": "Elastic Load Balancing uses an Secure Socket Layer (SSL) negotiation configuration, known as a security policy, to negotiate SSL/TLS connections between a client and the load balancer. A security policy is a combination of SSL/TLS protocols, ciphers, and the Server Order Preference option.\n\n  Elastic Load Balancing supports configuring your load balancer to use either predefined or custom security policies.\n\n  Secure Sockets Layer (SSL) and Transport Layer Security (TLS) are cryptographic protocols that are used to encrypt confidential data over insecure networks such as the Internet. The TLS protocol is a newer version of the SSL protocol. In the Elastic Load Balancing documentation, we refer to both SSL and TLS protocols as the SSL protocol.\n\n* Note: an SSL certificate configured on the ELB and an SSL Security Policy is not mandatory if you are terminating SSL connections directly on the App Tier EC2 instances, and using a TCP listener on the ELB (TCP pass-through)\nMaking sure the latest ELB SSL Security Policy is used will ensure the SSL/TLS connection will be negotiated using only the appropriate cryptographic protocols deemed safe with no proven vulnerabilities.",
+        "solution": "Using the Amazon unified command line interface:\n\n  (Note that you should replacewith your App-tier ELB name, and __ with the proper policy name)\n\n  aws elb set-load-balancer-policies-of-listener --load-balancer-name--load-balancer-port 443 --policy-names __",
+        "reference": "800-53|SC-17,800-53r5|SC-17,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-17,ITSG-33|SC-17a.,LEVEL|2A,NESA|T7.4.2,NIAv2|CY5a,NIAv2|CY10,NIAv2|CY12,NIAv2|SS25",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeLoadBalancers",
+        "xsl_stmt": "",
+        "regex": "Policy Name =",
+        "expect": "Policy Name = .*"
+    },
+    "custom_item_8": {
+        "description": "1.14 Ensure App Tier ELB is using HTTPS listener",
+        "info": "A load balancer takes requests from clients and distributes them across the EC2 instances that are registered with the load balancer (also known as back-end instances).\n\n  A listener is a process that checks for connection requests. It is configured with a protocol and a port for front-end (client to load balancer) connections.\n\n* Note: an HTTPS listener configured on the ELB is not mandatory if you are terminating SSL connections directly on the App Tier EC2 instances, and using a TCP listener on the ELB (TCP pass-through)\nUsing an HTTPS Elastic Load Balancer listener will make sure the application traffic between the client and the App Tier ELB is encrypted over the SSL\\TLS channel.",
+        "solution": "Using the Amazon unified command line interface:\n\n* If the ListenerDescription field is missing, add a new HTTPS listener configured with a SSL\\TLS certificate (the listener forwards traffic to the backend instances on port 80, but this can be modified by editing InstancePort=80):\n\n  aws elb create-load-balancer-listeners --load-balancer-name--listeners Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80, SSLCertificateId=",
+        "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeLoadBalancers",
+        "xsl_stmt": "",
+        "regex": "Protocol =",
+        "expect": "Protocol = (HTTPS|TCP)"
+    },
+    "custom_item_9": {
+        "description": "1.15 Ensure all Public Web Tier SSL\\TLS certificates are >30 days from Expiration",
+        "info": "Public SSL\\TLS certificates that are used for AWS resources such as the ELB or CloudFront should always be renewed prior to expiration both as a security best practice and to ensure the reputation of the web application is not impacted by an expired certificate.\nSSL\\TLS certificates that are public should be renewed prior to expiration.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Using the Amazon unified command line interface:\n\n* Request a certificate renewal from your CA, and upload the new certificate in IAM:\n\n  aws iam upload-server-certificate --server-certificate-name __ --certificate-body file://public_key_cert_file.pem --private-key file://my_private_key.pem --certificate-chain file://my_certificate_chain_file.pem\n\n\n\n* For Amazon Certificate Manager users the renewal is managed by ACM service",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListServerCertificates",
+        "xsl_stmt": "",
+        "not_expect": ".* : Expiration Date ="
+    },
+    "custom_item_10": {
+        "description": "1.17 Ensure CloudFront to Origin connection is configured using TLS1.1+ as the SSL\\TLS protocol",
+        "info": "CloudFront can connect to your origin using only HTTP, only HTTPS, or to connect by matching the protocol used by the viewer. Our recommendation is to use HTTPS only. In this case you can choose which SSL\\TLS protocols CloudFront is allowed to use when establishing an HTTPS connection to your origin. Ensure that you are using only TLS1.1+ as the SSL\\TLS protocol.\nIt used to be believed that TLS v1 was marginally more secure than SSL v3.0, its predecessor. However, developments, such as the POODLE vulnerability have shown that SSL v3.0 is now insecure.\n\n  Subsequent versions of TLS -- v1.1 and v1.2 are significantly more secure and fix many vulnerabilities present in SSL v3.0 and TLS v1. For example, the BEAST attack that can completely break web sites running on older SSL v3.0 and TLS v1 protocols. The newer TLS versions, if properly configured, prevent the BEAST and other attack vectors and provide many stronger ciphers and encryption methods.",
+        "solution": "Using the Amazon unified command line interface:\n\n* For configuring Origin SSL protocols first save locally the current distribution config:\n\n  aws cloudfront get-distribution-config --id--query \"DistributionConfig\" > /tmp/cf-distribution.json\n\n* Edit and replace \"OriginSslProtocols\" element in /tmp/cf-distribution.json with the below section:\n\n  \"OriginSslProtocols\": {\n \"Items\": [\n \"TLSv1.1\",\n \"TLSv1.2\"\n ],\n \"Quantity\": 2\n},\n\n* Retrieve the current ETag of your CloudFront distribution:\n\n  aws cloudfront get-distribution-config --id--query \"ETag\"\n\n* Update the CloudFront distribution using the edited config and the above Etag:\n\n  aws cloudfront update-distribution --id--distribution-config file:///tmp/cf-distribution.json --if-match",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListDistributions",
+        "xsl_stmt": "",
+        "regex": ".* : Origin Ssl Protocols =",
+        "expect": ".* : Origin Ssl Protocols = (TLSv1\\.(1|2)){1,2}"
+    },
+    "custom_item_11": {
+        "description": "3.12 Configure HTTP to HTTPS Redirects with a CloudFront Viewer Protocol Policy",
+        "info": "Configure the Viewer Protocol Policy for your CloudFront cache to redirect HTTP requests to HTTPS requests or to require that viewers use only the HTTPS protocol to access your objects in the CloudFront cache. You should also configure one or more cache behaviors in the same distribution to allow both HTTP and HTTPS, so you can require HTTPS for some objects but not for others.\n\n  In order to use HTTPS, a SSL\\TLS certificate must be attached.\n\n  This depends on your data classification policy and needs to be configured according to your encryption policy.\nTo ensure that objects are encrypted from edge locations to viewers using HTTP or HTTPS depending on your data classification and encryption policies, use only HTTPS.",
+        "solution": "Using the Amazon unified command line interface:\n\n* For configuring \"ViewerProtocolPolicy\" first save locally the current distribution config:\n\n  aws cloudfront get-distribution-config --id--query \"DistributionConfig\" > /tmp/cf-distribution.json\n\n* Edit and replace \"ViewerProtocolPolicy\" element in /tmp/cf-distribution.json with the below section:\n\n  \"ViewerProtocolPolicy\": \"redirect-to-https\",\n\n* Retrieve the current ETag of your CloudFront distribution:\n\n  aws cloudfront get-distribution-config --id--query \"ETag\"\n\n* Update the CloudFront distribution using the edited config and the above Etag:\n\n  aws cloudfront update-distribution --id--distribution-config file:///tmp/cf-distribution.json --if-match",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListDistributions",
+        "xsl_stmt": "",
+        "regex": ".* : Viewer Protocol Policy =",
+        "not_expect": ".* : Viewer Protocol Policy = allow-all"
+    },
+    "custom_item_12": {
+        "description": "3.13 Ensure all CloudFront Distributions require HTTPS between CloudFront and your Web-Tier ELB origin",
+        "info": "Configure the Origin Protocol Policy for the Web tier ELB origin either to require that CloudFront fetches objects from your origin by using HTTPS or to require that CloudFront uses the protocol that the viewer used to request the objects. For example, if you choose Match Viewer for the Origin Protocol Policy and the viewer uses HTTPS to request an object from CloudFront, CloudFront also uses HTTPS to forward the request to your origin.\n\n  In order to use HTTPS, an SSL\\TLS certificate must be attached.\nTo ensure that objects are encrypted from edge locations to the Web-Tier ELB origin according to the data classification policy, use Match Viewer.",
+        "solution": "Using the Amazon unified command line interface:\n\n* For configuring \"OriginProtocolPolicy\"first save locally the current distribution config:\n\n  aws cloudfront get-distribution-config --id--query \"DistributionConfig\" > /tmp/cf-distribution.json\n\n* Edit and replace \"OriginProtocolPolicy\"element in /tmp/cf-distribution.json with the below section:\n\n  \"OriginProtocolPolicy\": \"https-only\",\n\n* Retrieve the current ETag of your CloudFront distribution:\n\n  aws cloudfront get-distribution-config --id--query \"ETag\"\n\n* Update the CloudFront distribution using the edited config and the above Etag:\n\n  aws cloudfront update-distribution --id--distribution-config file:///tmp/cf-distribution.json --if-match",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListDistributions",
+        "xsl_stmt": "",
+        "regex": ".* : Origin Protocol Policy =",
+        "not_expect": ".* : Origin Protocol Policy = (http-only|match-viewer)"
+    },
+    "custom_item_13": {
+        "description": "6.1 Ensure Root Domain Alias Record Points to ELB",
+        "info": "Amazon Route 53 translates friendly domains names like www.example.com into IP addresses like 192.0.2.1. Amazon Route 53 responds to DNS queries using a global network of authoritative DNS servers, which reduces latency.\n\n  When someone enters your domain name in a browser, a DNS request is forwarded to the nearest Amazon Route 53 DNS server in a global network of authoritative DNS servers. Amazon Route 53 responds with the IP address that you specified.\n\n  Each domain has an associated hosted zone which contains the resource records pointing to each layer of the application.\n\n  A private hosted zone is a container that holds information about how you want to route traffic for a domain and its subdomains within the Amazon Virtual Private Cloud (Amazon VPC). To begin, you create a private hosted zone and specify the Amazon VPCs that you want to associate with the hosted zone. You then create resource record sets that determine how Amazon Route 53 responds to queries for your domain and subdomains within and among your Amazon VPCs.\nRoute53 provides special record type called Alias that allow to create an A record for the root domain and point it to the fully qualified domain of the Elastic Load Balancer (ELB) associated with the web-server layer or Amazon CloudFront.\n\n  In the same way records for all other layers should be created in order to allow flexibility in the application design and not hard-code the FQDN of a resource.",
+        "solution": "Using the Amazon unified command line interface:\n\n* Create a hosted zone for YourDomain.com:\n\n  aws route53 create-hosted-zone --name_ --caller-reference __",
+        "reference": "800-53|SC-20,800-53r5|SC-20,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,LEVEL|2A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListHostedZones",
+        "xsl_stmt": "",
+        "regex": "Hosted Zone ID =",
+        "expect": "Hosted Zone ID = .* - Domain Name = .*"
+    },
+    "custom_item_14": {
+        "description": "6.2 Ensure a DNS alias record for the root domain",
+        "info": "While ordinary Amazon Route 53 resource record sets are standard DNS resource record sets, _alias resource record sets_ provide an Amazon Route 53-specific extension to DNS functionality. Instead of an IP address or a domain name, an alias resource record set contains a pointer to a CloudFront distribution or an ELB load balancer.\n\n  Alias resource record sets can save you time because Amazon Route 53 automatically recognizes changes in the resource record sets that the alias resource record set refers to.\nIn order to point the root domain to a CloudFront distribution or an Elastic Load Balancer (ELB), an alias resource record set should be created.",
+        "solution": "First create a json file that represents the alias record that you want to add, and save it locally as \"alias.json\". Below you can find a simple alias record representation:\n\n  {\n \"Changes\": [\n {\n \"Action\": \"CREATE\",\n \"ResourceRecordSet\": {\n \"Name\": \"__\",\n \"Type\": \"A\",\n \"AliasTarget\": {\n \"HostedZoneId\": \"hosted zone ID for your CloudFront distribution, Amazon S3 bucket, Elastic Load Balancing load balancer, or Amazon Route 53 hosted zone\",\n \"DNSName\": \"DNS domain name for your CloudFront distribution, Amazon S3 bucket, Elastic Load Balancing load balancer, or another resource record set in this hosted zone\",\n \"EvaluateTargetHealth\": false\n }\n }\n }\n ]\n}\n\n  Using the Amazon unified command line interface:\n\n* Create an Alias records in your hosted zone:\n\n  aws route53 change-resource-record-sets --hosted-zone-id <_your_hosted_zone_id>_ --change-batch file:///PathTo/alias.json",
+        "reference": "800-53|SC-20,800-53r5|SC-20,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-20,LEVEL|2A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListResourceRecordSets",
+        "xsl_stmt": "",
+        "regex": "Hosted Zone ID =",
+        "expect": "Hosted Zone ID = .* - DNS Name = .*",
+        "hosted_zone_id": "@HOSTED_ZONE_ID@"
+    },
+    "custom_item_15": {
+        "description": "6.4 Ensure Geo-Restriction is enabled within Cloudfront Distribution",
+        "info": "Amazon CloudFront is a web service that speeds up distribution of your static and dynamic web content, for example, .html, .css, .php, image, and media files, to end users. CloudFront delivers your content through a worldwide network of edge locations. When an end user requests content that you're serving with CloudFront, the user is routed to the edge location that provides the lowest latency, so content is delivered with the best possible performance. If the content is already in that edge location, CloudFront delivers it immediately. If the content is not currently in that edge location, CloudFront retrieves it from a customer defined Origin, such as AWS S3, AWS ELB or EC2.\nProvides the ability to block IP addresses based on Geo IP from reaching your CDN or Web Application resources. Can be used to assist in mitigation of DoS attacks.",
+        "solution": "Using the Amazon unified command line interface:\n\n* For enabling GeoRestrictions first save locally the current distribution config:\n\n  aws cloudfront get-distribution-config --id _--query \"DistributionConfig\" > /tmp/cf-distribution.json\n\n* Edit the GeoRestrictions section in /tmp/cf-distribution.json with the desired configuration (similar to the below sample):\n\n  \"Restrictions\": {\n \"GeoRestriction\": {\n \"RestrictionType\": \"__\",\n \"Quantity\": 3,\n \"Items\": [\"__\", \"__\"]\n }\n},\n\n* Retrieve the current ETag of your CloudFront distribution:\n\n  aws cloudfront get-distribution-config --id _--query \"ETag\"\n\n* Update the CloudFront distribution using the edited config and the above Etag:\n\n  aws cloudfront update-distribution --id _--distribution-config file:///tmp/cf-distribution.json --if-match _",
+        "reference": "800-171|3.13.1,800-53|SC-7(11),800-53r5|SC-7(11),CN-L3|8.1.10.6(j),CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(11),LEVEL|2A,NESA|T4.5.4,NIAv2|GS7c,PCI-DSSv3.2.1|1.3.1,PCI-DSSv3.2.1|1.3.2,PCI-DSSv3.2.1|1.3.3,PCI-DSSv3.2.1|1.3.5,PCI-DSSv4.0|1.3.1,PCI-DSSv4.0|1.4.2,PCI-DSSv4.0|1.4.3,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|31.3",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "ListDistributions",
+        "xsl_stmt": "",
+        "regex": ".* : GeoRestriction =",
+        "not_expect": ".* : GeoRestriction = none"
+    },
+    "custom_item_16": {
+        "description": "6.30 Ensure RDS Database is not publically accessible",
+        "info": "Amazon Relational Database Service (RDS) is a managed relational database service which handles routine database tasks such as provisioning, patching, backup, recovery, failure detection, and repair.\n\n  There are 6 database engines available for customer to run their database workloads on:\n\n* Amazon Aurora (MySQL Compatible)\n* MySQL\n* MariaDB\n* Oracle\n* Microsoft SQL Server\n* PostgreSQL\n\n  Customers can deploy RDS databases within a VPC through the configuration of:\n\n* Subnet Group for RDS, this group will be used for deployment of single or Multi-AZ RDS instances.\n* Network access through configuration of Security Groups for RDS\n* Access from outside the VPC hosting the DB instance by enabling/disabling a Public IP address\nNetwork access to the managed Data-Tier must be tightly controlled using Security Groups for RDS and non local accessibility of the DB instance.",
+        "solution": "Using the Amazon unified command line interface:\n\n* Modify each publicly accessible DB instance, and make it private:\n\n  aws rds modify-db-instance --db-instance-identifier--no-publicly-accessible",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeDBInstances",
+        "xsl_stmt": "",
+        "regex": "Publicly Accessible =",
+        "expect": "Publicly Accessible = false"
+    },
+    "custom_item_17": {
+        "description": "6.31 Don't use the default VPC",
+        "info": "A default VPC is ready for you to use -- you can immediately start launching instances into your default VPC without having to perform any additional configuration steps.\n\n  When we create a default VPC, AWS does the following to set it up:\n\n* Create a default subnet in each Availability Zone.\n* Create an Internet gateway and connect it to your default VPC.\n* Create a main route table for your default VPC with a rule that sends all traffic destined for the Internet to the Internet gateway.\n* Create a default security group and associate it with your default VPC.\n* Create a default network access control list (ACL) and associate it with your default VPC.\n* Associate the default DHCP options set for your AWS account with your default VPC.\n\n  Label this Default VPC \"Do Not Use\".\nThe default VPC comes with some default configuration that wouldn't meet the best practices, however if recommended setting are created or the default behavior is changed, this would still be considered ok.",
+        "solution": "Using the Amazon Unified CLI:\n\n* Create a new VPC with the desired CIDR and migrate your application:\n\n  aws ec2 create-vpc --cidr-block __",
+        "reference": "LEVEL|2A",
+        "see_also": "https://workbench.cisecurity.org/files/260",
+        "aws_action": "DescribeVpcs",
+        "xsl_stmt": "",
+        "regex": "VPC ID = .* \\| Is Dafault =",
+        "expect": "VPC ID = .* \\| Is Dafault = false"
+    }
+}

@@ -1,0 +1,492 @@
+{
+    "custom_item_1": {
+        "description": "1.1.1.1.1 Ensure minimum passcode length is set to at least 6 characters",
+        "info": "For security purposes, Zoom has a few requirements that your passcode must meet. Minimum passcode length must be at least 6 characters.\n\nRationale:\n\nThis ensures the passcode complexity requirements are met and a strong passcode is set for meetings.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Passcode Requirement -> Have a minimum passcode length, and ensure it is set to enabled.\n\nDefault Value:\n\nUnchecked",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .meeting_password_requirement | .length",
+        "not_expect": "0"
+    },
+    "custom_item_2": {
+        "description": "1.1.1.1.2 Ensure passcode is set to have at least 1 letter",
+        "info": "For security purposes, Zoom has a few requirements that your passcode must meet. As per passcode requirements, have at least 1 letter (a, b, c...). This shall make the passcode strong.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Passcode Requirement -> Have at least 1 letter (a, b, c...), and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .meeting_password_requirement | .have_letter",
+        "expect": "true"
+    },
+    "custom_item_3": {
+        "description": "1.1.1.1.3 Ensure passcode is set to have at least 1 number",
+        "info": "For security purposes, Zoom has a few requirements that your passcode must meet. As per passcode requirements, Have at least 1 number (1, 2, 3...). This shall make the passcode strong.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Passcode Requirement -> Have at least 1 number (1, 2, 3...), and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .meeting_password_requirement | .have_number",
+        "expect": "true"
+    },
+    "custom_item_4": {
+        "description": "1.1.1.1.8 Ensure only allow numeric passcode is set to disabled",
+        "info": "For security purposes, Zoom has a few requirements that your passcode must meet. As per passcode requirements, Disable 'Only allow numeric passcode', enabling this shall make the passcode weaker.\n\nRationale:\n\nThis ensures the passcode complexity requirements are met and a strong passcode is set for meetings.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Passcode Requirement -> Only allow numeric passcode, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .meeting_password_requirement | .only_allow_numeric",
+        "expect": "false"
+    },
+    "custom_item_5": {
+        "description": "1.1.1.2 Ensure waiting room is set to enabled",
+        "info": "When participants join a meeting, place them in a waiting room and require the host to admit them individually. Enabling the waiting room automatically disables the setting for allowing participants to join before host.\n\nRationale:\n\nThis option ensures that the participants are by default entered into meeting.\n\nImpact:\n\nWhen hundreds of participants are joining, the Co-Hosts has to admit all participants and may take time.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Waiting Room and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .waiting_room",
+        "expect": "true"
+    },
+    "custom_item_6": {
+        "description": "1.1.1.3 Ensure waiting room options is set to everyone",
+        "info": "Click on 'Edit Options' to choose who should go in the waiting room? A) Everyone, B) Users not in your account, C) Users who are not in your account and not part of the allowed domains\n\nRationale:\n\nThis shall increase the security by choosing which participants should go into waiting room when joining a meeting.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Security -> Waiting Room Option and click on 'Edit Options' to and ensure 'Everyone' option is selected.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .participants_to_place_in_waiting_room",
+        "expect": "0"
+    },
+    "custom_item_7": {
+        "description": "1.1.1.4 Ensure require a passcode when scheduling new meetings is set to enabled",
+        "info": "Require a passcode when scheduling new meetings must be set to enabled. A passcode will be generated when scheduling a meeting and participants require the passcode to join the meeting.\n\nRationale:\n\nUpon scheduling a meeting, a passcode will be generated, this ensures that participants require the passcode to join the meeting.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Require a passcode when scheduling new meetings and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .require_password_for_scheduling_new_meetings",
+        "expect": "true"
+    },
+    "custom_item_8": {
+        "description": "1.1.1.6 Ensure require a password for instant meetings is set to enabled",
+        "info": "A random passcode will be generated when starting an instant meeting.\n\nRationale:\n\nEnabling this setting shall increase security for meetings that are created instantly. A participant requires the passcode to be entered for joining.\n\nImpact:\n\nThis setting may not be helpful in a scenario, where participants need to join a meeting that was created instantly and does not want to input a passcode to join.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Require a passcode for instant meetings, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .require_password_for_scheduling_new_meetings",
+        "expect": "true"
+    },
+    "custom_item_9": {
+        "description": "1.1.1.7 Ensure require a password for Personal Meeting ID (PMI) is set to enabled",
+        "info": "Enable 'Require a passcode for Personal Meeting ID (PMI)' to set a passcode for meetings that use the personal meeting ID (PMI) and then choose 'All meetings using PMI'\n\nRationale:\n\nThis increases security, and ensures that all meetings that are created using PMI requires a passcode to login.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Require a passcode for Personal Meeting ID (PMI), and ensure it is set to enabled. After enabling, check if option 'All meetings using PMI' is chosen.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .require_password_for_pmi_meetings",
+        "expect": "all"
+    },
+    "custom_item_10": {
+        "description": "1.1.1.8 Ensure embed password in meeting link for one-click join is set to enabled",
+        "info": "Meeting passcode will be encrypted and included in the invite link to allow participants to join with just one click without having to enter the passcode.\n\nRationale:\n\nIncreased security to avoid need to punch in passcode. When participant clicks on meeting link that was sent to registered email, users joins meeting automatically.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Security -> Embed passcode in invite link for one-click join, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .embed_password_in_join_link",
+        "expect": "true"
+    },
+    "custom_item_11": {
+        "description": "1.1.2.1.1 Have a minimum password length",
+        "info": "For security purposes, Zoom has a few requirements that your password must meet. These apply when setting your initial password and when resetting your password. Minimum password length must be at least 8 characters.\n\nRationale:\n\nThis ensures the password complexity requirements are met and a strong password is set for the account.",
+        "solution": "Default Value:\n\nMust be at least 8 characters",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".security | .password_requirement | .minimum_password_length",
+        "expect": "([89]|[12][0-9]|3[0-2])"
+    },
+    "custom_item_12": {
+        "description": "1.1.2.1.2 Specify a password length:",
+        "info": "For security purposes, Zoom has a few requirements that your password must meet. These apply when setting your initial password and when resetting your password. Password length must be at least 8 characters and cannot be longer than 32 characters.\n\nRationale:",
+        "solution": "",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".security | .password_requirement | .minimum_password_length",
+        "expect": "([89]|[12][0-9]|3[0-2])"
+    },
+    "custom_item_13": {
+        "description": "1.1.2.2 Ensure host video is set to disabled",
+        "info": "Start meetings with host video on should be set to disabled.\n\nRationale:\n\nEnforcing a Zoom default setting.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Scheduled Meeting -> Host video, and ensure it is set to disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .host_video",
+        "expect": "false"
+    },
+    "custom_item_14": {
+        "description": "1.1.2.3 Ensure participants video is set to disabled",
+        "info": "Start meetings with Participants video on should be set to disabled and locked off.\n\nRationale:\n\nThis ensures people joining a meeting do not have their camera on without them realizing. Locking the setting ensures no one changes this when creating a meeting.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Scheduled Meeting -> Participants video, and ensure it is set to disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .participant_video",
+        "expect": "false"
+    },
+    "custom_item_15": {
+        "description": "1.1.2.4 Ensure join before host is set to disabled",
+        "info": "Allow participants to join the meeting before the host arrives should be set to disabled and locked off.\n\nRationale:\n\nThis ensures people joining a meeting do not enter a meeting before the host has arrived. If there are annoying users, they cannot be removed or muted until the host arrives. Locking the setting ensures no one changes this when creating a meeting.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Scheduled Meeting -> Join before host, and ensure it is set to disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .join_before_host",
+        "expect": "false"
+    },
+    "custom_item_16": {
+        "description": "1.1.2.5 Ensure enable personal meeting ID is set to enabled",
+        "info": "A Personal Meeting ID (PMI) is a dedicated 9-11 digit number which is assigned to each individuals account. This becomes the users personal meeting room. This is the personal room assigned upon account creation.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Scheduled Meeting -> Enable Personal Meeting ID, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .personal_meeting",
+        "expect": "true"
+    },
+    "custom_item_17": {
+        "description": "1.1.2.12 Ensure mute participants upon entry is set to enabled",
+        "info": "Automatically mute all participants when they join the meeting. The host controls whether participants can unmute themselves, through client end by enabling 'Allow Participants to Unmute Themselves' under more options in participants list.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> Schedule Meeting -> Mute participants upon entry, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".schedule_meeting | .mute_upon_entry",
+        "expect": "true"
+    },
+    "custom_item_18": {
+        "description": "1.1.3.2.1 Ensure sound notification when someone joins or leaves is set to enabled",
+        "info": "Enable 'Play sound when participants join or leave'. This can also be controlled from host client end if required to be changed.\n\nRationale:\n\nThis option enables Host and co-hosts to know that participants are joining/leaving.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Sound notification when someone joins or leaves, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .entry_exit_chime",
+        "not_expect": "none"
+    },
+    "custom_item_19": {
+        "description": "1.1.3.2.2 Ensure play sound for 'Host and co-host only' is set to enabled",
+        "info": "Change from 'Everyone' option under [Play sound for] to 'Host and co-hosts only'.\n\nRationale:\n\nThis option enables Host and co-hosts to know that participants are joining/leaving.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Sound notification when someone joins or leaves -> Play sound for -> Host and co-hosts only, and check ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .entry_exit_chime",
+        "expect": "host"
+    },
+    "custom_item_20": {
+        "description": "1.1.3.2.3 Ensure when someone joins by phone, ask to record their voice to use as the notification is set to enabled",
+        "info": "Select 'Ask to record their voice to use as the notification' option for 'When someone joins by phone'.\n\nRationale:\n\nThis option enables Host and co-hosts to know that participants are joining/leaving while joining from phone.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Sound notification when someone joins or leaves -> When someone joins by phone -> Ask to record their voice to use as the notification, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .record_play_own_voice",
+        "expect": "true"
+    },
+    "custom_item_21": {
+        "description": "1.1.3.3.1 Ensure hosts and participants can send files through the in-meeting chat is set to disabled",
+        "info": "Hosts and participants can send files through the in-meeting chat. As this is account level setting keep this enabled. If option of file transfer is required, then use it along with allowing specific file extension.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Hosts and participants can send files through the in-meeting chat., and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .file_transfer",
+        "expect": "false"
+    },
+    "custom_item_22": {
+        "description": "1.1.3.4.1 Ensure screen sharing is set to enabled",
+        "info": "Allow host and participants to share their screen or content during meetings. Enable this option to ensure further options are customizable to control who can share screen or desktop audio.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Screen sharing, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .screen_sharing",
+        "expect": "true"
+    },
+    "custom_item_23": {
+        "description": "1.1.3.4.2 Ensure 'who can share?' is set to 'Host Only'",
+        "info": "Select 'Who can share?' as 'Host Only' here. This can be controlled by host for a particular meeting at desktop client software.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Who can share?, and ensure 'Host Only' is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .who_can_share_screen",
+        "expect": "host"
+    },
+    "custom_item_24": {
+        "description": "1.1.3.4.3 Ensure 'Who can start sharing when someone else is sharing?' is set to 'Host Only'",
+        "info": "This setting decides who can share screen when someone is already sharing. This option should be restricted to 'Host Only'. This can be changed or controlled by host for a particular meeting instance.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Who can start sharing when someone else is sharing? and ensure 'Host Only' is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .who_can_share_screen_when_someone_is_sharing",
+        "expect": "host"
+    },
+    "custom_item_25": {
+        "description": "1.1.3.7 Ensure require encryption for 3rd party endpoints (SIP/H.323) is set to enabled",
+        "info": "By default, Zoom requires encryption for all data transferred between the Zoom cloud, Zoom client, and Zoom Room. Turn on this setting to require encryption for 3rd party endpoints (SIP/H.323) as well.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Require encryption for 3rd party endpoints (SIP/H.323) and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .e2e_encryption",
+        "expect": "true"
+    },
+    "custom_item_26": {
+        "description": "1.1.3.8 Ensure allow meeting participants to send a private 1:1 message to another participant is set to disabled",
+        "info": "Allow meeting participants to send a private 1:1 message to another participant.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Allow meeting participants to send a private 1:1 message to another participant., and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .private_chat",
+        "expect": "false"
+    },
+    "custom_item_27": {
+        "description": "1.1.3.9 Ensure auto saving chats is set to enabled",
+        "info": "Automatically save all in-meeting chats so that hosts do not need to manually save the text of the chat after the meeting starts.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Auto saving chats, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .auto_saving_chat",
+        "expect": "false"
+    },
+    "custom_item_28": {
+        "description": "1.1.3.11 Ensure co-host is set to enabled",
+        "info": "Allow the host to add co-hosts. Co-hosts have the same in-meeting controls as the host.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Co-host, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .co_host",
+        "expect": "true"
+    },
+    "custom_item_29": {
+        "description": "1.1.3.20 Ensure allow participants to rename themselves is set to enabled",
+        "info": "Allow meeting participants and webinar panelists to rename themselves. This option is required to identify participants in a meeting that does not require registration. Also, this options helps participants to rename themselves to self-identify.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Basic) -> Allow participants to rename themselves, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .allow_participants_to_rename",
+        "expect": "true"
+    },
+    "custom_item_30": {
+        "description": "1.1.4.1.1 Ensure select data center regions for meetings/webinars hosted by your account is set to enabled",
+        "info": "Include all data center regions to provide the best experience for participants joining from all regions. Opting out of data center regions may limit CRC, Dial-in, Call Me, and Invite by Phone options for participants joining from those regions.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Select data center regions for meetings/webinars hosted by your account, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .custom_data_center_regions",
+        "expect": "true"
+    },
+    "custom_item_31": {
+        "description": "1.1.4.1.2 Ensure data center regions is set to local countries",
+        "info": "Not all data centers are configured. Only the required ones are configured. Choose local or trusted region data centers.\n\nRationale:\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Select data center regions for meetings/webinars hosted by your account, and ensures local countries are selected. E.g. For United States, select United States.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .data_center_regions | .[]",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_32": {
+        "description": "1.1.4.3.1 Ensure virtual background is set to enabled",
+        "info": "Customize your background to keep your environment private from others in a meeting. This can be used with or without a green screen.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Virtual background, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .virtual_background",
+        "expect": "true"
+    },
+    "custom_item_33": {
+        "description": "1.1.4.3.2 Ensure allow use of videos for virtual backgrounds is set to disabled",
+        "info": "Customize your background to keep your environment private from others in a meeting. This can be used with or without a green screen. Allow use of videos for virtual backgrounds.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Allow use of videos for virtual backgrounds, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .virtual_background_settings | .allow_videos",
+        "expect": "false"
+    },
+    "custom_item_34": {
+        "description": "1.1.4.3.3 Ensure allow users to upload custom backgrounds is set to disabled",
+        "info": "Customize your background to keep your environment private from others in a meeting. This can be used with or without a green screen. Allow users to upload custom backgrounds. Disabling this option ensures that participants do not have inappropriate backgrounds.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Allow users to upload custom backgrounds, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .virtual_background_settings | .allow_upload_custom",
+        "expect": "false"
+    },
+    "custom_item_35": {
+        "description": "1.1.4.9 Ensure far end camera control is set to disabled",
+        "info": "Allow another user to take control of your camera during a meeting. Both users (the one requesting control and the one giving control) must have this option turned on.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Far end camera control, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .far_end_camera_control",
+        "expect": "false"
+    },
+    "custom_item_36": {
+        "description": "1.1.4.10 Ensure identify guest participants in the meeting/webinar is set to enabled",
+        "info": "Participants who belong to your account can see that a guest (someone who does not belong to your account) is participating in the meeting/webinar. The Participants list indicates which attendees are guests. The guests themselves do not see that they are listed as guests.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Identify guest participants in the meeting/webinar, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .alert_guest_join",
+        "expect": "true"
+    },
+    "custom_item_37": {
+        "description": "1.1.4.11 Ensure auto-answer group in chat is set to disabled",
+        "info": "Enable users to see and add contacts to 'auto-answer group' in the contact list on chat. Any call from members of this group will be automatically answered.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Auto-answer group in chat, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .auto_answer",
+        "expect": "false"
+    },
+    "custom_item_38": {
+        "description": "1.1.4.14 Ensure show a 'Join from your browser' link is set to enabled",
+        "info": "Allow participants to bypass the Zoom application download process, and join a meeting directly from their browser. This is a workaround for participants who are unable to download, install, or run applications. Note that the meeting experience from the browser is limited.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Meeting -> In Meeting (Advanced) -> Show a 'Join from your browser' link, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".in_meeting | .show_a_join_from_your_browser_link",
+        "expect": "true"
+    },
+    "custom_item_39": {
+        "description": "1.1.6.1.1 Ensure when a cloud recording is available is set to enabled",
+        "info": "Notify host when cloud recording is available. This can enable hosts to validate the recording for any confidential data, prior sharing the video at large.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Email Notification -> When a cloud recording is available, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".email_notification | .cloud_recording_available_reminder",
+        "expect": "true"
+    },
+    "custom_item_40": {
+        "description": "1.1.6.2 Ensure when attendees join meeting before host is set to enabled",
+        "info": "Notify host when participants join the meeting before them\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Email Notification -> Notify host when participants join the meeting before them, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".email_notification | .jbh_reminder",
+        "expect": "true"
+    },
+    "custom_item_41": {
+        "description": "1.1.6.3 Ensure when a meeting is cancelled is set to enabled",
+        "info": "Notify host and participants when the meeting is cancelled.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Email Notification -> When a meeting is cancelled, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".email_notification | .cancel_meeting_reminder",
+        "expect": "true"
+    },
+    "custom_item_42": {
+        "description": "1.1.6.5 Enable when someone scheduled a meeting for a host is set to enabled",
+        "info": "When someone scheduled a meeting for a host, Notify the host there is a meeting is scheduled, rescheduled, or cancelled. Helpful in monitoring the schedule by someone who has permissions to schedule a meeting on behalf of host.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Email Notification -> When someone scheduled a meeting for a host, and ensure it is set to enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".email_notification | .schedule_for_reminder",
+        "expect": "true"
+    },
+    "custom_item_43": {
+        "description": "1.2.2.1 Ensure cloud recording is set to enabled",
+        "info": "Allow hosts to record and save the meeting / webinar in the cloud.\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Cloud recording, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .cloud_recording",
+        "expect": "true"
+    },
+    "custom_item_44": {
+        "description": "1.2.3.2 Ensure display participants' names in the recording is set to enabled",
+        "info": "This option display participants' names in the recording\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Advanced cloud recording settings -> Display participants' names in the recording, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .display_participant_name",
+        "expect": "true"
+    },
+    "custom_item_45": {
+        "description": "1.2.5.1 Ensure cloud recording downloads is set to enabled",
+        "info": "Allow anyone with a link to the cloud recording to download\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Cloud recording downloads, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .cloud_recording_download",
+        "expect": "true"
+    },
+    "custom_item_46": {
+        "description": "1.2.6.1 Ensure have a minimum passcode length is set to 8 characters or greater",
+        "info": "Have a minimum passcode length of 8 characters or greater\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Set minimum passcode strength requirements -> set to 8 characters or greater, and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .recording_password_requirement | .length",
+        "expect": "([8-9]|10)"
+    },
+    "custom_item_47": {
+        "description": "1.2.6.2 Ensure passcode have at least 1 letter is set to enabled",
+        "info": "Have at least 1 letter (a, b, c...)\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Set minimum passcode strength requirements -> Have at least 1 letter (a, b, c...), and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .recording_password_requirement | .have_letter",
+        "expect": "true"
+    },
+    "custom_item_48": {
+        "description": "1.2.6.3 Ensure passcode have at least 1 number is set to enabled",
+        "info": "Have at least 1 number (1, 2, 3...)\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Set minimum passcode strength requirements -> Have at least 1 number (1, 2, 3...), and ensure it is enabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .recording_password_requirement | .have_number",
+        "expect": "true"
+    },
+    "custom_item_49": {
+        "description": "1.2.6.5 Ensure allow numeric passcode is set to disabled",
+        "info": "Disable 'Only allow numeric passcode'\n\nRationale:",
+        "solution": "Go into the Zoom Admin Dashboard on the zoom website. Account Management -> Account Settings -> Recording -> Set minimum passcode strength requirements -> Only allow numeric passcode, and ensure it is disabled.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|1M,LEVEL|2M,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2986",
+        "request": "getAccounts",
+        "json_transform": ".recording | .recording_password_requirement | .only_allow_numeric",
+        "expect": "false"
+    }
+}

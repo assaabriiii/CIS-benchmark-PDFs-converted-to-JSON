@@ -1,0 +1,428 @@
+{
+    "custom_item_1": {
+        "description": "CISC-ND-000010 - The Cisco switch must be configured to limit the number of concurrent management sessions to an organization-defined number.",
+        "info": "Device management includes the ability to control the number of administrators and management sessions that manage a device. Limiting the number of allowed administrators and sessions per administrator based on account type, role, or access type is helpful in limiting risks related to DoS attacks.\n\nThis requirement addresses concurrent sessions for administrative accounts and does not address concurrent sessions by a single administrator via multiple administrative accounts. The maximum number of concurrent sessions should be defined based upon mission needs and the operational environment for each system. At a minimum, limits must be set for SSH, HTTPS, account of last resort, and root account sessions.",
+        "solution": "Configure the switch to limit the number of concurrent management sessions to an organization-defined number as shown in the example below:\n\nSW4(config)# line vty\nSW4(config)# session-limit 2",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-220474r879511_rule,STIG-ID|CISC-ND-000010,STIG-Legacy|SV-110595,STIG-Legacy|V-101491,Vuln-ID|V-220474",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "context": "line vty .+",
+        "item": "session-limit ([1-9]|1[0-9]|20)"
+    },
+    "custom_item_2": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_3": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_4": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_5": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_6": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_7": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_8": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_9": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_10": {
+        "description": "line vty access-class",
+        "context": "line vty .+",
+        "item": "access-class @MANAGEMENT_ACL@ in"
+    },
+    "custom_item_11": {
+        "description": "management access-list",
+        "context": "ip access-list (standard|extended) @MANAGEMENT_ACL@",
+        "item": "permit (tcp )?@MANAGEMENT_IP_AND_NETMASK@"
+    },
+    "custom_item_12": {
+        "description": "CISC-ND-000150 - The Cisco switch must be configured to enforce the limit of three consecutive invalid logon attempts, after which time it must disconnect the session.",
+        "info": "By limiting the number of failed logon attempts, the risk of unauthorized system access via user password guessing, otherwise known as brute-forcing, is reduced.",
+        "solution": "Configure the Cisco switch to enforce the limit of three consecutive invalid logon attempts as shown in the example below:\n\nSW2(config)# ssh login-attempts 3",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CAT|II,CCI|CCI-000044,CN-L3|8.1.4.1(b),DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,Rule-ID|SV-220480r879546_rule,STIG-ID|CISC-ND-000150,STIG-Legacy|SV-110607,STIG-Legacy|V-101503,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2,Vuln-ID|V-220480",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "ssh login-attempts 3"
+    },
+    "custom_item_13": {
+        "description": "CISC-ND-000160 - The Cisco switch must be configured to display the Standard Mandatory DoD Notice and Consent Banner before granting access to the device.",
+        "info": "Display of the DoD-approved use notification before granting access to the network device ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users.",
+        "solution": "Configure the Cisco switch to display the Standard Mandatory DoD Notice and Consent Banner before granting access as shown in the following example:\n\nSW1(config)# banner motd #\nEnter TEXT message. End with the character '#'.\n> You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.\n>\n> By using this IS (which includes any device attached to this IS), you consent to the following conditions:\n>\n> -The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to,\n> penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law\n> enforcement (LE), and counterintelligence (CI) investigations.\n>\n> -At any time, the USG may inspect and seize data stored on this IS.\n>\n> -Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and\n> search, and may be disclosed or used for any USG-authorized purpose.\n>\n> -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your\n> personal benefit or privacy.\n>\n> -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or\n> monitoring of the content of privileged communications, or work product, related to personal representation or services\n> by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and\n> confidential. See User Agreement for details.\n> #\nSW1(config)# end",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-220481r879547_rule,STIG-ID|CISC-ND-000160,STIG-Legacy|SV-110609,STIG-Legacy|V-101505,TBA-FIISB|45.2.4,Vuln-ID|V-220481",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "banner login",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_14": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_15": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_16": {
+        "description": "ip access-list",
+        "context": "ip access-list [^ ]+",
+        "regex": "Manual Review Required",
+        "item": "(deny|permit) [^ ]+ [^ ]+ [^ ]+ log"
+    },
+    "custom_item_17": {
+        "description": "logging ip",
+        "item": "logging ip access-list cache entries [^ ]+"
+    },
+    "custom_item_18": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_19": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_20": {
+        "description": "boot network",
+        "item": "boot network"
+    },
+    "custom_item_21": {
+        "description": "ip boot server",
+        "item": "feature (telnet|wccp|nxapi|imp)"
+    },
+    "custom_item_22": {
+        "description": "account",
+        "item": "username @EMERGENCY_ACCT@ password 5 [^ ]+ role [^ ]+"
+    },
+    "custom_item_23": {
+        "description": "aaa authentication login default group",
+        "item": "aaa authentication login default group [^ ]+"
+    },
+    "custom_item_24": {
+        "description": "aaa authentication login default fallback",
+        "item": "aaa authentication login default fallback error local"
+    },
+    "custom_item_25": {
+        "description": "CISC-ND-000530 - The Cisco switch must be configured to implement replay-resistant authentication mechanisms for network access to privileged accounts.",
+        "info": "A replay attack may enable an unauthorized user to gain access to the application. Authentication sessions between the authenticator and the application validating the user credentials must not be vulnerable to a replay attack.\n\nAn authentication process resists replay attacks if it is impractical to achieve a successful authentication by recording and replaying a previous authentication message.",
+        "solution": "Enable fips mode via the command 'fips mode enable'.\n\nNote: The switch will require a reboot for fips mode to be enabled.",
+        "reference": "800-171|3.5.4,800-53|IA-2(8),800-53r5|IA-2(8),CAT|II,CCI|CCI-001941,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(8),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM18,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-220488r929031_rule,STIG-ID|CISC-ND-000530,STIG-Legacy|SV-110625,STIG-Legacy|V-101521,SWIFT-CSCv1|4.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-220488",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "fips mode enable"
+    },
+    "custom_item_26": {
+        "description": "CISC-ND-000570 - The Cisco switch must be configured to enforce password complexity by requiring that at least one upper-case character be used.",
+        "info": "Use of a complex passwords helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password is, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+        "solution": "Configure the Cisco switch to enforce password complexity by requiring that at least one upper-case character be used as shown in the example below:\n\nSW1(config)# password strength-check",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000192,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-220489r879603_rule,STIG-ID|CISC-ND-000570,STIG-Legacy|SV-110627,STIG-Legacy|V-101523,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-220489",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "no password strength-check"
+    },
+    "custom_item_27": {
+        "description": "CISC-ND-000580 - The Cisco switch must be configured to enforce password complexity by requiring that at least one lower-case character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+        "solution": "Configure the Cisco switch to enforce password complexity by requiring that at least one lower-case character be used as shown in the example below:\n\nSW1(config)# password strength-check",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000193,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-220490r879604_rule,STIG-ID|CISC-ND-000580,STIG-Legacy|SV-110629,STIG-Legacy|V-101525,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-220490",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "no password strength-check"
+    },
+    "custom_item_28": {
+        "description": "CISC-ND-000590 - The Cisco switch must be configured to enforce password complexity by requiring that at least one numeric character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+        "solution": "Configure the Cisco switch to enforce password complexity by requiring that at least one numeric character be used as shown in the example below:\n\nSW1(config)# password strength-check",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000194,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-220491r879605_rule,STIG-ID|CISC-ND-000590,STIG-Legacy|SV-110631,STIG-Legacy|V-101527,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-220491",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "no password strength-check"
+    },
+    "custom_item_29": {
+        "description": "CISC-ND-000600 - The Cisco switch must be configured to enforce password complexity by requiring that at least one special character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determine how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.\n\nMultifactor authentication (MFA) is required for all administrative and user accounts on network devices, except for an account of last resort and (where applicable) a root account. Passwords should only be used when MFA using PKI is not available, and for the account of last resort and root account.",
+        "solution": "Configure the Cisco switch to enforce password complexity by requiring that at least one special character be used as shown in the example below:\n\nSW1(config)# password strength-check",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-001619,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-220492r879606_rule,STIG-ID|CISC-ND-000600,STIG-Legacy|SV-110633,STIG-Legacy|V-101529,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-220492",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "no password strength-check"
+    },
+    "custom_item_30": {
+        "description": "line vty",
+        "context": "line vty",
+        "item": "exec-timeout [1-5] [0-9]+"
+    },
+    "custom_item_31": {
+        "description": "line con",
+        "context": "line console",
+        "item": "exec-timeout [1-5] [0-9]+"
+    },
+    "custom_item_32": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_33": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_34": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_35": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_36": {
+        "description": "CISC-ND-000980 - The Cisco switch must be configured to allocate audit record storage capacity in accordance with organization-defined audit record storage requirements.",
+        "info": "In order to ensure network devices have a sufficient storage capacity in which to write the audit logs, they need to be able to allocate audit record storage capacity. The task of allocating audit record storage capacity is usually performed during initial device setup if it is modifiable.\n\nThe value for the organization-defined audit record storage requirement will depend on the amount of storage available on the network device, the anticipated volume of logs, the frequency of transfer from the network device to centralized log servers, and other factors.",
+        "solution": "Configure the buffer size for logging as shown in the example below:\n\nSW2(config)# logging logfile LOGFILE1 6 size nnnnn",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220496r879730_rule,STIG-ID|CISC-ND-000980,STIG-Legacy|SV-110641,STIG-Legacy|V-101537,Vuln-ID|V-220496",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "logging logfile [^ ]+ 6 size [^ ]+"
+    },
+    "custom_item_37": {
+        "description": "CISC-ND-001000 - The Cisco switch must be configured to generate an alert for all audit failure events.",
+        "info": "It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. Without a real-time alert, security personnel may be unaware of an impending failure of the audit capability and system operation may be adversely affected.\n\nAlerts provide organizations with urgent messages. Real-time alerts provide these messages immediately (i.e., the time from event detection to alert occurs in seconds or less).",
+        "solution": "Configure the Cisco switch to send critical to emergency log messages to the syslog server as shown in the example below:\n\nSW4(config)# logging server 10.1.48.10 2\n\nNote: The parameter 2 (critical) can replaced with a lesser severity level 3 through 6 (i.e. error, warning, notice, informational).",
+        "reference": "800-171|3.3.4,800-53|AU-5(2),800-53r5|AU-5(2),CAT|II,CCI|CCI-001858,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(2),NESA|T3.6.2,NIAv2|GS7f,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220497r879733_rule,STIG-ID|CISC-ND-001000,STIG-Legacy|SV-110643,STIG-Legacy|V-101539,Vuln-ID|V-220497",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "logging server [^ ]+ [2-6]( |$)"
+    },
+    "custom_item_38": {
+        "description": "feature ntp",
+        "item": "feature ntp"
+    },
+    "custom_item_39": {
+        "description": "ntp distribute",
+        "item": "ntp distribute"
+    },
+    "custom_item_40": {
+        "description": "ntp servers",
+        "item": "ntp server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_41": {
+        "description": "ntp commit",
+        "item": "ntp commit"
+    },
+    "custom_item_42": {
+        "description": "CISC-ND-001050 - The Cisco switch must be configured to record time stamps for log records that can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT).",
+        "info": "If time stamps are not consistently applied and there is no common time reference, it is difficult to perform forensic analysis.\n\nTime stamps generated by the application include date and time. Time is commonly expressed in Coordinated Universal Time (UTC), a modern continuation of Greenwich Mean Time (GMT), or local time with an offset from UTC.",
+        "solution": "Configure the Cisco switch to record time stamps for audit records that can be mapped to UTC or GMT as shown in the example below:\n\nSW1(config)# clock timezone EST -5 0",
+        "reference": "800-171|3.3.7,800-53|AU-8b.,800-53r5|AU-8b.,CAT|II,CCI|CCI-001890,CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-8,NESA|T3.6.7,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220499r879747_rule,STIG-ID|CISC-ND-001050,STIG-Legacy|SV-110647,STIG-Legacy|V-101543,TBA-FIISB|37.4,Vuln-ID|V-220499",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "clock timezone [^ ]+"
+    },
+    "custom_item_43": {
+        "description": "Check for snmp-server",
+        "item": "snmp-server host [^ ]+"
+    },
+    "custom_item_44": {
+        "description": "snmp-server host",
+        "item": "snmp-server host [^ ]+ traps version 3 priv [^ ]+"
+    },
+    "custom_item_45": {
+        "description": "snmp-server user sha",
+        "item": "snmp-server user ([^ ]+ )?[^ ]+ auth sha .+"
+    },
+    "custom_item_46": {
+        "description": "snmp-server user md5",
+        "item": "snmp-server user [^ ] [^ ]+ auth md5 [^ ]+"
+    },
+    "custom_item_47": {
+        "description": "Check for snmp-server",
+        "item": "snmp-server host [^ ]+"
+    },
+    "custom_item_48": {
+        "description": "snmp-server user aes-128",
+        "item": "snmp-server user [^ ]+ [^ ]+ auth sha [^ ]+ priv aes-128 [^ ]+"
+    },
+    "custom_item_49": {
+        "description": "snmp-server host priv",
+        "item": "snmp-server host [^ ]+ traps version 3 priv [^ ]+"
+    },
+    "custom_item_50": {
+        "description": "ntp authentication-key",
+        "item": "ntp authentication-key [0-9]+ md5 [^ ]+"
+    },
+    "custom_item_51": {
+        "description": "ntp authenticate",
+        "item": "ntp authenticate"
+    },
+    "custom_item_52": {
+        "description": "ntp trusted-key",
+        "item": "ntp trusted-key [0-9]+"
+    },
+    "custom_item_53": {
+        "description": "ntp server",
+        "item": "ntp server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_54": {
+        "description": "ntp commit",
+        "item": "ntp commit"
+    },
+    "custom_item_55": {
+        "description": "CISC-ND-001200 - The Cisco switch must be configured to use FIPS-validated Keyed-Hash Message Authentication Code (HMAC) to protect the integrity of remote maintenance sessions.",
+        "info": "Unapproved mechanisms used for authentication to the cryptographic module are not verified; therefore, they cannot be relied upon to provide confidentiality or integrity, and DOD data may be compromised.\n\nNonlocal maintenance and diagnostic activities are those activities conducted by individuals communicating through a network, either an external network (e.g., the internet) or an internal network.\n\nCurrently, HMAC is the only FIPS-approved algorithm for generating and verifying message/data authentication codes in accordance with FIPS 198-1. Products that are FIPS 140-2 validated will have an HMAC that meets specification; however, the option must be configured for use as the only message authentication code used for authentication to cryptographic modules.\n\nSeparate requirements for configuring applications and protocols used by each application (e.g., SNMPv3, SSHv2, NTP, HTTPS, and other protocols and applications that require server/client authentication) are required to implement this requirement. Where SSH is used, the SSHv2 protocol suite is required because it includes Layer 7 protocols such as SCP and SFTP, which can be used for secure file transfers.",
+        "solution": "Enable FIPS mode via the command 'fips mode enable'.\n\nNote: The switch will require a reboot for FIPS mode to be enabled.",
+        "reference": "800-171|3.7.5,800-53|MA-4(6),800-53r5|MA-4(6),CAT|I,CCI|CCI-002890,CSF|PR.MA-2,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|MA-4(6),NESA|T2.3.4,NESA|T5.4.4,QCSC-v1|5.2.2,Rule-ID|SV-220503r929034_rule,STIG-ID|CISC-ND-001200,STIG-Legacy|SV-110655,STIG-Legacy|V-101551,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-220503",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "fips mode enable"
+    },
+    "custom_item_56": {
+        "description": "CISC-ND-001210 - The Cisco switch must be configured to implement cryptographic mechanisms to protect the confidentiality of remote maintenance sessions.",
+        "info": "This requires the use of secure protocols instead of their unsecured counterparts, such as SSH instead of telnet, SCP instead of FTP, and HTTPS instead of HTTP. If unsecured protocols (lacking cryptographic mechanisms) are used for sessions, the contents of those sessions will be susceptible to eavesdropping, potentially putting sensitive data (including administrator passwords) at risk of compromise and potentially allowing hijacking of maintenance sessions.",
+        "solution": "Enable FIPS mode via the command 'fips mode enable'.\n\nNote: The switch will require a reboot for FIPS mode to be enabled.",
+        "reference": "800-171|3.7.5,800-53|MA-4(6),800-53r5|MA-4(6),CAT|I,CCI|CCI-003123,CSF|PR.MA-2,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|MA-4(6),NESA|T2.3.4,NESA|T5.4.4,QCSC-v1|5.2.2,Rule-ID|SV-220504r929037_rule,STIG-ID|CISC-ND-001210,STIG-Legacy|SV-110657,STIG-Legacy|V-101553,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-220504",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "fips mode enable"
+    },
+    "custom_item_57": {
+        "description": "policy-map review",
+        "context": "^policy-map [^ ]+",
+        "regex": "^Manual Review Required$",
+        "item": "(class|police)"
+    },
+    "custom_item_58": {
+        "description": "control-plane review",
+        "context": "^control-plane",
+        "regex": "^Manual Review Required$",
+        "item": "service-policy input [^ ]+"
+    },
+    "custom_item_59": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_60": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_61": {
+        "description": "aaa accounting default group",
+        "item": "aaa accounting default group [^ ]+"
+    },
+    "custom_item_62": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_63": {
+        "description": "logging logfile",
+        "item": "logging logfile [^ ]+ 6( |$)"
+    },
+    "custom_item_64": {
+        "description": "logging level",
+        "item": "logging level authpri 6( |$)"
+    },
+    "custom_item_65": {
+        "description": "aaa group server radius",
+        "item": "aaa group server radius [^ ]+"
+    },
+    "custom_item_66": {
+        "description": "servers",
+        "context": "aaa group server radius [^ ]+",
+        "item": "server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_67": {
+        "description": "CISC-ND-001280 - The Cisco switch must generate audit records showing starting and ending time for administrator access to the system.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the network device (e.g., module or policy filter).",
+        "solution": "Configure the switch to log session start and ending per admin session as shown in the example below:\n\nSW1(config)# logging level authpriv 6",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220510r879876_rule,STIG-ID|CISC-ND-001280,STIG-Legacy|SV-110669,STIG-Legacy|V-101565,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-220510",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "logging level authpri 6( |$)"
+    },
+    "custom_item_68": {
+        "description": "CISC-ND-001310 - The Cisco switch must be configured to off-load log records onto a different system than the system being audited.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.\n\nOff-loading is a common process in information systems with limited audit storage capacity.",
+        "solution": "Configure the Cisco switch to send log records to a syslog server as shown in the example below:\n\nSW4(config)# logging server 10.1.48.10 6",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220512r879886_rule,STIG-ID|CISC-ND-001310,STIG-Legacy|SV-110673,STIG-Legacy|V-101569,Vuln-ID|V-220512",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "logging server [^ ]+"
+    },
+    "custom_item_69": {
+        "description": "aaa auth default",
+        "item": "aaa authentication login default group @AAA_LOGIN_LIST@"
+    },
+    "custom_item_70": {
+        "description": "aaa auth console",
+        "item": "aaa authentication login console group @AAA_LOGIN_LIST@"
+    },
+    "custom_item_71": {
+        "description": "radius-server host",
+        "item": "(radius|tacacs)-server host [^ ]+ key [^ ]+ [^ ] authentication accounting",
+        "min_occurrences": "2"
+    },
+    "custom_item_72": {
+        "description": "aaa group server radius",
+        "context": "aaa group server radius @AAA_LOGIN_LIST@",
+        "item": "server [^ ]+"
+    },
+    "custom_item_73": {
+        "description": "CISC-ND-001410 - The Cisco switch must be configured to support organizational requirements to conduct backups of the configuration when changes occur.",
+        "info": "System-level information includes default and customized settings and security attributes, including ACLs that relate to the network device configuration, as well as software required for the execution and operation of the device. Information system backup is a critical step in ensuring system integrity and availability. If the system fails and there is no backup of the system-level information, a denial of service condition is possible for all who utilize this critical network component.\n\nThis control requires the network device to support the organizational central backup process for system-level information associated with the network device. This function may be provided by the network device itself; however, the preferred best practice is a centralized backup rather than each network device performing discrete backups.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the Cisco switch to send the configuration to an TFTP or FTP server when a configuration change occurs as shown in the example below:\n\nSW4(config)# event manager applet BACKUP_CONFIG\nSW4(config-applet)# event syslog pattern 'SYSLOG_CONFIG_I'\nSW4(config-applet)# action 1 cli command 'copy startup-config tftp://10.1.48.10/nx-config vrf default'\nSW4(config-applet)# action 2 syslog priority informational msg 'Configuration backup was executed'\nSW4(config-applet)# end",
+        "reference": "800-171|3.4.2,800-171|3.8.9,800-53|CM-6b.,800-53|CP-9b.,800-53r5|CM-6b.,800-53r5|CP-9b.,CAT|II,CCI|CCI-000366,CCI|CCI-000537,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.IP-4,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.3.1,ITSG-33|CM-6b.,ITSG-33|CP-9b.,NESA|T3.2.1,NESA|T3.5.1,Rule-ID|SV-220514r916221_rule,STIG-ID|CISC-ND-001410,STIG-Legacy|SV-110677,STIG-Legacy|V-101573,SWIFT-CSCv1|2.3,Vuln-ID|V-220514",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "regex": "Manual Review Required",
+        "item": "event manager applet [^ ]+"
+    },
+    "custom_item_74": {
+        "description": "crypto pki trustpoint",
+        "item": "crypto pki trustpoint [^ ]+"
+    },
+    "custom_item_75": {
+        "description": "enrollment",
+        "item": "enrollment terminal"
+    },
+    "custom_item_76": {
+        "description": "show crypto ca certificates",
+        "cmd": "show crypto ca certificates",
+        "item": "Manual Review Required"
+    },
+    "custom_item_77": {
+        "description": "CISC-ND-001450 - The Cisco switch must be configured to send log data to at least two central log servers for the purpose of forwarding alerts to the administrators and the information system security officer (ISSO).",
+        "info": "The aggregation of log data kept on a syslog server can be used to detect attacks and trigger an alert to the appropriate security personnel. The stored log data can used to detect weaknesses in security that enable the network IA team to find and address these weaknesses before breaches can occur. Reviewing these logs, whether before or after a security breach, are important in showing whether someone is an internal employee or an outside threat.",
+        "solution": "Configure the switch to send log messages to the syslog servers as shown in the example below:\n\nSW4(config)# logging server 10.1.48.10 6\nSW4(config)# logging server 10.1.48.11 6",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|I,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-220516r916114_rule,STIG-ID|CISC-ND-001450,STIG-Legacy|SV-110681,STIG-Legacy|V-101577,Vuln-ID|V-220516",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "item": "logging server [^ ]+",
+        "min_occurrences": "2"
+    },
+    "custom_item_78": {
+        "description": "CISC-ND-001470 - The Cisco switch must be running an IOS release that is currently supported by Cisco Systems.",
+        "info": "Network devices running an unsupported operating system lack current security fixes required to mitigate the risks associated with recent vulnerabilities. Running a supported release also enables operations to maintain a stable and reliable network provided by improved quality of service and security features.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Upgrade the switch to a supported release.",
+        "reference": "800-171|3.4.2,800-171|3.14.1,800-53|CM-6b.,800-53|SI-2c.,800-53r5|CM-6b.,800-53r5|SI-2c.,CAT|I,CCI|CCI-000366,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(d),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-1,CSF|PR.IP-12,DISA_Benchmark|Cisco_NX-OS_Switch_NDM_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,ITSG-33|SI-2,NESA|T3.2.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-220517r879887_rule,STIG-ID|CISC-ND-001470,STIG-Legacy|SV-110683,STIG-Legacy|V-101579,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.3,Vuln-ID|V-220517",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Cisco_NX-OS_Switch_Y24M04_STIG.zip",
+        "regex": "Manual Review Required",
+        "item": "version [^ ]"
+    }
+}

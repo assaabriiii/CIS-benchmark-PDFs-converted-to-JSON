@@ -1,0 +1,1008 @@
+{
+    "custom_item_1": {
+        "description": "Check for JBoss running as Standalone or Host Controller",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[(Standalone|Host|Process|Server)(\\\\])?"
+    },
+    "custom_item_2": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_3": {
+        "description": "JBOS-AS-000010 - HTTP management session traffic must be encrypted.",
+        "info": "Types of management interfaces utilized by the JBoss EAP application server include web-based HTTP interfaces as well as command line-based management interfaces.  In the event remote HTTP management is required, the access must be via HTTPS.\n\nThis requirement is in conjunction with the requirement to isolate all management access to a restricted network.",
+        "solution": "Follow the specific instructions in the Red Hat Security Guide for EAP version 6.3 to configure the management console for HTTPS.\n\nThis involves the following steps.\n1. Create a keystore in JKS format.\n2. Ensure the management console binds to HTTPS.\n3. Create a new Security Realm.\n4. Configure Management Interface to use new security realm.\n5. Configure the management console to use the keystore.\n6. Restart the EAP server.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-213494r954686_rule,STIG-ID|JBOS-AS-000010,STIG-Legacy|SV-76563,STIG-Legacy|V-62073,SWIFT-CSCv1|2.6,Vuln-ID|V-213494",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/management-interface=http-interface' | /bin/awk 'BEGIN { m=0; } $1 ~ /^secure-socket-binding=undefined$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"secure-socket-binding is set to undefined\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_4": {
+        "description": "JBOS-AS-000010 - HTTP management session traffic must be encrypted.",
+        "info": "Types of management interfaces utilized by the JBoss EAP application server include web-based HTTP interfaces as well as command line-based management interfaces.  In the event remote HTTP management is required, the access must be via HTTPS.\n\nThis requirement is in conjunction with the requirement to isolate all management access to a restricted network.",
+        "solution": "Follow the specific instructions in the Red Hat Security Guide for EAP version 6.3 to configure the management console for HTTPS.\n\nThis involves the following steps.\n1. Create a keystore in JKS format.\n2. Ensure the management console binds to HTTPS.\n3. Create a new Security Realm.\n4. Configure Management Interface to use new security realm.\n5. Configure the management console to use the keystore.\n6. Restart the EAP server.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-213494r954686_rule,STIG-ID|JBOS-AS-000010,STIG-Legacy|SV-76563,STIG-Legacy|V-62073,SWIFT-CSCv1|2.6,Vuln-ID|V-213494",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=@HOST_NAME@/core-service=management/management-interface=http-interface' | /bin/awk 'BEGIN { m=0; } $1 ~ /^secure-port=undefined$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"secure-port is set to undefined\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_5": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_6": {
+        "description": "JBOS-AS-000015 - HTTPS must be enabled for JBoss web interfaces.",
+        "info": "Encryption is critical for protection of web-based traffic. If encryption is not being used to protect the application server's web connectors, malicious users may gain the ability to read or modify the application traffic while it is in transit over the network. The use of cryptography on web connectors secures web-based traffic and mitigates that risk. HTTPS and Transport Layer Security (TLS) are the means in which cryptographic protections are applied to web connectors.\n\nFIPS 140-2 approved TLS versions include TLS V1.2 or greater.",
+        "solution": "Follow procedure '4.4.  Configure the JBoss Web Server to use HTTPS.'  The detailed procedure is found in the JBoss EAP 6.3 Security Guide available at the vendor's site, RedHat.com.  An overview of steps is provided here.\n\n1. Obtain or generate DoD-approved SSL certificates.\n2. Configure the SSL certificate using your certificate values.\n3. Set the SSL protocol to TLS V1.2 or greater.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-001453,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-213495r954688_rule,STIG-ID|JBOS-AS-000015,STIG-Legacy|SV-76705,STIG-Legacy|V-62215,SWIFT-CSCv1|2.6,Vuln-ID|V-213495",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=web/connector='",
+        "expect": "^https$"
+    },
+    "custom_item_7": {
+        "description": "JBOS-AS-000015 - HTTPS must be enabled for JBoss web interfaces.",
+        "info": "Encryption is critical for protection of web-based traffic. If encryption is not being used to protect the application server's web connectors, malicious users may gain the ability to read or modify the application traffic while it is in transit over the network. The use of cryptography on web connectors secures web-based traffic and mitigates that risk. HTTPS and Transport Layer Security (TLS) are the means in which cryptographic protections are applied to web connectors.\n\nFIPS 140-2 approved TLS versions include TLS V1.2 or greater.",
+        "solution": "Follow procedure '4.4.  Configure the JBoss Web Server to use HTTPS.'  The detailed procedure is found in the JBoss EAP 6.3 Security Guide available at the vendor's site, RedHat.com.  An overview of steps is provided here.\n\n1. Obtain or generate DoD-approved SSL certificates.\n2. Configure the SSL certificate using your certificate values.\n3. Set the SSL protocol to TLS V1.2 or greater.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-001453,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-213495r954688_rule,STIG-ID|JBOS-AS-000015,STIG-Legacy|SV-76705,STIG-Legacy|V-62215,SWIFT-CSCv1|2.6,Vuln-ID|V-213495",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /profile=@PROFILE@/subsystem=web/connector='",
+        "expect": "^https$"
+    },
+    "custom_item_8": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_9": {
+        "description": "JBOS-AS-000045 - Silent Authentication must be removed from the Default Application Security Realm.",
+        "info": "Silent Authentication is a configuration setting that allows local OS users access to the JBoss server and a wide range of operations without specifically authenticating on an individual user basis.  By default $localuser is a Superuser. This introduces an integrity and availability vulnerability and violates best practice requirements regarding accountability.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script.\nConnect to the server and authenticate.\n\nRemove the local element from the Application Realm.\nFor standalone servers, run the following command:\n/core-service=management/security-realm=\nApplicationRealm/authentication=local:remove\n\nFor managed domain installations, run the following command:\n/host=HOST_NAME/core-service=management/security-realm=\nApplicationRealm/authentication=local:remove",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213500r954708_rule,STIG-ID|JBOS-AS-000045,STIG-Legacy|SV-76711,STIG-Legacy|V-62221,TBA-FIISB|31.1,Vuln-ID|V-213500",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm=ApplicationRealm/authentication' | /bin/awk 'BEGIN { m=0; } $1 ~ /^local$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"Default Application security realm is set to loca\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_10": {
+        "description": "JBOS-AS-000045 - Silent Authentication must be removed from the Default Application Security Realm.",
+        "info": "Silent Authentication is a configuration setting that allows local OS users access to the JBoss server and a wide range of operations without specifically authenticating on an individual user basis.  By default $localuser is a Superuser. This introduces an integrity and availability vulnerability and violates best practice requirements regarding accountability.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script.\nConnect to the server and authenticate.\n\nRemove the local element from the Application Realm.\nFor standalone servers, run the following command:\n/core-service=management/security-realm=\nApplicationRealm/authentication=local:remove\n\nFor managed domain installations, run the following command:\n/host=HOST_NAME/core-service=management/security-realm=\nApplicationRealm/authentication=local:remove",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213500r954708_rule,STIG-ID|JBOS-AS-000045,STIG-Legacy|SV-76711,STIG-Legacy|V-62221,TBA-FIISB|31.1,Vuln-ID|V-213500",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=@HOST_NAME@/core-service=management/security-realm=ApplicationRealm/authentication'  | /bin/awk 'BEGIN { m=0; } $1 ~ /^local$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"Default Application security realm is set to local\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_11": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_12": {
+        "description": "JBOS-AS-000050 - Silent Authentication must be removed from the Default Management Security Realm.",
+        "info": "Silent Authentication is a configuration setting that allows local OS users access to the JBoss server and a wide range of operations without specifically authenticating on an individual user basis.  By default $localuser is a Superuser. This introduces an integrity and availability vulnerability and violates best practice requirements regarding accountability.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script.\nConnect to the server and authenticate.\n\nRemove the local element from the Management Realm.\nFor standalone servers run the following command:\n/core-service=management/security-realm=\nManagementRealm/authentication=local:remove\n\nFor managed domain installations run the following command:\n/host=HOST_NAME/core-service=management/security-realm=\nManagementRealm/authentication=local:remove",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213501r954708_rule,STIG-ID|JBOS-AS-000050,STIG-Legacy|SV-76713,STIG-Legacy|V-62223,TBA-FIISB|31.1,Vuln-ID|V-213501",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm=ManagementRealm/authentication' | /bin/awk 'BEGIN { m=0; } $1 ~ /^local$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"Default Application security realm is set to local\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_13": {
+        "description": "JBOS-AS-000050 - Silent Authentication must be removed from the Default Management Security Realm.",
+        "info": "Silent Authentication is a configuration setting that allows local OS users access to the JBoss server and a wide range of operations without specifically authenticating on an individual user basis.  By default $localuser is a Superuser. This introduces an integrity and availability vulnerability and violates best practice requirements regarding accountability.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script.\nConnect to the server and authenticate.\n\nRemove the local element from the Management Realm.\nFor standalone servers run the following command:\n/core-service=management/security-realm=\nManagementRealm/authentication=local:remove\n\nFor managed domain installations run the following command:\n/host=HOST_NAME/core-service=management/security-realm=\nManagementRealm/authentication=local:remove",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213501r954708_rule,STIG-ID|JBOS-AS-000050,STIG-Legacy|SV-76713,STIG-Legacy|V-62223,TBA-FIISB|31.1,Vuln-ID|V-213501",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=@HOST_NAME@/core-service=management/security-realm=ManagementRealm/authentication' | /bin/awk 'BEGIN { m=0; } $1 ~ /^local$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"Default Application security realm is set to local\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_14": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_15": {
+        "description": "java.security.manager",
+        "file": "@JBOSS_HOME@/bin/standalone.conf",
+        "regex": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.manager.*",
+        "expect": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.manager.*"
+    },
+    "custom_item_16": {
+        "description": "java.security.policy",
+        "file": "@JBOSS_HOME@/bin/standalone.conf",
+        "regex": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.policy[\\\\s]*=[\\\\s]*.*",
+        "expect": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.policy[\\\\s]*=[\\\\s]*.*"
+    },
+    "custom_item_17": {
+        "description": "java.security.manager",
+        "file": "@JBOSS_HOME@/bin/domain.conf",
+        "regex": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.manager.*",
+        "expect": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.manager.*"
+    },
+    "custom_item_18": {
+        "description": "java.security.policy",
+        "file": "@JBOSS_HOME@/bin/domain.conf",
+        "regex": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.policy[\\\\s]*=[\\\\s]*.*",
+        "expect": "^[\\\\s]*JAVA_OPTS[\\\\s]*=[\\\\s]*\"\\\\$JAVA_OPTS.*-Djava\\\\.security\\\\.policy[\\\\s]*=[\\\\s]*.*"
+    },
+    "custom_item_19": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_20": {
+        "description": "JBOS-AS-000035 - The JBoss server must be configured with Role Based Access Controls.",
+        "info": "By default, the JBoss server is not configured to utilize role based access controls (RBAC).  RBAC provides the capability to restrict user access to their designated management role, thereby limiting access to only the JBoss functionality that they are supposed to have.  Without RBAC, the JBoss server is not able to enforce authorized access according to role.",
+        "solution": "Run the following command./bin/jboss-cli.sh -c -> connect -> cd /core-service=management/access-authorization :write-attribute(name=provider, value=rbac)\n\nRestart JBoss.\n\nMap users to roles by running the following command.  Upper-case words  are variables.\n\nrole-mapping=ROLENAME/include=ALIAS:add(name-USERNAME, type=USER ROLE)",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213498r954708_rule,STIG-ID|JBOS-AS-000035,STIG-Legacy|SV-76717,STIG-Legacy|V-62227,TBA-FIISB|31.1,Vuln-ID|V-213498",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=authorization/' | /bin/grep provider",
+        "expect": "provider=rbac"
+    },
+    "custom_item_21": {
+        "description": "JBOS-AS-000035 - The JBoss server must be configured with Role Based Access Controls.",
+        "info": "By default, the JBoss server is not configured to utilize role based access controls (RBAC).  RBAC provides the capability to restrict user access to their designated management role, thereby limiting access to only the JBoss functionality that they are supposed to have.  Without RBAC, the JBoss server is not able to enforce authorized access according to role.",
+        "solution": "Run the following command./bin/jboss-cli.sh -c -> connect -> cd /core-service=management/access-authorization :write-attribute(name=provider, value=rbac)\n\nRestart JBoss.\n\nMap users to roles by running the following command.  Upper-case words  are variables.\n\nrole-mapping=ROLENAME/include=ALIAS:add(name-USERNAME, type=USER ROLE)",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213498r954708_rule,STIG-ID|JBOS-AS-000035,STIG-Legacy|SV-76717,STIG-Legacy|V-62227,TBA-FIISB|31.1,Vuln-ID|V-213498",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=master/core-service=management/access=authorization/' | /bin/grep provider",
+        "expect": "provider=rbac"
+    },
+    "custom_item_22": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_23": {
+        "description": "JBOS-AS-000075 - JBoss management interfaces must be secured.",
+        "info": "JBoss utilizes the concept of security realms to secure the management interfaces used for JBoss server administration.  If the security realm attribute is omitted or removed from the management interface definition, access to that interface is no longer secure.  The JBoss management interfaces must be secured.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Identify the security realm used for management of the system.  By default, this is called 'Management Realm'.\n\nIf a management security realm is not already available, reference the Jboss EAP 6.3 system administration guide for instructions on how to create a security realm for management purposes.  Create the management realm, and assign authentication and authorization access restrictions to the management realm.\n\nAssign the management interfaces to the management realm.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213502r954708_rule,STIG-ID|JBOS-AS-000075,STIG-Legacy|SV-76719,STIG-Legacy|V-62229,TBA-FIISB|31.1,Vuln-ID|V-213502",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/management-interface='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_24": {
+        "description": "JBOS-AS-000075 - JBoss management interfaces must be secured.",
+        "info": "JBoss utilizes the concept of security realms to secure the management interfaces used for JBoss server administration.  If the security realm attribute is omitted or removed from the management interface definition, access to that interface is no longer secure.  The JBoss management interfaces must be secured.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Identify the security realm used for management of the system.  By default, this is called 'Management Realm'.\n\nIf a management security realm is not already available, reference the Jboss EAP 6.3 system administration guide for instructions on how to create a security realm for management purposes.  Create the management realm, and assign authentication and authorization access restrictions to the management realm.\n\nAssign the management interfaces to the management realm.",
+        "reference": "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CAT|I,CCI|CCI-000213,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213502r954708_rule,STIG-ID|JBOS-AS-000075,STIG-Legacy|SV-76719,STIG-Legacy|V-62229,TBA-FIISB|31.1,Vuln-ID|V-213502",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=@HOST_NAME@/core-service=management/management-interface='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_25": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_26": {
+        "description": "JBOS-AS-000080 - The JBoss server must generate log records for access and authentication events to the management interface.",
+        "info": "Log records can be generated from various components within the JBoss application server.  The minimum list of logged events should be those pertaining to access and authentication events to the management interface as well as system startup and shutdown events.\n\nBy default, JBoss does not log management interface access but does provide a default file handler.  This handler needs to be enabled.  Configuring this setting meets several STIG auditing requirements.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12a.,800-53r5|AU-12a.,CAT|II,CCI|CCI-000169,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12a.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213503r955986_rule,STIG-ID|JBOS-AS-000080,STIG-Legacy|SV-76721,STIG-Legacy|V-62231,SWIFT-CSCv1|6.4,Vuln-ID|V-213503",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_27": {
+        "description": "JBOS-AS-000080 - The JBoss server must generate log records for access and authentication events to the management interface.",
+        "info": "Log records can be generated from various components within the JBoss application server.  The minimum list of logged events should be those pertaining to access and authentication events to the management interface as well as system startup and shutdown events.\n\nBy default, JBoss does not log management interface access but does provide a default file handler.  This handler needs to be enabled.  Configuring this setting meets several STIG auditing requirements.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12a.,800-53r5|AU-12a.,CAT|II,CCI|CCI-000169,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12a.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213503r955986_rule,STIG-ID|JBOS-AS-000080,STIG-Legacy|SV-76721,STIG-Legacy|V-62231,SWIFT-CSCv1|6.4,Vuln-ID|V-213503",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_28": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_29": {
+        "description": "JBOS-AS-000085 - JBoss must be configured to allow only the ISSM (or individuals or roles appointed by the ISSM) to select which loggable events are to be logged.",
+        "info": "The JBoss server must be configured to select which personnel are assigned the role of selecting which loggable events are to be logged.\nIn JBoss, the role designated for selecting auditable events is the 'Auditor' role.\nThe personnel or roles that can select loggable events are only the ISSM (or individuals or roles appointed by the ISSM).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Obtain documented approvals from ISSM, and assign the appropriate personnel into the 'Auditor' role.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12b.,800-53r5|AU-12b.,CAT|II,CCI|CCI-000171,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12b.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213504r955988_rule,STIG-ID|JBOS-AS-000085,STIG-Legacy|SV-76723,STIG-Legacy|V-62233,SWIFT-CSCv1|6.4,Vuln-ID|V-213504",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=authorization/role-mapping=Auditor/include='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_30": {
+        "description": "JBOS-AS-000085 - JBoss must be configured to allow only the ISSM (or individuals or roles appointed by the ISSM) to select which loggable events are to be logged.",
+        "info": "The JBoss server must be configured to select which personnel are assigned the role of selecting which loggable events are to be logged.\nIn JBoss, the role designated for selecting auditable events is the 'Auditor' role.\nThe personnel or roles that can select loggable events are only the ISSM (or individuals or roles appointed by the ISSM).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Obtain documented approvals from ISSM, and assign the appropriate personnel into the 'Auditor' role.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12b.,800-53r5|AU-12b.,CAT|II,CCI|CCI-000171,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12b.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213504r955988_rule,STIG-ID|JBOS-AS-000085,STIG-Legacy|SV-76723,STIG-Legacy|V-62233,SWIFT-CSCv1|6.4,Vuln-ID|V-213504",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=authorization/role-mapping=Auditor/include='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_31": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_32": {
+        "description": "JBOS-AS-000095 - JBoss must be configured to initiate session logging upon startup.",
+        "info": "Session logging activities are developed, integrated, and used in consultation with legal counsel in accordance with applicable federal laws, Executive Orders, directives, policies, or regulations.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-53|AU-14(1),800-53r5|AU-14(1),CAT|II,CCI|CCI-001464,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-14,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213505r955990_rule,STIG-ID|JBOS-AS-000095,STIG-Legacy|SV-76725,STIG-Legacy|V-62235,SWIFT-CSCv1|6.4,Vuln-ID|V-213505",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_33": {
+        "description": "JBOS-AS-000095 - JBoss must be configured to initiate session logging upon startup.",
+        "info": "Session logging activities are developed, integrated, and used in consultation with legal counsel in accordance with applicable federal laws, Executive Orders, directives, policies, or regulations.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-53|AU-14(1),800-53r5|AU-14(1),CAT|II,CCI|CCI-001464,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-14,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213505r955990_rule,STIG-ID|JBOS-AS-000095,STIG-Legacy|SV-76725,STIG-Legacy|V-62235,SWIFT-CSCv1|6.4,Vuln-ID|V-213505",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_34": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_35": {
+        "description": "JBOS-AS-000105 - JBoss must be configured to log the IP address of the remote system connecting to the JBoss system/cluster.",
+        "info": "Information system logging capability is critical for accurate forensic analysis.  Without being able to establish what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible.\n\nLog record content that may be necessary to satisfy the requirement of this control includes time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nApplication servers must log all relevant log data that pertains to the application server.  Examples of relevant data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD/Web server activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213506r955992_rule,STIG-ID|JBOS-AS-000105,STIG-Legacy|SV-76727,STIG-Legacy|V-62237,SWIFT-CSCv1|6.4,Vuln-ID|V-213506",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_36": {
+        "description": "JBOS-AS-000105 - JBoss must be configured to log the IP address of the remote system connecting to the JBoss system/cluster.",
+        "info": "Information system logging capability is critical for accurate forensic analysis.  Without being able to establish what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible.\n\nLog record content that may be necessary to satisfy the requirement of this control includes time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nApplication servers must log all relevant log data that pertains to the application server.  Examples of relevant data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD/Web server activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213506r955992_rule,STIG-ID|JBOS-AS-000105,STIG-Legacy|SV-76727,STIG-Legacy|V-62237,SWIFT-CSCv1|6.4,Vuln-ID|V-213506",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_37": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_38": {
+        "description": "JBOS-AS-000110 - JBoss must be configured to produce log records containing information to establish what type of events occurred.",
+        "info": "Information system logging capability is critical for accurate forensic analysis.  Without being able to establish what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible.\n\nLog record content that may be necessary to satisfy the requirement of this control includes time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nApplication servers must log all relevant log data that pertains to the application server.  Examples of relevant data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD/Web server activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213507r955994_rule,STIG-ID|JBOS-AS-000110,STIG-Legacy|SV-76729,STIG-Legacy|V-62239,SWIFT-CSCv1|6.4,Vuln-ID|V-213507",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_39": {
+        "description": "JBOS-AS-000110 - JBoss must be configured to produce log records containing information to establish what type of events occurred.",
+        "info": "Information system logging capability is critical for accurate forensic analysis.  Without being able to establish what type of event occurred, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible.\n\nLog record content that may be necessary to satisfy the requirement of this control includes time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nApplication servers must log all relevant log data that pertains to the application server.  Examples of relevant data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD/Web server activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213507r955994_rule,STIG-ID|JBOS-AS-000110,STIG-Legacy|SV-76729,STIG-Legacy|V-62239,SWIFT-CSCv1|6.4,Vuln-ID|V-213507",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_40": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_41": {
+        "description": "JBOS-AS-000115 - JBoss Log Formatter must be configured to produce log records that establish the date and time the events occurred.",
+        "info": "Application server logging capability is critical for accurate forensic analysis.  Without sufficient and accurate information, a correct replay of the events cannot be determined.\n\nAscertaining the correct order of the events that occurred is important during forensic analysis.  Events that appear harmless by themselves might be flagged as a potential threat when properly viewed in sequence.  By also establishing the event date and time, an event can be properly viewed with an enterprise tool to fully see a possible threat in its entirety.\n\nWithout sufficient information establishing when the log event occurred, investigation into the cause of event is severely hindered.  Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control, or flow control rules invoked.\n\nIn addition to logging event information, application servers must also log the corresponding dates and times of these events. Examples of event data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213508r955996_rule,STIG-ID|JBOS-AS-000115,STIG-Legacy|SV-76731,STIG-Legacy|V-62241,SWIFT-CSCv1|6.4,Vuln-ID|V-213508",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_42": {
+        "description": "JBOS-AS-000115 - JBoss Log Formatter must be configured to produce log records that establish the date and time the events occurred.",
+        "info": "Application server logging capability is critical for accurate forensic analysis.  Without sufficient and accurate information, a correct replay of the events cannot be determined.\n\nAscertaining the correct order of the events that occurred is important during forensic analysis.  Events that appear harmless by themselves might be flagged as a potential threat when properly viewed in sequence.  By also establishing the event date and time, an event can be properly viewed with an enterprise tool to fully see a possible threat in its entirety.\n\nWithout sufficient information establishing when the log event occurred, investigation into the cause of event is severely hindered.  Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control, or flow control rules invoked.\n\nIn addition to logging event information, application servers must also log the corresponding dates and times of these events. Examples of event data include, but are not limited to, Java Virtual Machine (JVM) activity, HTTPD activity, and application server-related system process activity.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213508r955996_rule,STIG-ID|JBOS-AS-000115,STIG-Legacy|SV-76731,STIG-Legacy|V-62241,SWIFT-CSCv1|6.4,Vuln-ID|V-213508",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_43": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_44": {
+        "description": "JBOS-AS-000125 - JBoss must be configured to record the IP address and port information used by management interface network traffic.",
+        "info": "Application server logging capability is critical for accurate forensic analysis.  Without sufficient and accurate information, a correct replay of the events cannot be determined.\n\nAscertaining the correct source, e.g., source IP, of the events is important during forensic analysis.  Correctly determining the source will add information to the overall reconstruction of the loggable event.  By determining the source of the event correctly, analysis of the enterprise can be undertaken to determine if the event compromised other assets within the enterprise.\n\nWithout sufficient information establishing the source of the logged event, investigation into the cause of event is severely hindered.  Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control, or flow control rules invoked.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000133,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213510r955998_rule,STIG-ID|JBOS-AS-000125,STIG-Legacy|SV-76735,STIG-Legacy|V-62245,SWIFT-CSCv1|6.4,Vuln-ID|V-213510",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_45": {
+        "description": "JBOS-AS-000125 - JBoss must be configured to record the IP address and port information used by management interface network traffic.",
+        "info": "Application server logging capability is critical for accurate forensic analysis.  Without sufficient and accurate information, a correct replay of the events cannot be determined.\n\nAscertaining the correct source, e.g., source IP, of the events is important during forensic analysis.  Correctly determining the source will add information to the overall reconstruction of the loggable event.  By determining the source of the event correctly, analysis of the enterprise can be undertaken to determine if the event compromised other assets within the enterprise.\n\nWithout sufficient information establishing the source of the logged event, investigation into the cause of event is severely hindered.  Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control, or flow control rules invoked.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000133,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213510r955998_rule,STIG-ID|JBOS-AS-000125,STIG-Legacy|SV-76735,STIG-Legacy|V-62245,SWIFT-CSCv1|6.4,Vuln-ID|V-213510",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_46": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_47": {
+        "description": "JBOS-AS-000130 - The application server must produce log records that contain sufficient information to establish the outcome of events.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control or flow control rules invoked.\n\nSuccess and failure indicators ascertain the outcome of a particular application server event or function. As such, they also provide a means to measure the impact of an event and help authorized personnel to determine the appropriate response.  Event outcome may also include event-specific results (e.g., the security state of the information system after the event occurred).",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000134,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213511r956000_rule,STIG-ID|JBOS-AS-000130,STIG-Legacy|SV-76737,STIG-Legacy|V-62247,SWIFT-CSCv1|6.4,Vuln-ID|V-213511",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_48": {
+        "description": "JBOS-AS-000130 - The application server must produce log records that contain sufficient information to establish the outcome of events.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control or flow control rules invoked.\n\nSuccess and failure indicators ascertain the outcome of a particular application server event or function. As such, they also provide a means to measure the impact of an event and help authorized personnel to determine the appropriate response.  Event outcome may also include event-specific results (e.g., the security state of the information system after the event occurred).",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-000134,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213511r956000_rule,STIG-ID|JBOS-AS-000130,STIG-Legacy|SV-76737,STIG-Legacy|V-62247,SWIFT-CSCv1|6.4,Vuln-ID|V-213511",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_49": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_50": {
+        "description": "JBOS-AS-000135 - JBoss ROOT logger must be configured to utilize the appropriate logging level.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes: time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nSee Chapter 14, Section 14.1.9, Table 14.4 of the Red Hat JBoss EAP Administration and Configuration Guide version 6.3 for specific details on log levels and log level values.\n\nThe JBOSS application server ROOT logger captures all messages not captured by a log category and sends them to a log handler (FILE, CONSOLE, SYSLOG, ETC.).  By default, the ROOT logger level is set to INFO, which is a value of 800.  This will capture most events adequately.  Any level numerically higher than INFO (> 800) records less data and may result in an insufficient amount of information being logged by the ROOT logger.  This can result in failed forensic investigations.  The ROOT logger level must be INFO level or lower to provide adequate log information.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script to start the Command Line Interface (CLI).\nConnect to the server and authenticate.\n\nThe PROFILE NAMEs included with a Managed Domain JBoss configuration are:\n'default', 'full', 'full-ha' or 'ha'\nFor a Managed Domain configuration, you must check each profile name:\n\nFor each PROFILE NAME, run the command:\n'/profile=/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=INFO)'\n\nFor a Standalone configuration:\n'/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=INFO)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-001487,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213512r954784_rule,STIG-ID|JBOS-AS-000135,STIG-Legacy|SV-76739,STIG-Legacy|V-62249,SWIFT-CSCv1|6.4,Vuln-ID|V-213512",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=logging/root-logger=ROOT' | /bin/grep level",
+        "expect": "level=(INFO|DEBUG|TRACE)"
+    },
+    "custom_item_51": {
+        "description": "JBOS-AS-000135 - JBoss ROOT logger must be configured to utilize the appropriate logging level.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes: time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nSee Chapter 14, Section 14.1.9, Table 14.4 of the Red Hat JBoss EAP Administration and Configuration Guide version 6.3 for specific details on log levels and log level values.\n\nThe JBOSS application server ROOT logger captures all messages not captured by a log category and sends them to a log handler (FILE, CONSOLE, SYSLOG, ETC.).  By default, the ROOT logger level is set to INFO, which is a value of 800.  This will capture most events adequately.  Any level numerically higher than INFO (> 800) records less data and may result in an insufficient amount of information being logged by the ROOT logger.  This can result in failed forensic investigations.  The ROOT logger level must be INFO level or lower to provide adequate log information.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script to start the Command Line Interface (CLI).\nConnect to the server and authenticate.\n\nThe PROFILE NAMEs included with a Managed Domain JBoss configuration are:\n'default', 'full', 'full-ha' or 'ha'\nFor a Managed Domain configuration, you must check each profile name:\n\nFor each PROFILE NAME, run the command:\n'/profile=/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=INFO)'\n\nFor a Standalone configuration:\n'/subsystem=logging/root-logger=ROOT:write-attribute(name=level,value=INFO)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CCI|CCI-001487,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213512r954784_rule,STIG-ID|JBOS-AS-000135,STIG-Legacy|SV-76739,STIG-Legacy|V-62249,SWIFT-CSCv1|6.4,Vuln-ID|V-213512",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /profile=@PROFILE@/subsystem=logging/root-logger=ROOT' | /bin/grep level",
+        "expect": "level=(INFO|DEBUG|TRACE)"
+    },
+    "custom_item_52": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_53": {
+        "description": "JBOS-AS-000210 - mgmt-users.properties file permissions must be set to allow access to authorized users only.",
+        "info": "The mgmt-users.properties file contains the password hashes of all users who are in a management role and must be protected.  Application servers have the ability to specify that the hosted applications utilize shared libraries. The application server must have a capability to divide roles based upon duties wherein one project user (such as a developer) cannot modify the shared library code of another project user. The application server must also be able to specify that non-privileged users cannot modify any shared library code at all.",
+        "solution": "Configure the file permissions to allow access to authorized users only.\nOwner can be full access.\nGroup can be full access.\nAll others must have execute permissions only.",
+        "reference": "800-171|3.4.5,800-53|CM-5(6),800-53r5|CM-5(6),CAT|II,CCI|CCI-001499,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(6),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-213517r954820_rule,STIG-ID|JBOS-AS-000210,STIG-Legacy|SV-76749,STIG-Legacy|V-62259,Vuln-ID|V-213517",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "file": "@JBOSS_HOME@/standalone/configuration/mgmt-users.properties",
+        "owner": "@MGMT_USERS_OWNER@",
+        "mask": "116",
+        "group": "@MGMT_USERS_GROUP@"
+    },
+    "custom_item_54": {
+        "description": "JBOS-AS-000210 - mgmt-users.properties file permissions must be set to allow access to authorized users only.",
+        "info": "The mgmt-users.properties file contains the password hashes of all users who are in a management role and must be protected.  Application servers have the ability to specify that the hosted applications utilize shared libraries. The application server must have a capability to divide roles based upon duties wherein one project user (such as a developer) cannot modify the shared library code of another project user. The application server must also be able to specify that non-privileged users cannot modify any shared library code at all.",
+        "solution": "Configure the file permissions to allow access to authorized users only.\nOwner can be full access.\nGroup can be full access.\nAll others must have execute permissions only.",
+        "reference": "800-171|3.4.5,800-53|CM-5(6),800-53r5|CM-5(6),CAT|II,CCI|CCI-001499,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(6),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-213517r954820_rule,STIG-ID|JBOS-AS-000210,STIG-Legacy|SV-76749,STIG-Legacy|V-62259,Vuln-ID|V-213517",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "file": "@JBOSS_HOME@/domain/configuration/mgmt-users.properties",
+        "owner": "@MGMT_USERS_OWNER@",
+        "mask": "116",
+        "group": "@MGMT_USERS_GROUP@"
+    },
+    "custom_item_55": {
+        "description": "/etc/passwd shell",
+        "cmd": "grep '^@PROCESS_USER@' /etc/passwd | /bin/awk -F: '{ print $7}'",
+        "expect": "(/sbin/nologin|/dev/null|/bin/false)"
+    },
+    "custom_item_56": {
+        "description": "ssh DenyUsers",
+        "cmd": "grep '^Deny(Users|Groups)' /etc/ssh/sshd_config | /bin/awk '{ print } END { if (NR==0) print \"Deny Users or Groups not found\" }'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_57": {
+        "description": "JBOS-AS-000230 - JBoss process owner execution permissions must be limited.",
+        "info": "JBoss EAP application server can be run as the OS admin, which is not advised.  Running the application server with admin privileges increases the attack surface by granting the application server more rights than it requires in order to operate.  If the server is compromised, the attacker will have the same rights as the application server, which in that case would be admin rights.  The JBoss EAP server must not be run as the admin user.",
+        "solution": "Run the JBoss server with non-admin rights.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|I,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213520r954822_rule,STIG-ID|JBOS-AS-000230,STIG-Legacy|SV-76755,STIG-Legacy|V-62265,SWIFT-CSCv1|2.3,Vuln-ID|V-213520",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "/bin/ps -ef | /bin/grep -i [j]boss | /bin/awk -F' ' '{ print $1}' | uniq",
+        "expect": "@PROCESS_USER@"
+    },
+    "custom_item_58": {
+        "description": "JBOS-AS-000235 - JBoss QuickStarts must be removed - JBoss QuickStarts must be removed.",
+        "info": "JBoss QuickStarts are demo applications that can be deployed quickly.  Demo applications are not written with security in mind and often open new attack vectors.  QuickStarts must be removed.",
+        "solution": "Delete the QuickStarts folder.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213521r954822_rule,STIG-ID|JBOS-AS-000235,STIG-Legacy|SV-76757,STIG-Legacy|V-62267,SWIFT-CSCv1|2.3,Vuln-ID|V-213521",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "find @JBOSS_HOME@ -name '*quickstarts*' -type d | /bin/awk '{ print } END { if (NR==0) print \"Not Found\" }'",
+        "expect": "Not Found"
+    },
+    "custom_item_59": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_60": {
+        "description": "JBOS-AS-000240 - Remote access to JMX subsystem must be disabled.",
+        "info": "The JMX subsystem allows you to trigger JDK and application management operations remotely.  In a managed domain configuration, the JMX subsystem is removed by default. For a standalone configuration, it is enabled by default and must be removed.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script to start the Command Line Interface (CLI).\nConnect to the server and authenticate.\n\nFor a Managed Domain configuration you must check each profile name:\n\nFor each PROFILE NAME, run the command:\n'/profile=/subsystem=jmx/remoting-connector=jmx:remove'\n\nFor a Standalone configuration:\n'/subsystem=jmx/remoting-connector=jmx:remove'",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213522r954822_rule,STIG-ID|JBOS-AS-000240,STIG-Legacy|SV-76759,STIG-Legacy|V-62269,SWIFT-CSCv1|2.3,Vuln-ID|V-213522",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=jmx/remoting-connector' | /bin/awk 'BEGIN { m=0; } $1 ~ /^jmx$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"jmx/remoting-connector is set to jmx\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_61": {
+        "description": "JBOS-AS-000240 - Remote access to JMX subsystem must be disabled.",
+        "info": "The JMX subsystem allows you to trigger JDK and application management operations remotely.  In a managed domain configuration, the JMX subsystem is removed by default. For a standalone configuration, it is enabled by default and must be removed.",
+        "solution": "Log on to the OS of the JBoss server with OS permissions that allow access to JBoss.\nUsing the relevant OS commands and syntax, cd to the/bin/ folder.\nRun the jboss-cli script to start the Command Line Interface (CLI).\nConnect to the server and authenticate.\n\nFor a Managed Domain configuration you must check each profile name:\n\nFor each PROFILE NAME, run the command:\n'/profile=/subsystem=jmx/remoting-connector=jmx:remove'\n\nFor a Standalone configuration:\n'/subsystem=jmx/remoting-connector=jmx:remove'",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213522r954822_rule,STIG-ID|JBOS-AS-000240,STIG-Legacy|SV-76759,STIG-Legacy|V-62269,SWIFT-CSCv1|2.3,Vuln-ID|V-213522",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='/profile=@PROFILE@/subsystem=jmx/remoting-connector=jmx' | /bin/awk 'BEGIN { m=0; } $1 ~ /^jmx$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"jmx/remoting-connector is set to jmx\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_62": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_63": {
+        "description": "JBOS-AS-000245 - Welcome Web Application must be disabled - Welcome Web Application must be disabled.",
+        "info": "The Welcome to JBoss web page provides a redirect to the JBoss admin console, which, by default, runs on TCP 9990 as well as redirects to the Online User Guide and Online User Groups hosted at locations on the Internet.  The welcome page is unnecessary and should be disabled or replaced with a valid web page.",
+        "solution": "Use the Management CLI script JBOSS_HOME/bin/jboss-cli.sh to run the following command. You may need to change the profile to modify a different managed domain profile, or remove the '/profile=default' portion of the command for a standalone server.\n\n'/profile=default/subsystem=web/virtual-server=default-host:writeattribute(name=enable-welcome-root,value=false)'\n\nTo configure your web application to use the root context (/) as its URL address, modify the applications jboss-web.xml, which is located in the applications META-INF/ or WEB-INF/ directory. Replace itsdirective with one that looks like the following:/",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213523r954822_rule,STIG-ID|JBOS-AS-000245,STIG-Legacy|SV-76761,STIG-Legacy|V-62271,SWIFT-CSCv1|2.3,Vuln-ID|V-213523",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "grep -l 'enable-welcome-root=\"true\"' @JBOSS_HOME@/standalone/configuration/*.xml | /bin/awk '{ print } END { if (NR==0) print \"Not Found\" }'",
+        "expect": "Not found"
+    },
+    "custom_item_64": {
+        "description": "JBOS-AS-000245 - Welcome Web Application must be disabled - Welcome Web Application must be disabled.",
+        "info": "The Welcome to JBoss web page provides a redirect to the JBoss admin console, which, by default, runs on TCP 9990 as well as redirects to the Online User Guide and Online User Groups hosted at locations on the Internet.  The welcome page is unnecessary and should be disabled or replaced with a valid web page.",
+        "solution": "Use the Management CLI script JBOSS_HOME/bin/jboss-cli.sh to run the following command. You may need to change the profile to modify a different managed domain profile, or remove the '/profile=default' portion of the command for a standalone server.\n\n'/profile=default/subsystem=web/virtual-server=default-host:writeattribute(name=enable-welcome-root,value=false)'\n\nTo configure your web application to use the root context (/) as its URL address, modify the applications jboss-web.xml, which is located in the applications META-INF/ or WEB-INF/ directory. Replace itsdirective with one that looks like the following:/",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213523r954822_rule,STIG-ID|JBOS-AS-000245,STIG-Legacy|SV-76761,STIG-Legacy|V-62271,SWIFT-CSCv1|2.3,Vuln-ID|V-213523",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "grep -l 'enable-welcome-root=\"true\"' @JBOSS_HOME@/domain/configuration/*.xml | /bin/awk '{ print } END { if (NR==0) print \"Not Found\" }'",
+        "expect": "Not found"
+    },
+    "custom_item_65": {
+        "description": "JBOS-AS-000250 - Any unapproved applications must be removed - Any unapproved applications must be removed.",
+        "info": "Extraneous services and applications running on an application server expands the attack surface and increases risk to the application server. Securing any server involves identifying and removing any unnecessary services and, in the case of an application server, unnecessary and/or unapproved applications.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Identify, authorize, and document all applications that are deployed to the application server.  Remove unauthorized applications.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-213524r954822_rule,STIG-ID|JBOS-AS-000250,STIG-Legacy|SV-76763,STIG-Legacy|V-62273,SWIFT-CSCv1|2.3,Vuln-ID|V-213524",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /deployment' | /bin/awk '{ print } END { if (NR==0) print \"No deployed applications found\" }'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_66": {
+        "description": "JBOS-AS-000255 - JBoss application and management ports must be approved by the PPSM CAL.",
+        "info": "Some networking protocols may not meet organizational security requirements to protect data and components.\n\nApplication servers natively host a number of various features, such as management interfaces, httpd servers and message queues. These features all run on TCPIP ports. This creates the potential that the vendor may choose to utilize port numbers or network services that have been deemed unusable by the organization. The application server must have the capability to both reconfigure and disable the assigned ports without adversely impacting application server operation capabilities. For a list of approved ports and protocols, reference the DoD ports and protocols website at https://powhatan.iiie.disa.mil/ports/cal.html.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Open the EAP web console by pointing a web browser to HTTPS://:9990\n\nLog on to the admin console using admin credentials\nSelect the 'Configuration' tab\nExpand the 'General Configuration' sub system by clicking on the +\nSelect 'Socket Binding'\nSelect the 'View' option next to 'standard-sockets'\nSelect 'Inbound'\n\nSelect the port that needs to be reconfigured and select 'Edit'.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-213525r954824_rule,STIG-ID|JBOS-AS-000255,STIG-Legacy|SV-76765,STIG-Legacy|V-62275,SWIFT-CSCv1|2.3,Vuln-ID|V-213525",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='/socket-binding-group=*:read-resource(recursive=true)'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_67": {
+        "description": "JBOS-AS-000260 - The JBoss Server must be configured to utilize a centralized authentication mechanism such as AD or LDAP.",
+        "info": "To assure accountability and prevent unauthorized access, application server users must be uniquely identified and authenticated.  This is typically accomplished via the use of a user store that is either local (OS-based) or centralized (Active Directory/LDAP) in nature.  It should be noted that JBoss does not specifically mention Active Directory since AD is LDAP aware.\n\nTo ensure accountability and prevent unauthorized access, the JBoss Server must be configured to utilize a centralized authentication mechanism.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow steps in section 11.8 - Management Interface Security in the JBoss_Enterprise_Application_Platform-6.3-Administration_and_Configuration_Guide-en-US document.\n\n1. Create an outbound connection to the LDAP server.\n2. Create an LDAP-enabled security realm.\n3. Reference the new security domain in the Management Interface.",
+        "reference": "800-171|3.5.1,800-53|IA-2,800-53r5|IA-2,CAT|II,CCI|CCI-000764,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213526r954826_rule,STIG-ID|JBOS-AS-000260,STIG-Legacy|SV-76767,STIG-Legacy|V-62277,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-213526",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_68": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_69": {
+        "description": "JBOS-AS-000265 - The JBoss Server must be configured to use certificates to authenticate admins.",
+        "info": "Multifactor authentication creates a layered defense and makes it more difficult for an unauthorized person to access the application server.  If one factor is compromised or broken, the attacker still has at least one more barrier to breach before successfully breaking into the target.  Unlike a simple username/password scenario where the attacker could gain access by knowing both the username and password without the user knowing his account was compromised, multifactor authentication adds the requirement that the attacker must have something from the user, such as a token, or to biometrically be the user.\n\nMultifactor authentication is defined as: using two or more factors to achieve authentication.\n\nFactors include:\n(i) something a user knows (e.g., password/PIN);\n(ii) something a user has (e.g., cryptographic identification device, token); or\n(iii) something a user is (e.g., biometric). A CAC or PKI Hardware Token meets this definition.\n\nA privileged account is defined as an information system account with authorizations of a privileged user.  These accounts would be capable of accessing the web management interface.\n\nWhen accessing the application server via a network connection, administrative access to the application server must be PKI Hardware Token enabled or a DoD-approved soft certificate.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the application server to authenticate privileged users via multifactor/certificate-based authentication mechanisms when using network access to the management interface.",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CAT|II,CCI|CCI-000765,CN-L3|7.1.2.7(b),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213527r954828_rule,STIG-ID|JBOS-AS-000265,STIG-Legacy|SV-76769,STIG-Legacy|V-62279,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-213527",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_70": {
+        "description": "JBOS-AS-000265 - The JBoss Server must be configured to use certificates to authenticate admins.",
+        "info": "Multifactor authentication creates a layered defense and makes it more difficult for an unauthorized person to access the application server.  If one factor is compromised or broken, the attacker still has at least one more barrier to breach before successfully breaking into the target.  Unlike a simple username/password scenario where the attacker could gain access by knowing both the username and password without the user knowing his account was compromised, multifactor authentication adds the requirement that the attacker must have something from the user, such as a token, or to biometrically be the user.\n\nMultifactor authentication is defined as: using two or more factors to achieve authentication.\n\nFactors include:\n(i) something a user knows (e.g., password/PIN);\n(ii) something a user has (e.g., cryptographic identification device, token); or\n(iii) something a user is (e.g., biometric). A CAC or PKI Hardware Token meets this definition.\n\nA privileged account is defined as an information system account with authorizations of a privileged user.  These accounts would be capable of accessing the web management interface.\n\nWhen accessing the application server via a network connection, administrative access to the application server must be PKI Hardware Token enabled or a DoD-approved soft certificate.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the application server to authenticate privileged users via multifactor/certificate-based authentication mechanisms when using network access to the management interface.",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CAT|II,CCI|CCI-000765,CN-L3|7.1.2.7(b),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213527r954828_rule,STIG-ID|JBOS-AS-000265,STIG-Legacy|SV-76769,STIG-Legacy|V-62279,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-213527",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=master/core-service=management/management-interface='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_71": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_72": {
+        "description": "JBOS-AS-000275 - The JBoss server must be configured to use individual accounts and not generic or shared accounts.",
+        "info": "To assure individual accountability and prevent unauthorized access, application server users (and any processes acting on behalf of application server users) must be individually identified and authenticated.\n\nA group authenticator is a generic account used by multiple individuals. Use of a group authenticator alone does not uniquely identify individual users.\n\nApplication servers must ensure that individual users are authenticated prior to authenticating via role or group authentication. This is to ensure that there is non-repudiation for actions taken.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the application server so required users are individually authenticated by creating individual user accounts.  Utilize an LDAP server that is configured according to DOD policy.",
+        "reference": "800-171|3.5.1,800-53|IA-2(5),800-53r5|IA-2(5),CAT|II,CCI|CCI-000770,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(5),ITSG-33|IA-2(5)(a),ITSG-33|IA-2(5)(b),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213528r956002_rule,STIG-ID|JBOS-AS-000275,STIG-Legacy|SV-76771,STIG-Legacy|V-62281,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-213528",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "grep 'user name=' @JBOSS_HOME@/standalone/configuration/*.xml | /bin/awk '{ print } END { if (NR==0) print \"No Users Found\" }'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_73": {
+        "description": "JBOS-AS-000275 - The JBoss server must be configured to use individual accounts and not generic or shared accounts.",
+        "info": "To assure individual accountability and prevent unauthorized access, application server users (and any processes acting on behalf of application server users) must be individually identified and authenticated.\n\nA group authenticator is a generic account used by multiple individuals. Use of a group authenticator alone does not uniquely identify individual users.\n\nApplication servers must ensure that individual users are authenticated prior to authenticating via role or group authentication. This is to ensure that there is non-repudiation for actions taken.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the application server so required users are individually authenticated by creating individual user accounts.  Utilize an LDAP server that is configured according to DOD policy.",
+        "reference": "800-171|3.5.1,800-53|IA-2(5),800-53r5|IA-2(5),CAT|II,CCI|CCI-000770,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(5),ITSG-33|IA-2(5)(a),ITSG-33|IA-2(5)(b),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213528r956002_rule,STIG-ID|JBOS-AS-000275,STIG-Legacy|SV-76771,STIG-Legacy|V-62281,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-213528",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "grep 'user name=' @JBOSS_HOME@/domain/configuration/*.xml | /bin/awk '{ print } END { if (NR==0) print \"No Users Found\" }'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_74": {
+        "description": "JBOS-AS-000290 - JBoss management Interfaces must be integrated with a centralized authentication mechanism that is configured to manage accounts according to DoD policy.",
+        "info": "JBoss EAP provides a security realm called ManagementRealm.  By default, this realm uses the mgmt-users.properties file for authentication.  Using file-based authentication does not allow the JBoss server to be in compliance with a wide range of user management requirements such as automatic disabling of inactive accounts as per DoD policy.  To address this issue, the management interfaces used to manage the JBoss server must be associated with a security realm that provides centralized authentication management.  Examples are AD or LDAP.\n\nManagement of user identifiers is not applicable to shared information system accounts (e.g., guest and anonymous accounts). It is commonly the case that a user account is the name of an information system account associated with an individual.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow steps in section 11.8 - Management Interface Security in the JBoss_Enterprise_Application_Platform-6.3-Administration_and_Configuration_Guide-en-US document.\n\n1. Create an outbound connection to the LDAP server.\n2. Create an LDAP-enabled security realm.\n3. Reference the new security domain in the Management Interface.",
+        "reference": "800-171|3.5.5,800-171|3.5.6,800-53|IA-4e.,800-53r5|IA-4e.,CAT|II,CCI|CCI-000795,CN-L3|7.1.2.7(b),CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-4e.,PCI-DSSv3.2.1|8.1.4,PCI-DSSv4.0|8.2.6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213529r954848_rule,STIG-ID|JBOS-AS-000290,STIG-Legacy|SV-76775,STIG-Legacy|V-62285,SWIFT-CSCv1|5,Vuln-ID|V-213529",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm='",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_75": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_76": {
+        "system": "Linux",
+        "description": "vault",
+        "file": "@JBOSS_HOME@/standalone/configuration/standalone.xml",
+        "xsl_stmt": "",
+        "regex": "^(PASS|FAIL)",
+        "expect": "^PASS - "
+    },
+    "custom_item_77": {
+        "system": "Linux",
+        "description": "vault-option",
+        "file": "@JBOSS_HOME@/standalone/configuration/standalone.xml",
+        "xsl_stmt": "",
+        "regex": "^(PASS|FAIL|Vault-option:)",
+        "expect": "^PASS - "
+    },
+    "custom_item_78": {
+        "system": "Linux",
+        "description": "vault",
+        "file": "@JBOSS_HOME@/domain/configuration/domain.xml",
+        "xsl_stmt": "",
+        "regex": "^(PASS|FAIL)",
+        "expect": "^PASS - "
+    },
+    "custom_item_79": {
+        "system": "Linux",
+        "description": "vault-option",
+        "file": "@JBOSS_HOME@/domain/configuration/domain.xml",
+        "xsl_stmt": "",
+        "regex": "^(PASS|FAIL|Vault-option:)",
+        "expect": "^PASS - "
+    },
+    "custom_item_80": {
+        "description": "JBOS-AS-000305 - LDAP enabled security realm value allow-empty-passwords must be set to false.",
+        "info": "Passwords need to be protected at all times, and encryption is the standard method for protecting passwords during transmission.  If passwords are not encrypted, they can be plainly read (i.e., clear text) and easily compromised.\n\nApplication servers have the capability to utilize either certificates (tokens) or user IDs and passwords in order to authenticate. When the application server transmits or receives passwords, the passwords must be encrypted.",
+        "solution": "Configure the LDAP Security Realm using default settings that sets 'allow-empty-values' to false.  LDAP Security Realm creation is described in section 11.9 -Add an LDAP Security Realm in the JBoss_Enterprise_Application_Platform-6.3-Administration_and_Configuration_Guide-en-US document.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213532r954866_rule,STIG-ID|JBOS-AS-000305,STIG-Legacy|SV-76781,STIG-Legacy|V-62291,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-213532",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/security-realm=ldap_security_realm/authentication=ldap' | /bin/awk 'BEGIN { m=0; } $1 ~ /^allow-empty-passwords=true$/ {print; m+=1} END { if (m == 0) { print \"pass\" } else { print \"allow-empty-passwords is set to true\" } }'",
+        "expect": "^pass$"
+    },
+    "custom_item_81": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_82": {
+        "description": "JBOS-AS-000310 - JBoss must utilize encryption when using LDAP for authentication.",
+        "info": "Passwords need to be protected at all times, and encryption is the standard method for protecting passwords during transmission.\n\nApplication servers have the capability to utilize LDAP directories for authentication. If LDAP connections are not protected during transmission, sensitive authentication credentials can be stolen. When the application server utilizes LDAP, the LDAP traffic must be encrypted.",
+        "solution": "Follow steps in section 11.8 - Management Interface Security in the JBoss_Enterprise_Application_Platform-6.3-Administration_and_Configuration_Guide-en-US document.\n\n1. Create an outbound connection to the LDAP server.\n2. Create an LDAP-enabled security realm.\n3. Reference the new security domain in the Management Interface.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213533r954866_rule,STIG-ID|JBOS-AS-000310,STIG-Legacy|SV-76783,STIG-Legacy|V-62293,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-213533",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=ldap_connection'",
+        "expect": "^636$"
+    },
+    "custom_item_83": {
+        "description": "JBOS-AS-000310 - JBoss must utilize encryption when using LDAP for authentication.",
+        "info": "Passwords need to be protected at all times, and encryption is the standard method for protecting passwords during transmission.\n\nApplication servers have the capability to utilize LDAP directories for authentication. If LDAP connections are not protected during transmission, sensitive authentication credentials can be stolen. When the application server utilizes LDAP, the LDAP traffic must be encrypted.",
+        "solution": "Follow steps in section 11.8 - Management Interface Security in the JBoss_Enterprise_Application_Platform-6.3-Administration_and_Configuration_Guide-en-US document.\n\n1. Create an outbound connection to the LDAP server.\n2. Create an LDAP-enabled security realm.\n3. Reference the new security domain in the Management Interface.",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|II,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-213533r954866_rule,STIG-ID|JBOS-AS-000310,STIG-Legacy|SV-76783,STIG-Legacy|V-62293,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-213533",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /socket-binding-group=@PROFILE@/remote-destination-outbound-socket-binding='",
+        "expect": "^636$"
+    },
+    "custom_item_84": {
+        "description": "directory",
+        "file": "@JBOSS_HOME@/vault",
+        "owner": "@VAULT_OWNER@",
+        "mask": "006",
+        "group": "@VAULT_GROUP@"
+    },
+    "custom_item_85": {
+        "description": "keystore file",
+        "file": "@JBOSS_HOME@/vault/vault.keystore",
+        "owner": "@VAULT_OWNER@",
+        "mask": "006",
+        "group": "@VAULT_GROUP@"
+    },
+    "custom_item_86": {
+        "description": "JBOS-AS-000355 - The JBoss server must separate hosted application functionality from application server management functionality.",
+        "info": "The application server consists of the management interface and hosted applications.  By separating the management interface from hosted applications, the user must authenticate as a privileged user to the management interface before being presented with management functionality.  This prevents non-privileged users from having visibility to functions not available to the user.  By limiting visibility, a compromised non-privileged account does not offer information to the attacker or functionality and information needed to further the attack on the application server.\n\nJBoss is designed to operate with separate application and management interfaces.\nThe JBoss server is started via a script.  To start the JBoss server in domain mode, the admin will execute the/bin/domain.sh or domain.bat script.\n\nTo start the JBoss server in standalone mode, the admin will execute/bin/standalone.bat or standalone.sh.\n\nCommand line flags are used to specify which network address is used for management and which address is used for public/application access.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Start the application server with a -bmanagement and a -b flag so that admin management functionality and hosted applications are separated.\n\nRefer to section 4.9 in the JBoss EAP 6.3 Installation Guide for specific instructions on how to start the JBoss server as a service.",
+        "reference": "800-171|3.13.3,800-53|SC-2,800-53r5|SC-2,CAT|II,CCI|CCI-001082,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-2,ITSG-33|SC-2a.,NESA|T3.4.1,NIAv2|SS15b,Rule-ID|SV-213535r954910_rule,STIG-ID|JBOS-AS-000355,STIG-Legacy|SV-76787,STIG-Legacy|V-62297,Vuln-ID|V-213535",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "/bin/ps -ef | /bin/grep [j]boss",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_87": {
+        "description": "JBOS-AS-000400 - JBoss file permissions must be configured to protect the confidentiality and integrity of application files.",
+        "info": "The JBoss EAP Application Server is a Java-based AS.  It is installed on the OS file system and depends upon file system access controls to protect application data at rest.  The file permissions set on the JBoss EAP home folder must be configured so as to limit access to only authorized people and processes.  The account used for operating the JBoss server and any designated administrative or operational accounts are the only accounts that should have access.\n\nWhen data is written to digital media such as hard drives, mobile computers, external/removable hard drives, personal digital assistants, flash/thumb drives, etc., there is risk of data loss and data compromise.  Steps must be taken to ensure data stored on the device is protected.",
+        "solution": "Configure file permissions on the JBoss folder to protect from unauthorized access.",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|II,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213536r954932_rule,STIG-ID|JBOS-AS-000400,STIG-Legacy|SV-76789,STIG-Legacy|V-62299,Vuln-ID|V-213536",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "file": "@JBOSS_HOME@",
+        "owner": "@PROCESS_USER@",
+        "mask": "006",
+        "group": "@PROCESS_GROUP@"
+    },
+    "custom_item_88": {
+        "description": "Check for JBOS-AS-000400 passing",
+        "file": "@JBOSS_HOME@",
+        "owner": "@PROCESS_USER@",
+        "mask": "006",
+        "group": "@PROCESS_GROUP@"
+    },
+    "custom_item_89": {
+        "description": "JBOS-AS-000425 - Access to JBoss log files must be restricted to authorized users.",
+        "info": "If the application provides too much information in error logs and administrative messages to the screen, this could lead to compromise. The structure and content of error messages need to be carefully considered by the organization and development team. The extent to which the information system is able to identify and handle error conditions is guided by organizational policy and operational requirements.\n\nApplication servers must protect the error messages that are created by the application server. All application server users' accounts are used for the management of the server and the applications residing on the application server. All accounts are assigned to a certain role with corresponding access rights. The application server must restrict access to error messages so only authorized users may view them. Error messages are usually written to logs contained on the file system. The application server will usually create new log files as needed and must take steps to ensure that the proper file permissions are utilized when the log files are created.",
+        "solution": "Configure file permissions on the JBoss log folder to protect from unauthorized access.",
+        "reference": "800-53|SI-11b.,800-53r5|SI-11b.,CAT|II,CCI|CCI-001314,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11c.,Rule-ID|SV-213537r956037_rule,STIG-ID|JBOS-AS-000425,STIG-Legacy|SV-76791,STIG-Legacy|V-62301,Vuln-ID|V-213537",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "file": "@LOG_DIRECTORY@",
+        "mask": "007"
+    },
+    "custom_item_90": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_91": {
+        "description": "JBOS-AS-000470 - Network access to HTTP management must be disabled on domain-enabled application servers not designated as the domain controller.",
+        "info": "When configuring JBoss application servers into a domain configuration, HTTP management capabilities are not required on domain member servers as management is done via the server that has been designated as the domain controller.\n\nLeaving HTTP management capabilities enabled on domain member servers increases the attack surfaces; therefore, management services on domain member servers must be disabled and management services performed via the domain controller.",
+        "solution": "Run the/bin/jboss-cli command line interface utility.\nConnect to the JBoss server and run the following command.\n/core-service=management/management-interface=httpinterface/:write-attribute(name=console-enabled,value=false)\n\nSuccessful command execution returns\n{'outcome' => 'success'}, and future attempts to access the management console via web browser at:9990 will result in no access to the admin console.",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-17(9),800-53r5|AC-17(9),CAT|II,CCI|CCI-002322,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17,NESA|T5.4.5,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-213538r955034_rule,STIG-ID|JBOS-AS-000470,STIG-Legacy|SV-76793,STIG-Legacy|V-62303,SWIFT-CSCv1|2.3,Vuln-ID|V-213538",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=@HOST_NAME@/core-service=management/management-interface=http-interface/' | /bin/grep console-enabled",
+        "expect": "console-enabled[\\\\s]*=[\\\\s]*false"
+    },
+    "custom_item_92": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_93": {
+        "description": "JBOS-AS-000475 - The application server must prevent non-privileged users from executing privileged functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
+        "info": "Preventing non-privileged users from executing privileged functions mitigates the risk that unauthorized individuals or processes may gain unnecessary access to information or privileges.\n\nRestricting non-privileged users also prevents an attacker who has gained access to a non-privileged account, from elevating privileges, creating accounts, and performing system checks and maintenance.",
+        "solution": "Run the following command./bin/jboss-cli.sh -c -> connect -> cd /core-service=management/access-authorization :write-attribute(name=provider, value=rbac)\n\nRestart JBoss.\n\nMap users to roles by running the following command.  Upper-case words are variables.\n\nrole-mapping=ROLENAME/include=ALIAS:add(name-USERNAME, type=USER ROLE)",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CAT|II,CCI|CCI-002235,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213539r955082_rule,STIG-ID|JBOS-AS-000475,STIG-Legacy|SV-76795,STIG-Legacy|V-62305,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-213539",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=authorization/' | /bin/grep provider",
+        "expect": "provider=rbac"
+    },
+    "custom_item_94": {
+        "description": "JBOS-AS-000475 - The application server must prevent non-privileged users from executing privileged functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
+        "info": "Preventing non-privileged users from executing privileged functions mitigates the risk that unauthorized individuals or processes may gain unnecessary access to information or privileges.\n\nRestricting non-privileged users also prevents an attacker who has gained access to a non-privileged account, from elevating privileges, creating accounts, and performing system checks and maintenance.",
+        "solution": "Run the following command./bin/jboss-cli.sh -c -> connect -> cd /core-service=management/access-authorization :write-attribute(name=provider, value=rbac)\n\nRestart JBoss.\n\nMap users to roles by running the following command.  Upper-case words are variables.\n\nrole-mapping=ROLENAME/include=ALIAS:add(name-USERNAME, type=USER ROLE)",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CAT|II,CCI|CCI-002235,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213539r955082_rule,STIG-ID|JBOS-AS-000475,STIG-Legacy|SV-76795,STIG-Legacy|V-62305,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-213539",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=master/core-service=management/access=authorization/' | /bin/grep provider",
+        "expect": "provider=rbac"
+    },
+    "custom_item_95": {
+        "description": "JBOS-AS-000480 - The JBoss server must be configured to log all admin activity.",
+        "info": "In order to be able to provide a forensic history of activity, the application server must ensure users who are granted a privileged role or those who utilize a separate distinct account when accessing privileged functions or data have their actions logged.\n\nIf privileged activity is not logged, no forensic logs can be used to establish accountability for privileged actions that occur on the system.",
+        "solution": "Launch the jboss-cli management interface substituting standalone or domain forbased upon the server installation.//bin/jboss-cli\n\nconnect to the server and run the following command:\n\n/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)",
+        "reference": "800-171|3.1.7,800-53|AC-6(9),800-53r5|AC-6(9),CAT|II,CCI|CCI-002234,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.12.4.3,ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213540r955088_rule,STIG-ID|JBOS-AS-000480,STIG-Legacy|SV-76797,STIG-Legacy|V-62307,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-213540",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='/core-service=management/access=audit:read-resource(recursive=true)' | /bin/grep '\"enabled\"'",
+        "expect": "\"enabled\" => true,"
+    },
+    "custom_item_96": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_97": {
+        "description": "JBOS-AS-000505 - The JBoss server must be configured to utilize syslog logging.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control or flow control rules invoked.\n\nOff-loading is a common process in information systems with limited log storage capacity.\n\nCentralized management of log records provides for efficiency in maintenance and management of records, as well as the backup and archiving of those records. Application servers and their related components are required to off-load log records onto a different system or media than the system being logged."
+    },
+    "custom_item_98": {
+        "description": "JBOS-AS-000505 - The JBoss server must be configured to utilize syslog logging.",
+        "info": "Information system logging capability is critical for accurate forensic analysis. Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, filenames involved, access control or flow control rules invoked.\n\nOff-loading is a common process in information systems with limited log storage capacity.\n\nCentralized management of log records provides for efficiency in maintenance and management of records, as well as the backup and archiving of those records. Application servers and their related components are required to off-load log records onto a different system or media than the system being logged."
+    },
+    "custom_item_99": {
+        "description": "JBOS-AS-000545 - Production JBoss servers must not allow automatic application deployment.",
+        "info": "When dealing with access restrictions pertaining to change control, it should be noted that any changes to the software and/or application server configuration can potentially have significant effects on the overall security of the system.\n\nAccess restrictions for changes also include application software libraries.\n\nIf the application server provides automatic code deployment capability, (where updates to applications hosted on the application server are automatically performed, usually by the developers' IDE tool), it must also provide a capability to restrict the use of automatic application deployment. Automatic code deployments are allowable in a development environment, but not in production.",
+        "solution": "Determine the JBoss server configuration as being either standalone or domain.\n\nLaunch the relevant jboss-cli management interface substituting standalone or domain for//bin/jboss-cli\n\nconnect to the server and run the command:\n\n/subsystem=deployment-scanner/scanner=default:write-attribute(name=scan-enabled,value=false)",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001813,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213542r955579_rule,STIG-ID|JBOS-AS-000545,STIG-Legacy|SV-76801,STIG-Legacy|V-62311,Vuln-ID|V-213542",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=deployment-scanner/scanner=default' | /bin/grep scan-enabled",
+        "expect": "scan-enabled=false"
+    },
+    "custom_item_100": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_101": {
+        "description": "JBOS-AS-000550 - Production JBoss servers must log when failed application deployments occur.",
+        "info": "Without logging the enforcement of access restrictions against changes to the application server configuration, it will be difficult to identify attempted attacks, and a log trail will not be available for forensic investigation for after-the-fact actions.  Configuration changes may occur to any of the modules within the application server through the management interface, but logging of actions to the configuration of a module outside the application server is not logged.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Log items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Launch the jboss-cli management interface substituting standalone or domain forbased upon the server installation.//bin/jboss-cli\n\nconnect to the server and run the following command:\n\n/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213543r955581_rule,STIG-ID|JBOS-AS-000550,STIG-Legacy|SV-76803,STIG-Legacy|V-62313,Vuln-ID|V-213543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_102": {
+        "description": "JBOS-AS-000550 - Production JBoss servers must log when failed application deployments occur.",
+        "info": "Without logging the enforcement of access restrictions against changes to the application server configuration, it will be difficult to identify attempted attacks, and a log trail will not be available for forensic investigation for after-the-fact actions.  Configuration changes may occur to any of the modules within the application server through the management interface, but logging of actions to the configuration of a module outside the application server is not logged.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Log items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Launch the jboss-cli management interface substituting standalone or domain forbased upon the server installation.//bin/jboss-cli\n\nconnect to the server and run the following command:\n\n/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213543r955581_rule,STIG-ID|JBOS-AS-000550,STIG-Legacy|SV-76803,STIG-Legacy|V-62313,Vuln-ID|V-213543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_103": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_104": {
+        "description": "JBOS-AS-000555 - Production JBoss servers must log when successful application deployments occur.",
+        "info": "Without logging the enforcement of access restrictions against changes to the application server configuration, it will be difficult to identify attempted attacks, and a log trail will not be available for forensic investigation for after-the-fact actions.  Configuration changes may occur to any of the modules within the application server through the management interface, but logging of actions to the configuration of a module outside the application server is not logged.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Log items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Launch the jboss-cli management interface substituting standalone or domain forbased upon the server installation.//bin/jboss-cli\n\nconnect to the server and run the following command:\n\n/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213544r955581_rule,STIG-ID|JBOS-AS-000555,STIG-Legacy|SV-76805,STIG-Legacy|V-62315,Vuln-ID|V-213544",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_105": {
+        "description": "JBOS-AS-000555 - Production JBoss servers must log when successful application deployments occur.",
+        "info": "Without logging the enforcement of access restrictions against changes to the application server configuration, it will be difficult to identify attempted attacks, and a log trail will not be available for forensic investigation for after-the-fact actions.  Configuration changes may occur to any of the modules within the application server through the management interface, but logging of actions to the configuration of a module outside the application server is not logged.\n\nEnforcement actions are the methods or mechanisms used to prevent unauthorized changes to configuration settings. Enforcement action methods may be as simple as denying access to a file based on the application of file permissions (access restriction). Log items may consist of lists of actions blocked by access restrictions or changes identified after the fact.",
+        "solution": "Launch the jboss-cli management interface substituting standalone or domain forbased upon the server installation.//bin/jboss-cli\n\nconnect to the server and run the following command:\n\n/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001814,CSF|PR.IP-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-213544r955581_rule,STIG-ID|JBOS-AS-000555,STIG-Legacy|SV-76805,STIG-Legacy|V-62315,Vuln-ID|V-213544",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_106": {
+        "description": "JBOS-AS-000650 - JBoss must be configured to use an approved TLS version.",
+        "info": "Preventing the disclosure of transmitted information requires that the application server take measures to employ some form of cryptographic mechanism in order to protect the information during transmission.  This is usually achieved through the use of Transport Layer Security (TLS).\n\nJBoss relies on the underlying SSL implementation running on the OS.  This can be either Java based or OpenSSL.  The SSL protocol setting determines which SSL protocol is used.  SSL has known security vulnerabilities, so TLS should be used instead.\n\nIf data is transmitted unencrypted, the data then becomes vulnerable to disclosure.  The disclosure may reveal user identifier/password combinations, website code revealing business logic, or other user personal information.\n\nFIPS 140-2 approved TLS versions include TLS V1.2 or greater.\n\nTLS must be enabled, and non-FIPS-approved SSL versions must be disabled.  NIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Reference section 4.6 of the JBoss EAP 6.3 Security Guide located on the Red Hat vendor's web site for step-by-step instructions on establishing SSL encryption on JBoss.\n\nThe overall steps include:\n\n1. Add an HTTPS connector.\n2. Configure the SSL encryption certificate and keys.\n3. Set the protocol to TLS V1.2 or greater.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CAT|II,CCI|CCI-002418,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213547r955693_rule,STIG-ID|JBOS-AS-000650,STIG-Legacy|SV-76811,STIG-Legacy|V-62321,Vuln-ID|V-213547",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=web/connector=https/ssl=configuration' | /bin/grep protocol",
+        "expect": "protocol=TLS V1\\\\.[23]"
+    },
+    "custom_item_107": {
+        "description": "JBOS-AS-000655 - JBoss must be configured to use an approved cryptographic algorithm in conjunction with TLS.",
+        "info": "Preventing the disclosure or modification of transmitted information requires that application servers take measures to employ approved cryptography in order to protect the information during transmission over the network. This is usually achieved through the use of Transport Layer Security (TLS), SSL VPN, or IPSec tunnel.\n\nIf data in transit is unencrypted, it is vulnerable to disclosure and modification. If approved cryptographic algorithms are not used, encryption strength cannot be assured.\n\nFIPS 140-2 approved TLS versions include TLS V1.2 or greater.\n\nTLS must be enabled, and non-FIPS-approved SSL versions must be disabled.  NIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Reference section 4.6 of the JBoss EAP 6.3 Security Guide located on the Red Hat vendor's website for step-by-step instructions on establishing SSL encryption on JBoss.\n\nThe overall steps include:\n\n1. Add an HTTPS connector.\n2. Configure the SSL encryption certificate and keys.\n3. Set the Cipher to an approved algorithm.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CAT|II,CCI|CCI-002421,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-213548r955695_rule,STIG-ID|JBOS-AS-000655,STIG-Legacy|SV-76813,STIG-Legacy|V-62323,SWIFT-CSCv1|2.1,TBA-FIISB|29.1,Vuln-ID|V-213548",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=web/connector=https/ssl=configuration' | /bin/grep cipher-suite",
+        "expect": "cipher-suite=(AES_128_CBC|AES_256-CBC|AES_128_GCM|AES_128_CCM|AES_256_CCM)"
+    },
+    "custom_item_108": {
+        "description": "JBOS-AS-000685 - The JRE installed on the JBoss server must be kept up to date.",
+        "info": "The JBoss product is available as Open Source; however, the Red Hat vendor provides updates, patches and support for the JBoss product.  It is imperative that patches and updates be applied to JBoss in a timely manner as many attacks against JBoss focus on unpatched systems.  It is critical that support be obtained and made available.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure the operating system and the application server to use a patch management system or process that ensures security-relevant updates are installed within the time period directed by the ISSM.",
+        "reference": "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CAT|I,CCI|CCI-002605,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,Rule-ID|SV-213550r955727_rule,STIG-ID|JBOS-AS-000685,STIG-Legacy|SV-76817,STIG-Legacy|V-62327,SWIFT-CSCv1|2.2,Vuln-ID|V-213550",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "java -version",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_109": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_110": {
+        "description": "JBOS-AS-000690 - JBoss must be configured to generate log records when successful/unsuccessful attempts to modify privileges occur.",
+        "info": "Changing privileges of a subject/object may cause a subject/object to gain or lose capabilities.  When successful/unsuccessful changes are made, the event needs to be logged.  By logging the event, the modification or attempted modification can be investigated to determine if it was performed inadvertently or maliciously.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213551r956004_rule,STIG-ID|JBOS-AS-000690,STIG-Legacy|SV-76819,STIG-Legacy|V-62329,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213551",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_111": {
+        "description": "JBOS-AS-000690 - JBoss must be configured to generate log records when successful/unsuccessful attempts to modify privileges occur.",
+        "info": "Changing privileges of a subject/object may cause a subject/object to gain or lose capabilities.  When successful/unsuccessful changes are made, the event needs to be logged.  By logging the event, the modification or attempted modification can be investigated to determine if it was performed inadvertently or maliciously.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213551r956004_rule,STIG-ID|JBOS-AS-000690,STIG-Legacy|SV-76819,STIG-Legacy|V-62329,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213551",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_112": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_113": {
+        "description": "JBOS-AS-000695 - JBoss must be configured to generate log records when successful/unsuccessful attempts to delete privileges occur.",
+        "info": "Deleting privileges of a subject/object may cause a subject/object to gain or lose capabilities.  When successful and unsuccessful privilege deletions are made, the events need to be logged.  By logging the event, the modification or attempted modification can be investigated to determine if it was performed inadvertently or maliciously.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213552r956006_rule,STIG-ID|JBOS-AS-000695,STIG-Legacy|SV-76821,STIG-Legacy|V-62331,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213552",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_114": {
+        "description": "JBOS-AS-000695 - JBoss must be configured to generate log records when successful/unsuccessful attempts to delete privileges occur.",
+        "info": "Deleting privileges of a subject/object may cause a subject/object to gain or lose capabilities.  When successful and unsuccessful privilege deletions are made, the events need to be logged.  By logging the event, the modification or attempted modification can be investigated to determine if it was performed inadvertently or maliciously.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213552r956006_rule,STIG-ID|JBOS-AS-000695,STIG-Legacy|SV-76821,STIG-Legacy|V-62331,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213552",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_115": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_116": {
+        "description": "JBOS-AS-000700 - JBoss must be configured to generate log records when successful/unsuccessful logon attempts occur.",
+        "info": "Logging the access to the application server allows the system administrators to monitor user accounts.  By logging successful/unsuccessful logons, the system administrator can determine if an account is compromised (e.g., frequent logons) or is in the process of being compromised (e.g., frequent failed logons) and can take actions to thwart the attack.\n\nLogging successful logons can also be used to determine accounts that are no longer in use.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213553r956008_rule,STIG-ID|JBOS-AS-000700,STIG-Legacy|SV-76823,STIG-Legacy|V-62333,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213553",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_117": {
+        "description": "JBOS-AS-000700 - JBoss must be configured to generate log records when successful/unsuccessful logon attempts occur.",
+        "info": "Logging the access to the application server allows the system administrators to monitor user accounts.  By logging successful/unsuccessful logons, the system administrator can determine if an account is compromised (e.g., frequent logons) or is in the process of being compromised (e.g., frequent failed logons) and can take actions to thwart the attack.\n\nLogging successful logons can also be used to determine accounts that are no longer in use.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213553r956008_rule,STIG-ID|JBOS-AS-000700,STIG-Legacy|SV-76823,STIG-Legacy|V-62333,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213553",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_118": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_119": {
+        "description": "JBOS-AS-000705 - JBoss must be configured to generate log records for privileged activities.",
+        "info": "Without generating log records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nPrivileged activities would occur through the management interface.  This interface can be web-based or can be command line utilities.  Whichever method is utilized by the application server, these activities must be logged.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213554r956010_rule,STIG-ID|JBOS-AS-000705,STIG-Legacy|SV-76825,STIG-Legacy|V-62335,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213554",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_120": {
+        "description": "JBOS-AS-000705 - JBoss must be configured to generate log records for privileged activities.",
+        "info": "Without generating log records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nPrivileged activities would occur through the management interface.  This interface can be web-based or can be command line utilities.  Whichever method is utilized by the application server, these activities must be logged.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213554r956010_rule,STIG-ID|JBOS-AS-000705,STIG-Legacy|SV-76825,STIG-Legacy|V-62335,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213554",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_121": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_122": {
+        "description": "JBOS-AS-000710 - JBoss must be configured to generate log records that show starting and ending times for access to the application server management interface.",
+        "info": "Determining when a user has accessed the management interface is important to determine the timeline of events when a security incident occurs.  Generating these events, especially if the management interface is accessed via a stateless protocol like HTTP, the log events will be generated when the user performs a logon (start) and when the user performs a logoff (end).  Without these events, the user and later investigators cannot determine the sequence of events and therefore cannot determine what may have happened and by whom it may have been done.\n\nThe generation of start and end times within log events allows the user to perform their due diligence in the event of a security breach.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213555r956012_rule,STIG-ID|JBOS-AS-000710,STIG-Legacy|SV-76827,STIG-Legacy|V-62337,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213555",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_123": {
+        "description": "JBOS-AS-000710 - JBoss must be configured to generate log records that show starting and ending times for access to the application server management interface.",
+        "info": "Determining when a user has accessed the management interface is important to determine the timeline of events when a security incident occurs.  Generating these events, especially if the management interface is accessed via a stateless protocol like HTTP, the log events will be generated when the user performs a logon (start) and when the user performs a logoff (end).  Without these events, the user and later investigators cannot determine the sequence of events and therefore cannot determine what may have happened and by whom it may have been done.\n\nThe generation of start and end times within log events allows the user to perform their due diligence in the event of a security breach.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213555r956012_rule,STIG-ID|JBOS-AS-000710,STIG-Legacy|SV-76827,STIG-Legacy|V-62337,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213555",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_124": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_125": {
+        "description": "JBOS-AS-000715 - JBoss must be configured to generate log records when concurrent logons from different workstations occur to the application server management interface.",
+        "info": "Concurrent logons from different systems could possibly indicate a compromised account.  When concurrent logons are made from different workstations to the management interface, a log record needs to be generated.  This configuration setting provides forensic evidence that allows the system administrator to investigate access to the system and determine if the duplicate access was authorized or not.\n\nJBoss provides a multitude of different log formats, and API calls that log access to the system.  If the default format and location is not used, the system admin must provide the configuration documentation and settings that show that this requirement is being met.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213556r956014_rule,STIG-ID|JBOS-AS-000715,STIG-Legacy|SV-76829,STIG-Legacy|V-62339,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213556",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_126": {
+        "description": "JBOS-AS-000715 - JBoss must be configured to generate log records when concurrent logons from different workstations occur to the application server management interface.",
+        "info": "Concurrent logons from different systems could possibly indicate a compromised account.  When concurrent logons are made from different workstations to the management interface, a log record needs to be generated.  This configuration setting provides forensic evidence that allows the system administrator to investigate access to the system and determine if the duplicate access was authorized or not.\n\nJBoss provides a multitude of different log formats, and API calls that log access to the system.  If the default format and location is not used, the system admin must provide the configuration documentation and settings that show that this requirement is being met.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213556r956014_rule,STIG-ID|JBOS-AS-000715,STIG-Legacy|SV-76829,STIG-Legacy|V-62339,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213556",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_127": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_128": {
+        "description": "JBOS-AS-000720 - JBoss must be configured to generate log records for all account creations, modifications, disabling, and termination events.",
+        "info": "The maintenance of user accounts is a key activity within the system to determine access and privileges.  Through changes to accounts, an attacker can create an account for persistent access, modify an account to elevate privileges, or terminate/disable an account(s) to cause a DoS for user(s).  To be able to track and investigate these actions, log records must be generated for any account modification functions.\n\nApplication servers either provide a local user store, or they can integrate with enterprise user stores like LDAP.  As such, the application server must be able to generate log records on account creation, modification, disabling, and termination.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213557r956016_rule,STIG-ID|JBOS-AS-000720,STIG-Legacy|SV-76831,STIG-Legacy|V-62341,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213557",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_129": {
+        "description": "JBOS-AS-000720 - JBoss must be configured to generate log records for all account creations, modifications, disabling, and termination events.",
+        "info": "The maintenance of user accounts is a key activity within the system to determine access and privileges.  Through changes to accounts, an attacker can create an account for persistent access, modify an account to elevate privileges, or terminate/disable an account(s) to cause a DoS for user(s).  To be able to track and investigate these actions, log records must be generated for any account modification functions.\n\nApplication servers either provide a local user store, or they can integrate with enterprise user stores like LDAP.  As such, the application server must be able to generate log records on account creation, modification, disabling, and termination.",
+        "solution": "Launch the jboss-cli management interface.\nConnect to the server by typing 'connect', authenticate as a user in the Superuser role, and run the following command:\n\nFor a Managed Domain configuration:\n'host=master/server//core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'\n\nFor a Standalone configuration:\n'/core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)'",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213557r956016_rule,STIG-ID|JBOS-AS-000720,STIG-Legacy|SV-76831,STIG-Legacy|V-62341,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-213557",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls host=master/server=@SERVERNAME@/core-service=management/access=audit/logger=audit-log' | /bin/grep enabled",
+        "expect": "enabled=true"
+    },
+    "custom_item_130": {
+        "description": "Check for Standalone mode",
+        "cmd": "/bin/ps -ef | /bin/grep \"[j]ava -D\" | /bin/awk -F \" \" '{print $9}'",
+        "expect": "-D\\\\[Standalone\\\\]"
+    },
+    "custom_item_131": {
+        "description": "JBOS-AS-000735 - JBoss servers must be configured to roll over and transfer logs on a minimum weekly basis.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.  Protecting log data is important during a forensic investigation to ensure investigators can track and understand what may have occurred.  Off-loading should be set up as a scheduled task but can be configured to be run manually, if other processes during the off-loading are manual.\n\nOff-loading is a common process in information systems with limited log storage capacity.",
+        "solution": "Open the web-based management interface by opening a browser and pointing it to HTTPS://:9990/\n\nAuthenticate as a user with Admin rights.\nNavigate to the 'Configuration' tab.\nExpand + Subsystems.\nExpand + Core.\nSelect 'Logging'.\nSelect the 'Handler' tab.\nSelect  'Periodic'.\n\nIf a periodic file handler does not exist, reference JBoss admin guide for instructions on how to create a file handler that will rotate logs on a daily basis.\nCreate scripts that package and off-load log data at least weekly.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213559r955843_rule,STIG-ID|JBOS-AS-000735,STIG-Legacy|SV-76835,STIG-Legacy|V-62345,Vuln-ID|V-213559",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /subsystem=logging/periodic-rotating-file-handler='",
+        "expect": "FILE"
+    },
+    "custom_item_132": {
+        "description": "JBOS-AS-000735 - JBoss servers must be configured to roll over and transfer logs on a minimum weekly basis.",
+        "info": "Information stored in one location is vulnerable to accidental or incidental deletion or alteration.  Protecting log data is important during a forensic investigation to ensure investigators can track and understand what may have occurred.  Off-loading should be set up as a scheduled task but can be configured to be run manually, if other processes during the off-loading are manual.\n\nOff-loading is a common process in information systems with limited log storage capacity.",
+        "solution": "Open the web-based management interface by opening a browser and pointing it to HTTPS://:9990/\n\nAuthenticate as a user with Admin rights.\nNavigate to the 'Configuration' tab.\nExpand + Subsystems.\nExpand + Core.\nSelect 'Logging'.\nSelect the 'Handler' tab.\nSelect  'Periodic'.\n\nIf a periodic file handler does not exist, reference JBoss admin guide for instructions on how to create a file handler that will rotate logs on a daily basis.\nCreate scripts that package and off-load log data at least weekly.",
+        "reference": "800-53|AU-4(1),800-53r5|AU-4(1),CAT|II,CCI|CCI-001851,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|JBoss_EAP_6-3_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-213559r955843_rule,STIG-ID|JBOS-AS-000735,STIG-Legacy|SV-76835,STIG-Legacy|V-62345,Vuln-ID|V-213559",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_JBoss_EAP_6-3_V2R4_STIG.zip",
+        "cmd": "@JBOSS_HOME@/bin/jboss-cli.sh --connect --commands='ls /host=master/server=@SERVERNAME@/subsystem=logging/periodic-rotating-file-handler='",
+        "expect": "FILE"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "custom_item_1": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_2": {
+        "description": "5.1 Verify AppArmor",
+        "info": "http://wiki.apparmor.net/index.php/Main_Page",
+        "solution": "If AppArmor is applicable for your Linux OS, use it. You may have to follow below set of\nsteps-\n\n1. Verify if AppArmor is installed. If not, install it.\n2. Create or import a AppArmor profile for Docker containers.\n3. Put this profile in enforcing mode.\n4. Start your Docker container using the Docker AppArmor profile. For example,docker run -i -t --security-opt='apparmor-PROFILENAME' centos /bin/bash\nImpact-The container (process) would have set of restrictions as defined in AppArmor profile. If\nyour AppArmor profile is mis-configured, then the container may not entirely work as\nexpected.Default Value-By default, no AppArmor profiles are applied on containers.",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-3(3),800-53r5|AC-3(3),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3(3),LEVEL|2S,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSSv3.2.1|7.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: AppArmorProfile={{ .AppArmorProfile }}'",
+        "expect": ""
+    },
+    "custom_item_3": {
+        "description": "5.2 Verify SELinux security options, if applicable (Scored)",
+        "info": "http://docs.fedoraproject.org/en-US/Fedora/13/html/Security-Enhanced_Linux/",
+        "solution": "If SELinux is applicable for your Linux OS, use it. You may have to follow below set of steps-\n\n1. Set the SELinux State.\n2. Set the SELinux Policy.\n3. Create or import a SELinux policy template for Docker containers.\n4. Start Docker in daemon mode with SELinux enabled. For example,docker -d --selinux-enabled5. Start your Docker container using the security options. For example,docker run -i -t --security-opt label-level-TopSecret centos /bin/bashImpact-The container (process) would have set of restrictions as defined in SELinux policy. If your\nSELinux policy is mis-configured, then the container may not entirely work as expected.Default Value-By default, no SELinux security options are applied on containers.",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-3(3),800-53r5|AC-3(3),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3(3),LEVEL|2S,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSSv3.2.1|7.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/514",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: SecurityOpt={{json .HostConfig.SecurityOpt }}'",
+        "expect": ""
+    }
+}

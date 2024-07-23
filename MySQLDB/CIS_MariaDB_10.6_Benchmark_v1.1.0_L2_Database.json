@@ -1,0 +1,142 @@
+{
+    "custom_item_1": {
+        "description": "MariaDB 10 is installed",
+        "sql_request": "show variables like 'version';",
+        "sql_expect": "version"
+    },
+    "custom_item_2": {
+        "description": "2.1.5 Point-in-Time Recovery",
+        "info": "With binlogs it is possible to implement point-in-time recovery. This makes it possible to restore the changes between the last full backup and the point-in-time.\n\nEnabling binlogs is not sufficient. The binlogs need to be backed up to separate media. The restore procedure should be created and tested. The data in the binlog files may contain sensitive information which needs be stored in the proper location with restrictive permissions and may require encryption.\n\nRationale:\n\nUsing binlogs can reduce the amount of information lost when recovering from a backup.\n\nImpact:\n\nBinlogs can grow quite large and take up a large amount of space so auto remove needs to be put into place.",
+        "solution": "Enable binlogs, then create and test a restore procedure.\n\nDefault Value:\n\n0",
+        "reference": "800-171|3.8.9,800-53|CP-9,800-53|CP-10,800-53r5|CP-9,800-53r5|CP-10,CSCv7|10.2,CSCv8|11.2,CSF|PR.IP-4,CSF|RC.RP-1,CSF|RS.RP-1,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(ii),ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,ITSG-33|CP-10,ITSG-33|CP-10a.,LEVEL|2A,NESA|M5.2.3,NESA|T2.2.4,QCSC-v1|5.2.3,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE, 'BINLOG - Log Expiration' as Note FROM information_schema.global_variables where variable_name = 'binlog_expire_logs_seconds';",
+        "sql_expect": "binlog_expire_logs_seconds"
+    },
+    "custom_item_3": {
+        "description": "2.7 Lock Out Accounts if Not Currently in Use",
+        "info": "If users with accounts will not be using their account for some time, to reduce the risk of attacks or inappropriate account usage or if suspicions exist that an account might be under attack, disabling the account will secure it and once it's ready to resume use it can easily be re-enabled.\n\nRationale:\n\nOnly have active accounts that will be used.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To lock accounts - example:\n\nALTER USER 'jeffrey'@'localhost' ACCOUNT LOCK;\n\nTo unlock accounts - example\n\nALTER USER 'jeffrey'@'localhost' ACCOUNT UNLOCK;\n\nNote: Works for CREATE as well. It is good practice to LOCK an account if created ahead of time.\n\nDefault Value:\n\nAccounts are unlocked by default.",
+        "reference": "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.9,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|2M,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT CONCAT(user, '@', host, ' => ', JSON_DETAILED(priv)) FROM mysql.global_priv;",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_4": {
+        "description": "auth_socket enabled",
+        "sql_request": " SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'auth%';",
+        "sql_expect": "auth_socket"
+    },
+    "custom_item_5": {
+        "description": "2.8 Ensure Socket Peer-Credential Authentication is Used Appropriately",
+        "info": "The server-side unix_socket authentication plugin authenticates clients that connect to the MariaDB server from the local host through the Unix socket file. Users authenticated using unix_socket need not specify a password when connecting to the server. However, users authenticated by the unix_socket plugin are restricted from connecting remotely; they can only connect from the local host through the Unix socket file. This method is only suitable in situations where the server administrator OS account access is restricted.\n\nRationale:\n\nThis method may be desirable in specific cases, including:\n\nThe Linux system where MariaDB is running is dedicated to the MariaDB server and only the MariaDB DBA and OS Admin have access.\n\nWhen control over user authentication is centralized in the operating system.\n\nIt is desirable that audit trails in the database and operating system can use the same user names.\n\nFor certain other narrow installation use cases unix_socket may be desirable.\n\nOnly local connections for a user.\n\nImpact:\n\nThings to consider when using the operating system to authenticate users:\n\nThe user must have an operating system account on the computer which must be accessed.\n\nIf a user has logged in using this method and steps away from the terminal, another user could easily log in because this user does not need any passwords or credentials. This could pose a serious security problem.\n\nWhen an operating system is used to authenticate database users, managing distributed database environments and database links requires special care. Special care must also be taken not to leave such a terminal unlocked and unattended. Hence, we recommend that you carefully evaluate your requirements before opting for unix_socket.\n\nThis will not work where distributed connections are required.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If the plugin is active and you need to disable it in your environment, add the following option under the [mysqld] option group in your MariaDB configuration file, then restart MariaDB:\n\nunix_socket=OFF\n\nIf the plugin is disabled but you seek to use it, ensure the following option is set under the [mysqld] option group in your MariaDB configuration file, then restart MariaDB:\n\nunix_socket=ON\n\nTo enable an OS user to login to MariaDB using unix_socket, include 'unix_socket' as an authentication plugin in your IDENTIFIED VIA clause of CREATE USER commands. For example, run:\n\nCREATE USER ''@'localhost' IDENTIFIED VIA unix_socket;\n\nThe user can then login using:\n\nmysql -uDefault Value:\n\nThe unix_socket plugin is ON by default.",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv8|6.6,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,LEVEL|2M,NESA|T1.2.1,NESA|T1.2.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select user, host, plugin from mysql.user where plugin = 'auth_socket';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_6": {
+        "description": "2.9 Ensure MariaDB is Bound to an IP Address",
+        "info": "By default, the MariaDB server accepts TCP/IP connections from MariaDB user accounts on all server host IPv6 and IPv4 interfaces. You can make this configuration more restrictive by setting the bind_address configuration option to a specific IPv4 or IPv6 address so that the server only accepts TCP/IP connections on that address.\n\nRationale:\n\nLimiting the IP address provides additional controls and restrictions on how client applications can connect to MariaDB. If not configured to a specific IP all IPs for this server can be used to connect to MariaDB.",
+        "solution": "For example, to have the MariaDB server only accept connections on a specific IPv4 address, add an entry similar to this under the [mysqld] option group in MariaDB configuration files:\n\nbind_address=192.0.2.24\n\nThis setting typically appears in /etc/mysql/mariadb.conf.d/50-server.cnf.\nIn the case above, clients can connect to the server using --host=192.0.2.24. Connections on other server host addresses are not permitted.\n\nDefault Value:\n\nNot set. On some linux variants (Ubuntu, Debian), bind_address is set to 127.0.0.1.",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables WHERE VARIABLE_NAME = 'bind_address'",
+        "sql_expect": "BIND_ADDRESS"
+    },
+    "custom_item_7": {
+        "description": "2.10 Limit Accepted Transport Layer Security (TLS) Versions",
+        "info": "MariaDB supports multiple versions of TLS. The higher the version the stronger the security and/or better the performance.\n\nRationale:\n\nRequiring clients attempting to connect to MariaDB to use higher versions of TLS to better protect data in transit.\n\nImpact:\n\nConnections attempting to use an unsupported version of TLS will fail.",
+        "solution": "Set the version(s) of TLS you wish to accept by setting the tls_version option to a comma-separated (no whitespace) string in MariaDB configuration files.\nFor example, to only accept TLS 1.2 or 1.3 connections, set tls_version likeso:\n\ntls_version=TLSv1.2,TLSv1.3\n\nNote: with this setting, only clients that support the specified TLS version(s) are able to establish an encrypted connection to the server.\n\nDefault Value:\n\nTLSv1.1,TLSv1.2,TLSv1.3",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SA-15,800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SA-15,800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv7|18.5,CSCv8|3.10,CSCv8|16.11,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.IP-2,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS5,NIAv2|SS6a,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select @@tls_version;",
+        "sql_expect": "^TLSv1\\.(2|3)(,|$)"
+    },
+    "custom_item_8": {
+        "description": "2.11 Require Client-Side Certificates (X.509)",
+        "info": "Client-side certificates may be used as proof of identity.\n\nRationale:\n\nRequiring client-side certificates provides additional validation of a user's identity.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "select user, host, ssl_type from mysql.user where user not in ('mysql.infoschema', 'mysql.session', 'mysql.sys');",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_9": {
+        "description": "2.12 Ensure Only Approved Ciphers are Used",
+        "info": "MariaDB supports multiple encryption ciphers. Ciphers can vary in strength, speed and overhead.\n\nRationale:\n\nRequiring clients attempting to connect to MariaDB to use strong ciphers protects data in transit.\n\nImpact:\n\nConnections attempting to use an unsupported cipher will fail.",
+        "solution": "Set ssl_cipher to one or more approved cipher suites in your MariaDB configuration file, then restart MariaDB.\nFor example, set:\n\nssl_cipher='ECDHE-ECDSA-AES128-GCM-SHA256'\n\nDefault Value:\n\nNone",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables WHERE VARIABLE_NAME = 'ssl_cipher';",
+        "sql_expect": "ssl_cipher"
+    },
+    "custom_item_10": {
+        "description": "4.8 Ensure 'sql_mode' Contains 'STRICT_ALL_TABLES'",
+        "info": "When data changing statements are made (i.e., INSERT, UPDATE), MariaDB can handle invalid or missing values differently depending on whether strict SQL mode is enabled. When strict SQL mode is enabled, data may not be truncated or otherwise 'adjusted' to make the data changing statement work.\n\nRationale:\n\nWithout strict mode the server tries to proceed with the action when an error might have been a more secure choice. For example, by default MariaDB will truncate data if it does not fit in a field, which can lead to unknown behavior, or be leveraged by an attacker to circumvent data validation.\n\nImpact:\n\nApplications relying on the MariaDB database should be aware that STRICT_ALL_TABLES is in use, such that error conditions are handled appropriately.",
+        "solution": "Set STRICT_ALL_TABLES to the sql_mode in the server's global configuration, for example:\n\nSET GLOBAL sql_mode ='STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';\n\nDefault Value:\n\nSTRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW VARIABLES LIKE 'sql_mode';",
+        "sql_expect": "sql_mode"
+    },
+    "custom_item_11": {
+        "description": "at-rest encryption",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.global_variables where variable_name like '%ENCRYPT%' and VARIABLE_VALUE IN ('OFF', 'ON');",
+        "sql_expect": ".+"
+    },
+    "custom_item_12": {
+        "description": "tablespace encryption",
+        "sql_request": "SELECT SPACE,NAME FROM INFORMATION_SCHEMA.INNODB_TABLESPACES_ENCRYPTION;",
+        "sql_expect": ".+"
+    },
+    "custom_item_13": {
+        "description": "5.3 Ensure 'PROCESS' is Not Granted to Non-Administrative Users",
+        "info": "The PROCESS privilege found in the mysql.user table determines whether a given user can see statement execution information for all sessions.\n\nRationale:\n\nThe PROCESS privilege allows principals to view currently executing MariaDB statements beyond their own, including statements used to manage passwords. This may be leveraged by an attacker to compromise MariaDB or to gain access to potentially sensitive data.\n\nImpact:\n\nUsers denied the PROCESS privilege may also be denied use of SHOW ENGINE.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE PROCESS ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'PROCESS';",
+        "sql_expect": "Manual Review Required"
+    },
+    "custom_item_14": {
+        "description": "6.3 Ensure 'log_warnings' is Set to '2'",
+        "info": "The log_warnings system variable, set to 2 by default, specifies the verbosity of events sent to the MariaDB error log. A value of 2 enables logging of error and warning messages, a value of 3 also includes informational logging, a value of 1 logs only errors.\n\nRationale:\n\nThis might help to detect malicious behavior by logging communication errors and aborted connections.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (mariadb.cnf)\n\nEnsure the following line is found in the mariadbd section\n\nlog_warnings = 2\n\nDefault Value:\n\nThe option is enabled (2) - errors and warning events are logged - by default.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'log_warnings';",
+        "sql_expect": "log_warnings"
+    },
+    "custom_item_15": {
+        "description": "6.4 Ensure Audit Logging Is Enabled",
+        "info": "Enabling audit logging is an important consideration for a production environment, and MariaDB plugin exist to help with this. Enable audit logging for\n\nConnect events\n\nQuery and Table events (optional)\n\nRationale:\n\nAudit logging helps to identify who changed what and when. The audit log might be used as evidence in investigations. It might also help to identify what an attacker was able to accomplish.",
+        "solution": "Although the plugin's shared library is distributed with MariaDB, the plugin is not actually installed by default.\nAdd the following to MariaDB's config file.\n\n[mariadb]\n...\n#MariaDB plugin\nplugin_load_add = server_audit\nserver_audit_logging=ON\nserver_audit_events=CONNECT\n\nReboot the instance.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SHOW VARIABLES WHERE variable_name IN ('server_audit_events', 'server_audit_logging');",
+        "sql_expect": "server_audit_(events|logging)"
+    },
+    "custom_item_16": {
+        "description": "6.6 Ensure Binary and Relay Logs are Encrypted",
+        "info": "The encrypt_binlog system variable may be used to configure encryption of the binary and relay logs. This may be configured to ON even if binary logging is not enabled in order to encrypt relay log files.\n\nRationale:\n\nThe database, and thus the binary and relay logs, may contain sensitive information. Encrypting the binary and relay logs protects all data stored in these logs from internal and external threats.",
+        "solution": "Encryption of binary logs is configured by the encrypt_binlog system variable.\nTo remediate misconfiguration, add encrypt_binlog and restart MariaDB.\n\n[mariadb]\n...\n# Binary Log Encryption\nencrypt_binlog=ON\n\nDefault Value:\n\nThe default Default Value: OFF",
+        "reference": "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE, 'BINLOG - At Rest Encryption' as Note FROM information_schema.global_variables where variable_name like '%ENCRYPT_LOG%';",
+        "sql_expect": ".*ENCRYPT_LOG.*"
+    },
+    "custom_item_17": {
+        "description": "Check replica status null",
+        "sql_request": "show replica status;"
+    },
+    "custom_item_18": {
+        "description": "9.4 Ensure only approved ciphers are used for Replication",
+        "info": "MariaDB supports multiple encryption ciphers that can be used for TLS connections during replication. Ciphers can vary in strength, speed and overhead.\n\nRationale:\n\nRequiring REPLICA servers to utilize strong ciphers when connecting to a PRIMARY server protects data in transit.\n\nImpact:\n\nIf the PRIMARY and REPLICA servers don't support common cipher suites, replication will fail.",
+        "solution": "To remediate this setting, you must use the CHANGE MASTER TO command with MASTER_SSL_CIPHER.\nFor example, run:\n\nSTOP REPLICA; -- required if replication was already running\nCHANGE MASTER TO\n   MASTER_SSL_CIPHER='ECDHE-ECDSA-AES128-GCM-SHA256';\nSTART REPLICA; -- required if you want to restart replication\n\nDefault Value:\n\nEmpty",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2M,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16527",
+        "sql_request": "show replica status;",
+        "sql_expect": ".*"
+    }
+}

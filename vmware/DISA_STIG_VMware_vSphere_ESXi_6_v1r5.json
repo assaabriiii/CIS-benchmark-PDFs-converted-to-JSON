@@ -1,0 +1,42 @@
+{
+    "custom_item_1": {
+        "description": "ESXI-06-000002 - The system must verify the DCUI.Access list.",
+        "info": "Lockdown mode disables direct host access requiring that admins manage hosts from vCenter Server.  However, if a host becomes isolated from vCenter Server, the admin is locked out and can no longer manage the host. If you are using normal lockdown mode, you can avoid becoming locked out of an ESXi host that is running in lockdown mode, by setting DCUI.Access to a list of highly trusted users who can override lockdown mode and access the DCUI. The DCUI is not running in strict lockdown mode.",
+        "solution": "From the vSphere Client select the ESXi Host and go to Configuration >> Advanced Settings.  Select the DCUI.Access value and configure it to root.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name DCUI.Access | Set-AdvancedSetting -Value 'root'",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|VMware_vSphere_ESXi_6.0_STIG,GDPR|32.1.b,Group-ID|V-63173,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-77663r1_rule,STIG-ID|ESXI-06-000002,SWIFT-CSCv1|2.3,Vuln-ID|V-63173",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMware_vSphere_6-0_ESXi_V1R5_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "DCUI.Access : ",
+        "expect": "DCUI.Access : root$"
+    },
+    "custom_item_2": {
+        "description": "ESXI-06-000004 - Remote logging for ESXi hosts must be configured.",
+        "info": "Remote logging to a central log host provides a secure, centralized store for ESXi logs. By gathering host log files onto a central host it can more easily monitor all hosts with a single tool. It can also do aggregate analysis and searching to look for such things as coordinated attacks on multiple hosts. Logging to a secure, centralized log server also helps prevent log tampering and also provides a long-term audit record.",
+        "solution": "From the vSphere Client select the ESXi Host and go to Configuration >> Advanced Settings.  Select the Syslog.global.logHost value and configure it to a site specific syslog server.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host run the following commands:\n\nGet-VMHost | Get-AdvancedSetting -Name Syslog.global.logHost | Set-AdvancedSetting -Value ''",
+        "reference": "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|VMware_vSphere_ESXi_6.0_STIG,GDPR|32.1.b,Group-ID|V-63177,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-77667r1_rule,STIG-ID|ESXI-06-000004,SWIFT-CSCv1|2.6,Vuln-ID|V-63177",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMware_vSphere_6-0_ESXi_V1R5_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Syslog.global.logHost : ",
+        "expect": "Syslog.global.logHost : @LOG_HOST@"
+    },
+    "custom_item_3": {
+        "description": "ESXI-06-000005 - The system must enforce the limit of three consecutive invalid logon attempts by a user.",
+        "info": "By limiting the number of failed login attempts, the risk of unauthorized access via user password guessing, otherwise known as brute-forcing, is reduced. Limits are imposed by locking the account.",
+        "solution": "From the vSphere Client select the ESXi Host and go to Configuration >> Advanced Settings.  Select the Security.AccountLockFailures value and configure it to 3.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host run the following command:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountLockFailures | Set-AdvancedSetting -Value 3",
+        "reference": "800-171|3.1.8,800-53|AC-7a.,800-53r5|AC-7a.,CAT|II,CCI|CCI-000044,CN-L3|8.1.4.1(b),DISA_Benchmark|VMware_vSphere_ESXi_6.0_STIG,GDPR|32.1.b,Group-ID|V-63179,HIPAA|164.306(a)(1),ITSG-33|AC-7a.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.6,PCI-DSSv4.0|8.3.4,Rule-ID|SV-77669r1_rule,STIG-ID|ESXI-06-000005,TBA-FIISB|45.1.2,TBA-FIISB|45.2.1,TBA-FIISB|45.2.2,Vuln-ID|V-63179",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMware_vSphere_6-0_ESXi_V1R5_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.AccountLockFailures : ",
+        "expect": "Security.AccountLockFailures : 3$"
+    },
+    "custom_item_4": {
+        "description": "ESXI-06-000006 - The system must enforce the unlock timeout of 15 minutes after a user account is locked out.",
+        "info": "By limiting the number of failed login attempts, the risk of unauthorized access via user password guessing, otherwise known as brute-forcing, is reduced. Limits are imposed by locking the account.",
+        "solution": "From the vSphere Client select the ESXi Host and go to Configuration >> Advanced Settings.  Select the Security.AccountUnlockTime value and configure it to 900.\n\nor\n\nFrom a PowerCLI command prompt while connected to the ESXi host run the following commands:\n\nGet-VMHost | Get-AdvancedSetting -Name Security.AccountUnlockTime | Set-AdvancedSetting -Value 900",
+        "reference": "800-171|3.1.8,800-53|AC-7b.,800-53r5|AC-7b.,CAT|II,CCI|CCI-002238,CN-L3|7.1.2.7(f),CN-L3|7.1.3.1(c),DISA_Benchmark|VMware_vSphere_ESXi_6.0_STIG,GDPR|32.1.b,Group-ID|V-63181,HIPAA|164.306(a)(1),ITSG-33|AC-7b.,NESA|T5.5.1,NIAv2|AM24,PCI-DSSv3.2.1|8.1.7,PCI-DSSv4.0|8.3.4,Rule-ID|SV-77671r1_rule,STIG-ID|ESXI-06-000006,TBA-FIISB|36.2.4,TBA-FIISB|45.1.2,Vuln-ID|V-63181",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMware_vSphere_6-0_ESXi_V1R5_STIG.zip",
+        "xsl_stmt": "",
+        "regex": "Security.AccountUnlockTime : ",
+        "expect": "Security.AccountUnlockTime : 900$"
+    }
+}

@@ -1,0 +1,333 @@
+{
+    "custom_item_1": {
+        "description": "Apache HTTP Server 2.2.x is installed and running on the system",
+        "value_data": "Automatic",
+        "service_name": "@HTTPD_SERVICE@"
+    },
+    "custom_item_2": {
+        "description": "WG210 W22 - Web content directories must not be anonymously shared.",
+        "info": "Sharing of web server content is a security risk when a web server is involved. Users accessing the share anonymously could experience privileged access to the content of such directories. Network sharable directories expose those directories and their contents to unnecessary access. Any unnecessary exposure increases the risk that someone could exploit that access and either compromises the web content or cause web server performance problems.",
+        "solution": "Remove the shares from the applicable directories.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CAT|II,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-33109r2_rule,STIG-ID|WG210_W22,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-2226",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "Get-WmiObject Win32_Share | format-list"
+    },
+    "custom_item_3": {
+        "description": "WG400 W22 - All interactive programs must be placed in a designated directory with appropriate permissions.",
+        "info": "CGI scripts represents one of the most common and exploitable means of compromising a web server. By definition, CGI are executable by the operating system of the host server. While access control is provided via the web service, the execution of CGI programs is not otherwise limited unless the SA or Web Manager takes specific measures. CGI programs can access and alter data files, launch other programs and use the network. CGI programs can be written in any available programming language. C, PERL, PHP, Javascript, VBScript and shell (sh, ksh, bash) are popular choices.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Enter the statement above into httpd.conf file for all web site root directories.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-36644r1_rule,STIG-ID|WG400_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2228",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "get-content '@CONF_DIR@\\httpd.conf' | select-string -pattern '^ *' -context 0,10 | format-list"
+    },
+    "custom_item_4": {
+        "description": "WG410 W22 - Interactive scripts used on a web server must have proper access controls.",
+        "info": "The use of CGI scripts represent one of the most common and exploitable means of compromising a web server. By definition, CGI scripts are executable by the operating system of the host server. While access control is provided via the web service, the execution of CGI programs is not limited unless the SA or the Web Manager takes specific measures. CGI programs can access and alter data files, launch other programs, and use the network. CGI programs can be written in any available programming language. C, PERL, PHP, Javascript, VBScript, and shell programs (e.g., sh, ksh, bash, etc.) are popular choices.\n\nCGI is a standard for interfacing external applications with information servers, such as HTTP or web servers. The definition of CGI as web-based applications is not to be confused with the more specific .cgi file extension. ASP, JSP, JAVA, and PERL scripts are commonly found in these circumstances.\n\nClarification:\nThis vulnerability, which is related to VMS vulnerability V-2228, requires that appropriate access permissions are applied to CGI files.",
+        "solution": "Ensure the CGI scripts are owned by root, the service account running the web service, the web author or the SA, and that the anonymous web user account has Read Only or Read - Execute permissions to such scripts.",
+        "reference": "CAT|II,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-28849r1_rule,STIG-ID|WG410_W22,Vuln-ID|V-2229",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "CGI_Files",
+        "file": "@CGI_BIN@"
+    },
+    "custom_item_5": {
+        "description": "WG110 W22 - The number of allowed simultaneous requests must be set.",
+        "info": "Resource exhaustion can occur when an unlimited number of concurrent requests are allowed on a web site, facilitating a denial of service attack. Mitigating this kind of attack will include limiting the number of concurrent HTTP/HTTPS requests per IP address and may include, where feasible, limiting parameter values associated with keepalive, (i.e., a parameter used to limit the amount of time a connection may be inactive).",
+        "solution": "Set the MaxKeepAliveRequests directive to 100 or greater.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-33105r2_rule,STIG-ID|WG110_W22,Vuln-ID|V-2240",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_6": {
+        "description": "WG170 W22 - Each readable web document directory must contain either a default, home, index, or equivalent file.",
+        "info": "The goal is to completely control the web users experience in navigating any portion of the web document root directories. Ensuring all web content directories have indexing turned off or at least the equivalent of an index.html file is a significant factor to accomplish this end. Enumeration techniques, such as URL parameter manipulation, rely upon the ability to obtain information about the web server's directory structure through locating directories without default pages.",
+        "solution": "Add a default document to the applicable directories.",
+        "reference": "CAT|III,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-33107r1_rule,STIG-ID|WG170_W22,Vuln-ID|V-2245",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@DOCUMENTROOT_DIR@\\index.html"
+    },
+    "custom_item_7": {
+        "description": "WG230 W22 - Web server administration must be performed over a secure path or at the local console.",
+        "info": "Logging into a web server remotely using an unencrypted protocol or service when performing updates and maintenance is a major risk.  Data, such as user account, is transmitted in plaintext and can easily be compromised.  When performing remote administrative tasks, a protocol or service that encrypts the communication channel must be used.\n\nAn alternative to remote administration of the web server is to perform web server administration locally at the console.  Local administration at the console implies physical access to the server.",
+        "solution": "Ensure the web server administration is only performed over a secure path.",
+        "reference": "800-171|3.1.13,800-53|AC-17(2),800-53r5|AC-17(2),CAT|I,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-33110r3_rule,STIG-ID|WG230_W22,SWIFT-CSCv1|2.6,Vuln-ID|V-2249",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services",
+        "reg_item": "MinEncryptionLevel"
+    },
+    "custom_item_8": {
+        "description": "WG240 W22 - Logs of web server access and errors must be established and maintained.",
+        "info": "A major tool in exploring the web site use, attempted use, unusual conditions, and problems are reported in the access and error logs. In the event of a security incident, these logs can provide the SA and the web manager with valuable information. Without these log files, SAs and web managers are seriously hindered in their efforts to respond appropriately to suspicious or criminal actions targeted at the web site.",
+        "solution": "Load log_config_module.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-33132r1_rule,STIG-ID|WG240_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2250",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "@APACHE_BIN_DIR@\\httpd.exe -M | select-string log_config_module"
+    },
+    "custom_item_9": {
+        "description": "WG250 W22 - Log file access must be restricted to System Administrators, Web Administrators or Auditors.",
+        "info": "A major tool in exploring the web site use, attempted use, unusual conditions and problems are the access and error logs. In the event of a security incident, these logs can provide the SA and Web\nManager with valuable information. To ensure the integrity of the log files and protect the SA and Web\nManager from a conflict of interest related to the maintenance of these files, only the members of the\nAuditors group will be granted permissions to move, copy and delete these files in the course of their\nduties related to the archiving of these files.",
+        "solution": "Remove the unauthorized permissions from the applicable accounts.",
+        "reference": "800-171|3.3.8,800-171|3.3.9,800-171|3.4.2,800-53|AU-9(4),800-53|CM-6b.,800-53r5|AU-9(4),800-53r5|CM-6b.,CAT|II,CN-L3|8.1.4.3(d),CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),ITSG-33|CM-6b.,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.2.1,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33135r1_rule,STIG-ID|WG250_W22,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1,Vuln-ID|V-2252",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "Logs Folder",
+        "file": "@APACHE_LOGS_DIR@"
+    },
+    "custom_item_10": {
+        "description": "WG290 W22 - The web client account access to the content and scripts directories must be limited to read and execute. - 'DocumentRoot'",
+        "info": "Excessive permissions for the anonymous web user account are one of the most common faults contributing to the compromise of a web server. If this user is able to upload and execute files on the web server, the organization or owner of the server will no longer have control of the asset.",
+        "solution": "Assign the appropriate permissions to the applicable directories and files.",
+        "reference": "CAT|I,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-33136r1_rule,STIG-ID|WG290_W22,Vuln-ID|V-2258",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "Doc Root Everyone",
+        "file": "@DOCUMENTROOT_DIR@"
+    },
+    "custom_item_11": {
+        "description": "WG290 W22 - The web client account access to the content and scripts directories must be limited to read and execute. - 'ScriptAlias'",
+        "info": "Excessive permissions for the anonymous web user account are one of the most common faults contributing to the compromise of a web server. If this user is able to upload and execute files on the web server, the organization or owner of the server will no longer have control of the asset.",
+        "solution": "Assign the appropriate permissions to the applicable directories and files.",
+        "reference": "CAT|I,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-33136r1_rule,STIG-ID|WG290_W22,Vuln-ID|V-2258",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "ScriptAlias",
+        "file": "@SCRIPT_ALIAS@"
+    },
+    "custom_item_12": {
+        "description": "WG290 W22 - The web client account access to the content and scripts directories must be limited to read and execute. - 'Alias'",
+        "info": "Excessive permissions for the anonymous web user account are one of the most common faults contributing to the compromise of a web server. If this user is able to upload and execute files on the web server, the organization or owner of the server will no longer have control of the asset.",
+        "solution": "Assign the appropriate permissions to the applicable directories and files.",
+        "reference": "CAT|I,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-33136r1_rule,STIG-ID|WG290_W22,Vuln-ID|V-2258",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "Alias",
+        "file": "@ALIAS@"
+    },
+    "custom_item_13": {
+        "description": "WG290 W22 - The web client account access to the content and scripts directories must be limited to read and execute. - 'ScriptAliasMatch'",
+        "info": "Excessive permissions for the anonymous web user account are one of the most common faults contributing to the compromise of a web server. If this user is able to upload and execute files on the web server, the organization or owner of the server will no longer have control of the asset.",
+        "solution": "Assign the appropriate permissions to the applicable directories and files.",
+        "reference": "CAT|I,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,Rule-ID|SV-33136r1_rule,STIG-ID|WG290_W22,Vuln-ID|V-2258",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "ScriptAliasMatch",
+        "file": "@SCRIPTALIAS_MATCH@"
+    },
+    "custom_item_14": {
+        "description": "WG310 W22 - A web site must not contain a robots.txt file. - 'DocumentRoot'",
+        "info": "Search engines are constantly at work on the Internet.  Search engines are augmented by agents, often referred to as spiders or bots, which endeavor to capture and catalog web-site content.  In turn, these search engines make the content they obtain and catalog available to any public web user.\n\nTo request that a well behaved search engine not crawl and catalog a site, the web site may contain a file called robots.txt.  This file contains directories and files that the web server SA desires not be crawled or cataloged, but this file can also be used, by an attacker or poorly coded search engine, as a directory and file index to a site.  This information may be used to reduce an attacker's time searching and traversing the web site to find files that might be relevant.  If information on the web site needs to be protected from search engines and public view, other methods must be used.",
+        "solution": "Remove the robots.txt file from the web site.  If there is information on the web site that needs protection from search engines and public view, then other methods must be used to safeguard the data.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-28798r2_rule,STIG-ID|WG310_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2260",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@DOCUMENTROOT_DIR@\\robots.txt"
+    },
+    "custom_item_15": {
+        "description": "WG310 W22 - A web site must not contain a robots.txt file. - 'Alias'",
+        "info": "Search engines are constantly at work on the Internet.  Search engines are augmented by agents, often referred to as spiders or bots, which endeavor to capture and catalog web-site content.  In turn, these search engines make the content they obtain and catalog available to any public web user.\n\nTo request that a well behaved search engine not crawl and catalog a site, the web site may contain a file called robots.txt.  This file contains directories and files that the web server SA desires not be crawled or cataloged, but this file can also be used, by an attacker or poorly coded search engine, as a directory and file index to a site.  This information may be used to reduce an attacker's time searching and traversing the web site to find files that might be relevant.  If information on the web site needs to be protected from search engines and public view, other methods must be used.",
+        "solution": "Remove the robots.txt file from the web site.  If there is information on the web site that needs protection from search engines and public view, then other methods must be used to safeguard the data.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-28798r2_rule,STIG-ID|WG310_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2260",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@ALIAS@\\robots.txt"
+    },
+    "custom_item_16": {
+        "description": "Apache version is less than 2.2.22.",
+        "value_data": "Apache/(2.2.2[0-2]|2.2.1[0-9]|2.2.[1-9])[\\\\s].*",
+        "reg_key": "HKLM\\system\\ControlSet001\\services\\Apache2.2",
+        "reg_item": "Description"
+    },
+    "custom_item_17": {
+        "description": "WG340 W22 - A private web server must utilize an approved TLS version. - 'SSLProtocol'",
+        "info": "Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2 approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\nFIPS 140-2 approved TLS versions include TLS V1.0 or greater. NIST SP 800-52 specifies the preferred configurations for government systems.\nThe SSLProtocol directive enables or disables SSL/TLS protocols. 'SSLProtocol ALL' is a shortcut for enabling SSLv3 and TLSv1 but does not disable lower versions of SSL. Since some Apache versions enable SSL by default, SSL needs to be explicitly disabled, while also enabling TLS. To disable specific SSL Protocols, the -SSLv3 -SSLv2 switches are used with the SSLProtocol directive.",
+        "solution": "Edit the httpd.conf file and set the SSLProtocol to include '-SSLv2 -SSLv3' and the SSLEngine to 'On'. For Apache 2.2.22 and older, set SSLProtocol to 'TLSv1' or higher.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CAT|II,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-14297r3_rule,STIG-ID|WG340_W22,SWIFT-CSCv1|2.1,TBA-FIISB|29.1,Vuln-ID|V-2262",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_18": {
+        "description": "WG340 W22 - A private web server must utilize an approved TLS version. - 'SSLProtocol'",
+        "info": "Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2 approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\nFIPS 140-2 approved TLS versions include TLS V1.0 or greater. NIST SP 800-52 specifies the preferred configurations for government systems.\nThe SSLProtocol directive enables or disables SSL/TLS protocols. 'SSLProtocol ALL' is a shortcut for enabling SSLv3 and TLSv1 but does not disable lower versions of SSL. Since some Apache versions enable SSL by default, SSL needs to be explicitly disabled, while also enabling TLS. To disable specific SSL Protocols, the -SSLv3 -SSLv2 switches are used with the SSLProtocol directive.",
+        "solution": "Edit the httpd.conf file and set the SSLProtocol to include '-SSLv2 -SSLv3' and the SSLEngine to 'On'. For Apache 2.2.22 and older, set SSLProtocol to 'TLSv1' or higher.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CAT|II,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-14297r3_rule,STIG-ID|WG340_W22,SWIFT-CSCv1|2.1,TBA-FIISB|29.1,Vuln-ID|V-2262",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_19": {
+        "description": "WG340 W22 - A private web server must utilize an approved TLS version. - 'SSLEngine'",
+        "info": "Transport Layer Security (TLS) encryption is a required security setting for a private web server. Encryption of private information is essential to ensuring data confidentiality. If private information is not encrypted, it can be intercepted and easily read by an unauthorized party. A private web server must use a FIPS 140-2 approved TLS version, and all non-FIPS-approved SSL versions must be disabled.\nFIPS 140-2 approved TLS versions include TLS V1.0 or greater. NIST SP 800-52 specifies the preferred configurations for government systems.\nThe SSLProtocol directive enables or disables SSL/TLS protocols. 'SSLProtocol ALL' is a shortcut for enabling SSLv3 and TLSv1 but does not disable lower versions of SSL. Since some Apache versions enable SSL by default, SSL needs to be explicitly disabled, while also enabling TLS. To disable specific SSL Protocols, the -SSLv3 -SSLv2 switches are used with the SSLProtocol directive.",
+        "solution": "Edit the httpd.conf file and set the SSLProtocol to include '-SSLv2 -SSLv3' and the SSLEngine to 'On'. For Apache 2.2.22 and older, set SSLProtocol to 'TLSv1' or higher.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CAT|II,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-14297r3_rule,STIG-ID|WG340_W22,SWIFT-CSCv1|2.1,TBA-FIISB|29.1,Vuln-ID|V-2262",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_20": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'DocumentRoot - *.java'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@DOCUMENTROOT_DIR@\\*.java"
+    },
+    "custom_item_21": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'DocumentRoot - *.jpp'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@DOCUMENTROOT_DIR@\\*.jpp"
+    },
+    "custom_item_22": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'ScriptAlias - *.java'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@SCRIPT_ALIAS@\\*.java"
+    },
+    "custom_item_23": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'ScriptAlias - *.jpp'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@SCRIPT_ALIAS@\\*.jpp"
+    },
+    "custom_item_24": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'Alias - *.java'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@ALIAS@\\*.java"
+    },
+    "custom_item_25": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'Alias - *.jpp'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@ALIAS@\\*.jpp"
+    },
+    "custom_item_26": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'ScriptAlias_Match - *.jpp'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@SCRIPTALIAS_MATCH@\\*.java"
+    },
+    "custom_item_27": {
+        "description": "WG490 W22 - Java software on production web servers must be limited to class files and the JAVA virtual machine. - 'ScriptAlias_Match - *.java'",
+        "info": "From the source code in a .java or a .jpp file, the Java compiler produces a binary file with an extension of .class. The .java or .jpp file would, therefore, reveal sensitive information regarding an application's logic and permissions to resources on the server. By contrast, the .class file, because it is intended to be machine independent, is referred to as bytecode. Bytecodes are run by the Java Virtual Machine (JVM), or the Java Runtime Environment (JRE), via a browser configured to permit Java code.",
+        "solution": "Remove the appropriate files from the web server.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|III,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-33143r1_rule,STIG-ID|WG490_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-2265",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@SCRIPTALIAS_MATCH@\\*.jpp"
+    },
+    "custom_item_28": {
+        "description": "WG205 W22 - The web document (home) directory must be in a separate partition from the web server's system files. - 'DocumentRoot'",
+        "info": "Application partitioning enables an additional security measure by securing user traffic under one security context, while managing system and application files under another. Web content is accessible to an anonymous web user. For such an account to have access to system files of any type is a major security risk that is avoidable and desirable. Failure to partition the system files from the web site documents increases risk of attack via directory traversal, or impede web site availability due to drive space exhaustion.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move the web server system files including the web document root (home) and log directories to a separate partition, other than the OS partition.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-33108r1_rule,STIG-ID|WG205_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-3333",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "get-content '@CONF_DIR@\\httpd.conf' | select-string -pattern '^ *DocumentRoot' | format-list"
+    },
+    "custom_item_29": {
+        "description": "WG205 W22 - The web document (home) directory must be in a separate partition from the web server's system files. - 'ErrorLog'",
+        "info": "Application partitioning enables an additional security measure by securing user traffic under one security context, while managing system and application files under another. Web content is accessible to an anonymous web user. For such an account to have access to system files of any type is a major security risk that is avoidable and desirable. Failure to partition the system files from the web site documents increases risk of attack via directory traversal, or impede web site availability due to drive space exhaustion.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move the web server system files including the web document root (home) and log directories to a separate partition, other than the OS partition.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33108r1_rule,STIG-ID|WG205_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-3333",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "get-content '@CONF_DIR@\\httpd.conf' | select-string -pattern '^ *ErrorLog' | format-list"
+    },
+    "custom_item_30": {
+        "description": "WG205 W22 - The web document (home) directory must be in a separate partition from the web server's system files. - 'CustomLog'",
+        "info": "Application partitioning enables an additional security measure by securing user traffic under one security context, while managing system and application files under another. Web content is accessible to an anonymous web user. For such an account to have access to system files of any type is a major security risk that is avoidable and desirable. Failure to partition the system files from the web site documents increases risk of attack via directory traversal, or impede web site availability due to drive space exhaustion.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Move the web server system files including the web document root (home) and log directories to a separate partition, other than the OS partition.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33108r1_rule,STIG-ID|WG205_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-3333",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "get-content '@CONF_DIR@\\httpd.conf' | select-string -pattern '^ *CustomLog' | format-list"
+    },
+    "custom_item_31": {
+        "description": "WG140 W22 - Private web servers must require certificates issued from a DoD-authorized Certificate Authority.",
+        "info": "Web sites requiring authentication within the DoD must utilize PKI as an authentication mechanism for web users. Information systems residing behind web servers requiring authorization based on individual identity must use the identity provided by certificate-based authentication to support access control decisions.",
+        "solution": "Set the SSLVerifyClient directive to 'require'.",
+        "reference": "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CAT|II,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-33106r1_rule,STIG-ID|WG140_W22,SWIFT-CSCv1|2.1,TBA-FIISB|29.1,Vuln-ID|V-6531",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_32": {
+        "description": "WG242 W22 - Log file data must contain required data elements.",
+        "info": "The use of log files is a critical component of the operation of the Information Systems (IS) used within the DoD, and they can provide invaluable assistance with regard to damage assessment, causation, and the recovery of both affected components and data. They may be used to monitor accidental or intentional misuse of the (IS) and may be used by law enforcement for criminal prosecutions. The use of log files is a requirement within the DoD.",
+        "solution": "Configure the web server to ensure the log file data includes the required data elements.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-28654r1_rule,STIG-ID|WG242_W22,SWIFT-CSCv1|6.4,Vuln-ID|V-13688",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_33": {
+        "description": "WG255 W22 - Access to the web server log files must be restricted to Administrators, the user assigned to run the web server software, Web Manager, and Auditors.",
+        "info": "A major tool in exploring the web site use, attempted use, unusual conditions and problems are the access and error logs. In the event of a security incident, these logs can provide the SA and Web Manager with valuable information. Because of the information that is captured in the logs, it is critical that only authorized individuals have access to the logs.",
+        "solution": "To ensure the integrity of the data that is being captured in the log files, ensure that only the members of the Auditors group, Administrators, and the user assigned to run the web server software is granted permissions to read the log files.",
+        "reference": "800-171|3.3.8,800-171|3.3.9,800-171|3.4.2,800-53|AU-9(4),800-53|CM-6b.,800-53r5|AU-9(4),800-53r5|CM-6b.,CAT|II,CN-L3|8.1.4.3(d),CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),ITSG-33|CM-6b.,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.2.1,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-40832r1_rule,STIG-ID|WG255_W22,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1,Vuln-ID|V-13689",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "Log Files",
+        "file": "@APACHE_LOGS_DIR@"
+    },
+    "custom_item_34": {
+        "description": "WG342 W22 - Public web servers must use TLS if authentication is required.",
+        "info": "Transport Layer Security (TLS) is optional for a public web server.  However, if authentication is being performed, then the use of the TLS protocol is required.\n\nWithout the use of TLS, the authentication data would be transmitted unencrypted and would become vulnerable to disclosure.  Using TLS along with DoD PKI certificates for encryption of the authentication data protects the information from being accessed by all parties on the network.  To further protect the authentication data, the web server must use a FIPS 140-2 approved TLS version and all non-FIPS-approved SSL versions must be disabled.\n\nFIPS 140-2 approved TLS versions include TLS V1.0 or greater.  NIST SP 800-52 specifies the preferred configurations for government systems.",
+        "solution": "Edit the httpd.conf file to load the ssl_module; set the SSLProtocol to 'ALL -SSLv2 -SSLv3' and set the SSLEngine to On.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CAT|II,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-28565r2_rule,STIG-ID|WG342_W22,Vuln-ID|V-13694",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "",
+        "powershell_args": "@APACHE_BIN_DIR@\\httpd.exe -M | select-string ssl_module"
+    },
+    "custom_item_35": {
+        "description": "WA00605 W22 - Error logging must be enabled.",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation. Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts.   Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems.",
+        "solution": "Edit the httpd.conf file and enter the name and path to the ErrorLog.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33147r1_rule,STIG-ID|WA00605_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-26279",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_36": {
+        "description": "WA00612 W22 - The sites error logs must log the correct format.",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation.  Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts.   Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems.",
+        "solution": "Edit the configuration file/s and add LogFormat '%a %A %h %H %l %m %s %t %u %U \\'%{Referer}i\\'' combined",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|II,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33149r1_rule,STIG-ID|WA00612_W22,SWIFT-CSCv1|6.4,Vuln-ID|V-26280",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_37": {
+        "description": "WA00615 W22 - System logging must be enabled. - 'CustomLog'",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation. Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts. Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems.\nThe mod_log_config module provides for flexible logging of client requests. Logs are written in a customizable format, and may be written directly to a file, or to an external program. Conditional logging is provided so that individual requests may be included or excluded from the logs based on characteristics of the request.\nThree directives are provided by this module: TransferLog to create a log file, LogFormat to set a custom format, and CustomLog to define a log file and format in one step. The TransferLog and CustomLogdirectives can be used multiple times in each server to cause each request to be logged to multiple files.\nThe server error log, whose name and location is set by the ErrorLog directive, is the most important log file. This is the place where Apache httpd will send diagnostic information and record any errors that it encounters in processing requests. It is the first place to look when a problem occurs with starting the server or with the operation of the server, since it will often contain details of what went wrong and how to fix it.",
+        "solution": "Edit the httpd.conf file and configure to load the log_config_module. Configure with ErrorLog and CustomLog directives to ensure comprehensive system and access logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33151r2_rule,STIG-ID|WA00615_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-26281",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_38": {
+        "description": "WA00615 W22 - System logging must be enabled. - 'ErrorLog'",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation. Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts. Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems.\nThe mod_log_config module provides for flexible logging of client requests. Logs are written in a customizable format, and may be written directly to a file, or to an external program. Conditional logging is provided so that individual requests may be included or excluded from the logs based on characteristics of the request.\nThree directives are provided by this module: TransferLog to create a log file, LogFormat to set a custom format, and CustomLog to define a log file and format in one step. The TransferLog and CustomLogdirectives can be used multiple times in each server to cause each request to be logged to multiple files.\nThe server error log, whose name and location is set by the ErrorLog directive, is the most important log file. This is the place where Apache httpd will send diagnostic information and record any errors that it encounters in processing requests. It is the first place to look when a problem occurs with starting the server or with the operation of the server, since it will often contain details of what went wrong and how to fix it.",
+        "solution": "Edit the httpd.conf file and configure to load the log_config_module. Configure with ErrorLog and CustomLog directives to ensure comprehensive system and access logging.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33151r2_rule,STIG-ID|WA00615_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-26281",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    },
+    "custom_item_39": {
+        "description": "WA00615 W22 - System logging must be enabled. - 'log_config_module'",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation. Log data can reveal anomalous behavior such as 'not found' or 'unauthorized' errors that may be an evidence of attack attempts. Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems.\nThe mod_log_config module provides for flexible logging of client requests. Logs are written in a customizable format, and may be written directly to a file, or to an external program. Conditional logging is provided so that individual requests may be included or excluded from the logs based on characteristics of the request.\nThree directives are provided by this module: TransferLog to create a log file, LogFormat to set a custom format, and CustomLog to define a log file and format in one step. The TransferLog and CustomLogdirectives can be used multiple times in each server to cause each request to be logged to multiple files.\nThe server error log, whose name and location is set by the ErrorLog directive, is the most important log file. This is the place where Apache httpd will send diagnostic information and record any errors that it encounters in processing requests. It is the first place to look when a problem occurs with starting the server or with the operation of the server, since it will often contain details of what went wrong and how to fix it.",
+        "solution": "Edit the httpd.conf file and configure to load the log_config_module. Configure with ErrorLog and CustomLog directives to ensure comprehensive system and access logging.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-33151r2_rule,STIG-ID|WA00615_W22,SWIFT-CSCv1|2.3,Vuln-ID|V-26281",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "log_config_module (shared)",
+        "powershell_args": "@APACHE_BIN_DIR@\\httpd.exe -M | select-string log_config_module"
+    },
+    "custom_item_40": {
+        "description": "WA00620 W22 - The LogLevel directive must be enabled.",
+        "info": "The server error logs are invaluable because they can also be used to identify potential problems and enable proactive remediation.  Log data can reveal anomalous behavior such as  'not found' or 'unauthorized' errors that may be an evidence of attack attempts.   Failure to enable error logging can significantly reduce the ability of Web Administrators to detect or remediate problems. While the ErrorLog directive configures the error log file name, the LogLevel directive is used to configure the severity level for the error logs. The log level values are the standard syslog levels: emerg, alert, crit, error, warn, notice, info and debug.",
+        "solution": "Edit the httpd.conf file and add the value LogLevel warn.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|APACHE_SITE_2.2_WINDOWS,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-33153r1_rule,STIG-ID|WA00620_W22,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-26282",
+        "see_also": "https://iasecontent.disa.mil/stigs/zip/U_Apache_2-2_WIN_V1R13_STIG.zip",
+        "value_data": "@CONF_DIR@\\httpd.conf"
+    }
+}

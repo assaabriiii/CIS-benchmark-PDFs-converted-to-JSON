@@ -1,0 +1,62 @@
+{
+    "custom_item_1": {
+        "description": "2.12 (L2) Host must enable volatile key destruction",
+        "info": "By default, ESXi ensures that pages allocated for virtual machines (VMs), userspace applications, and kernel threads are zeroed out at the time of allocation, to prevent the exposure of sensitive data like cryptographic keys to other clients. However, these keys can remain in host memory for an extended period if the memory is not reused. The Mem.MemEagerZero parameter can be configured to enforce the zeroing out of userworld and guest memory pages when a userworld process or guest exits, and for kernel threads, memory spaces holding keys are zeroed out as soon as the secret is no longer needed. This practice adheres to the NIAP Virtualization Protection Profile and Server Virtualization Extended Package requirements of zeroing memory that may contain cryptographic keys upon process exit. The parameter governing this behavior is Mem.MemEagerZero with a recommended setting of 1.\n\nEnabling volatile key destruction through the Mem.MemEagerZero parameter enhances the security posture by ensuring that sensitive information such as cryptographic keys are not left residually in the system memory, which could be exploited by malicious entities. This configuration aligns with the guidelines provided by the NIAP Virtualization Protection Profile and Server Virtualization Extended Package, indicating its criticality in maintaining a secure virtualized environment.",
+        "solution": "Impact:\n\nActivating volatile key destruction through the Mem.MemEagerZero parameter results in additional shutdown time required for virtual machines, corresponding to the amount of allocated memory. While this may extend the downtime during reboots or migrations, the trade-off ensures a higher level of security by preventing the potential exposure of sensitive data, fulfilling compliance requirements, and aiding in the effective management of cryptographic materials within the virtualized environment.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.7.5,800-53|CM-7,800-53|MA-4,800-53r5|CM-7,800-53r5|MA-4,CSCv7|5.1,CSCv8|4.6,CSF|PR.IP-1,CSF|PR.MA-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|MA-4,LEVEL|2M,NESA|T2.3.4,NESA|T5.4.4,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3,TBA-FIISB|45.2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "Mem\\.MemEagerZero : ",
+        "expect": "Mem\\.MemEagerZero : @VOLATILE_KEY_DESTRUCTION@$"
+    },
+    "custom_item_2": {
+        "description": "3.21 (L2) Host should enable strict lockdown mode",
+        "info": "Enabling lockdown mode disables direct local access to an ESXi host, requiring the host be managed remotely from vCenter Server.\n\nThere are some operations, such as backup and troubleshooting, that require direct access to the host. In these cases, lockdown mode can be disabled on a temporary basis for specific hosts as needed, and then re-enabled when the task is completed.\n\nNote: Lockdown mode does not apply to users who log in using authorized keys. Also, users in the DCUI.Access list for each host are allowed to override lockdown mode and log in to the DCUI. By default, the \"root\" user is the only user listed in the DCUI.Access list.\n\nLockdown mode limits ESXi host access to the vCenter server to ensure the roles and access controls implemented in vCenter are always enforced and users cannot bypass them by logging into a host directly. By forcing all interaction to occur through vCenter Server, the risk of someone inadvertently attaining elevated privileges or performing tasks that are not properly audited is greatly reduced. Additionally strict lockdown move will disabled DCUI - Disabling DCUI prevents all local activity, and thus forces actions to be performed in vCenter Server, where they can be centrally audited and monitored.",
+        "solution": "To enable lockdown mode, perform the following from the vSphere web client:\n\n - From the vSphere Web Client, select the host.\n - Select Configure then expand System and select Security Profile\n - Across from Lockdown Mode click on Edit\n - Click the radio button for Strict\n - Click OK\n\nAlternately, run the following PowerCLI command:\n\n# Enable lockdown mode for each host\nGet-VMHost | Foreach { $_.EnterLockdownMode() }\n\nImpact:\n\nWith lockdown mode enabled the host will only be accessible through vCenter preventing 'local' access. Disabling the DCUI can create a potential \"lockout\" situation, should the host become isolated from vCenter Server. Recovering from a \"lockout\" scenario requires reinstalling ESXi. Consider leaving DCUI enabled, and instead enable lockdown mode and limit the users allowed to access the DCUI using the DCUI.Access list.",
+        "reference": "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "Lockdown Mode : ",
+        "expect": "Lockdown Mode : (lockdownNormal|lockdownStrict)$"
+    },
+    "custom_item_3": {
+        "description": "5.5 (L2) Host should deactivate virtual hardware management network interfaces",
+        "info": "Hardware management controllers may present virtual or USB NICs to the host, potentially serving as backdoors if left active. It's recommended to deactivate these interfaces both in the hardware configuration and within ESXi to prevent unauthorized access. The parameter governing this behavior is Net.BMCNetworkEnable with a recommended value of 0.\n\nDeactivating virtual hardware management network interfaces minimizes the attack surface, thereby enhancing the security posture of the host.",
+        "solution": "Impact:\n\nWhile this control enhances security, it may impact third-party managed solutions that require these interfaces, necessitating alternative configurations or additional management considerations.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "Net\\.BMCNetworkEnable : ",
+        "expect": "Net\\.BMCNetworkEnable : @DEACTIVATE_VIRTUAL_HMNS@$"
+    },
+    "custom_item_4": {
+        "description": "7.4 (L1) Virtual machines should deactivate 3D graphics features when not required",
+        "info": "Due to performance reasons, modern graphic rendering is done within a dedicated graphic processing unit (GPU). Virtual machines can use the host-based GPU for such operations as well. Such dedicated hardware is typically accessed by using complex APIs like OpenGL and DirectX. This hardware-based 3D acceleration should be disabled if it is not needed.\n\nSecurity flaws within APIs can lead to serious security breaches like memory corruption, denial of service, and remote code execution.",
+        "solution": "The following PowerCLI command may be used:\n\nGet-VM -Name $VM | Get-AdvancedSetting mks.enable3d | Set-AdvancedSetting -Value FALSE\n\nImpact:\n\nGPU and Virtual Desktops may require this functionality.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "mks\\.enable3d : ",
+        "not_expect": "mks\\.enable3d : (TRUE|NOT configured)$"
+    },
+    "custom_item_5": {
+        "description": "7.14 (L2) Virtual machines must remove unnecessary CD/DVD devices",
+        "info": "Removing unnecessary devices from virtual machines minimizes the attack surface and reduces potential pathways for data exfiltration or unauthorized data capture. This practice aligns with the principle of least functionality, ensuring that VMs have only the essential components required to perform their designated functions.\n\nEliminating unnecessary devices reduces attack surface and streamlines the virtual machine configuration, promoting a cleaner, more manageable, and less vulnerable setup.",
+        "solution": "To disconnect all CD/DVD drives from VMs, run the following PowerCLI command:\n\n# Remove all CD/DVD Drives attached to VMs\nGet-VM | Get-CDDrive | Remove-CDDrive\n\nThe VM will need to be powered off for this change to take effect.\n\nImpact:\n\nCareful analysis and understanding of the virtual machine's requirements and dependencies are crucial before implementing this security control to avoid unintended disruptions or degradation of service.",
+        "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "Virtual CD/DVD :",
+        "expect": "Virtual CD/DVD : (False|NOT found)$"
+    },
+    "custom_item_6": {
+        "description": "7.28 (L2) Virtual machines should have virtual machine hardware version 19 or newer",
+        "info": "Upgrade to hardware version 19 or newer to access enhanced features and better performance. Test the upgrades and ensure compatibility across all operational landscapes.\n\nUpgrading facilitates improved performance and feature access, aligning with ESXi and vSphere updates, while ensuring service continuity across various environments.",
+        "solution": "Impact:\n\nChanges in device versions within the guest may occur, requiring thorough testing to prevent service disruptions. Snapshots can aid in testing, allowing you to revert the hardware version if needed.",
+        "reference": "800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv7|18.3,CSCv8|2.2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2M",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/15784",
+        "xsl_stmt": "",
+        "regex": "hwVersion : ",
+        "expect": "hwVersion : vmx-(19|2[0-9]|[3-9][0-9])$"
+    }
+}

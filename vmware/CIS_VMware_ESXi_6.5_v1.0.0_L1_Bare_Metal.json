@@ -1,0 +1,70 @@
+{
+    "custom_item_1": {
+        "description": "VMkernel found",
+        "cmd": "uname -a",
+        "expect": "VMkernel"
+    },
+    "custom_item_2": {
+        "description": "1.2 Ensure the Image Profile VIB acceptance level is configured properly",
+        "info": "A VIB (vSphere Installation Bundle) is a collection of files that are packaged into an archive. The VIB contains\n  a signature file that is used to verify the level of trust. The ESXi Image Profile supports four VIB acceptance levels:\n\n1. VMware Certified - VIBs created, tested, and signed by VMware\n2. VMware Accepted - VIBs created by a VMware partner but tested and signed by\nVMware\n3. Partner Supported - VIBs created, tested, and signed by a certified VMware partner\n4. Community Supported - VIBs that have not been tested by VMware or a VMware\npartner\n\n*Rationale*\n\nThe ESXi Image Profile should only allow signed VIBs because an unsigned VIB represents untested code installed on an ESXi host.\nAlso, use of unsigned VIBs will cause hypervisor Secure Boot to fail to configure. Community Supported VIBs do not have digital signatures.\nTo protect the security and integrity of your ESXi hosts, do not allow unsigned (CommunitySupported) VIBs to be installed on your hosts.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# Set the Software AcceptanceLevel for each host\n\nForeach ($VMHost in Get-VMHost ) {\n$ESXCli = Get-EsxCli -VMHost $VMHost\n$ESXCli.software.acceptance.Set('PartnerSupported')\n}",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSCv7|2.2,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "esxcli software acceptance get",
+        "expect": "^[\\\\s]*(PartnerSupported|VMwareCertified|VMwareAccepted)[\\\\s]*$"
+    },
+    "custom_item_3": {
+        "description": "1.3 Ensure no unauthorized kernel modules are loaded on the host",
+        "info": "ESXi hosts by default do not permit the loading of kernel modules that lack valid digital\nsignatures. This feature can be overridden which would result in unauthorized kernel\nmodules to be loaded.\n\n*Rationale*\n\nVMware provides digital signatures for kernel modules. By default the ESXi host does not\npermit loading of kernel modules that lack a valid digital signature. However, this behavior\ncan be overridden allowing unauthorized kernel modules to be loaded. Untested or\nmalicious kernel modules loaded on the ESXi host can put the host at risk for instability\nand/or exploitation.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To implement the recommended configuration state, run the following PowerCLI\ncommand-# To disable a module-\n$ESXCli = Get-EsxCli -VMHost MyHost\n$ESXCli.system.module.set($false, $false, 'MyModuleName')\n\nNote- evacuate VMs and place the host into maintenance mode before disabling kernel\nmodules.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSCv7|2.2,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "esxcli system module list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_4": {
+        "description": "2.2 Ensure the ESXi host firewall is configured to restrict access to services running on the host",
+        "info": "The ESXi Firewall is enabled by default and allows ping (ICMP) and communication with\nDHCP/DNS clients. Access to services should only be allowed by authorized IP addresses/networks.\n\n*Rationale*\n\n\nUnrestricted access to services running on an ESXi host can expose a host to outside attacks\nand unauthorized access. Reduce the risk by configuring the ESXi firewall to only allow\naccess from authorized networks.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To properly restrict access to services running on an ESXi host, perform the following from the vSphere web client:\n1. Select the host.\n2. Go to 'Configure' -> 'System' -> 'Security Profile'.\n3. In the 'Firewall' section, select 'Edit...'.\n4. For each enabled service, (e.g., ssh, vSphere Web Access, http client) provide the\nrange of allowed IP addresses.\n5. Click 'OK'.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv7|9.4,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1A,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "esxcli network firewall ruleset list",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_5": {
+        "description": "2.4 Ensure default self-signed certificate for ESXi communication is not used",
+        "info": "The default certificates are not signed by a trusted certificate authority (CA) and should be\nreplaced with valid certificates that have been issued by a trusted CA.\n\n*Rationale*\n\nUsing the default self-signed certificate may increase risk related to man-in-the-middle (MITM) attacks.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Leverage VMware's SSL Certificate Automation Tool to install CA-signed SSL\ncertificates. For more information on this tool, please\nsee http-//kb.vmware.com/kb/2057340.",
+        "reference": "800-171|3.13.10,800-53|SC-12,800-53r5|SC-12,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.10.1.2,ITSG-33|SC-12,ITSG-33|SC-12a.,LEVEL|1A,NESA|T7.4.1,NESA|T7.4.2,NIAv2|CY2,NIAv2|CY8,NIAv2|CY9,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "ls -al /etc/vmware/ssl/rui*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_6": {
+        "description": "2.7 Ensure expired and revoked SSL certificates are removed from the ESXi server",
+        "info": "By default, ESXi hosts do not have Certificate Revocation List (CRL) checking available, so expired and revoked SSL certificates must be checked and removed manually.\n\n*Rationale*\n\nLeaving expired or revoked certificates on your vCenter Server system can compromise\nyour environment. By default, each ESXi host does not have Certificate Revocation Lists\n(CRL) checking available. Revoked certificates must be checked and removed\nmanually. Replacing certificates will avoid having users get used to clicking through\nbrowser warnings. The warning might be an indication of a man-in-the-middle attack, and\nonly inspection of the certificate and thumbprint can guard against such attacks.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Replace expired and revoked certificates with certificates from a trusted CA. Certificates can be replaced in a number of ways:\nReplace a Default ESXi Certificate and Key from the ESXi Shell\n\n1. Log in to the ESXi Shell, either directly from the DCUI or from an SSH client, as a user with administrator privileges.\n2. In the directory /etc/vmware/ssl, rename the existing certificates using the following commands:\n\nmv rui.crt orig.rui.crt\nmv rui.key orig.rui.key\n\n3. Copy the certificates that you want to use to /etc/vmware/ssl.\n4. Rename the new certificate and key to rui.crt and rui.key.\n5. Restart the host after you install the new certificate.\n\nAlternatively, you can put the host into maintenance mode, install the new certificate, use the Direct Console User Interface (DCUI) to restart the management agents, and set the\nhost to exit maintenance mode.\n\nReplace a Default ESI Certificate and Key by Using the vifs Command\n\n1. Back up the existing certificates.\n2. Generate a certificate request following the instructions from the certificate\nauthority.\n3. At the command line, use the vifs command to upload the certificate to the\nappropriate location on the host.\n\nvifs --server hostname --username username --put rui.crt /host/ssl_cert\nvifs --server hostname --username username --put rui.key /host/ssl_key\n\n4. Restart the host.\n\nAlternatively, you can put the host into maintenance mode, install the new certificate, and then use the Direct Console User Interface (DCUI) to restart the management agents. Replace A Default ESI Certificate and Key Using HTTP PUT\n1. Back up the existing certificates.\n2. In your upload application, process each file as follows:\n3. Open the file.\n4. Publish the file to one of these locations:\n\nCertificates https://hostname/host/ssl_cert\nKeys https://hostname/host/ssl_key\n\n3. The locations /host/ssl_cert and host/ssl_key link to the certificate files in /etc/vmware/ssl.\n4. Restart the host.",
+        "reference": "800-171|3.13.10,800-53|SC-12,800-53r5|SC-12,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.10.1.2,ITSG-33|SC-12,ITSG-33|SC-12a.,LEVEL|1M,NESA|T7.4.1,NESA|T7.4.2,NIAv2|CY2,NIAv2|CY8,NIAv2|CY9,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "ls -al /etc/vmware/ssl/rui*",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_7": {
+        "description": "3.1 Ensure a centralized location is configured to collect ESXi host core dumps",
+        "info": "The VMware vSphere Network Dump Collector service allows for collecting diagnostic\n  information from a host that experiences a critical fault. This service provides a centralized\n  location for collecting ESXi host core dumps.\n\n*Rationale*\n\nWhen a host crashes, an analysis of the resultant core dump is essential to being able to\nidentify the cause of the crash to identify a resolution. Installing a centralized dump\ncollector helps ensure that core files are successfully saved and made available in the event\nan ESXi host should ever panic.",
+        "solution": "To implement the recommended configuration state, run the following ESXi shell\ncommand-# Configure remote Dump Collector Server\nesxcli system coredump network set -v [VMK#] -i [DUMP_SERVER] -o [PORT]\n# Enable remote Dump Collector\nesxcli system coredump network set -e true",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSCv7|6.5,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|1A,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "esxcli system coredump network get",
+        "expect": "^[\\\\s]*Enabled[\\\\s]*:[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "description": "4.1 Ensure a non-root user account exists for local admin access",
+        "info": "By default, each ESXi host has a single \"root\" admin account that is used for local\n  administration and to connect the host to vCenter Server. Use of this shared account should\n  be limited, and named (non-root) user accounts with admin privileges should be used instead.\n\n*Rationale*\n\nTo avoid sharing a common root account, it is recommended on each host to create at least\none named user account and assign it full admin privileges, and to use this account in lieu\nof a shared \"root\" account. Limit the use of \"root\", including setting a highly complex\npassword for the account, but do not remove the \"root\" account.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "To create one or more named user accounts (local ESXi user accounts), perform the\n  following using the vSphere client (not the vSphere web client) for each ESXi host:\n\n1. Connect directly to the ESXi host using the vSphere Client.\n2. Login as root.\n3. Select the 'Local Users & Groups' tab\n4. Add a local user, be sure to grant shell access to this user.\n5. Select the 'Permissions' tab.\n6. Assign the 'Administrator' role to the user.\n7. Repeat this for each ESXi hosts.\n\nNotes-\n\n1. Even if you add your ESXi host to an Active Directory domain it is still recommended\nto add at least one local user account to ensure admins can still login in the event the\nhost ever becomes isolated and unable to access Active Directory.\n2. Adding local user accounts can be automated using Host Profiles.",
+        "reference": "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2168",
+        "cmd": "esxcli system account list",
+        "expect": "Manual Review Required"
+    }
+}

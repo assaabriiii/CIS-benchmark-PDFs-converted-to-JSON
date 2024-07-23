@@ -1,0 +1,657 @@
+{
+    "custom_item_1": {
+        "description": "2.09 Default Accounts - 'Created by Oracle'",
+        "info": "absolutely necessary. Check to ensure these accounts have not been unlocked.",
+        "reference": "800-171|3.1.1,800-171|3.5.2,800-53|AC-2,800-53|IA-5,800-53r5|AC-2,800-53r5|IA-5,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,ITSG-33|IA-5,LEVEL|2S,NESA|T5.2.3,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select USERNAME from DBA_USERS where ACCOUNT_STATUS not like '%LOCKED%' and USERNAME in ('ANONYMOUS','BI','CTXSYS','DBSNMP','DIP','DMSYS','EXFSYS','HR','IX','MDDATA','MDSYS','MGMT_VIEW','OE','OLAPSYS','ORDPLUGINS','ORDSYS','OUTLN','PM','SH','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','WKPROXY','WKSYS','WK_TEST','WMSYS','XDB');"
+    },
+    "custom_item_2": {
+        "description": "2.12 Third party default passwords - Set all default account passwords to non-default strong passwords",
+        "info": "When installed, some third-party applications create well-known default accounts in an Oracle Database.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),LEVEL|2S,NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select username from DBA_USERS_WITH_DEFPWD where username in (select username from DBA_USERS where ACCOUNT_STATUS='OPEN');"
+    },
+    "custom_item_3": {
+        "description": "4.12 init.ora - 'sql92_security = TRUE'",
+        "info": "WARNING: This will likely result in many applications failing and should not be enabled in production without thorough testing.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'sql92_security';",
+        "regex": "[Tt][Rr][Uu][Ee]"
+    },
+    "custom_item_4": {
+        "description": "4.16 init.ora - 'o7_dictionary_accessibility = FALSE'",
+        "info": "privileges could get access to objects in the SYS schema. Default setting is FALSE.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'o7_dictionary_accessibility';",
+        "regex": "[Ff][Aa][Ll][Ss][Ee]"
+    },
+    "custom_item_5": {
+        "description": "4.17 init.ora - Remove the following from spfile: dispatchers = (PROTOCOL=TCP) (SERVICE=XDB)",
+        "info": "recommended to disable these ports if production usage is not required.",
+        "reference": "CSCv6|9.1,LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'dispatchers';"
+    },
+    "custom_item_6": {
+        "description": "4.18 init.ora - 'audit_sys_operations = TRUE'",
+        "info": "AUDIT_SYS_OPERATIONS to TRUE.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'audit_sys_operations';",
+        "regex": "[Tt][Rr][Uu][Ee]"
+    },
+    "custom_item_7": {
+        "description": "4.25 Accounts - Lock account access for application schema owners",
+        "info": "Lock the account for the application schema owner. Users must not connect to the database as the application owner.",
+        "reference": "800-171|3.1.6,800-53|AC-6(2),800-53r5|AC-6(2),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(2),LEVEL|2S,NESA|T5.1.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select USERNAME from DBA_USERS where ACCOUNT_STATUS not like '%LOCKED%' and USERNAME not in ('ANONYMOUS','BI','CTXSYS','DBSNMP','DIP','DMSYS','EXFSYS','HR','IX','MDDATA','MDSYS','MGMT_VIEW','OE','OLAPSYS','ORDPLUGINS','ORDSYS','OUTLN','PM','SH','SI_INFORMTN_SCHEMA','SYS','SYSMAN','SYSTEM','WKPROXY','WKSYS','WK_TEST','WMSYS','XDB');"
+    },
+    "custom_item_8": {
+        "description": "4.26 init.ora - 'remote_login_passwordfile = NONE'",
+        "info": "exclusive, and logging of the administrative listener implemented.",
+        "reference": "CSCv6|9.2,LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'remote_login_passwordfile';",
+        "regex": "[Nn][Oo][Nn][Ee]"
+    },
+    "custom_item_9": {
+        "description": "4.31 init.ora - 'sec_return_server_release_banner = FALSE'",
+        "info": "Ensure the Oracle database is not returning complete database information to clients. Knowing the exact patch set can aid an attacker.",
+        "reference": "CSCv6|9.1,LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select value from v$parameter where name like 'sec_return_server_release_banner';",
+        "regex": "[Ff][Aa][Ll][Ss][Ee]"
+    },
+    "custom_item_10": {
+        "description": "5.21 Encryption - Revoke the PUBLIC execute privileges from the DBMS_OBFUSCATION_TOOLKIT",
+        "info": "malicious use.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE,PRIVILEGE from DBA_TAB_PRIVS where TABLE_NAME='DBMS_OBFUSCATION_TOOLKIT' AND PRIVILEGE='EXECUTE' AND GRANTEE='PUBLIC';"
+    },
+    "custom_item_11": {
+        "description": "8.07 Database Profiles - Review accounts where password = 'EXTERNAL'",
+        "info": "Check and review any user who has password = 'EXTERNAL'. Do not allow remote OS authentication to the database.",
+        "reference": "800-171|3.1.1,800-53|AC-2j.,800-53r5|AC-2j.,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2j.,LEVEL|2NS,NESA|T5.2.1,NESA|T5.2.4,NIAv2|AM27,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select USERNAME from DBA_USERS where PASSWORD='EXTERNAL';"
+    },
+    "custom_item_12": {
+        "description": "8.08 Database Profiles - Set password_verify_function to verification function",
+        "info": "command at an SQL prompt.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where RESOURCE_NAME='PASSWORD_VERIFY_FUNCTION' and LIMIT='NULL';"
+    },
+    "custom_item_13": {
+        "description": "8.09 Database Profiles - Set cpu_per_session as appropriate",
+        "info": "that users profile settings have appropriate values set for the particular database and application.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='CPU_PER_SESSION' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_14": {
+        "description": "8.10 Database Profiles - Set private_sga as appropriate",
+        "info": "Oracle database. Ensure that users profile settings have appropriate values set for the particular database and application.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='PRIVATE_SGA' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_15": {
+        "description": "8.11 Database Profiles - Set logical_reads_per_session as appropriate",
+        "info": "database. Ensure that users profile settings have appropriate values set for the particular database and application.",
+        "reference": "800-171|3.1.5,800-53|AC-6(1),800-53r5|AC-6(1),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.4,ITSG-33|AC-6(1),LEVEL|2S,NESA|T5.1.1,NESA|T5.4.4,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='LOGICAL_READS_PER_SESSION' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_16": {
+        "description": "8.12 Database Profiles - Set sessions_per_user as appropriate",
+        "info": "each individual user. Ensure that users profile settings have appropriate values set for the particular database and application.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='SESSIONS_PER_USER' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_17": {
+        "description": "8.13 Database Profiles - Set connect_time as appropriate",
+        "info": "database and application.",
+        "reference": "CSCv6|16.4,LEVEL|2NS",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='CONNECT_TIME' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_18": {
+        "description": "8.14 Database Profiles - Set idle_time as appropriate",
+        "info": "the particular database and application.",
+        "reference": "800-171|3.1.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv6|16.4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|2NS,NIAv2|NS49",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select PROFILE from DBA_PROFILES where PROFILE in (select distinct PROFILE from DBA_USERS) and RESOURCE_NAME='IDLE_TIME' and LIMIT='UNLIMITED';"
+    },
+    "custom_item_19": {
+        "description": "9.01 Tablespaces - Do not have default_tablespace set to SYSTEM for user accounts",
+        "info": "difficult or impossible to move some objects.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select USERNAME from DBA_USERS where USERNAME not in ('SYS','SYSTEM','OUTLN','MGMT_VIEW') and DEFAULT_TABLESPACE='SYSTEM';"
+    },
+    "custom_item_20": {
+        "description": "9.04 Tables - Prevent access to SYS.AUD$",
+        "info": "db_extended. Allowing users to alter the AUD$ table can compromise the audit trail or integrity of the Oracle database.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE from DBA_TAB_PRIVS where TABLE_NAME='AUD$' and GRANTEE not in ('SYS','DBA');"
+    },
+    "custom_item_21": {
+        "description": "9.28 Privileges - Prevent granting of all privileges 'GRANT ANY PRIVILEGE'",
+        "info": "The GRANT ALL PRIVILEGES must not be used; it gives full access to all tables, views and objects to the user or role it is granted to.",
+        "reference": "LEVEL|2NS",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE from DBA_SYS_PRIVS where PRIVILEGE='GRANT ANY PRIVILEGE';"
+    },
+    "custom_item_22": {
+        "description": "9.28 Privileges - Prevent granting of all privileges 'GRANT ANY OBJECT PRIVILEGE'",
+        "info": "The GRANT ALL PRIVILEGES must not be used; it gives full access to all tables, views and objects to the user or role it is granted to.",
+        "reference": "LEVEL|2NS",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE from DBA_SYS_PRIVS where PRIVILEGE='GRANT ANY OBJECT PRIVILEGE';"
+    },
+    "custom_item_23": {
+        "description": "9.52 Views - Revoke public access to all public views that start with 'ALL_'",
+        "info": "applications.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|2S,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select TABLE_NAME from DBA_TAB_PRIVS where table_name like 'ALL_%' and GRANTEE='PUBLIC';"
+    },
+    "custom_item_24": {
+        "description": "9.54 Packages - Limit or deny access to 'DBMS_BACKUP_RESTORE'",
+        "info": "Reportable",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE from DBA_TAB_PRIVS where TABLE_NAME='DBMS_BACKUP_RESTORE' and GRANTEE='PUBLIC';"
+    },
+    "custom_item_25": {
+        "description": "9.55 Packages - Audit usage of 'DBMS_RANDOM'",
+        "info": "Abe revoked the applications that utilize DBMS_RANDOM are carefully audited.",
+        "reference": "LEVEL|2S",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select GRANTEE from DBA_TAB_PRIVS where TABLE_NAME='DBMS_RANDOM' and GRANTEE='PUBLIC';"
+    },
+    "custom_item_26": {
+        "description": "9.56 Roles - Password protect roles",
+        "info": "database via SQL (rather than through the application) from being able to enable the privileges associated with the role.",
+        "reference": "800-171|3.5.2,800-53|IA-5b.,800-53r5|IA-5b.,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5b.,LEVEL|2S,NESA|T5.2.1,NESA|T5.2.3,PCI-DSSv3.2.1|8.2,PCI-DSSv4.0|8.3.1,QCSC-v1|5.2.2,QCSC-v1|13.2",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select ROLE from DBA_ROLES where password_required!='YES' and role not in ('AQ_ADMINISTRATOR_ROLE','AQ_USER_ROLE','AUTHENTICATEDUSER','CONNECT','CTXAPP','CWM_USER','DATAPUMP_EXP_FULL_DATABASE','DATAPUMP_IMP_FULL_DATABASE','DBA','DELETE_CATALOG_ROLE','EJBCLIENT','EXECUTE_CATALOG_ROLE','EXP_FULL_DATABASE','GATHER_SYSTEM_STATISTICS','GLOBAL_AQ_USER_ROLE','HS_ADMIN_ROLE','IMP_FULL_DATABASE','JAVADEBUGPRIV','JAVAIDPRIV','JAVASYSPRIV','JAVAUSERPRIV','JAVA_ADMIN','JAVA_DEPLOY','JMXSERVER','LOGSTDBY_ADMINISTRATOR','MGMT_USER','ORDADMIN','OEM_ADVISOR','OEM_MONITOR','OLAP_DBA','OLAPI_TRACE_USER','OLAP_XS_ADMIN','OWB_USER','OLAP_USER','RECOVERY_CATALOG_OWNER','RESOURCE','SCHEDULER_ADMIN','SELECT_CATALOG_ROLE','WKUSER','WM_ADMIN_ROLE','XDBADMIN','XDB_SET_INVOKER','XDB_WEBSERVICES','XDB_WEBSERVICES_WITH_PUBLIC','XDB_WEBSERVICES_OVER_HTTP');"
+    },
+    "custom_item_27": {
+        "description": "13.03 Auditing - Audit all logons and logffs",
+        "info": "Auditing logon and logoff events may provide additional information for isolating the cause of security incidents.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='CREATE SESSION' AND (SUCCESS!='BY ACCESS' AND FAILURE!='BY ACCESS');"
+    },
+    "custom_item_28": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER SYSTEM')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER SYSTEM' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_29": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'SYSTEM AUDIT')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='SYSTEM AUDIT' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_30": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE SESSION')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE SESSION' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_31": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'TABLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='TABLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_32": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CLUSTER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CLUSTER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_33": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'TABLESPACE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='TABLESPACE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_34": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'USER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='USER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_35": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ROLLBACK SEGMENT')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ROLLBACK SEGMENT' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_36": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'TYPE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='TYPE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_37": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'INDEX')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='INDEX' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_38": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE USER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE USER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_39": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER USER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER USER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_40": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DROP USER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DROP USER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_41": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'SYNONYM')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='SYNONYM' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_42": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'PUBLIC SYNONYM')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='PUBLIC SYNONYM' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_43": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'VIEW')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='VIEW' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_44": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'SEQUENCE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='SEQUENCE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_45": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DATABASE LINK')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DATABASE LINK' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_46": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'PUBLIC DATABASE LINK')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='PUBLIC DATABASE LINK' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_47": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ROLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ROLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_48": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DIMENSION')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DIMENSION' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_49": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'PROCEDURE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='PROCEDURE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_50": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'TRIGGER')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='TRIGGER' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_51": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'PROFILE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='PROFILE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_52": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DIRECTORY')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DIRECTORY' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_53": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'MATERIALIZED VIEW')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='MATERIALIZED VIEW' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_54": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE ANY TABLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE ANY TABLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_55": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER ANY TABLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER ANY TABLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_56": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DROP ANY TABLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DROP ANY TABLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_57": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'MINING MODEL')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='MINING MODEL' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_58": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'NOT EXISTS')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='NOT EXISTS' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_59": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE PUBLIC DATABASE LINK')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE PUBLIC DATABASE LINK' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_60": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'GRANT ANY ROLE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='GRANT ANY ROLE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_61": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'SYSTEM GRANT')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='SYSTEM GRANT' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_62": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER DATABASE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER DATABASE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_63": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE ANY PROCEDURE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE ANY PROCEDURE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_64": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER ANY PROCEDURE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER ANY PROCEDURE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_65": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DROP ANY PROCEDURE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DROP ANY PROCEDURE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_66": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'ALTER PROFILE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='ALTER PROFILE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_67": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'DROP PROFILE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='DROP PROFILE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_68": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'GRANT ANY PRIVILEGE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='GRANT ANY PRIVILEGE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_69": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE ANY LIBRARY')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE ANY LIBRARY' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_70": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CONTEXT')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CONTEXT' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_71": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'EXEMPT ACCESS POLICY')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='EXEMPT ACCESS POLICY' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_72": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'GRANT ANY OBJECT PRIVILEGE')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='GRANT ANY OBJECT PRIVILEGE' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_73": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE ANY JOB')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE ANY JOB' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_74": {
+        "description": "13.04 Auditing - Audit for unsuccessful attempts. Audit by 'ACCESS WHENEVER NOT SUCCESSFUL' (check 'CREATE EXTERNAL JOB')",
+        "info": "access the table will be recorded. This could provide a record of unauthorized attempts to access sensitive data.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS WHERE AUDIT_OPTION='CREATE EXTERNAL JOB' AND FAILURE!='BY ACCESS';"
+    },
+    "custom_item_75": {
+        "description": "13.05 Auditing - Where appropriate or required by security or legal requirements, engage and use Fine-Grained Auditing (FGA) feature",
+        "info": "Note: The FGA record entry can be pre-qualified. Therefore, it should not add a significant burden to the size of audit records.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select ROWNUM from (select null from DBA_AUDIT_POLICIES union select null from DBA_AUDIT_POLICY_COLUMNS);"
+    },
+    "custom_item_76": {
+        "description": "13.06 Auditing - Where appropriate or required by security or legal requirements, use enhanced capabilities of Fine-Grained Auditing.",
+        "info": "row from a table, or it could write to a different audit trail.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select ROWNUM from (select null from DBA_AUDIT_POLICIES union select null from DBA_AUDIT_POLICY_COLUMNS);"
+    },
+    "custom_item_77": {
+        "description": "13.07 Auditing - Audit 'ALTER ANY TABLE'",
+        "info": "Unauthorized table alters can results in application failures or be the precursor to an attack.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='ALTER ANY TABLE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_78": {
+        "description": "13.08 Auditing - Audit 'ALTER USER'",
+        "info": "Unauthorized user alters can results in application failures, hijacked credentials, or be the precursor to an attack.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='ALTER USER' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_79": {
+        "description": "13.09 Auditing - Audit any 'CREATE' statement",
+        "info": "security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION like 'CREATE%' and (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_80": {
+        "description": "13.10 Auditing - Audit 'CREATE ROLE'",
+        "info": "also useful when investigating certain security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='CREATE ROLE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_81": {
+        "description": "13.11 Auditing - Audit 'CREATE USER'",
+        "info": "also useful when investigating certain security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='CREATE USER' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_82": {
+        "description": "13.12 Auditing - Audit 'CREATE SESSION'",
+        "info": "session failures.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='CREATE SESSION' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_83": {
+        "description": "13.13 Auditing - Audit any DROP statement",
+        "info": "security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION like 'DROP%' and (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_84": {
+        "description": "13.14 Auditing - Audit 'DROP ANY PROCEDURE'",
+        "info": "investigating security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='DROP ANY PROCEDURE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_85": {
+        "description": "13.15 Auditing - Audit 'DROP ANY TABLE'",
+        "info": "investigating security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='DROP ANY TABLE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_86": {
+        "description": "13.16 Auditing - Audit 'GRANT ANY PRIVILEGE'",
+        "info": "when investigating certain security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='GRANT ANY PRIVILEGE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_87": {
+        "description": "13.17 Auditing - Audit 'GRANT ANY ROLE'",
+        "info": "usefulwhen investigating certain security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='GRANT ANY ROLE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_88": {
+        "description": "13.18 Auditing - Audit 'INSERT' failures",
+        "info": "Auditing failed inserts may provide be useful when investigating certain security events, such as SQL injections attempts.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select object_name from DBA_OBJ_AUDIT_OPTS where INS!='WHENEVER NOT SUCCESSFUL';"
+    },
+    "custom_item_89": {
+        "description": "13.19 Auditing - Audit 'EXECUTE PROCEDURE'",
+        "info": "that were executed and by whom. This information is also useful when investigating a security event",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='EXECUTE PROCEDURE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_90": {
+        "description": "13.20 Auditing - Audit 'SELECT ANY DICTIONARY'",
+        "info": "information is also useful when investigating a security event.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='SELECT ANY DICTIONARY' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_91": {
+        "description": "13.21 Auditing - Audit 'GRANT ANY OBJECT'",
+        "info": "appropriate use of account administration privileges. This information is also useful when investigating certain security events.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='GRANT ANY OBJECT PRIVILEGE' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_92": {
+        "description": "13.22 Auditing - Audit 'CREATE {ANY} LIBRARY'",
+        "info": "Audit the use of the CREATE LIBRARY privilege",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select AUDIT_OPTION from DBA_STMT_AUDIT_OPTS where AUDIT_OPTION='CREATE LIBRARY' AND (SUCCESS!='BY ACCESS' OR FAILURE!='BY ACCESS');"
+    },
+    "custom_item_93": {
+        "description": "13.26 Auditing - Set 'AUDIT ALL' on SYS.AUD$ 'BY ACCESS';",
+        "info": "is set to DB or TRUE.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,LEVEL|2S,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1",
+        "see_also": "https://workbench.cisecurity.org/files/580",
+        "sql_request": "select * from DBA_OBJ_AUDIT_OPTS where OBJECT_NAME='AUD$' and ALT!='A/A' and AUD!='A/A' and COM!='A/A' and DEL!='A/A' and GRA!='A/A' and IND!='A/A' and INS!='A/A' and LOC!='A/A' and REN!='A/A' and SEL!='A/A' and UPD!='A/A' and FBK!='A/A'"
+    }
+}

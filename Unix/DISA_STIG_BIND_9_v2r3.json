@@ -1,0 +1,727 @@
+{
+    "custom_item_1": {
+        "description": "Check for BIND 9 installation",
+        "cmd": "/usr/sbin/named -v",
+        "expect": "^[\\\\s]*BIND @PLATFORM_VERSION@.*"
+    },
+    "custom_item_2": {
+        "description": "BIND-9X-000001 - A BIND 9.x server implementation must be running in a chroot(ed) directory structure.",
+        "info": "With any network service, there is the potential that an attacker can exploit a vulnerability within the program that allows the attacker to gain control of the process and even run system commands with that control. One possible defense against this attack is to limit the software to particular quarantined areas of the file system, memory or both. This effectively restricts the service so that it will not have access to the full file system. If such a defense were in place, then even if an attacker gained control of the process, the attacker would be unable to reach other commands or files on the system. This approach often is referred to as a padded cell, jail, or sandbox. All of these terms allude to the fact that the software is contained in an area where it cannot harm either itself or others. A more technical term is a chroot(ed) directory structure.\n\nBIND should be configured to run in a padded cell or chroot(ed) directory structure.",
+        "solution": "Configure the BIND 9.x server to operate in a chroot(ed) directory structure.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CAT|III,CCI|CCI-001090,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,Rule-ID|SV-207532r879649_rule,STIG-ID|BIND-9X-000001,STIG-Legacy|SV-86987,STIG-Legacy|V-72363,Vuln-ID|V-207532",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep",
+        "expect": "named.*-t /.*"
+    },
+    "custom_item_3": {
+        "description": "BIND-9X-001000 - A BIND 9.x server implementation must be operating on a Current-Stable version as defined by ISC.",
+        "info": "The BIND STIG was written to incorporate capabilities and features provided in BIND version 9.9.x. However, it is recognized that security vulnerabilities in BIND are identified and then addressed on a regular, ongoing basis. Therefore it is required that the product be maintained at the latest stable versions in order to address vulnerabilities that are subsequently identified and can then be remediated via updates to the product.\n\nFailure to run a version of BIND that has the capability to implement all of the required security features and that does provide services compliant to the DNS RFCs can have a severe impact on the security posture of a DNS infrastructure. Without the required security in place, a DNS implementation is vulnerable to many types of attacks and could be used as a launching point for further attacks on the organizational network that is utilizing the DNS implementation.\n\nSatisfies: SRG-APP-000516-DNS-000097, SRG-APP-000516-DNS-000103\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Update the BIND 9.x server to a version that is listed as 'Current-Stable' by ISC or latest supported version of BIND when BIND is installed as part of a specific vendor implementation where the vendor maintains the BIND patches.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207533r879887_rule,STIG-ID|BIND-9X-001000,STIG-Legacy|SV-86989,STIG-Legacy|V-72365,SWIFT-CSCv1|2.3,Vuln-ID|V-207533",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/sbin/named -v",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_4": {
+        "description": "BIND-9X-001002 - The platform on which the name server software is hosted must only run processes and services needed to support the BIND 9.x implementation.",
+        "info": "Hosts that run the name server software should not provide any other services. Unnecessary services running on the DNS server can introduce additional attack vectors leading to the compromise of an organization's DNS architecture.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Disable or uninstall all non-DNS related applications from the BIND 9.x server.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207534r879887_rule,STIG-ID|BIND-9X-001002,STIG-Legacy|SV-86991,STIG-Legacy|V-72367,SWIFT-CSCv1|2.3,Vuln-ID|V-207534",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/ps -ef",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_5": {
+        "description": "BIND-9X-001003 - The BIND 9.x server software must run with restricted privileges.",
+        "info": "Failure to provide logical access restrictions associated with changes to application configuration may have significant effects on the overall security of the system. When dealing with access restrictions pertaining to change control, it should be noted that any changes to the hardware, software, and/or firmware components of the information system and/or application can have significant effects on the overall security of the system. Accordingly, only qualified and authorized individuals should be allowed to obtain access to application components for the purposes of initiating changes, including upgrades and modifications.",
+        "solution": "Configure the BIND 9.x process to run as a non-privileged user.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207535r879887_rule,STIG-ID|BIND-9X-001003,STIG-Legacy|SV-86993,STIG-Legacy|V-72369,SWIFT-CSCv1|2.3,Vuln-ID|V-207535",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep",
+        "expect": "named.*-u (!?root).*"
+    },
+    "custom_item_6": {
+        "description": "tcp",
+        "cmd": "/usr/sbin/iptables --list -n | /usr/bin/grep 'tcp dpt:53'",
+        "expect": "ACCEPT.*tcp dpt:53"
+    },
+    "custom_item_7": {
+        "description": "udp",
+        "cmd": "/usr/sbin/iptables --list -n | /usr/bin/grep 'udp dpt:53'",
+        "expect": "ACCEPT.*udp dpt:53"
+    },
+    "custom_item_8": {
+        "description": "drop",
+        "cmd": "/usr/sbin/iptables --list INPUT",
+        "expect": "DROP[\\\\s]*all"
+    },
+    "custom_item_9": {
+        "description": "Determine number of interfaces",
+        "cmd": "/usr/bin/ls -A /sys/class/net | /usr/bin/grep -v lo | /usr/bin/wc -l",
+        "expect": "2"
+    },
+    "custom_item_10": {
+        "description": "BIND-9X-001005 - The host running a BIND 9.x implementation must use a dedicated management interface in order to separate management traffic from DNS specific traffic.",
+        "info": "Providing Out-Of-Band (OOB) management is the best first step in any management strategy. No production traffic resides on an out-of-band network. The biggest advantage to implementation of an OOB network is providing support and maintenance to the network that has become degraded or compromised. During an outage or degradation period the in band management link may not be available.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "On the host machine, configure an interface that is dedicated to management traffic.\n\nRestart the host machine.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207537r879887_rule,STIG-ID|BIND-9X-001005,STIG-Legacy|SV-86997,STIG-Legacy|V-72373,SWIFT-CSCv1|2.3,Vuln-ID|V-207537",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/sbin/ifconfig -a",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_11": {
+        "description": "BIND-9X-001006 - The host running a BIND 9.x implementation must use an interface that is configured to process only DNS traffic.",
+        "info": "Configuring hosts that run a BIND 9.X implementation to only accept DNS traffic on a DNS interface allows a system to be configured to segregate DNS traffic from all other host traffic.\n\nThe TCP/IP stack in DNS hosts (stub resolver, caching/resolving/recursive name server, authoritative name server, etc.) could be subjected to packet flooding attacks (such as SYNC and smurf), resulting in disruption of communication.\n\nThe use of a dedicated interface for DNS traffic allows for these threats to be mitigated by creating a means to limit what types of traffic can be processed using a host based firewall solution.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "On the host machine, configure an interface to only process DNS traffic.\n\nRestart the host machine.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207538r879887_rule,STIG-ID|BIND-9X-001006,STIG-Legacy|SV-86999,STIG-Legacy|V-72375,SWIFT-CSCv1|2.3,Vuln-ID|V-207538",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/sbin/ifconfig -a",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_12": {
+        "description": "logging",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*logging[\\\\s]*{"
+    },
+    "custom_item_13": {
+        "description": "channel",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*channel[\\\\s]*"
+    },
+    "custom_item_14": {
+        "description": "category",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*category[\\\\s]*"
+    },
+    "custom_item_15": {
+        "description": "BIND-9X-001017 - The BIND 9.x server implementation must not be configured with a channel to send audit records to null.",
+        "info": "DNS software administrators require DNS transaction logs for a wide variety of reasons including troubleshooting, intrusion detection, and forensics. Ensuring that the DNS transaction logs are recorded on the local system will provide the capability needed to support these actions. Sending DNS transaction data to the null channel would cause a loss of important data.",
+        "solution": "Edit the 'named.conf' file.\n\nRemove any instance of the following:\n\ncategory null { null; };\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CAT|III,CCI|CCI-001348,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207540r879582_rule,STIG-ID|BIND-9X-001017,STIG-Legacy|SV-87003,STIG-Legacy|V-72379,Vuln-ID|V-207540",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*category.*{/ { n=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /null/ { n=1; } s == 1 && b == 1 { if (n == 0) r = 0; s=0; } END { if (o == 0) { print \"fail - category Not Found\" } else if (n == 1) { print \"fail - null channel found\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_16": {
+        "description": "BIND-9X-001020 - The BIND 9.x server logging configuration must be configured to generate audit records for all DoD-defined auditable events to a local file by enabling triggers for all events with a severity of info, notice, warning, error, and critical for all DNS components.",
+        "info": "Without the capability to generate audit records, it would be difficult to establish, correlate, and investigate the events relating to an incident, or identify those responsible for one. The actual auditing is performed by the OS/NDM, but the configuration to trigger the auditing is controlled by the DNS server.\n\nThe list of audited events is the set of events for which audits are to be generated. This set of events is typically a subset of the list of all events for which the system is capable of generating audit records.\n\nThe DoD has defined the list of events for which the application will provide an audit record generation capability as the following:\n\n(i) Successful and unsuccessful attempts to access, modify, or delete privileges, security objects, security levels, or categories of information (e.g., classification levels);\n\n(ii) Access actions, such as successful and unsuccessful logon attempts, privileged activities or other system-level access, starting and ending time for user access to the system, concurrent logons from different workstations, successful and unsuccessful accesses to objects, all program initiations, and all direct access to the information system; and\n\n(iii) All account creation, modification, disabling, and termination actions.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'severity' sub statement to the 'channel' statement.\n\nConfigure the 'severity' sub statement to 'info'\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12a.,800-53r5|AU-12a.,CAT|III,CCI|CCI-000169,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12a.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207541r879559_rule,STIG-ID|BIND-9X-001020,STIG-Legacy|SV-87005,STIG-Legacy|V-72381,SWIFT-CSCv1|6.4,Vuln-ID|V-207541",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*severity[\\\\s]*info"
+    },
+    "custom_item_17": {
+        "description": "BIND-9X-001021 - In the event of an error when validating the binding of other DNS servers identity to the BIND 9.x information, when anomalies in the operation of the signed zone transfers are discovered, for the success and failure of start and stop of the name server service or daemon, and for the success and failure of all name server events, a BIND 9.x server implementation must generate a log entry.",
+        "info": "Auditing and logging are key components of any security architecture. It is essential for security personnel to know what is being performed on the system, where an event occurred, when an event occurred, and by whom the event was triggered, in order to compile an accurate risk assessment. Logging the actions of specific events provides a means to investigate an attack, to recognize resource utilization or capacity thresholds, or to simply identify an improperly configured DNS system. If auditing is not comprehensive, it will not be useful for intrusion monitoring, security investigations, and forensic analysis.\n\nThe DNS server should audit all failed attempts at server authentication through DNSSEC and TSIG. The actual auditing is performed by the OS/NDM but the configuration to trigger the auditing is controlled by the DNS server.\n\nFailing to act on the validation errors may result in the use of invalid, corrupted, or compromised information. The validation of bindings can be achieved, for example, by the use of cryptographic checksums. Validations must be performed automatically.\n\nThe DNS server does not have the capability of shutting down or restarting the information system. The DNS server can be configured to generate audit records when anomalies are discovered.\n\nSatisfies: SRG-APP-000350-DNS-000044, SRG-APP-000474-DNS-000073, SRG-APP-000504-DNS-000074, SRG-APP-000504-DNS-000082",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'severity' sub statement to the 'channel' statement.\n\nConfigure the 'severity' sub statement to 'info'\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.4.2,800-53|AU-10(2)(b),800-53|AU-12c.,800-53|CM-6b.,800-53|SI-6d.,800-53r5|AU-10(2)(b),800-53r5|AU-12c.,800-53r5|CM-6b.,800-53r5|SI-6d.,CAT|III,CCI|CCI-000172,CCI|CCI-000366,CCI|CCI-001906,CCI|CCI-002702,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CN-L3|8.1.10.6(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-10(2),ITSG-33|AU-12c.,ITSG-33|CM-6b.,ITSG-33|SI-6a.,NESA|T3.2.1,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T4.3.1,NESA|T7.3.3,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207542r879727_rule,STIG-ID|BIND-9X-001021,STIG-Legacy|SV-87007,STIG-Legacy|V-72383,SWIFT-CSCv1|2.3,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-207542",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*severity[\\\\s]*info"
+    },
+    "custom_item_18": {
+        "description": "BIND-9X-001030 - The print-severity variable for the configuration of BIND 9.x server logs must be configured to produce audit records containing information to establish what type of events occurred.",
+        "info": "Auditing and logging are key components of any security architecture. It is essential for security personnel to know what is being performed on the system, where an event occurred, when an event occurred, and by whom the event was triggered, in order to compile an accurate risk assessment. Logging the actions of specific events provides a means to investigate an attack, recognize resource utilization or capacity thresholds, or to simply identify an improperly configured DNS implementation. Without log records that aid in the establishment of what types of events occurred and when those events occurred, there is no traceability for forensic or analytical purposes, and the cause of events is severely hindered.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'print-severity' sub statement to the 'channel' statement.\n\nConfigure the 'print-severity' sub statement to 'yes'\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|III,CCI|CCI-000130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207543r879563_rule,STIG-ID|BIND-9X-001030,STIG-Legacy|SV-87009,STIG-Legacy|V-72385,SWIFT-CSCv1|6.4,Vuln-ID|V-207543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*print-severity[\\\\s]*yes"
+    },
+    "custom_item_19": {
+        "description": "BIND-9X-001031 - The print-time variable for the configuration of BIND 9.x server logs must be configured to establish when (date and time) the events occurred.",
+        "info": "Without establishing when events occurred, it is impossible to establish, correlate, and investigate the events relating to an incident.\n\nAssociating event types with detected events in the application and audit logs provides a means of investigating an attack, recognizing resource utilization or capacity thresholds, or identifying an improperly configured application. In order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know when events occurred (date and time).",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'print-time' sub statement to the 'channel' statement.\n\nConfigure the 'print-time' sub statement to 'yes'\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|III,CCI|CCI-000131,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207544r879564_rule,STIG-ID|BIND-9X-001031,STIG-Legacy|SV-87011,STIG-Legacy|V-72387,SWIFT-CSCv1|6.4,Vuln-ID|V-207544",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*print-time[\\\\s]*yes"
+    },
+    "custom_item_20": {
+        "description": "BIND-9X-001032 - The print-category variable for the configuration of BIND 9.x server logs must be configured to record information indicating which process generated the events.",
+        "info": "Without establishing where events occurred, it is impossible to establish, correlate, and investigate the events relating to an incident. Associating information about where the event occurred within the application provides a means of investigating an attack, recognizing resource utilization or capacity thresholds, or identifying an improperly configured application. In order to compile an accurate risk assessment and provide forensic analysis, it is essential for security personnel to know where events occurred, such as application components, modules, session identifiers, filenames, host names, and functionality.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'print-category' sub statement to the 'channel' statement.\n\nConfigure the 'print-category' sub statement to 'yes'\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CAT|III,CCI|CCI-000132,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207545r879565_rule,STIG-ID|BIND-9X-001032,STIG-Legacy|SV-87013,STIG-Legacy|V-72389,SWIFT-CSCv1|6.4,Vuln-ID|V-207545",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*print-category[\\\\s]*yes"
+    },
+    "custom_item_21": {
+        "description": "syslog",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' /var/named/chroot/etc/named.conf",
+        "expect": "^[\\\\s]*syslog[\\\\s]+"
+    },
+    "custom_item_22": {
+        "description": "syslog server",
+        "file": "/etc/rsyslog.conf /etc/syslog.conf",
+        "regex": "@SYSLOG_SERVER@",
+        "expect": "^[\\\\s]*\\\\*\\.\\\\*[\\\\s]+@SYSLOG_SERVER@.*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_23": {
+        "description": "named syslog",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*syslog[\\\\s]*local[0-7]"
+    },
+    "custom_item_24": {
+        "description": "BIND-9X-001041 - The BIND 9.x server implementation must be configured with a channel to send audit records to a local file.",
+        "info": "DNS software administrators require DNS transaction logs for a wide variety of reasons including troubleshooting, intrusion detection, and forensics. Ensuring that the DNS transaction logs are recorded on the local system will provide the capability needed to support these actions.",
+        "solution": "Edit the 'named.conf' file and add the following:\n\nlogging {\nchannel local_file_channel {\nfile 'path_name' versions 3;\nprint-time yes;\nprint-severity yes;\nprint-category yes;\n};\ncategory category_name { local_file_channel; };\n};\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CAT|III,CCI|CCI-001348,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207547r879582_rule,STIG-ID|BIND-9X-001041,STIG-Legacy|SV-87017,STIG-Legacy|V-72393,Vuln-ID|V-207547",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*file[\\\\s]*.*[\\\\s]*versions"
+    },
+    "custom_item_25": {
+        "description": "BIND-9X-001042 - The BIND 9.x server implementation must maintain at least 3 file versions of the local log file.",
+        "info": "DNS software administrators require DNS transaction logs for a wide variety of reasons including troubleshooting, intrusion detection, and forensics. Ensuring that the DNS transaction logs are recorded on the local system will provide the capability needed to support these actions.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'versions' variable to the end of the 'file' sub statement in the channel statement.\n\nConfigure the 'versions' sub statement to a number that is greater or equal to 3.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CAT|III,CCI|CCI-001348,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-207548r879582_rule,STIG-ID|BIND-9X-001042,STIG-Legacy|SV-87019,STIG-Legacy|V-72395,Vuln-ID|V-207548",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*logging\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"logging Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*file[\\\\s]*.*[\\\\s]*versions[\\\\s]*(3|[4-9]|[1-9][0-9]+)"
+    },
+    "custom_item_26": {
+        "description": "Check for 'masters' in config file on secondary/slave DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_27": {
+        "description": "BIND-9X-001050 - The BIND 9.x secondary name server must limit the number of zones requested from a single master name server.",
+        "info": "Limiting the number of concurrent sessions reduces the risk of Denial of Service (DoS) to the DNS implementation.\n\nName servers do not have direct user connections but accept client connections for queries. Original restriction on client connections should be high enough to prevent a self-imposed denial of service, after which the connections are monitored and fine-tuned to best meet the organization's specific requirements.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'transfers-per-ns' sub statement to the 'options' statement block.\n\nThe value of the 'transfers-per-ns' option can be increased to a value greater than two based on organizational requirements needed to support DNS operations.\n\nRestart the BIND 9.x process.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-207549r879511_rule,STIG-ID|BIND-9X-001050,STIG-Legacy|SV-87021,STIG-Legacy|V-72397,Vuln-ID|V-207549",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*transfers-per-ns[\\\\s]*([2-9]|[1-9][0-9])"
+    },
+    "custom_item_28": {
+        "description": "BIND-9X-001051 - The BIND 9.x secondary name server must limit the total number of zones the name server can request at any one time.",
+        "info": "Limiting the number of concurrent sessions reduces the risk of Denial of Service (DoS) to the DNS implementation.\n\nName servers do not have direct user connections but accept client connections for queries. Original restriction on client connections should be high enough to prevent a self-imposed denial of service, after which the connections are monitored and fine-tuned to best meet the organization's specific requirements.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'transfers-in' sub statement to the 'options' statement block.\n\nThe value of the 'transfers-in' will be based on organizational requirements needed to support DNS operations.\n\nRestart the BIND 9.x process.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-207550r879511_rule,STIG-ID|BIND-9X-001051,STIG-Legacy|SV-87023,STIG-Legacy|V-72399,Vuln-ID|V-207550",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*transfers-in[\\\\s]*"
+    },
+    "custom_item_29": {
+        "description": "BIND-9X-001052 - The BIND 9.x server implementation must limit the number of concurrent session client connections to the number of allowed dynamic update clients.",
+        "info": "Limiting the number of concurrent sessions reduces the risk of Denial of Service (DoS) to the DNS implementation.\n\nName servers do not have direct user connections but accept client connections for queries. Original restriction on client connections should be high enough to prevent a self-imposed denial of service, after which the connections are monitored and fine-tuned to best meet the organization's specific requirements.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'transfers-out' sub statement to the 'options' statement block.\n\nThe value of the 'transfers-out' will be based on organizational requirements needed to support DNS operations.\n\nRestart the BIND 9.x process.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-207551r879511_rule,STIG-ID|BIND-9X-001052,STIG-Legacy|SV-87025,STIG-Legacy|V-72401,Vuln-ID|V-207551",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*transfers-out[\\\\s]*"
+    },
+    "custom_item_30": {
+        "description": "BIND-9X-001053 - The BIND 9.x server implementation must be configured to use only approved ports and protocols.",
+        "info": "In order to prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nApplications are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations.\n\nTo support the requirements and principles of least functionality, the application must support the organizational requirements by providing only essential capabilities and limiting the use of ports, protocols, and/or services.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the following line to the 'options' statement:\n\nlisten-on port 53 {; };\n\nReplace '' with the IP of the name server.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-207552r879588_rule,STIG-ID|BIND-9X-001053,STIG-Legacy|SV-87027,STIG-Legacy|V-72403,SWIFT-CSCv1|2.3,Vuln-ID|V-207552",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*listen-on[\\\\s]*port[\\\\s]*53"
+    },
+    "custom_item_31": {
+        "description": "recursion",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*recursion[\\\\s]*no"
+    },
+    "custom_item_32": {
+        "description": "options allow-query",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*allow-query[\\\\s]*{[\\\\s]*none;?[\\\\s]*};"
+    },
+    "custom_item_33": {
+        "description": "zone allow-query",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_34": {
+        "description": "recursion",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*recursion[\\\\s]*no"
+    },
+    "custom_item_35": {
+        "description": "options allow-query",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*allow-query[\\\\s]*{[\\\\s]*none;?[\\\\s]*};"
+    },
+    "custom_item_36": {
+        "description": "zone allow-query",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_37": {
+        "description": "allow-recursion",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*allow-recursion[\\\\s]*{[\\\\s]*none;?[\\\\s]*;[\\\\s]*};"
+    },
+    "custom_item_38": {
+        "description": "Check for no 'masters' in config file on secondary/slave DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_39": {
+        "description": "notify",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*notify[\\\\s]*no;"
+    },
+    "custom_item_40": {
+        "description": "zone also-notify",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_41": {
+        "description": "zone notify explicit",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_42": {
+        "description": "Check for 'masters' in config file on secondary/slave DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_43": {
+        "description": "options notify",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*notify[\\\\s]*no;"
+    },
+    "custom_item_44": {
+        "description": "zone notify explicit",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_45": {
+        "description": "zone allow-notify",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_46": {
+        "description": "Check for IPv6 support",
+        "cmd": "/usr/bin/test -f /proc/net/if_inet6 && /usr/bin/echo 'IPv6 supported' || /usr/bin/echo 'IPv6 not supported'",
+        "expect": "IPv6 supported"
+    },
+    "custom_item_47": {
+        "description": "listen-on",
+        "cmd": "/usr/bin/grep 'listen-on port' @NAMED_CONF@ | /bin/awk '{print} END {if (NR == 1) print \"Pass\"; else print \"Fail\"}'",
+        "expect": "^Pass$"
+    },
+    "custom_item_48": {
+        "description": "listen-on-v6",
+        "cmd": "/usr/bin/grep 'listen-on-v6 port' @NAMED_CONF@ | /bin/awk '{print} END {if (NR == 1) print \"Pass\"; else print \"Fail\"}'",
+        "expect": "^Pass$"
+    },
+    "custom_item_49": {
+        "description": "BIND-9X-001059 - On the BIND 9.x server the platform on which the name server software is hosted must be configured to send outgoing DNS messages from a random port.",
+        "info": "Hosts that run the name server software should not provide any other services and therefore should be configured to respond to DNS traffic only. Outgoing DNS messages should be sent from a random port to minimize the risk of an attacker's guessing the outgoing message port and sending forged replies.",
+        "solution": "Edit the 'named.conf' file.\nConfigure the BIND 9.x server to only use the 'port' flag with the 'listen-on' and 'listen-on-v6' statements:\noptions {\nlisten-on port 53 {; };\nlisten-on-v6 port 53 {; };\n};\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207557r879887_rule,STIG-ID|BIND-9X-001059,STIG-Legacy|SV-87043,STIG-Legacy|V-72419,SWIFT-CSCv1|2.3,Vuln-ID|V-207557",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/grep 'listen-on port' @NAMED_CONF@ | /bin/awk '{print} END {if (NR == 1) print \"Pass\"; else print \"Fail\"}'",
+        "expect": "^Pass$"
+    },
+    "custom_item_50": {
+        "description": "dnssec-validation",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*dnssec-validation[\\\\s]*yes;"
+    },
+    "custom_item_51": {
+        "description": "dnssec-enable",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*dnssec-enable[\\\\s]*yes;"
+    },
+    "custom_item_52": {
+        "description": "managed-keys",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*managed-keys[\\\\s]*{",
+        "expect": "^[\\\\s]*managed-keys[\\\\s]*{"
+    },
+    "custom_item_53": {
+        "description": "Check for no 'masters' in config file on primary/master DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_54": {
+        "description": "BIND-9X-001070 - A BIND 9.x master name server must limit the number of concurrent zone transfers between authorized secondary name servers.",
+        "info": "Limiting the number of concurrent sessions reduces the risk of Denial of Service (DoS) to the DNS implementation.\n\nName servers do not have direct user connections but accept client connections for queries. Original restriction on client connections should be high enough to prevent a self-imposed denial of service, after which the connections are monitored and fine-tuned to best meet the organization's specific requirements.\n\nPrimary name servers also make outbound connection to secondary name servers to provide zone transfers and accept inbound connection requests from clients wishing to provide a dynamic update. Primary name servers should explicitly limit zone transfers to only be made to designated secondary name servers. Because zone transfers involve the transfer of entire zones and use TCP connections, they place substantial demands on network resources relative to normal DNS queries. Errant or malicious frequent zone transfer requests on the name servers of the enterprise can overload the master zone server and result in DoS to legitimate users. Primary name servers should be configured to limit the hosts from which they will accept dynamic updates.\n\nAdditionally, the number of concurrent clients, especially TCP clients, needs to be kept to a level that does not risk placing the system in a DoS state.",
+        "solution": "Edit the 'named.conf' file.\n\nAdd the 'transfers' sub statement to each 'server' statement block.\n\nThe value of the 'transfers' option can be increased to a value greater than two based on organizational requirements needed to support DNS operations.\n\nRestart the BIND 9.x process.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-207559r879511_rule,STIG-ID|BIND-9X-001070,STIG-Legacy|SV-87047,STIG-Legacy|V-72423,Vuln-ID|V-207559",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*server.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*transfers\\\\s*([2-9]|[1-9][0-9])/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"fail - server Not Found\" } else if (r == 0) { print \"fail - Not all servers have transfer statements over 2.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_55": {
+        "description": "allow-query",
+        "cmd": "/usr/bin/awk '/^\\\\s*allow-query\\\\s*{/,/};/ { print; o=1 } END { if (o == 0) print \"allow-query Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_56": {
+        "description": "allow-recursion",
+        "cmd": "/usr/bin/awk '/^\\\\s*allow-recursion\\\\s*{/,/};/ { print; o=1 } END { if (o == 0) print \"allow-recursion Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_57": {
+        "description": "Check for allow-transfer none.",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*allow-transfer[\\\\s]*{[\\\\s]*none;?[\\\\s]*}"
+    },
+    "custom_item_58": {
+        "description": "Check for no 'masters' in config file on primary/master DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_59": {
+        "description": "BIND-9X-001100 - The BIND 9.x server implementation must uniquely identify and authenticate the other DNS server before responding to a server-to-server transaction, zone transfer and/or dynamic update request using cryptographically based bidirectional authentication to protect the integrity of the information in transit.",
+        "info": "Server-to-server (zone transfer) transactions are provided by TSIG, which enforces mutual server authentication using a key that is unique to each server pair (TSIG), thus uniquely identifying the other server. DNS does perform server authentication when TSIG is used, but this authentication is transactional in nature (each transaction has its own authentication performed).\n\nEnforcing mutually authenticated communication sessions during zone transfers provides the assurance that only authorized servers are requesting and receiving DNS zone data. Without authenticating devices, unidentified or unknown devices may be introduced, thereby facilitating malicious activity.\n\nFailure to properly implement transactional security may have significant effects on the overall security of the DNS infrastructure. The lack of mutual authentication between name servers during a DNS transaction would allow a threat actor to launch a Man-In-The-Middle attack against the DNS infrastructure. This attack could lead to unauthorized DNS zone data being introduced, resulting in network traffic being redirected to a rogue site.\n\nSatisfies: SRG-APP-000158-DNS-000015, SRG-APP-000390-DNS-000048, SRG-APP-000394-DNS-000049, SRG-APP-000395-DNS-000050, SRG-APP-000439-DNS-000063, SRG-APP-000440-DNS-000065",
+        "solution": "Configure the BIND 9.x server to use TSIG keys.\n\nAdd a key statement to the 'named.conf' file for TSIG that is being used:\n\nkey tsig_example. {\nalgorithm hmac-SHA1;\ninclude 'tsig-example.key';\n};\n\nAdd key statements to the allow-transfer statements on a master name server:\n\nallow-transfer { key tsig_example.; };\n\nAdd key statements to the server statements on a secondary name server:\n\nserver{\nkeys { tsig_example };\n};\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.13.8,800-53|IA-3,800-53|IA-3(1),800-53|IA-11,800-53|SC-8,800-53|SC-8(1),800-53r5|IA-3,800-53r5|IA-3(1),800-53r5|IA-11,800-53r5|SC-8,800-53r5|SC-8(1),CAT|I,CCI|CCI-000778,CCI|CCI-001958,CCI|CCI-001967,CCI|CCI-002039,CCI|CCI-002418,CCI|CCI-002421,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.AC-1,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|IA-3,ITSG-33|IA-3a.,ITSG-33|IA-3(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.4.3,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-207561r879599_rule,STIG-ID|BIND-9X-001100,STIG-Legacy|SV-87053,STIG-Legacy|V-72429,SWIFT-CSCv1|2.1,TBA-FIISB|27.1,TBA-FIISB|29.1,Vuln-ID|V-207561",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*zone.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*allow-transfer\\\\s*{\\\\s*key.*;/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"allow-transfer Not Found\" } else if (r == 0) { print \"Not all zones have allow-transfer.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_60": {
+        "description": "BIND-9X-001100 - The BIND 9.x server implementation must uniquely identify and authenticate the other DNS server before responding to a server-to-server transaction, zone transfer and/or dynamic update request using cryptographically based bidirectional authentication to protect the integrity of the information in transit.",
+        "info": "Server-to-server (zone transfer) transactions are provided by TSIG, which enforces mutual server authentication using a key that is unique to each server pair (TSIG), thus uniquely identifying the other server. DNS does perform server authentication when TSIG is used, but this authentication is transactional in nature (each transaction has its own authentication performed).\n\nEnforcing mutually authenticated communication sessions during zone transfers provides the assurance that only authorized servers are requesting and receiving DNS zone data. Without authenticating devices, unidentified or unknown devices may be introduced, thereby facilitating malicious activity.\n\nFailure to properly implement transactional security may have significant effects on the overall security of the DNS infrastructure. The lack of mutual authentication between name servers during a DNS transaction would allow a threat actor to launch a Man-In-The-Middle attack against the DNS infrastructure. This attack could lead to unauthorized DNS zone data being introduced, resulting in network traffic being redirected to a rogue site.\n\nSatisfies: SRG-APP-000158-DNS-000015, SRG-APP-000390-DNS-000048, SRG-APP-000394-DNS-000049, SRG-APP-000395-DNS-000050, SRG-APP-000439-DNS-000063, SRG-APP-000440-DNS-000065",
+        "solution": "Configure the BIND 9.x server to use TSIG keys.\n\nAdd a key statement to the 'named.conf' file for TSIG that is being used:\n\nkey tsig_example. {\nalgorithm hmac-SHA1;\ninclude 'tsig-example.key';\n};\n\nAdd key statements to the allow-transfer statements on a master name server:\n\nallow-transfer { key tsig_example.; };\n\nAdd key statements to the server statements on a secondary name server:\n\nserver{\nkeys { tsig_example };\n};\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.13.8,800-53|IA-3,800-53|IA-3(1),800-53|IA-11,800-53|SC-8,800-53|SC-8(1),800-53r5|IA-3,800-53r5|IA-3(1),800-53r5|IA-11,800-53r5|SC-8,800-53r5|SC-8(1),CAT|I,CCI|CCI-000778,CCI|CCI-001958,CCI|CCI-001967,CCI|CCI-002039,CCI|CCI-002418,CCI|CCI-002421,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.AC-1,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|IA-3,ITSG-33|IA-3a.,ITSG-33|IA-3(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.4.3,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-207561r879599_rule,STIG-ID|BIND-9X-001100,STIG-Legacy|SV-87053,STIG-Legacy|V-72429,SWIFT-CSCv1|2.1,TBA-FIISB|27.1,TBA-FIISB|29.1,Vuln-ID|V-207561",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*server.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*keys\\\\s*{/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"Server Not Found\" } else if (r == 0) { print \"Not all servers have keys.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_61": {
+        "description": "Check for no 'masters' in config file on primary/master DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_62": {
+        "description": "key",
+        "cmd": "/usr/bin/awk '/^\\\\s*key\\\\s.*{/,/};/ { print; o=1 } END { if (o == 0) print \"key Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_63": {
+        "description": "zone keys",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_64": {
+        "description": "key",
+        "cmd": "/usr/bin/awk '/^\\\\s*key\\\\s.*{/,/};/ { print; o=1 } END { if (o == 0) print \"key Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_65": {
+        "description": "zone keys",
+        "cmd": "/usr/bin/awk '/^\\\\s*server.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"server Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_66": {
+        "description": "BIND-9X-001110 - The TSIG keys used with the BIND 9.x implementation must be owned by a privileged account.",
+        "info": "Incorrect ownership of a TSIG key file could allow an adversary to modify the file, thus defeating the security objective.",
+        "solution": "Change the ownership of the TSIG keys to the named process is running as.\n\n# chown.",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-207563r879613_rule,STIG-ID|BIND-9X-001110,STIG-Legacy|SV-87061,STIG-Legacy|V-72437,Vuln-ID|V-207563",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "ps_user=`/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep | /usr/bin/awk '{print $1}'`; chmod_user=`/usr/bin/ls -l @TSIG_KEY_FILE_FULL_PATH@ | /usr/bin/awk '{print $3}'`; if [[ $ps_user == $chmod_user ]]; then /usr/bin/echo passed; else /usr/bin/echo failed; fi",
+        "expect": "^passed$"
+    },
+    "custom_item_67": {
+        "description": "BIND-9X-001111 - The TSIG keys used with the BIND 9.x implementation must be group owned by a privileged account.",
+        "info": "Incorrect ownership of a TSIG key file could allow an adversary to modify the file, thus defeating the security objective.",
+        "solution": "Change the group ownership of the TSIG keys to the named process group.\n\n# chgrp",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-207564r879613_rule,STIG-ID|BIND-9X-001111,STIG-Legacy|SV-87063,STIG-Legacy|V-72439,Vuln-ID|V-207564",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "ps_user=`/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep | /usr/bin/awk '{print $1}'`; chmod_user=`/usr/bin/ls -l @TSIG_KEY_FILE_FULL_PATH@ | /usr/bin/awk '{print $4}'`; if [[ $ps_user == $chmod_user ]]; then /usr/bin/echo passed; else /usr/bin/echo failed; fi",
+        "expect": "^passed$"
+    },
+    "custom_item_68": {
+        "description": "BIND-9X-001112 - The read and write access to a TSIG key file used by a BIND 9.x server must be restricted to only the account that runs the name server software.",
+        "info": "Weak permissions of a TSIG key file could allow an adversary to modify the file, thus defeating the security objective.",
+        "solution": "Change the permissions of the TSIG key files:\n\n# chmod 600",
+        "reference": "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(b),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-207565r879613_rule,STIG-ID|BIND-9X-001112,STIG-Legacy|SV-87065,STIG-Legacy|V-72441,Vuln-ID|V-207565",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "file": "@TSIG_KEY_FILE_FULL_PATH@",
+        "mask": "177"
+    },
+    "custom_item_69": {
+        "description": "zones",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_70": {
+        "description": "key",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*key\\\\s.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*algorithm\\\\s*hmac-SHA(256|384|512);/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"key Not Found\" } else if (r == 0) { print \"Not all keys have algorithms or are compliant.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_71": {
+        "description": "BIND-9X-001130 - The DNSSEC keys used with the BIND 9.x implementation must be owned by a privileged account.",
+        "info": "Information at rest refers to the state of information when it is located on a secondary storage device within an organizational information system. Mobile devices, laptops, desktops, and storage devices can be either lost or stolen, and the contents of their data storage (e.g., hard drives and non-volatile memory) can be read, copied, or altered. Applications and application users generate information throughout the course of their application use.\n\nThe DNS server must protect the confidentiality and integrity of the DNSSEC keys and must protect the integrity of DNS information. There is no need to protect the confidentiality of DNS information because it is accessible by all devices that can contact the server.",
+        "solution": "Change the ownership of the DNSSEC keys to the named process is running as.\n\n# chown.",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|II,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-207568r879642_rule,STIG-ID|BIND-9X-001130,STIG-Legacy|SV-87071,STIG-Legacy|V-72447,Vuln-ID|V-207568",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "ps_user=`/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep | /usr/bin/awk '{print $1}'`; chmod_user=`/usr/bin/ls -l @DNSSEC_KEY_FILE_FULL_PATH@ | /usr/bin/awk '{print $3}'`; if [[ $ps_user == $chmod_user ]]; then /usr/bin/echo passed; else /usr/bin/echo failed; fi",
+        "expect": "^passed$"
+    },
+    "custom_item_72": {
+        "description": "BIND-9X-001131 - The DNSSEC keys used with the BIND 9.x implementation must be group owned by a privileged account.",
+        "info": "Information at rest refers to the state of information when it is located on a secondary storage device within an organizational information system. Mobile devices, laptops, desktops, and storage devices can be either lost or stolen, and the contents of their data storage (e.g., hard drives and non-volatile memory) can be read, copied, or altered. Applications and application users generate information throughout the course of their application use.\n\nThe DNS server must protect the confidentiality and integrity of the DNSSEC keys and must protect the integrity of DNS information. There is no need to protect the confidentiality of DNS information because it is accessible by all devices that can contact the server.",
+        "solution": "Change the group ownership of the DNSSEC keys to the named process is running as.\n\n# chgrp.",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|II,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-207569r879642_rule,STIG-ID|BIND-9X-001131,STIG-Legacy|SV-87073,STIG-Legacy|V-72449,Vuln-ID|V-207569",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "ps_user=`/usr/bin/ps -ef | /usr/bin/grep named | /usr/bin/grep -v grep | /usr/bin/awk '{print $1}'`; chmod_user=`/usr/bin/ls -l @DNSSEC_KEY_FILE_FULL_PATH@ | /usr/bin/awk '{print $4}'`; if [[ $ps_user == $chmod_user ]]; then /usr/bin/echo passed; else /usr/bin/echo failed; fi",
+        "expect": "^passed$"
+    },
+    "custom_item_73": {
+        "description": "BIND-9X-001132 - Permissions assigned to the DNSSEC keys used with the BIND 9.x implementation must enforce read-only access to the key owner and deny access to all other users.",
+        "info": "Information at rest refers to the state of information when it is located on a secondary storage device within an organizational information system. Mobile devices, laptops, desktops, and storage devices can be either lost or stolen, and the contents of their data storage (e.g., hard drives and non-volatile memory) can be read, copied, or altered. Applications and application users generate information throughout the course of their application use.\n\nThe DNS server must protect the confidentiality and integrity of the DNSSEC keys and must protect the integrity of DNS information. There is no need to protect the confidentiality of DNS information because it is accessible by all devices that can contact the server.",
+        "solution": "Change the permissions of the DNSSEC key files:\n\n# chmod 400",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CAT|II,CCI|CCI-001199,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-207570r879642_rule,STIG-ID|BIND-9X-001132,STIG-Legacy|SV-87075,STIG-Legacy|V-72451,Vuln-ID|V-207570",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "file": "@DNSSEC_KEY_FILE_FULL_PATH@",
+        "mask": "377"
+    },
+    "custom_item_74": {
+        "description": "BIND-9X-001134 - On the BIND 9.x server the private keys corresponding to both the ZSK and the KSK must not be kept on the BIND 9.x DNSSEC-aware primary authoritative name server when the name server does not support dynamic updates.",
+        "info": "The private keys in the KSK and ZSK key pairs must be protected from unauthorized access. If possible, the private keys should be stored off-line (with respect to the Internet-facing, DNSSEC-aware name server) in a physically secure, non-network-accessible machine along with the zone file master copy.\n\nThis strategy is not feasible in situations in which the DNSSEC-aware name server has to support dynamic updates. To support dynamic update transactions, the DNSSEC-aware name server (which usually is a primary authoritative name server) has to have both the zone file master copy and the private key corresponding to the zone-signing key (ZSK-private) online to immediately update the signatures for the updated RRsets. The private key corresponding to the key-signing key (KSK-private) can still be kept off-line.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove any ZSK or KSK private key from any BIND 9.x server that does not support dynamic updates.\n\nNote: Any ZSK or KSK that is not needed to support dynamic updates should be stored offline in a secure location.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207572r879887_rule,STIG-ID|BIND-9X-001134,STIG-Legacy|SV-87079,STIG-Legacy|V-72455,SWIFT-CSCv1|2.3,Vuln-ID|V-207572",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/allow-update/ {print \"Line: \" NR,$0}' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_75": {
+        "description": "dnssec-enable",
+        "cmd": "/usr/bin/awk '/^\\\\s*options\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"options Not Found\" }' @NAMED_CONF@",
+        "expect": "^[\\\\s]*dnssec-enable[\\\\s]*yes;"
+    },
+    "custom_item_76": {
+        "description": "zone",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_77": {
+        "description": "KSK",
+        "file": "@SIGNED_ZONE_FILE_NAME@",
+        "regex": "DNSKEY.*KSK",
+        "expect": "KSK"
+    },
+    "custom_item_78": {
+        "description": "ZSK",
+        "file": "@SIGNED_ZONE_FILE_NAME@",
+        "regex": "DNSKEY.*ZSK",
+        "expect": "ZSK"
+    },
+    "custom_item_79": {
+        "description": "named.conf",
+        "file": "@NAMED_CONF@",
+        "owner": "root"
+    },
+    "custom_item_80": {
+        "description": "root hints",
+        "file": "@ROOT_HINTS@",
+        "owner": "root"
+    },
+    "custom_item_81": {
+        "description": "zone files",
+        "file": "@ZONE_FILE_PATH@/*",
+        "owner": "root"
+    },
+    "custom_item_82": {
+        "description": "named.conf",
+        "file": "@NAMED_CONF@",
+        "group": "@DNS_ADMIN_GROUP@"
+    },
+    "custom_item_83": {
+        "description": "root hints",
+        "file": "@ROOT_HINTS@",
+        "group": "@DNS_ADMIN_GROUP@"
+    },
+    "custom_item_84": {
+        "description": "zone files",
+        "file": "@ZONE_FILE_PATH@/*",
+        "group": "@DNS_ADMIN_GROUP@"
+    },
+    "custom_item_85": {
+        "description": "named.conf",
+        "file": "@NAMED_CONF@",
+        "mask": "137"
+    },
+    "custom_item_86": {
+        "description": "root hints",
+        "file": "@ROOT_HINTS@",
+        "mask": "137"
+    },
+    "custom_item_87": {
+        "description": "Check for no 'masters' in config file on secondary/slave DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_88": {
+        "description": "BIND-9X-001322 - The permissions assigned to the core BIND 9.x server files must be set to utilize the least privilege possible.",
+        "info": "Discretionary Access Control (DAC) is based on the premise that individual users are 'owners' of objects and therefore have discretion over who should be authorized to access the object and in which mode (e.g., read or write). Ownership is usually acquired as a consequence of creating the object or via specified ownership assignment. In a DNS implementation, DAC should be granted to a minimal number of individuals and objects because DNS does not interact directly with users and users do not store and share data with the DNS application directly.",
+        "solution": "Configure the permissions of each file to the following:\n\nnamed.conf : rw-r-----\nroot hints : rw-r-----\nmaster zone file(s): rw-r-----\nslave zone file(s): rw-rw----",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207582r879887_rule,STIG-ID|BIND-9X-001322,STIG-Legacy|SV-87105,STIG-Legacy|V-72481,SWIFT-CSCv1|2.3,Vuln-ID|V-207582",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "file": "@ZONE_FILE_PATH@/*",
+        "mask": "137"
+    },
+    "custom_item_89": {
+        "description": "BIND-9X-001322 - The permissions assigned to the core BIND 9.x server files must be set to utilize the least privilege possible.",
+        "info": "Discretionary Access Control (DAC) is based on the premise that individual users are 'owners' of objects and therefore have discretion over who should be authorized to access the object and in which mode (e.g., read or write). Ownership is usually acquired as a consequence of creating the object or via specified ownership assignment. In a DNS implementation, DAC should be granted to a minimal number of individuals and objects because DNS does not interact directly with users and users do not store and share data with the DNS application directly.",
+        "solution": "Configure the permissions of each file to the following:\n\nnamed.conf : rw-r-----\nroot hints : rw-r-----\nmaster zone file(s): rw-r-----\nslave zone file(s): rw-rw----",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207582r879887_rule,STIG-ID|BIND-9X-001322,STIG-Legacy|SV-87105,STIG-Legacy|V-72481,SWIFT-CSCv1|2.3,Vuln-ID|V-207582",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "file": "@ZONE_FILE_PATH@/*",
+        "mask": "117"
+    },
+    "custom_item_90": {
+        "description": "BIND-9X-001400 - On a BIND 9.x server for zones split between the external and internal sides of a network, the RRs for the external hosts must be separate from the RRs for the internal hosts.",
+        "info": "Authoritative name servers for an enterprise may be configured to receive requests from both external and internal clients.\n\nExternal clients need to receive RRs that pertain only to public services (public Web server, mail server, etc.)\n\nInternal clients need to receive RRs pertaining to public services as well as internal hosts.\n\nThe zone information that serves the RRs on both the inside and the outside of a firewall should be split into different physical files for these two types of clients (one file for external clients and one file for internal clients).\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the 'named.conf' file.\n\nConfigure the internal and external view statements to use separate zone files.\n\nEdit the internal and external zone files.\n\nConfigure the zone file to use RRs designated for internal or external use. The zone files should not share any RR.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207583r879887_rule,STIG-ID|BIND-9X-001400,STIG-Legacy|SV-87107,STIG-Legacy|V-72483,SWIFT-CSCv1|2.3,Vuln-ID|V-207583",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*view.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"view Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_91": {
+        "description": "BIND-9X-001401 - On a BIND 9.x server in a split DNS configuration, where separate name servers are used between the external and internal networks, the external name server must be configured to not be reachable from inside resolvers.",
+        "info": "Instead of having the same set of authoritative name servers serve different types of clients, an enterprise could have two different sets of authoritative name servers.\n\nOne set, called external name servers, can be located within a DMZ; these would be the only name servers that are accessible to external clients and would serve RRs pertaining to hosts with public services (Web servers that serve external Web pages or provide B2C services, mail servers, etc.)\n\nThe other set, called internal name servers, is to be located within the firewall and should be configured so they are not reachable from outside and hence provide naming services exclusively to internal clients.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the 'named.conf' file.\n\nConfigure the external view statement to server external hosts only:\n\nview 'external' {\nmatch-clients {|; };\n};\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207584r879887_rule,STIG-ID|BIND-9X-001401,STIG-Legacy|SV-87109,STIG-Legacy|V-72485,SWIFT-CSCv1|2.3,Vuln-ID|V-207584",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*view.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"view Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_92": {
+        "description": "BIND-9X-001402 - On a BIND 9.x server in a split DNS configuration, where separate name servers are used between the external and internal networks, the internal name server must be configured to not be reachable from outside resolvers.",
+        "info": "Instead of having the same set of authoritative name servers serve different types of clients, an enterprise could have two different sets of authoritative name servers.\n\nOne set, called external name servers, can be located within a DMZ; these would be the only name servers that are accessible to external clients and would serve RRs pertaining to hosts with public services (Web servers that serve external Web pages or provide B2C services, mail servers, etc.)\n\nThe other set, called internal name servers, is to be located within the firewall and should be configured so they are not reachable from outside and hence provide naming services exclusively to internal clients.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the 'named.conf' file.\n\nConfigure the internal view statement to limit use authorized internal hosts:\n\nview 'internal' {\nmatch-clients {|; };\n};\n\nRemove any IP address that is assigned to an external host from the internal view statement.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207585r879887_rule,STIG-ID|BIND-9X-001402,STIG-Legacy|SV-87111,STIG-Legacy|V-72487,SWIFT-CSCv1|2.3,Vuln-ID|V-207585",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*view.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"view Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_93": {
+        "description": "BIND-9X-001403 - A BIND 9.x server implementation must implement internal/external role separation.",
+        "info": "DNS servers with an internal role only process name/address resolution requests from within the organization (i.e., internal clients). DNS servers with an external role only process name/address resolution information requests from clients external to the organization (i.e., on the external networks, including the Internet). The set of clients that can access an authoritative DNS server in a particular role is specified by the organization using address ranges, explicit access control lists, etc. In order to protect internal DNS resource information, it is important to isolate the requests to internal DNS servers.\n\nFailure to separate internal and external roles in DNS may lead to address space that is private (e.g., 10.0.0.0/24) or is otherwise concealed by some form of Network Address Translation from leaking into the public DNS system. Allowing private IP space to leak into the public DNS system may provide a person with malicious intent the ability to footprint your network and identify potential attack targets residing on your private network.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the 'named.conf' file.\n\nConfigure the internal and external view statements to use separate network segments.\n\nConfigure all internal view statements to be listed before any external view statement.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207586r879887_rule,STIG-ID|BIND-9X-001403,STIG-Legacy|SV-87113,STIG-Legacy|V-72489,SWIFT-CSCv1|2.3,Vuln-ID|V-207586",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*view.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"view Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_94": {
+        "description": "Check for no 'masters' in config file on primary/master DNS'",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*masters[\\\\s]*",
+        "expect": "^[\\\\s]*masters[\\\\s]*"
+    },
+    "custom_item_95": {
+        "description": "BIND-9X-001510 - A BIND 9.x server implementation must enforce approved authorizations for controlling the flow of information between authoritative name servers and specified secondary name servers based on DNSSEC policies.",
+        "info": "A mechanism to detect and prevent unauthorized communication flow must be configured or provided as part of the system design. If information flow is not enforced based on approved authorizations, the system may become compromised. Information flow control regulates where information is allowed to travel within a system and between interconnected systems. The flow of all application information must be monitored and controlled so it does not introduce any unacceptable risk to the systems or data.\n\nWithin the context of DNS, this is applicable in terms of controlling the flow of DNS information between systems, such as DNS zone transfers.\n\nAuthoritative name servers (especially primary name servers) should be configured with an allow-transfer access control sub statement designating the list of hosts from which DNS information, such as zone transfers, can be accepted. These restrictions address the denial-of-service threat and potential exploits from unrestricted dissemination of information about internal resources.\n\nZone transfer from primary name servers should be restricted to secondary name servers. The zone transfer should be completely disabled in the secondary name servers. The address match list argument for the allow-transfer sub statement should consist of IP addresses of secondary name servers and stealth secondary name servers.\n\nSatisfies: SRG-APP-000215-DNS-000003, SRG-APP-000516-DNS-000095",
+        "solution": "For an authoritative name server:\n\nConfigure each zone statement to allow transfers from authorized hosts:\n\nallow-transfer {; };\n\nRestart the BIND 9.x process.\n\nFor a secondary server:\n\nConfigure each zone to deny zone transfer requests:\n\nallow-transfer { none; };\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53|SC-20b.,800-53r5|CM-6b.,800-53r5|SC-20b.,CAT|II,CCI|CCI-000366,CCI|CCI-001663,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,ITSG-33|SC-20,NESA|T3.2.1,QCSC-v1|5.2.1,Rule-ID|SV-207591r879635_rule,STIG-ID|BIND-9X-001510,STIG-Legacy|SV-87123,STIG-Legacy|V-72499,SWIFT-CSCv1|2.3,Vuln-ID|V-207591",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*zone.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*allow-transfer\\\\s*{.*;\\\\s*}/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"allow-transfer Not Found\" } else if (r == 0) { print \"Not all zones have allow-transfer.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_96": {
+        "description": "BIND-9X-001510 - A BIND 9.x server implementation must enforce approved authorizations for controlling the flow of information between authoritative name servers and specified secondary name servers based on DNSSEC policies.",
+        "info": "A mechanism to detect and prevent unauthorized communication flow must be configured or provided as part of the system design. If information flow is not enforced based on approved authorizations, the system may become compromised. Information flow control regulates where information is allowed to travel within a system and between interconnected systems. The flow of all application information must be monitored and controlled so it does not introduce any unacceptable risk to the systems or data.\n\nWithin the context of DNS, this is applicable in terms of controlling the flow of DNS information between systems, such as DNS zone transfers.\n\nAuthoritative name servers (especially primary name servers) should be configured with an allow-transfer access control sub statement designating the list of hosts from which DNS information, such as zone transfers, can be accepted. These restrictions address the denial-of-service threat and potential exploits from unrestricted dissemination of information about internal resources.\n\nZone transfer from primary name servers should be restricted to secondary name servers. The zone transfer should be completely disabled in the secondary name servers. The address match list argument for the allow-transfer sub statement should consist of IP addresses of secondary name servers and stealth secondary name servers.\n\nSatisfies: SRG-APP-000215-DNS-000003, SRG-APP-000516-DNS-000095",
+        "solution": "For an authoritative name server:\n\nConfigure each zone statement to allow transfers from authorized hosts:\n\nallow-transfer {; };\n\nRestart the BIND 9.x process.\n\nFor a secondary server:\n\nConfigure each zone to deny zone transfer requests:\n\nallow-transfer { none; };\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53|SC-20b.,800-53r5|CM-6b.,800-53r5|SC-20b.,CAT|II,CCI|CCI-000366,CCI|CCI-001663,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,ITSG-33|SC-20,NESA|T3.2.1,QCSC-v1|5.2.1,Rule-ID|SV-207591r879635_rule,STIG-ID|BIND-9X-001510,STIG-Legacy|SV-87123,STIG-Legacy|V-72499,SWIFT-CSCv1|2.3,Vuln-ID|V-207591",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk 'BEGIN { o=0; r=1; } /^\\\\s*zone.*{/ { k=0; s=1; } /{/ { b += 1; } /}/ { b -= 1; } s == 1 { print; o=1; } s == 1 && /^\\\\s*allow-transfer\\\\s*{\\\\s*none;\\\\s*}/ { k=1; } s == 1 && b == 0 { if (k == 0) r = 0; s=0; } END { if (o == 0) { print \"allow-transfer Not Found\" } else if (r == 0) { print \"Not all zones have allow-transfer.\" } else { print \"Pass\" } }' @NAMED_CONF@",
+        "expect": "^Pass$"
+    },
+    "custom_item_97": {
+        "description": "BIND-9X-001611 - Every NS record in a zone file on a BIND 9.x server must point to an active name server and that name server must be authoritative for the domain specified in that record.",
+        "info": "Poorly constructed NS records pose a security risk because they create conditions under which an adversary might be able to provide the missing authoritative name services that are improperly specified in the zone file. The adversary could issue bogus responses to queries that clients would accept because they learned of the adversary's name server from a valid authoritative name server, one that need not be compromised for this attack to be successful. The list of slave servers must remain current within 72 hours of any changes to the zone architecture that would affect the list of slaves. If a slave server has been retired or is not operational but remains on the list, then an adversary might have a greater opportunity to impersonate that slave without detection, rather than if the slave were actually online. For example, the adversary may be able to spoof the retired slave's IP address without an IP address conflict, which would not be likely to occur if the true slave were active.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the zone file(s).\n\nRemove any name server that the BIND 9.x server is not authoritative for.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207594r879887_rule,STIG-ID|BIND-9X-001611,STIG-Legacy|SV-87129,STIG-Legacy|V-72505,SWIFT-CSCv1|2.3,Vuln-ID|V-207594",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_98": {
+        "description": "BIND-9X-001612 - On a BIND 9.x server all authoritative name servers for a zone must be located on different network segments.",
+        "info": "Most enterprises have an authoritative primary server and a host of authoritative secondary name servers. It is essential that these authoritative name servers for an enterprise be located on different network segments. This dispersion ensures the availability of an authoritative name server not only in situations in which a particular router or switch fails but also during events involving an attack on an entire network segment.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the zone file and configure each name server on a separate network segment.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207595r879887_rule,STIG-ID|BIND-9X-001612,STIG-Legacy|SV-87131,STIG-Legacy|V-72507,SWIFT-CSCv1|2.3,Vuln-ID|V-207595",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_99": {
+        "description": "Check for recusion",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*recursion yes;",
+        "expect": "^[\\\\s]*recursion yes;"
+    },
+    "custom_item_100": {
+        "description": "BIND-9X-001620 - On a BIND 9.x server all root name servers listed in the local root zone file hosted on a BIND 9.x authoritative name server must be valid for that zone.",
+        "info": "All caching name servers must be authoritative for the root zone because, without this starting point, they would have no knowledge of the DNS infrastructure and thus would be unable to respond to any queries. The security risk is that an adversary could change the root hints and direct the caching name server to a bogus root server. At that point, every query response from that name server is suspect, which would give the adversary substantial control over the network communication of the name servers' clients.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Edit the local root zone file.\n\nRemove any reference to a domain that is outside of the name server's primary domain.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207597r879887_rule,STIG-ID|BIND-9X-001620,STIG-Legacy|SV-87135,STIG-Legacy|V-72511,SWIFT-CSCv1|2.3,Vuln-ID|V-207597",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone\\\\s*\"\\.\"\\\\s*IN\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_101": {
+        "description": "Check for recusion",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*recursion yes;",
+        "expect": "^[\\\\s]*recursion yes;"
+    },
+    "custom_item_102": {
+        "description": "BIND-9X-001621 - On a BIND 9.x server all root name servers listed in the local root zone file hosted on a BIND 9.x authoritative name server must be empty or removed.",
+        "info": "A potential vulnerability of DNS is that an attacker can poison a name servers cache by sending queries that will cause the server to obtain host-to-IP address mappings from bogus name servers that respond with incorrect information. The DNS architecture needs to maintain one name server whose zone records are correct and the cache is not poisoned, in this effort the authoritative name server may not forward queries, one of the ways to prevent this, the root hints file is to be deleted.\n\nWhen authoritative servers are sent queries for zones that they are not authoritative for, and they are configured as a non-caching server (as recommended), they can either be configured to return a referral to the root servers or they can be configured to refuse to answer the query. The requirement is to configure authoritative servers to refuse to answer queries for any zones for which they are not authoritative. This is more efficient for the server, and allows it to spend more of its resources doing what its intended purpose is; answering authoritatively for its zone.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remove the local root zone file from the name server.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207598r879887_rule,STIG-ID|BIND-9X-001621,STIG-Legacy|SV-87137,STIG-Legacy|V-72513,SWIFT-CSCv1|2.3,Vuln-ID|V-207598",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone\\\\s*\"\\.\"\\\\s*IN\\\\s*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_103": {
+        "description": "BIND-9X-001700 - On the BIND 9.x server a zone file must not include resource records that resolve to a fully qualified domain name residing in another zone.",
+        "info": "If a name server were able to claim authority for a resource record in a domain for which it was not authoritative, this would pose a security risk. In this environment, an adversary could use illicit control of a name server to impact IP address resolution beyond the scope of that name server (i.e., by claiming authority for records outside of that server's zones). Fortunately, all but the oldest versions of BIND and most other DNS implementations do not allow for this behavior. Nevertheless, the best way to eliminate this risk is to eliminate from the zone files any records for hosts in another zone.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "In the case of third-party CDNs or cloud offerings, document the mission need with the AO.\n\nEdit the zone file.\n\nRemove any record that points to a different zone, with the exception of approved CDNs or cloud offerings.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207599r879887_rule,STIG-ID|BIND-9X-001700,STIG-Legacy|SV-87139,STIG-Legacy|V-72515,SWIFT-CSCv1|2.3,Vuln-ID|V-207599",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_104": {
+        "description": "BIND-9X-001701 - On the BIND 9.x server CNAME records must not point to a zone with lesser security for more than six months.",
+        "info": "The use of CNAME records for exercises, tests, or zone-spanning aliases should be temporary (e.g., to facilitate a migration). When a host name is an alias for a record in another zone, an adversary has two points of attack: the zone in which the alias is defined and the zone authoritative for the alias's canonical name. This configuration also reduces the speed of client resolution because it requires a second lookup after obtaining the canonical name. Furthermore, in the case of an authoritative name server, this information is promulgated throughout the enterprise to caching servers and thus compounds the vulnerability.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "In the case of third-party CDNs or cloud offerings, document the mission need with the AO.\n\nEdit the zone file.\n\nRemove CNAME records that are older than six months that do not meet the CDN or cloud offering criteria.\n\nRestart the BIND 9.x process.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Bind_9-x_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-207600r879887_rule,STIG-ID|BIND-9X-001701,STIG-Legacy|SV-87141,STIG-Legacy|V-72517,SWIFT-CSCv1|2.3,Vuln-ID|V-207600",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_BIND_9-x_V2R3_STIG.zip",
+        "cmd": "/usr/bin/awk '/^\\\\s*zone.*{/ { l=1 } /{/ { b += 1 } /}/ { b -= 1 } l == 1 { print; o=1 } b == 0 { l = 0 } END { if (o == 0) print \"zone Not Found\" }' @NAMED_CONF@",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_105": {
+        "description": "Check for recusion",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*recursion yes;",
+        "expect": "^[\\\\s]*recursion yes;"
+    },
+    "custom_item_106": {
+        "description": "forward only",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*forward only;",
+        "expect": "^[\\\\s]*forward only;"
+    },
+    "custom_item_107": {
+        "description": "forwarders",
+        "file": "@NAMED_CONF@",
+        "regex": "^[\\\\s]*forwarders[\\\\s]*{[\\\\s]*@ERS_IP_ADDRESSES@[\\\\s]*};",
+        "expect": "^[\\\\s]*forwarders[\\\\s]*{[\\\\s]*@ERS_IP_ADDRESSES@[\\\\s]*};"
+    }
+}

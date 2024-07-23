@@ -1,0 +1,47 @@
+{
+    "custom_item_1": {
+        "description": "Linux found",
+        "cmd": "uname -a",
+        "expect": "Linux"
+    },
+    "custom_item_2": {
+        "description": "2.1.1 Ensure 'SECURE_CONTROL_' Is Set In 'listener.ora'",
+        "info": "The SECURE_CONTROL_setting determines the type of control connection the Oracle server requires for remote configuration of the listener.\n\nRationale:\n\nListener configuration changes via unencrypted remote connections can result in unauthorized users sniffing control configuration information from the network.",
+        "solution": "To remediate this recommendation:\nSet the SECURE_CONTROL_for each defined listener in the listener.ora file.\n\nReferences:\n\nhttp://docs.oracle.com/database/121/NETRF/listener.htm#NETRF327",
+        "reference": "800-171|3.5.3,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv6|3.4,CSCv7|4.5,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),LEVEL|1S,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1",
+        "see_also": "https://workbench.cisecurity.org/files/2741",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Cc][Oo][Nn][Tt][Rr][Oo][Ll]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Cc][Oo][Nn][Tt][Rr][Oo][Ll]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[\\(]?(.*[Tt][Cc][Pp][Ss].*|.*[Ii][Pp][Cc].*)[\\)]?"
+    },
+    "custom_item_3": {
+        "description": "2.1.2 Ensure 'extproc' Is Not Present in 'listener.ora'",
+        "info": "extproc should be removed from the listener.ora to mitigate the risk that OS libraries can be invoked by the Oracle instance.\n\nRationale:\n\nextproc allows the database to run procedures from OS libraries. These library calls can, in turn, run any OS command.",
+        "solution": "To remediate this recommendation:\nRemove extproc from the listener.ora file.\n\nReferences:\n\nhttp://docs.oracle.com/database/121/DBSEG/app_devs.htm#DBSEG656",
+        "reference": "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv6|18.9,CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1S,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2",
+        "see_also": "https://workbench.cisecurity.org/files/2741",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "[Ee][Xx][Tt][Pp][Rr][Oo][Cc]",
+        "expect": "[Ee][Xx][Tt][Pp][Rr][Oo][Cc]"
+    },
+    "custom_item_4": {
+        "description": "2.1.3 Ensure 'ADMIN_RESTRICTIONS_' Is Set to 'ON'",
+        "info": "The admin_restrictions_setting in the listener.ora file can require that any attempted real-time alteration of the parameters in the listener via the set command file be refused unless the listener.ora file is manually altered, then restarted by a privileged user.\n\nRationale:\n\nBlocking unprivileged users from making alterations of the listener.ora file, where remote data/service settings are specified, will help protect data confidentiality.",
+        "solution": "To remediate this recommendation:\nUse a text editor such as vi to set the admin_restrictions_to the value ON.\n\nDefault Value:\n\nNot set.\n\nReferences:\n\nhttp://docs.oracle.com/database/121/NETRF/listener.htm#NETRF310",
+        "reference": "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv6|5.1,CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1S,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+        "see_also": "https://workbench.cisecurity.org/files/2741",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Aa][Dd][Mm][Ii][Nn]_[Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt][Ii][Oo][Nn][Ss]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Aa][Dd][Mm][Ii][Nn]_[Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt][Ii][Oo][Nn][Ss]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[Oo][Nn][\\\\s]*$"
+    },
+    "custom_item_5": {
+        "description": "2.1.4 Ensure 'SECURE_REGISTER_' Is Set to 'TCPS' or 'IPC'",
+        "info": "The SECURE_REGISTER_setting specifies the protocols used to connect to the TNS listener. Each setting should have a value of either TCPS or IPC based on the needs for its protocol.\n\nRationale:\n\nListener configuration changes via unencrypted remote connections can result in unauthorized users sniffing control configuration information from the network.",
+        "solution": "To remediate this recommendation:\nUse a text editor such as vi to set the SECURE_REGISTER_=TCPS or SECURE_REGISTER_=IPC for each listener found in $ORACLE_HOME/network/admin/listener.ora.\n\n\n\n\nReferences:\n\nhttp://docs.oracle.com/database/121/NETRF/listener.htm#NETRF328\n\nhttps://support.oracle.com/epmos/faces/ui/km/DocumentDisplay.jspx?id=1453883.1\n\nhttps://support.oracle.com/epmos/faces/ui/km/DocumentDisplay.jspx?id=1340831.1\n\nhttp://www.joxeankoret.com/download/tnspoison.pdf\n\nNotes:\n\nOracle Real Application Cluster requires a different approach to fix the TNS Poisoning problem. See Oracle support note 1453883.1 for details.",
+        "reference": "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv6|14.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1S,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/2741",
+        "file": "@ORACLE_HOME@/network/admin/listener.ora",
+        "regex": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Rr][Ee][Gg][Ii][Ss][Tt][Ee][Rr]_.+[\\\\s]*=",
+        "expect": "^[\\\\s]*[Ss][Ee][Cc][Uu][Rr][Ee]_[Rr][Ee][Gg][Ii][Ss][Tt][Ee][Rr]_(@LISTENER_NAME@)[\\\\s]*=[\\\\s]*[\\(]?(.*[Tt][Cc][Pp][Ss].*|.*[Ii][Pp][Cc].*)[\\)]?"
+    }
+}

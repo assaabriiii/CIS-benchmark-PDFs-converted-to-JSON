@@ -1,0 +1,1137 @@
+{
+    "custom_item_1": {
+        "description": "User directory home permissions",
+        "name": "accounts_bad_home_permissions"
+    },
+    "custom_item_2": {
+        "description": "MacOS 12 is installed",
+        "cmd": "/usr/bin/sw_vers | /usr/bin/grep 'ProductVersion'",
+        "expect": "^ProductVersion[\\\\s]*:[\\\\s]*@PLATFORM_VERSION@"
+    },
+    "custom_item_3": {
+        "description": "APPL-12-000001 - The macOS system must be configured to prevent Apple Watch from terminating a session lock.",
+        "info": "Users must be prompted to enter their passwords when unlocking the screen saver. The screen saver acts as a session lock and prevents unauthorized users from accessing the current user's account.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.1.10,800-53|AC-11b.,800-53r5|AC-11b.,CAT|II,CCI|CCI-000056,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11b.,NIAv2|AM23e,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252436r816122_rule,STIG-ID|APPL-12-000001,Vuln-ID|V-252436",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowAutoUnlock | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "allowAutoUnlock[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_4": {
+        "description": "APPL-12-000002 - The macOS system must retain the session lock until the user reestablishes access using established identification and authentication procedures.",
+        "info": "Users must be prompted to enter their passwords when unlocking the screen saver. The screen saver acts as a session lock and prevents unauthorized users from accessing the current user's account.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.1.10,800-53|AC-11b.,800-53r5|AC-11b.,CAT|II,CCI|CCI-000056,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11b.,NIAv2|AM23e,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252437r816125_rule,STIG-ID|APPL-12-000002,Vuln-ID|V-252437",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep askForPassword | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "askForPassword[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_5": {
+        "description": "APPL-12-000003 - The macOS system must initiate the session lock no more than five seconds after a screen saver is started.",
+        "info": "A screen saver must be enabled and set to require a password to unlock. An excessive grace period impacts the ability for a session to be truly locked, requiring authentication to unlock.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.1.10,800-53|AC-11b.,800-53r5|AC-11b.,CAT|II,CCI|CCI-000056,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11b.,NIAv2|AM23e,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252438r877365_rule,STIG-ID|APPL-12-000003,Vuln-ID|V-252438",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep askForPasswordDelay | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "askForPasswordDelay[\\\\s]*=[\\\\s]*[0-5];"
+    },
+    "custom_item_6": {
+        "description": "APPL-12-000004 - The macOS system must initiate a session lock after a 15-minute period of inactivity.",
+        "info": "A screen saver must be enabled and set to require a password to unlock. The timeout should be set to 15 minutes of inactivity. This mitigates the risk that a user might forget to manually lock the screen before stepping away from the computer.\n\nA session time-out lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not log out because of the temporary nature of the absence. Rather than relying on the user to manually lock their operating system session prior to vacating the vicinity, operating systems need to be able to identify when a user's session has idled and take action to initiate the session lock.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.1.10,800-53|AC-11a.,800-53r5|AC-11a.,CAT|II,CCI|CCI-000057,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11a.,NESA|T2.3.8,NESA|T2.3.9,NIAv2|AM23a,NIAv2|AM23b,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252439r816131_rule,STIG-ID|APPL-12-000004,Vuln-ID|V-252439",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep idleTime | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "idleTime[\\\\s]*=[\\\\s]*(900|[2-8][0-9][0-9]|1[8-9][0-9]);"
+    },
+    "custom_item_7": {
+        "description": "APPL-12-000005 - The macOS system must be configured to lock the user session when a smart token is removed.",
+        "info": "A session lock is a temporary action taken when a user stops work and moves away from the immediate physical vicinity of the information system but does not want to log out because of the temporary nature of the absence.\n\nThe session lock is implemented at the point where session activity can be determined. Rather than be forced to wait for a period of time to expire before the user session can be locked, operating systems need to provide users with the ability to manually invoke a session lock so users may secure their session should they need to temporarily vacate the immediate physical vicinity.",
+        "solution": "This setting is enforced using the 'Smart Card Policy' configuration profile.\n\nNote: Before applying the 'Smart Card Policy', the supplemental guidance provided with the STIG should be consulted to ensure continued access to the operating system.",
+        "reference": "800-171|3.1.10,800-53|AC-11a.,800-53r5|AC-11a.,CAT|II,CCI|CCI-000058,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11a.,NESA|T2.3.8,NESA|T2.3.9,NIAv2|AM23a,NIAv2|AM23b,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252440r816134_rule,STIG-ID|APPL-12-000005,Vuln-ID|V-252440",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep tokenRemovalAction | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "tokenRemovalAction[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_8": {
+        "description": "APPL-12-000006 - The macOS system must conceal, via the session lock, information previously visible on the display with a publicly viewable image.",
+        "info": "A default screen saver must be configured for all users, as the screen saver will act as a session time-out lock for the system and must conceal the contents of the screen from unauthorized users. The screen saver must not display any sensitive information or reveal the contents of the locked session screen. Publicly viewable images can include static or dynamic images such as patterns used with screen savers, photographic images, solid colors, a clock, a battery life indicator, or a blank screen.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.1.10,800-53|AC-11(1),800-53r5|AC-11(1),CAT|III,CCI|CCI-000060,CN-L3|8.1.4.1(b),DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.11.2.8,ITSG-33|AC-11(1),NIAv2|AM23c,NIAv2|AM23d,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,Rule-ID|SV-252441r816137_rule,STIG-ID|APPL-12-000006,Vuln-ID|V-252441",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep modulePath | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "modulePath[\\\\s]*=[\\\\s]*.*;"
+    },
+    "custom_item_9": {
+        "description": "bottom left",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep wvous-bl-corner | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "\\\\\"wvous-bl-corner\\\\\"[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_10": {
+        "description": "bottom right",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep wvous-br-corner | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "\\\\\"wvous-br-corner\\\\\"[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_11": {
+        "description": "top left",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep wvous-tl-corner | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "\\\\\"wvous-tl-corner\\\\\"[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_12": {
+        "description": "top right",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep wvous-tr-corner | /usr/bin/awk '{ print } END { if(NR==0) { print \"No results found\" } }'",
+        "expect": "\\\\\"wvous-tr-corner\\\\\"[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_13": {
+        "description": "Network Time On",
+        "cmd": "/usr/sbin/systemsetup -getusingnetworktime | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*Network[\\\\s]*Time[\\\\s]*:[\\\\s]*On[\\\\s]*$"
+    },
+    "custom_item_14": {
+        "description": "Network Time Server",
+        "cmd": "/usr/sbin/systemsetup -getnetworktimeserver | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*Network[\\\\s]*Time[\\\\s]*Server[\\\\s]*:[\\\\s]*@NTP_SERVER@[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "description": "APPL-12-000016 - The macOS system must be integrated into a directory services infrastructure.",
+        "info": "Distinct user account databases on each separate system cause problems with username and password policy enforcement. Most approved directory services infrastructure solutions allow centralized management of users and passwords.",
+        "solution": "Integrate the system into an existing directory services infrastructure.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252447r816155_rule,STIG-ID|APPL-12-000016,SWIFT-CSCv1|2.3,Vuln-ID|V-252447",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/dscl localhost -list .",
+        "expect": "^[\\\\s]*Active[\\\\s]*Directory[\\\\s]*$"
+    },
+    "custom_item_16": {
+        "description": "maxFailedAttempts",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep maxFailedAttempts | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*maxFailedAttempts[\\\\s]*=[\\\\s]*3[\\\\s]*$"
+    },
+    "custom_item_17": {
+        "description": "minutesUntilFailedLoginReset",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep minutesUntilFailedLoginReset | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*minutesUntilFailedLoginReset[\\\\s]*=[\\\\s]*15[\\\\s]*$"
+    },
+    "custom_item_18": {
+        "description": "APPL-12-000023 - The macOS system must display the Standard Mandatory DoD Notice and Consent Banner before granting remote access to the operating system.",
+        "info": "Display of a standardized and approved use notification before granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users and are not required when such human interfaces do not exist.\n\nThe banner must be formatted in accordance with DTM-08-060.",
+        "solution": "Create a text file containing the required DoD text.\n\nName the file 'banner' and place it in '/etc/'.",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-252449r816161_rule,STIG-ID|APPL-12-000023,TBA-FIISB|45.2.4,Vuln-ID|V-252449",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/banner",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_19": {
+        "description": "APPL-12-000024 - The macOS system must display the Standard Mandatory DoD Notice and Consent Banner before granting access to the system via SSH.",
+        "info": "Display of a standardized and approved use notification before granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users and are not required when such human interfaces do not exist.\n\nThe banner must be formatted in accordance with DTM-08-060.\n\nSatisfies: SRG-OS-000023-GPOS-00006, SRG-OS-000024-GPOS-00007",
+        "solution": "For systems that allow remote access through SSH run the following command:\n\n# /usr/bin/sudo /usr/bin/sed -i.bak 's/^#Banner.*/Banner \\/etc\\/banner/' /etc/ssh/sshd_config",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53|AC-8b.,800-53r5|AC-8a.,800-53r5|AC-8b.,CAT|II,CCI|CCI-000048,CCI|CCI-000050,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,ITSG-33|AC-8b.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,NIAv2|AM10f,Rule-ID|SV-252450r858503_rule,STIG-ID|APPL-12-000024,TBA-FIISB|45.2.4,Vuln-ID|V-252450",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*",
+        "regex": "^Banner.*",
+        "expect": "^Banner[\\\\s]+/etc/banner",
+        "min_occurrences": "1"
+    },
+    "custom_item_20": {
+        "description": "Check PolicyBanner.rtf file exist",
+        "file": "/Library/Security/PolicyBanner.rtf"
+    },
+    "custom_item_21": {
+        "description": "APPL-12-000025 - The macOS system must be configured so that any connection to the system must display the Standard Mandatory DoD Notice and Consent Banner before granting GUI access to the system.",
+        "info": "Display of a standardized and approved use notification before granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users and are not required when such human interfaces do not exist.\n\nThe banner must be formatted in accordance with DTM-08-060.\n\nSatisfies: SRG-OS-000023-GPOS-00006, SRG-OS-000024-GPOS-00007, SRG-OS-000228-GPOS-00088",
+        "solution": "Create an RTF file containing the required text. Name the file 'PolicyBanner.rtf' or 'PolicyBanner.rtfd' and place it in '/Library/Security/'.",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53|AC-8b.,800-53|AC-8c.1.,800-53|AC-8c.2.,800-53|AC-8c.3.,800-53r5|AC-8a.,800-53r5|AC-8b.,800-53r5|AC-8c.1.,800-53r5|AC-8c.2.,800-53r5|AC-8c.3.,CAT|II,CCI|CCI-000048,CCI|CCI-000050,CCI|CCI-001384,CCI|CCI-001385,CCI|CCI-001386,CCI|CCI-001387,CCI|CCI-001388,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,ITSG-33|AC-8b.,ITSG-33|AC-8c.a.,ITSG-33|AC-8c.b.,ITSG-33|AC-8c.c.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,NIAv2|AM10f,Rule-ID|SV-252451r816167_rule,STIG-ID|APPL-12-000025,TBA-FIISB|45.2.4,Vuln-ID|V-252451",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/Library/Security/PolicyBanner.rtf",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_22": {
+        "description": "APPL-12-000025 - The macOS system must be configured so that any connection to the system must display the Standard Mandatory DoD Notice and Consent Banner before granting GUI access to the system.",
+        "info": "Display of a standardized and approved use notification before granting access to the operating system ensures privacy and security notification verbiage used is consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance.\n\nSystem use notifications are required only for access via logon interfaces with human users and are not required when such human interfaces do not exist.\n\nThe banner must be formatted in accordance with DTM-08-060.\n\nSatisfies: SRG-OS-000023-GPOS-00006, SRG-OS-000024-GPOS-00007, SRG-OS-000228-GPOS-00088",
+        "solution": "Create an RTF file containing the required text. Name the file 'PolicyBanner.rtf' or 'PolicyBanner.rtfd' and place it in '/Library/Security/'.",
+        "reference": "800-171|3.1.9,800-53|AC-8a.,800-53|AC-8b.,800-53|AC-8c.1.,800-53|AC-8c.2.,800-53|AC-8c.3.,800-53r5|AC-8a.,800-53r5|AC-8b.,800-53r5|AC-8c.1.,800-53r5|AC-8c.2.,800-53r5|AC-8c.3.,CAT|II,CCI|CCI-000048,CCI|CCI-000050,CCI|CCI-001384,CCI|CCI-001385,CCI|CCI-001386,CCI|CCI-001387,CCI|CCI-001388,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-8a.,ITSG-33|AC-8b.,ITSG-33|AC-8c.a.,ITSG-33|AC-8c.b.,ITSG-33|AC-8c.c.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,NIAv2|AM10f,Rule-ID|SV-252451r816167_rule,STIG-ID|APPL-12-000025,TBA-FIISB|45.2.4,Vuln-ID|V-252451",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/Library/Security/PolicyBanner.rtfd",
+        "content": "@BANNER_TEXT@"
+    },
+    "custom_item_23": {
+        "description": "APPL-12-000030 - The macOS system must be configured so that log files must not contain access control lists (ACLs).",
+        "info": "The audit service must be configured to create log files with the correct permissions to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and users. If log files are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.\n\nSatisfies: SRG-OS-000057-GPOS-00027, SRG-OS-000206-GPOS-00084",
+        "solution": "For any log file that contains ACLs, run the following command:\n\n/usr/bin/sudo chmod -N [audit log file]",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53|SI-11b.,800-53r5|AU-9,800-53r5|SI-11b.,CAT|II,CCI|CCI-000162,CCI|CCI-001314,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,ITSG-33|SI-11c.,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252452r816170_rule,STIG-ID|APPL-12-000030,Vuln-ID|V-252452",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/ls -le /var/audit | /usr/bin/grep -v current | /usr/bin/egrep '^[[:space:]]*[0-9]' | /usr/bin/awk \\'{print} END {if (NR == 0) print \"No ACLs found.\"}\\'",
+        "expect": "No ACLs found."
+    },
+    "custom_item_24": {
+        "description": "APPL-12-000031 - The macOS system must be configured so that log folders must not contain access control lists (ACLs).",
+        "info": "The audit service must be configured to create log folders with the correct permissions to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and users. If log folders are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log folder that contains ACLs, run the following command:\n\n/usr/bin/sudo chmod -N [audit log folder]",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252453r816173_rule,STIG-ID|APPL-12-000031,Vuln-ID|V-252453",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/ls -lde /var/audit | /usr/bin/grep -v current | /usr/bin/egrep '^[[:space:]]*[0-9]' | /usr/bin/awk \\'{print} END {if (NR == 0) print \"No ACLs found.\"}\\'",
+        "expect": "No ACLs found."
+    },
+    "custom_item_25": {
+        "description": "Check for one filevault user",
+        "cmd": "/usr/bin/fdesetup list | /usr/bin/awk \\'{print} END {if (NR > 0) print \"Pass\"}\\'",
+        "expect": "^Pass$"
+    },
+    "custom_item_26": {
+        "description": "APPL-12-000032 - The macOS system must be configured with dedicated user accounts to decrypt the hard disk upon startup.",
+        "info": "When 'FileVault' and Multifactor Authentication are configured on the operating system, a dedicated user must be configured to ensure that the implemented Multifactor Authentication rules are enforced. If a dedicated user is not configured to decrypt the hard disk upon startup, the system will allow a user to bypass Multifactor Authentication rules during initial startup and first login.",
+        "solution": "Note: In previous versions of macOS, this setting was implemented differently. Systems that used the previous method should prepare the system for the new method by creating a new unlock user, verifying its ability to unlock FileVault after reboot, then deleting the old FileVault unlock user.\n\n\nDisable the login ability of the newly created user account:\n\n$ sudo /usr/bin/dscl . change /Users/UserShell/usr/bin/false\n\nRemove all FileVault login access from each user account defined on the system that is not a designated FileVault user:\n\n$ sudo fdesetup remove -user",
+        "reference": "800-171|3.1.1,800-53|AC-2(11),800-53r5|AC-2(11),CAT|II,CCI|CCI-002143,CN-L3|8.1.4.1(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-252454r853262_rule,STIG-ID|APPL-12-000032,Vuln-ID|V-252454",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/dscl . read /Users/$(/usr/bin/fdesetup list | /usr/bin/awk -F, '{ print $1 }') UserShell",
+        "expect": "^[\\\\s]*UserShell:[\\\\s]*/usr/bin/false$"
+    },
+    "custom_item_27": {
+        "description": "APPL-12-000032 - The macOS system must be configured with dedicated user accounts to decrypt the hard disk upon startup.",
+        "info": "When 'FileVault' and Multifactor Authentication are configured on the operating system, a dedicated user must be configured to ensure that the implemented Multifactor Authentication rules are enforced. If a dedicated user is not configured to decrypt the hard disk upon startup, the system will allow a user to bypass Multifactor Authentication rules during initial startup and first login.",
+        "solution": "Note: In previous versions of macOS, this setting was implemented differently. Systems that used the previous method should prepare the system for the new method by creating a new unlock user, verifying its ability to unlock FileVault after reboot, then deleting the old FileVault unlock user.\n\n\nDisable the login ability of the newly created user account:\n\n$ sudo /usr/bin/dscl . change /Users/UserShell/usr/bin/false\n\nRemove all FileVault login access from each user account defined on the system that is not a designated FileVault user:\n\n$ sudo fdesetup remove -user",
+        "reference": "800-171|3.1.1,800-53|AC-2(11),800-53r5|AC-2(11),CAT|II,CCI|CCI-002143,CN-L3|8.1.4.1(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-252454r853262_rule,STIG-ID|APPL-12-000032,Vuln-ID|V-252454",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/fdesetup list | /usr/bin/awk \\'{print} END {if (NR == 1) { print \"Pass\"} else { print \"Fail\" } }\\'",
+        "expect": "^Pass$"
+    },
+    "custom_item_28": {
+        "description": "APPL-12-000033 - The macOS system must be configured to disable password forwarding for FileVault2.",
+        "info": "When 'FileVault' and Multifactor Authentication are configured on the operating system, a dedicated user must be configured to ensure that the implemented Multifactor Authentication rules are enforced. If a dedicated user is not configured to decrypt the hard disk upon startup, the system will allow a user to bypass Multifactor Authentication rules during initial startup and first login.",
+        "solution": "This setting is enforced using the 'Smart Card' configuration profile.",
+        "reference": "800-171|3.1.1,800-53|AC-2(11),800-53r5|AC-2(11),CAT|II,CCI|CCI-002143,CN-L3|8.1.4.1(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-252455r853263_rule,STIG-ID|APPL-12-000033,Vuln-ID|V-252455",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep DisableFDEAutoLogin",
+        "expect": "^[\\\\s]*DisableFDEAutoLogin[\\\\s]*=[\\\\s]*1[\\\\s]*;[\\\\s]*$"
+    },
+    "custom_item_29": {
+        "description": "Check if SSH is enabled",
+        "cmd": "/usr/sbin/systemsetup -getremotelogin",
+        "expect": "^Remote[\\\\s]*Login:[\\\\s]*On$"
+    },
+    "custom_item_30": {
+        "description": "APPL-12-000051 - The macOS system must be configured with the SSH daemon ClientAliveInterval option set to 900 or less.",
+        "info": "Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a communication session. In addition, quickly terminating an idle session or an incomplete logon attempt will also free up resources committed by the managed network element.\n\nSSH options ClientAliveInterval and ClientAliveCountMax are used in combination to monitor SSH connections. If an SSH client is deemed unresponsive, sshd will terminate the connection. An example would be if a client lost network connectivity the SSH connection to the server would be unresponsive, and therefore sshd would terminate the connection after the ClientAliveCountMax and ClientAliveInterval thresholds have been met.\n\nThe ClientAliveInterval is a timeout measured in seconds. After which if no data is received from the client, sshd will request a response through the encrypted tunnel from the client. The default is 0, indicating no messages will be sent.\n\nThe ClientAliveCountMax is a number of client alive messages that can be sent from the server without receiving a reply from the client. If this threshold is met, sshd will terminate the session. Setting the ClientAliveCountMax to 0 disables connection termination.",
+        "solution": "To ensure that 'ClientAliveInterval' is set correctly, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/.*ClientAliveInterval.*/ClientAliveInterval 900/' /etc/ssh/sshd_config",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-252456r891341_rule,STIG-ID|APPL-12-000051,SWIFT-CSCv1|2.6,Vuln-ID|V-252456",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*",
+        "regex": "^[\\\\s]*ClientAliveInterval[\\\\s]+",
+        "expect": "^[\\\\s]*ClientAliveInterval[\\\\s]+(900|[1-8][0-9][0-9]|[1-9][0-9])[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_31": {
+        "description": "APPL-12-000052 - The macOS system must be configured with the SSH daemon ClientAliveCountMax option set to 1.",
+        "info": "Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended. In addition, quickly terminating an idle session or an incomplete logon attempt will also free up resources committed by the managed network element.\n\nSSH options ClientAliveInterval and ClientAliveCountMax are used in combination to monitor SSH connections. If an SSH client is deemed unresponsive, sshd will terminate the connection. An example would be if a client lost network connectivity the SSH connection to the server would be unresponsive, and therefore sshd would terminate the connection after the ClientAliveCountMax and ClientAliveInterval thresholds have been met.\n\nThe ClientAliveInterval is a timeout measured in seconds. After which if no data is received from the client, sshd will request a response through the encrypted tunnel from the client. The default is 0, indicating no messages will be sent.\n\nThe ClientAliveCountMax is a number of client alive messages that can be sent from the server without receiving a reply from the client. If this threshold is met, sshd will terminate the session. Setting the ClientAliveCountMax to 0 disables connection termination.",
+        "solution": "To ensure that the SSH idle timeout occurs precisely when the 'ClientAliveCountMax' is set, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/.*ClientAliveCountMax.*/ClientAliveCountMax 1/' /etc/ssh/sshd_config",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-252457r891344_rule,STIG-ID|APPL-12-000052,SWIFT-CSCv1|2.6,Vuln-ID|V-252457",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*",
+        "regex": "^[\\\\s]*ClientAliveCountMax[\\\\s]+",
+        "expect": "^[\\\\s]*ClientAliveCountMax[\\\\s]+1[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_32": {
+        "description": "APPL-12-000053 - The macOS system must be configured with the SSH daemon LoginGraceTime set to 30 or less.",
+        "info": "SSH should be configured to log users out after a 15-minute interval of inactivity and to wait only 30 seconds before timing out logon attempts. Terminating an idle session within a short time period reduces the window of opportunity for unauthorized personnel to take control of a management session enabled on the console or console port that has been left unattended. In addition, quickly terminating an idle session or an incomplete logon attempt will also free up resources committed by the managed network element.",
+        "solution": "To ensure that 'LoginGraceTime' is configured correctly, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/.*LoginGraceTime.*/LoginGraceTime 30/' /etc/ssh/sshd_config",
+        "reference": "800-171|3.13.9,800-53|SC-10,800-53r5|SC-10,CAT|II,CCI|CCI-001133,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-10,ITSG-33|SC-10a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.5.1,Rule-ID|SV-252458r858509_rule,STIG-ID|APPL-12-000053,SWIFT-CSCv1|2.6,Vuln-ID|V-252458",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*",
+        "regex": "^[\\\\s]*LoginGraceTime[\\\\s]+",
+        "expect": "^[\\\\s]*LoginGraceTime[\\\\s]+(30|[1-2][0-9]|[0-9])[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_33": {
+        "description": "APPL-12-000054 - The macOS system must implement approved ciphers within the SSH server configuration to protect the confidentiality of SSH connections.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS-validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00174",
+        "solution": "Configure the macOS system to use approved SSH ciphers by creating a plain text file in the /private/etc/ssh/sshd_config.d/ directory containing the following:\n\nCiphers aes128-gcm@openssh.com\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252459r922855_rule,STIG-ID|APPL-12-000054,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-252459",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/egrep -i \"^\\\\s*ciphers\"",
+        "expect": "^[\\\\s]*(?i)Ciphers(?-i)[\\\\s]+aes128-gcm@openssh.com[\\\\s]*$"
+    },
+    "custom_item_34": {
+        "description": "APPL-12-000055 - The macOS system must implement approved Message Authentication Codes (MACs) within the SSH server configuration.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00175",
+        "solution": "Configure the macOS system to use approved SSH MACs by creating a plain text file in the /private/etc/ssh/sshd_config.d/ directory containing the following:\n\nMACs hmac-sha2-256\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252460r922858_rule,STIG-ID|APPL-12-000055,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-252460",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/egrep -i \"^\\\\s*macs\"",
+        "expect": "^[\\\\s]*(?i)MACs(?-i)[\\\\s]+hmac-sha2-256[\\\\s]*$"
+    },
+    "custom_item_35": {
+        "description": "APPL-12-000056 - The macOS system must implement approved Key Exchange Algorithms within the SSH server configuration.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00176",
+        "solution": "Configure the macOS system to use approved SSH Key Exchange Algorithms by creating a plain text file in the /private/etc/ssh/sshd_config.d/ directory containing the following:\n\nKexAlgorithms ecdh-sha2-nistp256\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252461r922861_rule,STIG-ID|APPL-12-000056,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-252461",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/sshd -T | /usr/bin/egrep -i \"^\\\\s*KexAlgorithms\"",
+        "expect": "^[\\\\s]*(?i)KexAlgorithms(?-i)[\\\\s]+ecdh-sha2-nistp256[\\\\s]*$"
+    },
+    "custom_item_36": {
+        "description": "APPL-12-000057 - The macOS system must implement approved ciphers within the SSH client configuration to protect the confidentiality of SSH connections.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00174",
+        "solution": "Configure the macOS system to use approved SSH ciphers by creating a plain text file in the /private/etc/ssh/ssh_config.d/ directory containing the following:\n\nCiphers aes128-gcm@openssh.com\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4c.,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4c.,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-000877,CCI|CCI-001453,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4c.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-257773r922864_rule,STIG-ID|APPL-12-000057,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-257773",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/ssh_config /etc/ssh/ssh_config.d/*",
+        "regex": "^[\\\\s]*(?i)Ciphers(?-i)[\\\\s]+",
+        "expect": "^[\\\\s]*(?i)Ciphers(?-i)[\\\\s]+aes128-gcm@openssh.com[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_37": {
+        "description": "APPL-12-000058 - The macOS system must implement approved Message Authentication Codes (MACs) within the SSH client configuration.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00175",
+        "solution": "Configure the macOS system to use approved SSH MACs by creating a plain text file in the /private/etc/ssh/ssh_config.d/ directory containing the following:\n\nMACs hmac-sha2-256\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4c.,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4c.,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-000877,CCI|CCI-001453,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4c.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-257774r922867_rule,STIG-ID|APPL-12-000058,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-257774",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/ssh_config /etc/ssh/ssh_config.d/*",
+        "regex": "^[\\\\s]*(?i)MACs(?-i)[\\\\s]+",
+        "expect": "^[\\\\s]*(?i)MACs(?-i)[\\\\s]+hmac-sha2-256[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_38": {
+        "description": "APPL-12-000059 - The macOS system must implement approved Key Exchange Algorithms within the SSH client configuration.",
+        "info": "Operating systems using encryption are required to use FIPS-compliant mechanisms for authenticating to macOS.\n\nFor OpenSSH to utilize the Apple Corecrypto FIPS-validated algorithms, a specific configuration is required to leverage the shim implemented by macOS to bypass the non-FIPS validated LibreSSL crypto module packaged with OpenSSH. Information regarding this configuration can be found in the manual page 'apple_ssh_and_fips'.\n\nSatisfies: SRG-OS-000033-GPOS-00014, SRG-OS-000120-GPOS-00061, SRG-OS-000125-GPOS-00065, SRG-OS-000250-GPOS-00093, SRG-OS-000393-GPOS-00173, SRG-OS-000394-GPOS-00176",
+        "solution": "Configure the macOS system to use approved SSH Key Exchange Algorithms by creating a plain text file in the /private/etc/ssh/ssh_config.d/ directory containing the following:\n\nKexAlgorithms ecdh-sha2-nistp256\n\nThe SSH service must be restarted for changes to take effect.",
+        "reference": "800-171|3.1.13,800-171|3.7.5,800-53|AC-17(2),800-53|IA-7,800-53|MA-4c.,800-53|MA-4(6),800-53r5|AC-17(2),800-53r5|IA-7,800-53r5|MA-4c.,800-53r5|MA-4(6),CAT|I,CCI|CCI-000068,CCI|CCI-000803,CCI|CCI-000877,CCI|CCI-001453,CCI|CCI-002890,CCI|CCI-003123,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.MA-2,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(d),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),ITSG-33|IA-7,ITSG-33|IA-7a.,ITSG-33|MA-4c.,ITSG-33|MA-4(6),NESA|M5.2.1,NESA|M5.2.6,NESA|M5.3.1,NESA|T2.3.4,NESA|T5.4.2,NESA|T5.4.4,NESA|T7.4.1,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-257775r922870_rule,STIG-ID|APPL-12-000059,SWIFT-CSCv1|2.6,TBA-FIISB|45.2.3,Vuln-ID|V-257775",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/ssh_config /etc/ssh/ssh_config.d/*",
+        "regex": "^[\\\\s]*(?i)KexAlgorithms(?-i)[\\\\s]+",
+        "expect": "^[\\\\s]*(?i)KexAlgorithms(?-i)[\\\\s]+ecdh-sha2-nistp256[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_39": {
+        "description": "APPL-12-001001 - The macOS system must generate audit records for all account creations, modifications, disabling, and termination events; privileged activities or other system-level access; all kernel module load, unload, and restart actions; all program initiations; and organizationally defined events for all non-local maintenance and diagnostic sessions.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one. Audit records can be generated from various components within the information system (e.g., module or policy filter). If events associated with nonlocal administrative access or diagnostic sessions are not logged, a major tool for assessing and investigating attacks would not be available.\n\nThis requirement addresses auditing-related issues associated with maintenance tools used specifically for diagnostic and repair actions on organizational information systems.\n\nNonlocal maintenance and diagnostic activities are those activities conducted by individuals communicating through a network, either an external network (e.g., the internet) or an internal network. Local maintenance and diagnostic activities are those activities carried out by individuals physically present at the information system or information system component and not communicating across a network connection.\n\nThis requirement applies to hardware/software diagnostic test equipment or tools. This requirement does not cover hardware/software components that may support information system maintenance, yet are a part of the system, for example, the software implementing 'ping,' 'ls,' 'ipconfig,' or the hardware and software implementing the monitoring port of an Ethernet switch.\n\nSatisfies: SRG-OS-000004-GPOS-00004, SRG-OS-000239-GPOS-00089, SRG-OS-000240-GPOS-00090, SRG-OS-000241-GPOS-00091, SRG-OS-000327-GPOS-00127, SRG-OS-000392-GPOS-00172, SRG-OS-000471-GPOS-00215, SRG-OS-000471-GPOS-00216, SRG-OS-000476-GPOS-00221, SRG-OS-000477-GPOS-00222",
+        "solution": "To ensure the appropriate flags are enabled for auditing, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak '/^flags/ s/$/,ad/' /etc/security/audit_control; /usr/bin/sudo /usr/sbin/audit -s\n\nA text editor may also be used to implement the required updates to the '/etc/security/audit_control' file.",
+        "reference": "800-171|3.1.1,800-171|3.1.7,800-171|3.3.1,800-171|3.3.2,800-171|3.7.5,800-53|AC-2(4),800-53|AC-6(9),800-53|AU-12c.,800-53|MA-4(1)(a),800-53r5|AC-2(4),800-53r5|AC-6(9),800-53r5|AU-12c.,800-53r5|MA-4(1)(a),CAT|II,CCI|CCI-000018,CCI|CCI-000172,CCI|CCI-001403,CCI|CCI-001404,CCI|CCI-001405,CCI|CCI-002234,CCI|CCI-002884,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.2(d),CN-L3|8.1.4.3(a),CN-L3|8.1.10.6(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.MA-2,CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.12.4.1,ISO/IEC-27001|A.12.4.3,ITSG-33|AC-2(4),ITSG-33|AC-6,ITSG-33|AU-12c.,ITSG-33|MA-4(1),NESA|T2.3.4,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM9a,NIAv2|AM9b,NIAv2|AM9c,NIAv2|AM9d,NIAv2|AM9e,NIAv2|AM23f,NIAv2|SM8,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-252462r853271_rule,STIG-ID|APPL-12-001001,SWIFT-CSCv1|5.1,SWIFT-CSCv1|6.4,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|36.2.3,TBA-FIISB|45.1.1,TBA-FIISB|45.2.3,Vuln-ID|V-252462",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*ad).*$"
+    },
+    "custom_item_40": {
+        "description": "APPL-12-001002 - The macOS system must monitor remote access methods and generate audit records when successful/unsuccessful attempts to access/modify privileges occur.",
+        "info": "Frequently, an attacker that successfully gains access to a system has only gained access to an account with limited privileges, such as a guest account or a service account. The attacker must attempt to change to another user account with normal or elevated privileges in order to proceed. Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).\n\nSatisfies: SRG-OS-000032-GPOS-00013, SRG-OS-000462-GPOS-00206",
+        "solution": "To ensure the appropriate flags are enabled for auditing, run the following command:\n\n/usr/bin/sudo sed -i.bak '/^flags/ s/$/,lo/' /etc/security/audit_control; /usr/bin/sudo /usr/sbin/audit -s\n\nA text editor may also be used to implement the required updates to the '/etc/security/audit_control' file.",
+        "reference": "800-171|3.1.12,800-171|3.3.1,800-171|3.3.2,800-53|AC-17(1),800-53|AU-12c.,800-53r5|AC-17(1),800-53r5|AU-12c.,CAT|II,CCI|CCI-000067,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-3,CSF|PR.PT-1,CSF|PR.PT-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.12.4.1,ITSG-33|AC-17(1),ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NESA|T5.4.4,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252463r816463_rule,STIG-ID|APPL-12-001002,SWIFT-CSCv1|2.6,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-252463",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*lo).*$"
+    },
+    "custom_item_41": {
+        "description": "APPL-12-001003 - The macOS system must initiate session audits at system startup, using internal clocks with time stamps for audit records that meet a minimum granularity of one second and can be mapped to Coordinated Universal Time (UTC) or Greenwich Mean Time (GMT), in order to generate audit records containing information to establish what type of events occurred, the identity of any individual or process associated with the event, including individual identities of group account users, establish where the events occurred, source of the event, and outcome of the events including all account enabling actions, full-text recording of privileged commands, and information about the use of encryption for access wireless access to and from the system.",
+        "info": "Without establishing what type of events occurred, when they occurred, and by whom it would be difficult to establish, correlate, and investigate the events leading up to an outage or attack.\n\nAudit record content that may be necessary to satisfy this requirement includes, for example, time stamps, source and destination addresses, user/process identifiers, event descriptions, success/fail indications, filenames involved, and access control or flow control rules invoked.\n\nAssociating event types with detected events in the operating system audit logs provides a means of investigating an attack, recognizing resource utilization or capacity thresholds, or identifying an improperly configured operating system.\n\nSatisfies: SRG-OS-000037-GPOS-00015, SRG-OS-000038-GPOS-00016, SRG-OS-000039-GPOS-00017, SRG-OS-000040-GPOS-00018, SRG-OS-000041-GPOS-00019, SRG-OS-000042-GPOS-00020, SRG-OS-000042-GPOS-00021, SRG-OS-000055-GPOS-00026, SRG-OS-000254-GPOS-00095, SRG-OS-000255-GPOS-00096, SRG-OS-000303-GPOS-00120, SRG-OS-000337-GPOS-00129, SRG-OS-000358-GPOS-00145, SRG-OS-000359-GPOS-00146",
+        "solution": "To enable the audit service, run the following command:\n\n/usr/bin/sudo /bin/launchctl enable system/com.apple.auditd\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.1.1,800-171|3.3.1,800-171|3.3.2,800-171|3.3.7,800-53|AC-2(4),800-53|AU-3,800-53|AU-3(1),800-53|AU-8a.,800-53|AU-8b.,800-53|AU-12(3),800-53|AU-14(1),800-53r5|AC-2(4),800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-8a.,800-53r5|AU-8b.,800-53r5|AU-12(3),800-53r5|AU-14(1),CAT|II,CCI|CCI-000130,CCI|CCI-000131,CCI|CCI-000132,CCI|CCI-000133,CCI|CCI-000134,CCI|CCI-000135,CCI|CCI-000159,CCI|CCI-001464,CCI|CCI-001487,CCI|CCI-001889,CCI|CCI-001890,CCI|CCI-001914,CCI|CCI-002130,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(4),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-8,ITSG-33|AU-8a.,ITSG-33|AU-12,ITSG-33|AU-14,NESA|T3.6.2,NESA|T3.6.7,NESA|T5.2.2,NIAv2|AM9a,NIAv2|AM9b,NIAv2|AM9c,NIAv2|AM9d,NIAv2|AM9e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,Rule-ID|SV-252464r853272_rule,STIG-ID|APPL-12-001003,SWIFT-CSCv1|6.4,TBA-FIISB|36.2.3,TBA-FIISB|37.4,Vuln-ID|V-252464",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep auditd | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*false"
+    },
+    "custom_item_42": {
+        "description": "APPL-12-001010 - The macOS system must shut down by default upon audit failure (unless availability is an overriding concern).",
+        "info": "The audit service should shut down the computer if it is unable to audit system events. Once audit failure occurs, user and system activity is no longer recorded and malicious activity could go undetected. Audit processing failures include software/hardware errors, failures in the audit capturing mechanisms, and audit storage capacity being reached or exceeded. Responses to audit failure depend on the nature of the failure mode.\n\nWhen availability is an overriding concern, other approved actions in response to an audit failure are as follows:\n\n(i) If the failure was caused by the lack of audit record storage capacity, the operating system must continue generating audit records if possible (automatically restarting the audit service if necessary), overwriting the oldest audit records in a first-in-first-out manner.\n\n(ii) If audit records are sent to a centralized collection server and communication with this server is lost or the server fails, the operating system must queue audit records locally until communication is restored or until the audit records are retrieved manually. Upon restoration of the connection to the centralized collection server, action should be taken to synchronize the local audit data with the collection server.",
+        "solution": "Edit the '/etc/security/audit_control file' and change the value for policy to include the setting 'ahlt'. To do this programmatically, run the following command:\n\nsudo /usr/bin/sed -i.bak '/^policy/ s/$/,ahlt/' /etc/security/audit_control; sudo /usr/sbin/audit -s",
+        "reference": "800-171|3.3.4,800-53|AU-5b.,800-53r5|AU-5b.,CAT|II,CCI|CCI-000140,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5b.,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252465r816466_rule,STIG-ID|APPL-12-001010,Vuln-ID|V-252465",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^[\\\\s]*policy[\\\\s]*:",
+        "expect": "^[\\\\s]*policy[\\\\s]*:.*(?=.*,ahlt)"
+    },
+    "custom_item_43": {
+        "description": "APPL-12-001012 - The macOS system must be configured with audit log files owned by root.",
+        "info": "The audit service must be configured to create log files with the correct ownership to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and users. If log files are set to only be readable and writable by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log file that returns an incorrect owner, run the following command:\n\n/usr/bin/sudo chown root [audit log file]\n\n[audit log file] is the full path to the log file in question.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252466r816212_rule,STIG-ID|APPL-12-001012,Vuln-ID|V-252466",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit/*",
+        "owner": "root"
+    },
+    "custom_item_44": {
+        "description": "APPL-12-001013 - The macOS system must be configured with audit log folders owned by root.",
+        "info": "The audit service must be configured to create log files with the correct ownership to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and about users. If log files are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log folder that has an incorrect owner, run the following command:\n\n/usr/bin/sudo chown root [audit log folder]",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252467r816215_rule,STIG-ID|APPL-12-001013,Vuln-ID|V-252467",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit",
+        "owner": "root"
+    },
+    "custom_item_45": {
+        "description": "APPL-12-001014 - The macOS system must be configured with audit log files group-owned by wheel.",
+        "info": "The audit service must be configured to create log files with the correct group ownership to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and users. If log files are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log file that returns an incorrect group owner, run the following command:\n\n/usr/bin/sudo chgrp wheel [audit log file]\n\n[audit log file] is the full path to the log file in question.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252468r816218_rule,STIG-ID|APPL-12-001014,Vuln-ID|V-252468",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit/*",
+        "group": "wheel"
+    },
+    "custom_item_46": {
+        "description": "APPL-12-001015 - The macOS system must be configured with audit log folders group-owned by wheel.",
+        "info": "The audit service must be configured to create log files with the correct group ownership to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and about users. If log files are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log folder that has an incorrect group, run the following command:\n\n/usr/bin/sudo chgrp wheel [audit log folder]",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252469r816221_rule,STIG-ID|APPL-12-001015,Vuln-ID|V-252469",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit",
+        "group": "wheel"
+    },
+    "custom_item_47": {
+        "description": "APPL-12-001016 - The macOS system must be configured with audit log files set to mode 440 or less permissive.",
+        "info": "The audit service must be configured to create log files with the correct permissions to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and about users. If log files are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.",
+        "solution": "For any log file that returns an incorrect permission value, run the following command:\n\n/usr/bin/sudo chmod 440 [audit log file]\n\n[audit log file] is the full path to the log file in question.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252470r816224_rule,STIG-ID|APPL-12-001016,Vuln-ID|V-252470",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit/*",
+        "mask": "337"
+    },
+    "custom_item_48": {
+        "description": "APPL-12-001017 - The macOS system must be configured with audit log folders set to mode 700 or less permissive.",
+        "info": "The audit service must be configured to create log folders with the correct permissions to prevent normal users from reading audit logs. Audit logs contain sensitive data about the system and users. If log folders are set to be readable and writable only by root or administrative users with sudo, the risk is mitigated.\n\nSatisfies: SRG-OS-000057-GPOS-00027, SRG-OS-000058-GPOS-00028, SRG-OS-000059-GPOS-00029",
+        "solution": "For any log folder that returns an incorrect permission value, run the following command:\n\n/usr/bin/sudo chmod 700 [audit log folder]",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000162,CCI|CCI-000163,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252471r816227_rule,STIG-ID|APPL-12-001017,Vuln-ID|V-252471",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/var/audit",
+        "mask": "077"
+    },
+    "custom_item_49": {
+        "description": "fm",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*fm).*$"
+    },
+    "custom_item_50": {
+        "description": "fr",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*-fr).*$"
+    },
+    "custom_item_51": {
+        "description": "fw",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*-fw).*$"
+    },
+    "custom_item_52": {
+        "description": "fd",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*-fd).*$"
+    },
+    "custom_item_53": {
+        "description": "APPL-12-001029 - The macOS system must allocate audit record storage capacity to store at least one week's worth of audit records when audit records are not immediately sent to a central audit record storage facility.",
+        "info": "The audit service must be configured to require that records are kept for seven days or longer before deletion when there is no central audit record storage facility. When 'expire-after' is set to '7d', the audit service will not delete audit logs until the log data is at least seven days old.",
+        "solution": "Edit the '/etc/security/audit_control' file and change the value for 'expire-after' to the amount of time audit logs should be kept for the system. Use the following command to set the 'expire-after' value to '7d':\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/.*expire-after.*/expire-after:7d/' /etc/security/audit_control; /usr/bin/sudo /usr/sbin/audit -s\n\nA text editor may also be used to implement the required updates to the '/etc/security/audit_control' file.",
+        "reference": "800-53|AU-4,800-53r5|AU-4,CAT|II,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252473r877391_rule,STIG-ID|APPL-12-001029,Vuln-ID|V-252473",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^expire-after:",
+        "expect": "^expire-after:[\\\\s]*([7-9]|[1-9][0-9]+)[Dd][\\\\s]*$"
+    },
+    "custom_item_54": {
+        "description": "APPL-12-001030 - The macOS system must provide an immediate warning to the System Administrator (SA) and Information System Security Officer (ISSO) (at a minimum) when allocated audit record storage volume reaches 75 percent of repository maximum audit record storage capacity.",
+        "info": "The audit service must be configured to require a minimum percentage of free disk space in order to run. This ensures that audit will notify the administrator that action is required to free up more disk space for audit logs.\n\nWhen 'minfree' is set to 25 percent, security personnel are notified immediately when the storage volume is 75 percent full and are able to plan for audit record storage capacity expansion.",
+        "solution": "Edit the '/etc/security/audit_control' file and change the value for 'minfree' to '25' using the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/.*minfree.*/minfree:25/' /etc/security/audit_control; /usr/bin/sudo /usr/sbin/audit -s\n\nA text editor may also be used to implement the required updates to the '/etc/security/audit_control file'.",
+        "reference": "800-171|3.3.4,800-53|AU-5(1),800-53r5|AU-5(1),CAT|II,CCI|CCI-001855,CN-L3|7.1.3.7(e),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(1),NESA|T3.3.1,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252474r877389_rule,STIG-ID|APPL-12-001030,TBA-FIISB|37.3.2,Vuln-ID|V-252474",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^minfree:",
+        "expect": "^minfree:[\\\\s]*25[\\\\s]*$"
+    },
+    "custom_item_55": {
+        "description": "APPL-12-001031 - The macOS system must provide an immediate real-time alert to the System Administrator (SA) and Information System Security Officer (ISSO), at a minimum, of all audit failure events requiring real-time alerts.",
+        "info": "The audit service should be configured to immediately print messages to the console or email administrator users when an auditing failure occurs. It is critical for the appropriate personnel to be aware if a system is at risk of failing to process audit logs as required. Without a real-time alert, security personnel may be unaware of an impending failure of the audit capability and system operation may be adversely affected.",
+        "solution": "To make 'auditd' log errors to standard error as well as 'syslogd', run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/logger -p/logger -s -p/' /etc/security/audit_warn; /usr/bin/sudo /usr/sbin/audit -s",
+        "reference": "800-171|3.3.4,800-53|AU-5(2),800-53r5|AU-5(2),CAT|II,CCI|CCI-001858,CN-L3|7.1.3.3(e),CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-5(2),NESA|T3.6.2,NIAv2|GS7f,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252475r853279_rule,STIG-ID|APPL-12-001031,Vuln-ID|V-252475",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_warn",
+        "regex": "^[\\\\s]*logger[\\\\s]+",
+        "expect": "^[\\\\s]*logger[\\\\s]+(?=.*-p)(?=.*-s)"
+    },
+    "custom_item_56": {
+        "description": "APPL-12-001044 - The macOS system must generate audit records for DoD-defined events such as successful/unsuccessful logon attempts, successful/unsuccessful direct access attempts, starting and ending time for user access, and concurrent logons to the same account from different sources.",
+        "info": "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.\n\nAudit records can be generated from various components within the information system (e.g., module or policy filter).\n\nSatisfies: SRG-OS-000470-GPOS-00214, SRG-OS-000472-GPOS-00217, SRG-OS-000473-GPOS-00218, SRG-OS-000475-GPOS-00220",
+        "solution": "To ensure the appropriate flags are enabled for auditing, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak '/^flags/ s/$/,aa/' /etc/security/audit_control; /usr/bin/sudo /usr/sbin/audit -s\n\nA text editor may also be used to implement the required updates to the '/etc/security/audit_control' file.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12c.,800-53r5|AU-12c.,CAT|II,CCI|CCI-000172,CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(c),CN-L3|8.1.3.5(a),CN-L3|8.1.3.5(b),CN-L3|8.1.4.3(a),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.1,ITSG-33|AU-12c.,NESA|T3.6.2,NESA|T3.6.5,NESA|T3.6.6,NIAv2|SM8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-252476r816474_rule,STIG-ID|APPL-12-001044,SWIFT-CSCv1|6.4,TBA-FIISB|45.1.1,Vuln-ID|V-252476",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/security/audit_control",
+        "regex": "^flags:",
+        "expect": "^flags:.*(?=.*aa).*$"
+    },
+    "custom_item_57": {
+        "description": "APPL-12-001060 - The macOS system must accept and verify Personal Identity Verification (PIV) credentials, implement a local cache of revocation data to support path discovery and validation in case of the inability to access revocation information via the network, and only allow the use of DoD PKI-established certificate authorities for verification of the establishment of protected sessions - PIV credentials, implement a local cache of revocation data to support path discovery and validation in case of the inability to access revocation information via the network, and only allow the use of DoD PKI-established certificate authorities to verify the establishment of protected sessions.",
+        "info": "The use of PIV credentials facilitates standardization and reduces the risk of unauthorized access.\n\nWithout configuring a local cache of revocation data, there is the potential to allow access to users who are no longer authorized (users with revoked certificates).\n\nUntrusted Certificate Authorities (CA) can issue certificates, but they may be issued by organizations or individuals that seek to compromise DoD systems or by organizations with insufficient security controls. If the CA used for verifying the certificate is not a DoD-approved CA, trust of this CA has not been established.\n\nDoD has mandated the use of the CAC to support identity management and personal authentication for systems covered under Homeland Security Presidential Directive (HSPD) 12, as well as making the CAC a primary component of layered protection for national security systems.\n\nThe DoD will only accept PKI-certificates obtained from a DoD-approved internal or external certificate authority. Reliance on CAs for the establishment of secure sessions includes, for example, the use of SSL/TLS certificates.\n\nSatisfies: SRG-OS-000376-GPOS-00161, SRG-OS-000377-GPOS-00162, SRG-OS-000384-GPOS-00167, SRG-OS-000403-GPOS-00182, SRG-OS-000067-GPOS-00035",
+        "solution": "This setting is enforced using the 'Smart Card Policy' configuration profile.\n\nNote: Before applying the 'Smart Card Policy', the supplemental guidance provided with the STIG should be consulted to ensure continued access to the operating system.",
+        "reference": "800-171|3.5.1,800-171|3.5.2,800-171|3.13.15,800-53|IA-2(12),800-53|IA-5(2)(b),800-53|IA-5(2)(d),800-53|SC-23(5),800-53r5|IA-2(12),800-53r5|IA-5(2)(b),800-53r5|IA-5(2)(d),800-53r5|SC-23(5),CAT|II,CCI|CCI-000186,CCI|CCI-001953,CCI|CCI-001954,CCI|CCI-001991,CCI|CCI-002470,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2,ITSG-33|IA-2a.,ITSG-33|IA-5(2),ITSG-33|IA-5(2)(b),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T2.3.8,NESA|T4.5.1,NESA|T5.2.3,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252477r853280_rule,STIG-ID|APPL-12-001060,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-252477",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep checkCertificateTrust | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*checkCertificateTrust[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_58": {
+        "description": "APPL-12-001100 - The macOS system must require individuals to be authenticated with an individual authenticator prior to using a group authenticator.",
+        "info": "Administrator users must never log in directly as root. To assure individual accountability and prevent unauthorized access, logging in as root over a remote connection must be disabled. Administrators should only run commands as root after first authenticating with their individual user names and passwords.",
+        "solution": "To ensure that 'PermitRootLogin' is disabled by sshd, run the following command:\n\n/usr/bin/sudo /usr/bin/sed -i.bak 's/^[\\#]*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config",
+        "reference": "800-171|3.5.1,800-53|IA-2(5),800-53r5|IA-2(5),CAT|II,CCI|CCI-000770,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(5),ITSG-33|IA-2(5)(a),ITSG-33|IA-2(5)(b),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252478r858511_rule,STIG-ID|APPL-12-001100,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-252478",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*",
+        "regex": "^[\\\\s]*PermitRootLogin[\\\\s]+",
+        "expect": "^[\\\\s]*PermitRootLogin[\\\\s]+no[\\\\s]*$",
+        "min_occurrences": "1"
+    },
+    "custom_item_59": {
+        "description": "APPL-12-002001 - The macOS system must be configured to disable SMB File Sharing unless it is required.",
+        "info": "File Sharing is usually non-essential and must be disabled if not required. Enabling any service increases the attack surface for an intruder. By disabling unnecessary services, the attack surface is minimized.",
+        "solution": "To disable the SMB File Sharing service, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.smbd\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252479r816251_rule,STIG-ID|APPL-12-002001,SWIFT-CSCv1|2.3,Vuln-ID|V-252479",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.smbd | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_60": {
+        "description": "APPL-12-002003 - The macOS system must be configured to disable the Network File System (NFS) daemon unless it is required.",
+        "info": "If the system does not require access to NFS file shares or is not acting as an NFS server, support for NFS is non-essential and NFS services must be disabled. NFS is a network file system protocol supported by UNIX-like operating systems. Enabling any service increases the attack surface for an intruder. By disabling unnecessary services, the attack surface is minimized.",
+        "solution": "To disable the NFS daemon, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.nfsd\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252480r816254_rule,STIG-ID|APPL-12-002003,SWIFT-CSCv1|2.3,Vuln-ID|V-252480",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.nfsd | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_61": {
+        "description": "APPL-12-002004 - The macOS system must be configured to disable Location Services.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., VPN and IPS); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the operating system must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality-of-life issues.\n\nLocation Services must be disabled.",
+        "solution": "Disable the Location Services by running the following command:\n\n/usr/bin/sudo /usr/bin/defaults write /var/db/locationd/Library/Preferences/ByHost/com.apple.locationd LocationServicesEnabled -bool false",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252481r816257_rule,STIG-ID|APPL-12-002004,SWIFT-CSCv1|2.3,Vuln-ID|V-252481",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "regex": "0",
+        "plist_item": "LocationServicesEnabled",
+        "plist_name": "/private/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd"
+    },
+    "custom_item_62": {
+        "description": "APPL-12-002005 - The macOS system must be configured to disable Bonjour multicast advertising.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., VPN and IPS); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the operating system must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nBonjour multicast advertising must be disabled on the system.",
+        "solution": "This setting is enforced using the 'Custom Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252482r816260_rule,STIG-ID|APPL-12-002005,SWIFT-CSCv1|2.3,Vuln-ID|V-252482",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep NoMulticastAdvertisements | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*NoMulticastAdvertisements[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_63": {
+        "description": "APPL-12-002006 - The macOS system must be configured to disable the UUCP service.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe system must not have the UUCP service active.",
+        "solution": "To disable the UUCP service, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.uucp\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252483r816263_rule,STIG-ID|APPL-12-002006,SWIFT-CSCv1|2.3,Vuln-ID|V-252483",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.uucp | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_64": {
+        "description": "APPL-12-002007 - The macOS system must be configured to disable Internet Sharing.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., VPN and IPS); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the operating system must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nInternet Sharing is non-essential and must be disabled.",
+        "solution": "This setting is enforced using the 'Custom Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252484r816266_rule,STIG-ID|APPL-12-002007,SWIFT-CSCv1|2.3,Vuln-ID|V-252484",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep forceInternetSharingOff | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*forceInternetSharingOff[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_65": {
+        "description": "APPL-12-002008 - The macOS system must be configured to disable Web Sharing.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., VPN and IPS); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the operating system must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nWeb Sharing is non-essential and must be disabled.",
+        "solution": "To disable Web Sharing, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/org.apache.httpd\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252485r816269_rule,STIG-ID|APPL-12-002008,SWIFT-CSCv1|2.3,Vuln-ID|V-252485",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep org.apache.httpd | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_66": {
+        "description": "APPL-12-002009 - The macOS system must be configured to disable AirDrop.",
+        "info": "To prevent unauthorized connection of devices, unauthorized transfer of information, or unauthorized tunneling (i.e., embedding of data types within data types), organizations must disable or restrict unused or unnecessary physical and logical ports/protocols on information systems.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services provided by default may not be necessary to support essential organizational operations. Additionally, it is sometimes convenient to provide multiple services from a single component (e.g., VPN and IPS); however, doing so increases risk over limiting the services provided by any one component.\n\nTo support the requirements and principles of least functionality, the operating system must support the organizational requirements, providing only essential capabilities and limiting the use of ports, protocols, and/or services to only those required, authorized, and approved to conduct official business or to address authorized quality of life issues.\n\nAirDrop must be disabled.\n\nNote: There is a known bug in the graphical user interface where the user can toggle AirDrop in the UI, which indicates the service has been turned on, but it remains disabled if the Restrictions Profile has been applied.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252486r816272_rule,STIG-ID|APPL-12-002009,SWIFT-CSCv1|2.3,Vuln-ID|V-252486",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowAirDrop | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowAirDrop[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_67": {
+        "description": "APPL-12-002012 - The macOS system must be configured to disable the iCloud Calendar services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Calendar application's connections to Apple's iCloud must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|III,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252487r853281_rule,STIG-ID|APPL-12-002012,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252487",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudCalendar | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudCalendar[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_68": {
+        "description": "APPL-12-002013 - The macOS system must be configured to disable the iCloud Reminders services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Reminder application's connections to Apple's iCloud must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|III,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252488r853282_rule,STIG-ID|APPL-12-002013,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252488",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudReminders | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudReminders[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_69": {
+        "description": "APPL-12-002014 - The macOS system must be configured to disable iCloud Address Book services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Address Book(Contacts) application's connections to Apple's iCloud must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|III,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252489r853283_rule,STIG-ID|APPL-12-002014,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252489",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudAddressBook | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudAddressBook[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_70": {
+        "description": "APPL-12-002015 - The macOS system must be configured to disable the Mail iCloud services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Mail application's connections to Apple's iCloud must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|III,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252490r853284_rule,STIG-ID|APPL-12-002015,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252490",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudMail | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudMail[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_71": {
+        "description": "APPL-12-002016 - The macOS system must be configured to disable the iCloud Notes services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Notes application's connections to Apple's iCloud must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|III,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252491r853285_rule,STIG-ID|APPL-12-002016,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252491",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudNotes | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudNotes[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_72": {
+        "description": "APPL-12-002017 - The macOS system must cover or disable the built-in or attached camera when not in use.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nFailing to disconnect from collaborative computing devices (i.e., cameras) can result in subsequent compromises of organizational information. Providing easy methods to physically disconnect from such devices after a collaborative computing session helps to ensure that participants actually carry out the disconnect activity without having to go through complex and tedious procedures.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.12,800-53|CM-7a.,800-53|SC-15a.,800-53|SC-15(1),800-53r5|CM-7a.,800-53r5|SC-15a.,800-53r5|SC-15(1),CAT|II,CCI|CCI-000381,CCI|CCI-001150,CCI|CCI-001153,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,ITSG-33|SC-15a.,ITSG-33|SC-15(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,QCSC-v1|5.2.2,Rule-ID|SV-252492r816982_rule,STIG-ID|APPL-12-002017,SWIFT-CSCv1|2.3,Vuln-ID|V-252492",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCamera | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCamera[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_73": {
+        "description": "APPL-12-002020 - The macOS system must be configured to disable Siri and dictation.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of nonessential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nSiri and dictation must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252493r922852_rule,STIG-ID|APPL-12-002020,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252493",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep 'Ironwood Allowed' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*\"Ironwood[\\\\s]*Allowed\"[\\\\s]*=[\\\\s]*0;$"
+    },
+    "custom_item_74": {
+        "description": "APPL-12-002021 - The macOS system must be configured to disable sending diagnostic and usage data to Apple.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe ability to submit diagnostic data to Apple must be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.\n\nThe setting 'Send diagnostic & usage data to Apple' can also be configured in System Preferences >> Security & Privacy >> Privacy >> Analytics & Improvement.\n\nUncheck the box that says, 'Share Mac Analytics'.\nUncheck the box that says, 'Improve Siri & Dictation'.\nUncheck the box that says, 'Share with App Developers'.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-252494r816477_rule,STIG-ID|APPL-12-002021,SWIFT-CSCv1|2.3,Vuln-ID|V-252494",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowDiagnosticSubmission | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowDiagnosticSubmission[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_75": {
+        "description": "APPL-12-002022 - The macOS system must be configured to disable Remote Apple Events.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nRemote Apple Events must be disabled.",
+        "solution": "To disable Remote Apple Events, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.AEServer\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CAT|II,CCI|CCI-000382,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,Rule-ID|SV-252495r816299_rule,STIG-ID|APPL-12-002022,SWIFT-CSCv1|2.3,Vuln-ID|V-252495",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.AEServer | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_76": {
+        "description": "APPL-12-002031 - The macOS system must be configured to disable the system preference pane for Apple ID.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Apple ID System Preference Pane must be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5)(b),800-53r5|CM-7(5)(b),CAT|I,CCI|CCI-001774,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-252496r853287_rule,STIG-ID|APPL-12-002031,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252496",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.AppleIDPrefPane\""
+    },
+    "custom_item_77": {
+        "description": "DisabledPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.internetaccounts\""
+    },
+    "custom_item_78": {
+        "description": "HiddenPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'HiddenPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.internetaccounts\""
+    },
+    "custom_item_79": {
+        "description": "APPL-12-002035 - The macOS system must be configured to disable the Cloud Setup services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252498r816308_rule,STIG-ID|APPL-12-002035,SWIFT-CSCv1|2.3,Vuln-ID|V-252498",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipCloudSetup | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*SkipCloudSetup[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_80": {
+        "description": "APPL-12-002036 - The macOS system must be configured to disable the Privacy Setup services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252499r816311_rule,STIG-ID|APPL-12-002036,SWIFT-CSCv1|2.3,Vuln-ID|V-252499",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipPrivacySetup | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*SkipPrivacySetup[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_81": {
+        "description": "APPL-12-002037 - The macOS system must be configured to disable the Cloud Storage Setup services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252500r816314_rule,STIG-ID|APPL-12-002037,SWIFT-CSCv1|2.3,Vuln-ID|V-252500",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipiCloudStorageSetup | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*SkipiCloudStorageSetup[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_82": {
+        "description": "APPL-12-002038 - The macOS system must be configured to disable the tftp service.",
+        "info": "The 'tftp' service must be disabled as it sends all data in a clear-text form that can be easily intercepted and read. The data needs to be protected at all times during transmission, and encryption is the standard method for protecting data in transit.\n\nIf the data is not encrypted during transmission, it can be plainly read (i.e., clear text) and easily compromised. Disabling ftp is one way to mitigate this risk. Administrators should be instructed to use an alternate service for data transmission that uses encryption, such as SFTP.\n\nAdditionally, the 'tftp' service uses UDP, which is not secure.",
+        "solution": "To disable the tfpd service, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.tftpd",
+        "reference": "800-171|3.5.10,800-53|IA-5(1)(c),800-53r5|IA-5(1)(c),CAT|I,CCI|CCI-000197,CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1)(c),NESA|T5.2.3,NIAv2|CY6,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252501r877396_rule,STIG-ID|APPL-12-002038,SWIFT-CSCv1|4.1,TBA-FIISB|26.1,Vuln-ID|V-252501",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.tftpd | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_83": {
+        "description": "APPL-12-002039 - The macOS system must be configured to disable the Siri Setup services.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nThe Siri setup pop-up must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252502r853289_rule,STIG-ID|APPL-12-002039,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252502",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipSiriSetup | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*SkipSiriSetup[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_84": {
+        "description": "APPL-12-002040 - The macOS system must disable iCloud Keychain synchronization.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\nKeychain synchronization must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252503r853290_rule,STIG-ID|APPL-12-002040,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252503",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudKeychainSync | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudKeychainSync[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_85": {
+        "description": "APPL-12-002041 - The macOS system must disable iCloud document synchronization.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\niCloud document synchronization must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252504r853291_rule,STIG-ID|APPL-12-002041,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252504",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudDocumentSync | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudDocumentSync[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_86": {
+        "description": "APPL-12-002042 - The macOS system must disable iCloud bookmark synchronization.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\niCloud Bookmark syncing must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252505r853292_rule,STIG-ID|APPL-12-002042,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252505",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudBookmarks | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudBookmarks[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_87": {
+        "description": "APPL-12-002043 - The macOS system must disable iCloud photo library.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include but are not limited to games, software packages, tools, and demonstration software not related to requirements or providing a wide array of functionality not required for every mission but that cannot be disabled.\n\niCloud Photo Library must be disabled.\n\nSatisfies: SRG-OS-000095-GPOS-00049, SRG-OS-000370-GPOS-00155",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7a.,800-53|CM-7(5)(b),800-53r5|CM-7a.,800-53r5|CM-7(5)(b),CAT|II,CCI|CCI-000381,CCI|CCI-001774,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252506r853293_rule,STIG-ID|APPL-12-002043,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-252506",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowCloudPhotoLibrary | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowCloudPhotoLibrary[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_88": {
+        "description": "APPL-12-002050 - The macOS system must disable the Screen Sharing feature.",
+        "info": "The Screen Sharing feature allows remote users to view or control the desktop of the current user. A malicious user can take advantage of screen sharing to gain full access to the system remotely, either with stolen credentials or by guessing the username and password. Disabling Screen Sharing mitigates this risk.",
+        "solution": "To disable the Screen Sharing service, run the following command:\n\n/usr/bin/sudo /bin/launchctl disable system/com.apple.screensharing\n\nThe system may need to be restarted for the update to take effect.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252507r816335_rule,STIG-ID|APPL-12-002050,SWIFT-CSCv1|2.3,Vuln-ID|V-252507",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/launchctl print-disabled system | /usr/bin/grep com.apple.screensharing | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": ".*true"
+    },
+    "custom_item_89": {
+        "description": "DisabledPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.password\""
+    },
+    "custom_item_90": {
+        "description": "HiddenPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'HiddenPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.password\""
+    },
+    "custom_item_91": {
+        "description": "DisabledPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.wallet\""
+    },
+    "custom_item_92": {
+        "description": "HiddenPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'HiddenPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.wallet\""
+    },
+    "custom_item_93": {
+        "description": "DisabledPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preference\\\\.speech\""
+    },
+    "custom_item_94": {
+        "description": "HiddenPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'HiddenPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preference\\\\.speech\""
+    },
+    "custom_item_95": {
+        "description": "Unsigned Applications",
+        "cmd": "/usr/sbin/system_profiler SPApplicationsDataType | /usr/bin/grep -B 3 -A 4 -e \"Obtained from: Unknown\" | /usr/bin/grep -v -e \"Location: /Library/Application Support/Script Editor/Templates\" -e \"Location: /System/Library/\" | /usr/bin/awk -F \"Location: \" '{print $2}' | /usr/bin/sort -u | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "No results found"
+    },
+    "custom_item_96": {
+        "description": "EnableAssessment",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep EnableAssessment | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*EnableAssessment[\\\\s]*=[\\\\s]*1"
+    },
+    "custom_item_97": {
+        "description": "AllowIdentifiedDevelopers",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep AllowIdentifiedDevelopers | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*AllowIdentifiedDevelopers[\\\\s]*=[\\\\s]*1"
+    },
+    "custom_item_98": {
+        "description": "DisableBluetooth",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep DisableBluetooth | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*DisableBluetooth[\\\\s]*=[\\\\s]*1"
+    },
+    "custom_item_99": {
+        "description": "DisabledPreferencesPanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'DisabledPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.Bluetooth\""
+    },
+    "custom_item_100": {
+        "description": "HiddenPreferencePanes",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep -A 6 'HiddenPreferencePanes' | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "\"com\\\\.apple\\\\.preferences\\\\.Bluetooth\""
+    },
+    "custom_item_101": {
+        "description": "APPL-12-002063 - The macOS system must enforce access restrictions.",
+        "info": "Failure to provide logical access restrictions associated with changes to system configuration may have significant effects on the overall security of the system.\n\nWhen dealing with access restrictions pertaining to change control, it should be noted that any changes to the hardware, software, and/or firmware components of the operating system can have significant effects on the overall security of the system.\n\nAccordingly, only qualified and authorized individuals should be allowed to obtain access to operating system components for the purposes of initiating changes, including upgrades and modifications.\n\nLogical access restrictions include, for example, controls that restrict access to workflow automation, media libraries, abstract layers (e.g., changes implemented into third-party interfaces rather than directly into information systems), and change windows (e.g., changes occur only during specified times, making unauthorized changes easy to discover).",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|I,CCI|CCI-001813,CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-252513r853297_rule,STIG-ID|APPL-12-002063,Vuln-ID|V-252513",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep DisableGuestAccount | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*DisableGuestAccount[\\\\s]*=[\\\\s]*1"
+    },
+    "custom_item_102": {
+        "description": "APPL-12-002064 - The macOS system must have the security assessment policy subsystem enabled.",
+        "info": "Any changes to the hardware, software, and/or firmware components of the information system and/or application can potentially have significant effects on the overall security of the system.\n\nAccordingly, software defined by the organization as critical must be signed with a certificate that is recognized and approved by the organization.",
+        "solution": "To enable the Security assessment policy subsystem, run the following command:\n\n/usr/bin/sudo /usr/sbin/spctl --master-enable",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|I,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-252514r877463_rule,STIG-ID|APPL-12-002064,Vuln-ID|V-252514",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/spctl --status | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*assessments[\\\\s]+enabled"
+    },
+    "custom_item_103": {
+        "description": "APPL-12-002066 - The macOS system must not allow an unattended or automatic logon to the system.",
+        "info": "Failure to restrict system access to authenticated users negatively impacts operating system security.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252515r877377_rule,STIG-ID|APPL-12-002066,SWIFT-CSCv1|2.3,Vuln-ID|V-252515",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep DisableAutoLoginClient | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*\"com.apple.login.mcx.DisableAutoLoginClient\"[\\\\s]*=[\\\\s]*1"
+    },
+    "custom_item_104": {
+        "description": "Access Control List",
+        "cmd": "/bin/ls -lde /Users/* | /usr/bin/grep -v Shared | /usr/bin/awk '{ print; if(/[0-9]+:[[:blank:]]+/) { if(/[0-9]+:[[:blank:]]+group:everyone[[:blank:]]+deny[[:blank:]]+delete/) { print \"pass\" } else { print \"fail\"; fail=1; } } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_105": {
+        "description": "User directory permissions",
+        "cmd": "/bin/ls -ld /Users/* | /usr/bin/grep -v Shared | /usr/bin/awk '{ print; if(/^drwxr-xr-x\\+/) { print \"pass\" } else { print \"fail\"; fail=1; } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_106": {
+        "description": "User directory groups",
+        "cmd": "/bin/ls -ld /Users/* | /usr/bin/grep -v Shared | /usr/bin/awk '{ print; if($4 == \"staff\") { print \"pass\" } else { print \"fail\"; fail=1; } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_107": {
+        "description": "User subdirectory permissions",
+        "cmd": "/bin/ls -ld /Users/*/* | /usr/bin/egrep -v '(Shared|Public)' | /usr/bin/awk '{ print; if(/^drwx------\\+/) { print \"pass\" } else { print \"fail\"; fail=1; } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_108": {
+        "description": "User subdirectory Access Control Lists",
+        "cmd": "/bin/ls -lde /Users/*/* | /usr/bin/egrep -v '(Shared|Public)' | /usr/bin/awk '{ print; if(/[0-9]+:[[:blank:]]+/) { if(/[0-9]+:[[:blank:]]+group:everyone[[:blank:]]+deny[[:blank:]]+delete/) { print \"pass\" } else { print \"fail\"; fail=1; } } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_109": {
+        "description": "User subdirectory Public permissions",
+        "cmd": "/bin/ls -ld /Users/*/Public | /usr/bin/egrep -v 'Shared' | /usr/bin/awk '{ print; if(/^drwxr-xr-x\\+/) { print \"pass\" } else { print \"fail\"; fail=1; } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_110": {
+        "description": "User subdirectory Public Access Control Lists",
+        "cmd": "/bin/ls -lde /Users/*/Public | /usr/bin/egrep -v 'Shared' | /usr/bin/awk '{ print; if(/[0-9]+:[[:blank:]]+/) { if(/[0-9]+:[[:blank:]]+group:everyone[[:blank:]]+deny[[:blank:]]+delete/) { print \"pass\" } else { print \"fail\"; fail=1; } } } END { if(fail==0){ print \"All results passing\"} }'",
+        "expect": "^All results passing$"
+    },
+    "custom_item_111": {
+        "description": "APPL-12-002069 - The macOS system must prevent nonprivileged users from executing privileged functions to include disabling, circumventing, or altering implemented security safeguards/countermeasures.",
+        "info": "Preventing nonprivileged users from executing privileged functions mitigates the risk that unauthorized individuals or processes may gain unnecessary access to information or privileges.\n\nPrivileged functions include, for example, establishing accounts, performing system integrity checks, or administering cryptographic key management activities. Nonprivileged users are individuals that do not possess appropriate authorizations. Circumventing intrusion detection and prevention mechanisms or malicious code protection mechanisms are examples of privileged functions that require protection from nonprivileged users.",
+        "solution": "To ensure that authentication is required to access all system level preference panes use the following procedure:\n\nCopy the authorization database to a file using the following command:\n/usr/bin/sudo /usr/bin/security authorizationdb read system.preferences > ~/Desktop/authdb.txt\nedit the file to change:sharedTo read:sharedReload the authorization database with the following command:\n/usr/bin/sudo /usr/bin/security authorizationdb write system.preferences < ~/Desktop/authdb.txt",
+        "reference": "800-171|3.1.7,800-53|AC-6(10),800-53r5|AC-6(10),CAT|II,CCI|CCI-002235,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-257772r922850_rule,STIG-ID|APPL-12-002069,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,Vuln-ID|V-257772",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/security authorizationdb read system.preferences | /usr/bin/grep -A1 shared",
+        "expect": ""
+    },
+    "custom_item_112": {
+        "description": "Check if MRT service is running",
+        "cmd": "/bin/launchctl print-disabled system | grep mrt",
+        "expect": "^[\\\\s]*\"com.apple.mrt\" => false[\\\\s]*$"
+    },
+    "custom_item_113": {
+        "description": "APPL-12-002070 - The macOS system must use an approved antivirus program.",
+        "info": "An approved antivirus product must be installed and configured to run.\n\nMalicious software can establish a base on individual desktops and servers. Employing an automated mechanism to detect this type of software will aid in elimination of the software from the operating system.",
+        "solution": "Enable the MRT service:\n\n/usr/bin/sudo /bin/launchctl enable system/com.apple.mrt\n\nInstalling the 'Restrictions Policy' will configure the MRT Service to update automatically.\n\nIf the MRT Service is not being used, install an approved antivirus solution onto the system.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252518r816481_rule,STIG-ID|APPL-12-002070,SWIFT-CSCv1|2.3,Vuln-ID|V-252518",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep ConfigDataInstall",
+        "expect": "^[\\\\s]*ConfigDataInstall[\\\\s]*=[\\\\s]*1[\\\\s]*$"
+    },
+    "custom_item_114": {
+        "description": "APPL-12-003001 - The macOS system must issue or obtain public key certificates under an appropriate certificate policy from an approved service provider.",
+        "info": "DoD-approved certificates must be installed to the System Keychain so they will be available to all users.\n\nFor user certificates, each organization obtains certificates from an approved, shared service provider, as required by OMB policy. For federal agencies operating a legacy public key infrastructure cross-certified with the Federal Bridge Certification Authority at medium assurance or higher, this Certification Authority will suffice. This control focuses on certificates with a visibility external to the information system and does not include certificates related to internal system operations; for example, application-specific time services. Use of weak or untested encryption algorithms undermines the purposes of utilizing encryption to protect data. The operating system must implement cryptographic modules adhering to the higher standards approved by the federal government since this provides assurance they have been tested and validated.\n\nSatisfies: SRG-OS-000066-GPOS-00034, SRG-OS-000478-GPOS-00223\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Obtain the approved DOD certificates from the appropriate authority. Use Keychain Access from '/Applications/Utilities' to add certificates to the System Keychain.",
+        "reference": "800-171|3.5.2,800-171|3.13.11,800-53|IA-5(2)(a),800-53|SC-13,800-53r5|IA-5(2)(a),800-53r5|SC-13,CAT|I,CCI|CCI-000185,CCI|CCI-002450,CSF|PR.AC-1,CSF|PR.DS-5,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|IA-5(2)(a),ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T5.2.3,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,Rule-ID|SV-252519r853301_rule,STIG-ID|APPL-12-003001,Vuln-ID|V-252519",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/security dump-keychain | /usr/bin/grep labl | /usr/bin/awk -F\\\\\" '{ print $4 }'",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_115": {
+        "description": "APPL-12-003007 - The macOS system must enforce password complexity by requiring that at least one numeric character be used.",
+        "info": "Use of a complex password helps to increase the time and resources required to compromise the password. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks.\n\nPassword complexity is one factor of several that determines how long it takes to crack a password. The more complex the password, the greater the number of possible combinations that need to be tested before the password is compromised.",
+        "solution": "This setting is enforced using the 'Passcode Policy' configuration profile.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000194,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252520r816374_rule,STIG-ID|APPL-12-003007,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-252520",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep requireAlphanumeric | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*requireAlphanumeric[\\\\s]*=[\\\\s]*([1-9]|1[0-9]);"
+    },
+    "custom_item_116": {
+        "description": "APPL-12-003008 - The macOS system must enforce a 60-day maximum password lifetime restriction.",
+        "info": "Any password, no matter how complex, can eventually be cracked. Therefore, passwords need to be changed periodically.\n\nOne method of minimizing this risk is to use complex passwords and periodically change them. If the operating system does not limit the lifetime of passwords and force users to change their passwords, there is the risk that the operating system passwords could be compromised.",
+        "solution": "This setting is enforced using the 'Passcode Policy' configuration profile.",
+        "reference": "800-171|3.5.2,800-53|IA-5(1)(d),800-53r5|IA-5(1)(d),CAT|II,CCI|CCI-000199,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(d),NESA|T5.2.3,NIAv2|AM20,NIAv2|AM21,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252521r816377_rule,STIG-ID|APPL-12-003008,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.2,Vuln-ID|V-252521",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep maxPINAgeInDays | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*maxPINAgeInDays[\\\\s]*=[\\\\s]*([1-9]|[1-5][0-9]|60);"
+    },
+    "custom_item_117": {
+        "description": "APPL-12-003009 - The macOS system must prohibit password reuse for a minimum of five generations.",
+        "info": "Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. If the information system or application allows the user to consecutively reuse their password when that password has exceeded its defined lifetime, the end result is a password that is not changed as per policy requirements.",
+        "solution": "This setting is enforced using the 'Passcode Policy' configuration profile.",
+        "reference": "800-171|3.5.8,800-53|IA-5(1)(e),800-53r5|IA-5(1)(e),CAT|II,CCI|CCI-000200,CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(e),NESA|T5.2.3,NIAv2|AM22c,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252522r816380_rule,STIG-ID|APPL-12-003009,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.3,Vuln-ID|V-252522",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep pinHistory | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*pinHistory[\\\\s]*=[\\\\s]*([5-9]|[1-9][0-9]);"
+    },
+    "custom_item_118": {
+        "description": "APPL-12-003010 - The macOS system must enforce a minimum 15-character password length.",
+        "info": "The minimum password length must be set to 15 characters. Password complexity, or strength, is a measure of the effectiveness of a password in resisting attempts at guessing and brute-force attacks. Password length is one factor of several that helps to determine strength and how long it takes to crack a password. The use of more characters in a password helps to exponentially increase the time and/or resources required to compromise the password.",
+        "solution": "This setting is enforced using the 'Passcode Policy' configuration profile.",
+        "reference": "800-171|3.5.7,800-53|IA-5(1)(a),800-53r5|IA-5(1)(a),CAT|II,CCI|CCI-000205,CN-L3|7.1.2.7(e),CN-L3|7.1.3.1(b),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO/IEC-27001|A.9.4.3,ITSG-33|IA-5(1)(a),NESA|T5.2.3,NIAv2|AM19a,NIAv2|AM19b,NIAv2|AM19c,NIAv2|AM19d,NIAv2|AM22a,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252523r816383_rule,STIG-ID|APPL-12-003010,SWIFT-CSCv1|4.1,TBA-FIISB|26.2.1,TBA-FIISB|26.2.4,Vuln-ID|V-252523",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep minLength | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*minLength[\\\\s]*=[\\\\s]*(15|1[6-9]|2[0-9]);"
+    },
+    "custom_item_119": {
+        "description": "minComplexChars",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep minComplexChars | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*minComplexChars[\\\\s]*=[\\\\s]*([1-9]|1[0-9]);"
+    },
+    "custom_item_120": {
+        "description": "allowSimple",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowSimple | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*allowSimple[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_121": {
+        "description": "APPL-12-003012 - The macOS system must be configured to prevent displaying password hints.",
+        "info": "Password hints leak information about passwords in use and can lead to loss of confidentiality.",
+        "solution": "This setting is enforce using the 'Login Window' Policy.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252525r816389_rule,STIG-ID|APPL-12-003012,SWIFT-CSCv1|2.3,Vuln-ID|V-252525",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep RetriesUntilHint | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*RetriesUntilHint[\\\\s]*=[\\\\s]*0;"
+    },
+    "custom_item_122": {
+        "description": "APPL-12-003013 - The macOS system must be configured with a firmware password to prevent access to single user mode and booting from alternative media.",
+        "info": "Single user mode and the boot picker, as well as numerous other tools are available on macOS through booting while holding the 'Option' key down. Setting a firmware password restricts access to these tools.",
+        "solution": "To set a firmware passcode use the following command.\n\nsudo /usr/sbin/firmwarepasswd -setpasswd\n\nNote: If firmware password or passcode is forgotten, the only way to reset the forgotten password is through the use of a machine specific binary generated and provided by Apple. Schedule a support call, and provide proof of purchase before the firmware binary will be generated.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252526r816483_rule,STIG-ID|APPL-12-003013,SWIFT-CSCv1|2.3,Vuln-ID|V-252526",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/firmwarepasswd -check | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*Password[\\\\s]+Enabled[\\\\s]*:[\\\\s]+Yes"
+    },
+    "custom_item_123": {
+        "description": "APPL-12-003020 - The macOS system must use multifactor authentication for local access to privileged and non-privileged accounts.",
+        "info": "Without the use of multifactor authentication, the ease of access to privileged and non-privileged functions is greatly increased.\n\nMultifactor authentication requires using two or more factors to achieve authentication.\n\nFactors include:\n1) something a user knows (e.g., password/PIN);\n2) something a user has (e.g., cryptographic identification device, token); and\n3) something a user is (e.g., biometric).\n\nA privileged account is defined as an information system account with authorizations of a privileged user.\n\nLocal access is defined as access to an organizational information system by a user (or process acting on behalf of a user) communicating through a direct connection without the use of a network.\n\nThe DoD CAC with DoD-approved PKI is an example of multifactor authentication.\n\nSatisfies: SRG-OS-000107-GPOS-00054, SRG-OS-000108-GPOS-00055, SRG-OS-000068-GPOS-00036",
+        "solution": "This setting is enforced using the 'Smart Card Policy' configuration profile.\n\nNote: Before applying the 'Smart Card Policy', the supplemental guidance provided with the STIG must be consulted to ensure continued access to the operating system.",
+        "reference": "800-171|3.5.1,800-171|3.5.2,800-171|3.5.3,800-53|IA-2(3),800-53|IA-2(4),800-53|IA-5(2)(c),800-53r5|IA-2(1),800-53r5|IA-2(2),800-53r5|IA-5(2)(c),CAT|I,CCI|CCI-000187,CCI|CCI-000767,CCI|CCI-000768,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(3),ITSG-33|IA-2(4),ITSG-33|IA-5(2)(c),NESA|T2.3.8,NESA|T5.2.3,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-252527r816395_rule,STIG-ID|APPL-12-003020,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-252527",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep enforceSmartCard | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*enforceSmartCard[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_124": {
+        "description": "APPL-12-003050 - The macOS system must be configured so that the login command requires smart card authentication.",
+        "info": "Configuring the operating system to implement organization-wide security implementation guides and security checklists ensures compliance with federal standards and establishes a common security baseline across DoD that reflects the most restrictive security posture consistent with operational requirements.\n\nConfiguration settings are the set of parameters that can be changed in hardware, software, or firmware components of the system that affect the security posture and/or functionality of the system. Security-related parameters are those parameters impacting the security state of the system, including the parameters required to satisfy other security control requirements. Security-related parameters include, for example: registry settings; account, file, directory permission settings; and settings for functions, ports, protocols, services, and remote connections.",
+        "solution": "Make a backup of the PAM LOGIN settings using the following command:\nsudo cp /etc/pam.d/login /etc/pam.d/login_backup_'date '+%Y-%m-%d_%H:%M''\n\nReplace the contents of '/etc/pam.d/login' with the following:\n\n# login: auth account password session\nauth\t\tsufficient\t pam_smartcard.so\nauth    optional    pam_krb5.so use_kcminit\nauth    optional    pam_ntlm.so try_first_pass\nauth    optional    pam_mount.so try_first_pass\nauth    required    pam_opendirectory.so try_first_pass\nauth    required    pam_deny.so\naccount  required    pam_nologin.so\naccount  required    pam_opendirectory.so\npassword  required    pam_opendirectory.so\nsession  required    pam_launchd.so\nsession  required    pam_uwtmp.so\nsession  optional    pam_mount.so",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252528r816485_rule,STIG-ID|APPL-12-003050,SWIFT-CSCv1|2.3,Vuln-ID|V-252528",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/cat /etc/pam.d/login | /usr/bin/egrep -v '^#' | /usr/bin/head -1",
+        "expect": "^[\\\\s]*auth[\\\\s]+sufficient[\\\\s]+pam_smartcard\\\\.so[\\\\s]*$"
+    },
+    "custom_item_125": {
+        "description": "APPL-12-003051 - The macOS system must be configured so that the su command requires smart card authentication.",
+        "info": "Configuring the operating system to implement organization-wide security implementation guides and security checklists ensures compliance with federal standards and establishes a common security baseline across DoD that reflects the most restrictive security posture consistent with operational requirements.\n\nConfiguration settings are the set of parameters that can be changed in hardware, software, or firmware components of the system that affect the security posture and/or functionality of the system. Security-related parameters are those parameters impacting the security state of the system, including the parameters required to satisfy other security control requirements. Security-related parameters include, for example: registry settings; account, file, directory permission settings; and settings for functions, ports, protocols, services, and remote connections.",
+        "solution": "Make a backup of the PAM SU settings using the following command:\ncp /etc/pam.d/su /etc/pam.d/su_backup_'date '+%Y-%m-%d_%H:%M''\n\nReplace the contents of '/etc/pam.d/su' with the following:\n\n# su: auth account password session\nauth    sufficient  pam_smartcard.so\nauth    required   pam_rootok.so\nauth    required   pam_group.so no_warn group=admin,wheel ruser root_only fail_safe\naccount   required   pam_permit.so\naccount   required   pam_opendirectory.so no_check_shell\npassword  required   pam_opendirectory.so\nsession   required   pam_launchd.so",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252529r816487_rule,STIG-ID|APPL-12-003051,SWIFT-CSCv1|2.3,Vuln-ID|V-252529",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/cat /etc/pam.d/su | /usr/bin/egrep -v '^#' | /usr/bin/head -1",
+        "expect": "^[\\\\s]*auth[\\\\s]+sufficient[\\\\s]+pam_smartcard\\\\.so[\\\\s]*$"
+    },
+    "custom_item_126": {
+        "description": "APPL-12-003052 - The macOS system must be configured so that the sudo command requires smart card authentication.",
+        "info": "Configuring the operating system to implement organization-wide security implementation guides and security checklists ensures compliance with federal standards and establishes a common security baseline across DoD that reflects the most restrictive security posture consistent with operational requirements.\n\nConfiguration settings are the set of parameters that can be changed in hardware, software, or firmware components of the system that affect the security posture and/or functionality of the system. Security-related parameters are those parameters impacting the security state of the system, including the parameters required to satisfy other security control requirements. Security-related parameters include, for example: registry settings; account, file, directory permission settings; and settings for functions, ports, protocols, services, and remote connections.",
+        "solution": "Make a backup of the PAM SUDO settings using the following command:\n\ncp /etc/pam.d/login /etc/pam.d/sudo_backup_'date '+%Y-%m-%d_%H:%M''\n\nReplace the contents of '/etc/pam.d/sudo' with the following:\n\n# sudo: auth account password session\nauth    sufficient   pam_smartcard.so\n#auth    required    pam_opendirectory.so\nauth    required    pam_deny.so\naccount  required    pam_permit.so\npassword  required    pam_deny.so\nsession  required    pam_permit.so",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252530r816489_rule,STIG-ID|APPL-12-003052,SWIFT-CSCv1|2.3,Vuln-ID|V-252530",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/bin/cat /etc/pam.d/sudo | /usr/bin/egrep -v '^#' | /usr/bin/head -1",
+        "expect": "^[\\\\s]*auth[\\\\s]+sufficient[\\\\s]+pam_smartcard\\\\.so[\\\\s]*$"
+    },
+    "custom_item_127": {
+        "description": "newsyslog",
+        "cmd": "/usr/bin/stat -f '%Su:%Sg:%N' $(/usr/bin/grep -v '^#' /etc/newsyslog.conf | /usr/bin/awk '{ print $1 }') 2> /dev/null | /usr/bin/grep -v '^root' | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_128": {
+        "description": "asl",
+        "cmd": "/usr/bin/stat -f '%Su:%Sg:%N' $(/usr/bin/grep -e '^>' /etc/asl.conf /etc/asl/* | /usr/bin/awk '{ print $2 }') 2> /dev/null | /usr/bin/grep -v '^root' | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_129": {
+        "description": "newsyslog",
+        "cmd": "/usr/bin/stat -f '%A:%N' $(/usr/bin/grep -v '^#' /etc/newsyslog.conf | /usr/bin/awk '{ print $1 }') 2> /dev/null | /usr/bin/egrep -v '^[0-6][0-4]0' |/usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_130": {
+        "description": "asl",
+        "cmd": "/usr/bin/stat -f '%A:%N' $(/usr/bin/grep -e '^>' /etc/asl.conf /etc/asl/* | /usr/bin/awk '{ print $2 }') 2> /dev/null | /usr/bin/egrep -v '^[0-6][0-4]0' |/usr/bin/awk '{print} END {if (NR == 0) print \"pass\"}'",
+        "expect": "pass"
+    },
+    "custom_item_131": {
+        "description": "APPL-12-004021 - The macOS system must be configured with the sudoers file configured to authenticate users on a per -tty basis.",
+        "info": "The 'sudo' command must be configured to prompt for the administrator's password at least once in each newly opened Terminal window or remote logon session, as this prevents a malicious user from taking advantage of an unlocked computer or an abandoned logon session to bypass the normal password prompt requirement.\n\nWithout the 'tty_tickets' option, all open local and remote logon sessions would be authenticated to use sudo without a password for the duration of the configured password timeout window.",
+        "solution": "Edit the '/etc/sudoers' file to contain the line:\n\nDefaults tty_tickets\n\nThis line can be placed in the defaults section or at the end of the file.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|I,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252533r816413_rule,STIG-ID|APPL-12-004021,SWIFT-CSCv1|2.3,Vuln-ID|V-252533",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "file": "/etc/sudoers",
+        "regex": "^[\\\\s]*Defaults[\\\\s]+tty_tickets[\\\\s]*$",
+        "expect": "^[\\\\s]*Defaults[\\\\s]+tty_tickets[\\\\s]*$"
+    },
+    "custom_item_132": {
+        "description": "APPL-12-005001 - The macOS system must enable System Integrity Protection.",
+        "info": "System Integrity Protection (SIP) is vital to the protection of the integrity of macOS. SIP restricts what actions can be performed by administrative users, including root, against protected parts of the operating system. SIP protects all system binaries, including audit tools, from unauthorized access by preventing the modification or deletion of system binaries, or the changing of the permissions associated with those binaries. SIP limits the privileges to change software resident within software libraries to processes that have signed by Apple and have special entitlements to write to system files, such as Apple software updates and Apple installers. By protecting audit binaries, SIP ensures the presence of an audit record generation capability for DoD-defined auditable events for all operating system components and supports on-demand and after-the-fact reporting requirements.\n\nSatisfies: SRG-OS-000051-GPOS-00024, SRG-OS-000054-GPOS-00025, SRG-OS-000062-GPOS-00031, SRG-OS-000122-GPOS-00063, SRG-OS-000256-GPOS-00097, SRG-OS-000257-GPOS-00098, SRG-OS-000258-GPOS-00099, SRG-OS-000259-GPOS-00100, SRG-OS-000348-GPOS-00136, SRG-OS-000349-GPOS-00137, SRG-OS-000350-GPOS-00138, SRG-OS-000351-GPOS-00139, SRG-OS-000352-GPOS-00140, SRG-OS-000353-GPOS-00141, SRG-OS-000354-GPOS-00142",
+        "solution": "To re-enable 'System Integrity Protection', boot the affected system into 'Recovery' mode, launch 'Terminal' from the 'Utilities' menu, and run the following command:\n\n/usr/bin/csrutil enable",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.3.8,800-171|3.4.5,800-53|AU-6(4),800-53|AU-7a.,800-53|AU-7b.,800-53|AU-7(1),800-53|AU-9,800-53|AU-12a.,800-53|CM-5(6),800-53r5|AU-6(4),800-53r5|AU-7a.,800-53r5|AU-7b.,800-53r5|AU-7(1),800-53r5|AU-9,800-53r5|AU-12a.,800-53r5|CM-5(6),CAT|II,CCI|CCI-000154,CCI|CCI-000158,CCI|CCI-000169,CCI|CCI-001493,CCI|CCI-001494,CCI|CCI-001495,CCI|CCI-001499,CCI|CCI-001875,CCI|CCI-001876,CCI|CCI-001877,CCI|CCI-001878,CCI|CCI-001879,CCI|CCI-001880,CCI|CCI-001881,CCI|CCI-001882,CN-L3|7.1.2.3(c),CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.IP-1,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-6(4),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-9,ITSG-33|AU-12a.,ITSG-33|CM-5(6),NESA|M5.2.3,NESA|M5.2.5,NESA|M5.5.2,NESA|T3.2.3,NESA|T3.6.3,NESA|T3.6.4,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,Rule-ID|SV-252534r853302_rule,STIG-ID|APPL-12-005001,SWIFT-CSCv1|6.4,Vuln-ID|V-252534",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/csrutil status | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*System[\\\\s]+Integrity[\\\\s]+Protection[\\\\s]+status[\\\\s]*:[\\\\s]*enabled"
+    },
+    "custom_item_133": {
+        "description": "APPL-12-005020 - The macOS system must implement cryptographic mechanisms to protect the confidentiality and integrity of all information at rest.",
+        "info": "Information at rest refers to the state of information when it is located on a secondary storage device (e.g., disk drive and tape drive) within an organizational information system. Mobile devices, laptops, desktops, and storage devices can be lost or stolen, and the contents of their data storage (e.g., hard drives and non-volatile memory) can be read, copied, or altered. By encrypting the system hard drive, the confidentiality and integrity of any data stored on the system is ensured. FileVault Disk Encryption mitigates this risk.\n\nSatisfies: SRG-OS-000185-GPOS-00079, SRG-OS-000404-GPOS-00183, SRG-OS-000405-GPOS-00184\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Open System Preferences >> Security and Privacy and navigate to the 'FileVault' tab. Use this panel to configure full-disk encryption.\n\nAlternately, from the command line, run the following command to enable 'FileVault':\n\n/usr/bin/sudo /usr/bin/fdesetup enable\n\nAfter 'FileVault' is initially set up, additional users can be added.",
+        "reference": "800-171|3.13.16,800-53|SC-28,800-53|SC-28(1),800-53r5|SC-28,800-53r5|SC-28(1),CAT|II,CCI|CCI-001199,CCI|CCI-002475,CCI|CCI-002476,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-252535r853304_rule,STIG-ID|APPL-12-005020,TBA-FIISB|28.1,Vuln-ID|V-252535",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/bin/fdesetup status",
+        "expect": "FileVault[\\\\s]*is[\\\\s]*On."
+    },
+    "custom_item_134": {
+        "description": "EnableFirewall",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep EnableFirewall | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*EnableFirewall[\\\\s]*=[\\\\s]*1[\\\\s]*;[\\\\s]*$"
+    },
+    "custom_item_135": {
+        "description": "EnableStealthMode",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep EnableStealthMode | /usr/bin/awk '{ print } END {if (NR==0) { print \"No results found\" } }'",
+        "expect": "^[\\\\s]*EnableStealthMode[\\\\s]*=[\\\\s]*1[\\\\s]*;[\\\\s]*$"
+    },
+    "custom_item_136": {
+        "description": "APPL-12-005051 - The macOS system must restrict the ability to utilize external writeable media devices.",
+        "info": "External writeable media devices must be disabled for users. External USB devices are a potential vector for malware and can be used to exfiltrate sensitive data.\n\nSatisfies: SRG-OS-000480-GPOS-00227, SRG-OS-000319-GPOS-00164\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53|IA-3(1),800-53r5|CM-6b.,800-53r5|IA-3(1),CAT|II,CCI|CCI-000366,CCI|CCI-001967,CN-L3|8.1.10.6(d),CSF|PR.AC-1,CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|CM-6b.,ITSG-33|IA-3(1),NESA|T3.2.1,NESA|T5.4.3,QCSC-v1|13.2,Rule-ID|SV-252537r877369_rule,STIG-ID|APPL-12-005051,SWIFT-CSCv1|2.3,TBA-FIISB|27.1,Vuln-ID|V-252537",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/egrep -A 3 'blankbd|blankcd|blankdvd|dvdram|harddisk-external'",
+        "expect": "Manual Review Rquired"
+    },
+    "custom_item_137": {
+        "description": "APPL-12-005052 - The macOS system logon window must be configured to prompt for username and password, rather than show a list of users.",
+        "info": "The logon window must be configured to prompt all users for both a username and a password. By default, the system displays a list of known users at the logon screen. This gives an advantage to an attacker with physical access to the system, as the attacker would only have to guess the password for one of the listed accounts.",
+        "solution": "This setting is enforced using the 'Login Window Policy' configuration profile.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252538r877377_rule,STIG-ID|APPL-12-005052,SWIFT-CSCv1|2.3,Vuln-ID|V-252538",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SHOWFULLNAME",
+        "expect": "SHOWFULLNAME[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_138": {
+        "description": "APPL-12-005053 - The macOS system must restrict the ability of individuals to write to external optical media.",
+        "info": "External writeable media devices must be disabled for users. External optical media devices can be used to exfiltrate sensitive data if an approved data-loss prevention (DLP) solution is not installed.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-252539r816431_rule,STIG-ID|APPL-12-005053,SWIFT-CSCv1|2.3,Vuln-ID|V-252539",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep BurnSupport",
+        "expect": "BurnSupport[\\\\s]*=[\\\\s]*off;"
+    },
+    "custom_item_139": {
+        "description": "APPL-12-005054 - The macOS system must be configured to disable prompts to configure Touch ID.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252540r816434_rule,STIG-ID|APPL-12-005054,SWIFT-CSCv1|2.3,Vuln-ID|V-252540",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipTouchIDSetup",
+        "expect": "SkipTouchIDSetup[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_140": {
+        "description": "APPL-12-005055 - The macOS system must be configured to disable prompts to configure ScreenTime.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252541r816983_rule,STIG-ID|APPL-12-005055,SWIFT-CSCv1|2.3,Vuln-ID|V-252541",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipScreenTime",
+        "expect": "SkipScreenTime[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_141": {
+        "description": "APPL-12-005056 - The macOS system must be configured to disable promts to configure Unlock with Watch.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252542r832917_rule,STIG-ID|APPL-12-005056,SWIFT-CSCv1|2.3,Vuln-ID|V-252542",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep SkipUnlockWithWatch",
+        "expect": "SkipUnlockWithWatch[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_142": {
+        "description": "APPL-12-005058 - The macOS system must be configured to prevent activity continuation between Apple Devices.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|III,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252543r816443_rule,STIG-ID|APPL-12-005058,SWIFT-CSCv1|2.3,Vuln-ID|V-252543",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep ActivityContinuation",
+        "expect": "ActivityContinuation[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_143": {
+        "description": "APPL-12-005060 - The macOS system must be configured to prevent password proximity sharing requests from nearby Apple Devices.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252544r816446_rule,STIG-ID|APPL-12-005060,SWIFT-CSCv1|2.3,Vuln-ID|V-252544",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowPasswordProximityRequests",
+        "expect": "allowPasswordProximityRequests[\\\\s]*=[\\\\s]*1;"
+    },
+    "custom_item_144": {
+        "description": "APPL-12-005061 - The macOS system must be configured to prevent users from erasing all system content and settings.",
+        "info": "It is detrimental for operating systems to provide, or install by default, functionality exceeding requirements or mission objectives. These unnecessary capabilities or services are often overlooked and therefore may remain unsecured. They increase the risk to the platform by providing additional attack vectors.\n\nOperating systems are capable of providing a wide variety of functions and services. Some of the functions and services, provided by default, may not be necessary to support essential organizational operations (e.g., key missions, functions).\n\nExamples of non-essential capabilities include, but are not limited to, games, software packages, tools, and demonstration software, not related to requirements or providing a wide array of functionality not required for every mission, but which cannot be disabled.",
+        "solution": "This setting is enforced using the 'Restrictions Policy' configuration profile.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|Apple_macOS_12_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-252545r816449_rule,STIG-ID|APPL-12-005061,SWIFT-CSCv1|2.3,Vuln-ID|V-252545",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Apple_macOS_12_V1R8_STIG.zip",
+        "cmd": "/usr/sbin/system_profiler SPConfigurationProfileDataType | /usr/bin/grep allowEraseContentAndSettings",
+        "expect": "allowEraseContentAndSettings[\\\\s]*=[\\\\s]*1;"
+    }
+}

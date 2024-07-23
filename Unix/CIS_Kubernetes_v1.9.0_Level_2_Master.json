@@ -1,0 +1,160 @@
+{
+    "custom_item_1": {
+        "description": "Check if kubelet is running",
+        "name": "kubelet"
+    },
+    "custom_item_2": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info; /usr/bin/containerd --version",
+        "expect": "(Containers|containerd)"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "1.2.12 Ensure that the admission control plugin ServiceAccount is set",
+        "info": "Automate service accounts management.\n\nRationale:\n\nWhen you create a pod, if you do not specify a service account, it is automatically assigned the default service account in the same namespace. You should create your own service account and let the API server manage its security tokens.\n\nImpact:\n\nNone.",
+        "solution": "Follow the documentation and create ServiceAccount objects as per your environment. Then, edit the API server pod specification file /etc/kubernetes/manifests/kube-apiserver.yaml on the master node and ensure that the --disable-admission-plugins parameter is set to a value that does not include ServiceAccount.\n\nDefault Value:\n\nBy default, ServiceAccount is set.",
+        "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "ps -ef | grep kube-apiserver | grep -v grep",
+        "expect": "--enable-admission-plugins=((?!ServiceAccount).)*([\\\\s]|$)"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "1.2.13 Ensure that the admission control plugin NamespaceLifecycle is set",
+        "info": "Reject creating objects in a namespace that is undergoing termination.\n\nRationale:\n\nSetting admission control policy to NamespaceLifecycle ensures that objects cannot be created in non-existent namespaces, and that namespaces undergoing termination are not used for creating the new objects. This is recommended to enforce the integrity of the namespace termination process and also for the availability of the newer objects.\n\nImpact:\n\nNone",
+        "solution": "Edit the API server pod specification file /etc/kubernetes/manifests/kube-apiserver.yaml on the Control Plane node and set the --disable-admission-plugins parameter to ensure it does not include NamespaceLifecycle.\n\nDefault Value:\n\nBy default, NamespaceLifecycle is set.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSCv8|4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,LEVEL|2A,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "ps -ef | grep kube-apiserver | grep -v grep",
+        "expect": "^((?!--disable-admission-plugins=[A-z,]*NamespaceLifecycle[\\\\s,]).)*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "1.2.14 Ensure that the admission control plugin NodeRestriction is set",
+        "info": "Limit the Node and Pod objects that a kubelet could modify.\n\nRationale:\n\nUsing the NodeRestriction plug-in ensures that the kubelet is restricted to the Node and Pod objects that it could modify as defined. Such kubelets will only be allowed to modify their own Node API object, and only modify Pod API objects that are bound to their node.\n\nImpact:\n\nNone",
+        "solution": "Follow the Kubernetes documentation and configure NodeRestriction plug-in on kubelets. Then, edit the API server pod specification file /etc/kubernetes/manifests/kube-apiserver.yaml on the master node and set the --enable-admission-plugins parameter to a value that includes NodeRestriction.\n\n--enable-admission-plugins=...,NodeRestriction,...\n\nDefault Value:\n\nBy default, NodeRestriction is not set.",
+        "reference": "800-171|3.13.1,800-53|SC-7(8),800-53r5|SC-7(8),CN-L3|8.1.10.6(j),CSCv7|12.9,CSCv8|13.10,CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(8),LEVEL|2A,NESA|T4.5.4,NIAv2|SU4,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "ps -ef | grep kube-apiserver | grep -v grep",
+        "expect": "--enable-admission-plugins=[A-z,]*NodeRestriction[A-z,]*([\\\\s]|$)"
+    },
+    "custom_item_6": {
+        "description": "Check if API Server is running",
+        "cmd": "ps -ef | egrep '/etcd[2]?([[:space:]]|$)' | grep -v grep",
+        "expect": "etcd[2]?[\\\\s]"
+    },
+    "custom_item_7": {
+        "description": "3.2.2 Ensure that the audit policy covers key security concerns",
+        "cmd": "ps -ef | grep kube-apiserver | grep -v grep",
+        "expect": "--audit-policy-file=@AUDIT_POLICY_FILE@([\\\\s]|$)"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "3.2.2 Ensure that the audit policy covers key security concerns",
+        "info": "Ensure that the audit policy created for the cluster covers key security concerns.\n\nRationale:\n\nSecurity audit logs should cover access and modification of key resources in the cluster, to enable them to form an effective part of a security environment.\n\nImpact:\n\nIncreasing audit logging will consume resources on the nodes or other log destination.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consider modification of the audit policy in use on the cluster to include these items, at a minimum.\n\nDefault Value:\n\nBy default Kubernetes clusters do not log audit information.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "file": "@AUDIT_POLICY_FILE@",
+        "regex": ".*",
+        "expect": "$MANUAL_REVIEW^"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "3.2.2 Ensure that the audit policy covers key security concerns",
+        "info": "Ensure that the audit policy created for the cluster covers key security concerns.\n\nRationale:\n\nSecurity audit logs should cover access and modification of key resources in the cluster, to enable them to form an effective part of a security environment.\n\nImpact:\n\nIncreasing audit logging will consume resources on the nodes or other log destination.",
+        "solution": "Consider modification of the audit policy in use on the cluster to include these items, at a minimum.\n\nDefault Value:\n\nBy default Kubernetes clusters do not log audit information.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "ps -ef | grep kube-apiserver | grep -v grep",
+        "expect": "--audit-policy-file=@AUDIT_POLICY_FILE@([\\\\s]|$)"
+    },
+    "custom_item_10": {
+        "description": "Check if kubectl exists",
+        "file": "@KUBECTL_PATH@/kubectl"
+    },
+    "custom_item_11": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "5.3.2 Ensure that all Namespaces have Network Policies defined",
+        "info": "Use network policies to isolate traffic in your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints.\n\nNetwork Policies are namespace scoped. When a network policy is introduced to a given namespace, all traffic not allowed by the policy is denied. However, if there are no network policies in a namespace all traffic will be allowed into and out of the pods in that namespace.\n\nImpact:\n\nOnce network policies are in use within a given namespace, traffic not explicitly allowed by a network policy will be denied. As such it is important to ensure that, when introducing network policies, legitimate traffic is not blocked.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create NetworkPolicy objects as you need them.\n\nDefault Value:\n\nBy default, network policies are not created.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|14.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get networkpolicy --namespace=kube-system --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "5.3.2 Ensure that all Namespaces have Network Policies defined",
+        "info": "Use network policies to isolate traffic in your cluster network.\n\nRationale:\n\nRunning different applications on the same Kubernetes cluster creates a risk of one compromised application attacking a neighboring application. Network segmentation is important to ensure that containers can communicate only with those they are supposed to. A network policy is a specification of how selections of pods are allowed to communicate with each other and other network endpoints.\n\nNetwork Policies are namespace scoped. When a network policy is introduced to a given namespace, all traffic not allowed by the policy is denied. However, if there are no network policies in a namespace all traffic will be allowed into and out of the pods in that namespace.\n\nImpact:\n\nOnce network policies are in use within a given namespace, traffic not explicitly allowed by a network policy will be denied. As such it is important to ensure that, when introducing network policies, legitimate traffic is not blocked.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow the documentation and create NetworkPolicy objects as you need them.\n\nDefault Value:\n\nBy default, network policies are not created.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|14.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get networkpolicy --namespace=kube-system",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_14": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "5.4.1 Prefer using secrets as files over secrets as environment variables",
+        "info": "Kubernetes supports mounting secrets as data volumes or as environment variables. Minimize the use of environment variable secrets.\n\nRationale:\n\nIt is reasonably common for application code to log out its environment (particularly in the event of an error). This will include any secret values passed in as environment variables, so secrets can easily be exposed to any user or entity who has access to the logs.\n\nImpact:\n\nApplication code which expects to read secrets in the form of environment variables would need modification",
+        "solution": "If possible, rewrite application code to read secrets from mounted secret files, rather than from environment variables.\n\nDefault Value:\n\nBy default, secrets are not defined",
+        "reference": "800-171|3.13.1,800-53|SC-7(10),800-53r5|SC-7(10),CN-L3|8.1.10.6(j),CSCv7|13,CSCv8|3,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(10),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|33.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get all --kubeconfig @KUBECONFIG@ -o jsonpath='{range .items[?(@..secretKeyRef)]} {.kind} {.metadata.name} {\"\"}{end}' -A",
+        "expect": "^.*[\\\\s]$"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "5.4.1 Prefer using secrets as files over secrets as environment variables",
+        "info": "Kubernetes supports mounting secrets as data volumes or as environment variables. Minimize the use of environment variable secrets.\n\nRationale:\n\nIt is reasonably common for application code to log out its environment (particularly in the event of an error). This will include any secret values passed in as environment variables, so secrets can easily be exposed to any user or entity who has access to the logs.\n\nImpact:\n\nApplication code which expects to read secrets in the form of environment variables would need modification",
+        "solution": "If possible, rewrite application code to read secrets from mounted secret files, rather than from environment variables.\n\nDefault Value:\n\nBy default, secrets are not defined",
+        "reference": "800-171|3.13.1,800-53|SC-7(10),800-53r5|SC-7(10),CN-L3|8.1.10.6(j),CSCv7|13,CSCv8|3,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(10),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|33.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get all -o jsonpath='{range .items[?(@..secretKeyRef)]} {.kind} {.metadata.name} {\"\"}{end}' -A",
+        "expect": "^.*[\\\\s]false$"
+    },
+    "custom_item_17": {
+        "description": "Check if kubectl exists",
+        "file": "@KUBECTL_PATH@/kubectl"
+    },
+    "custom_item_18": {
+        "description": "Check if kubeconfig exists",
+        "file": "@KUBECONFIG@"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "5.7.4 The default namespace should not be used",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|2.10,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|2M,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get all --kubeconfig @KUBECONFIG@",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "5.7.4 The default namespace should not be used",
+        "info": "Kubernetes provides a default namespace, where objects are placed if no namespace is specified for them. Placing objects in this namespace makes application of RBAC and other controls more difficult.\n\nRationale:\n\nResources in a Kubernetes cluster should be segregated by namespace, to allow for security controls to be applied at that level and to make it easier to manage resources.\n\nImpact:\n\nNone\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Ensure that namespaces are created to allow for appropriate segregation of Kubernetes resources and that all new resources are created in a specific namespace.\n\nDefault Value:\n\nUnless a namespace is specific on object creation, the default namespace will be used",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171|3.13.5,800-53|CM-7,800-53|CP-6,800-53|CP-7,800-53|PL-8,800-53|PM-7,800-53|SA-8,800-53|SC-7,800-53r5|CM-7,800-53r5|CP-6,800-53r5|CP-7,800-53r5|PL-8,800-53r5|PM-7,800-53r5|SA-8,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|2.10,CSCv8|12.2,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-4,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.c,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|CM-7,ITSG-33|CP-6,ITSG-33|CP-7,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SC-7,LEVEL|2M,NESA|T2.2.4,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|SS3,NIAv2|SS15a,NIAv2|VL2,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "cmd": "@KUBECTL_PATH@/kubectl get all",
+        "expect": "MANUAL_REVIEW"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "CIS_Kubernetes_v1.9.0_Level_2_Master.audit from CIS Kubernetes Benchmark v1.9.0",
+        "info": "NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/16828",
+        "name": "kubelet"
+    }
+}

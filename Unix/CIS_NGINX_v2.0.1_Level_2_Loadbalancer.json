@@ -1,0 +1,107 @@
+{
+    "custom_item_1": {
+        "description": "Check if NGINX installed",
+        "cmd": "nginx -v",
+        "expect": "nginx[\\\\s]+version[\\\\s]*:"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "1.1.2 Ensure NGINX is installed from source",
+        "info": "Installing NGINX directly from source allows you to install NGINX without the use of a package manager.\n\nRationale:\n\nInstalling NGINX from source allows you to harden your instance of NGINX by minimizing modules. NGINX is unable to remove modules when installed using a package manager. By installing from source, you are able to minimize modules, however, some additional configuration will be required and updates will not be automated out of the box for you.\n\nImpact:\n\nBy installing NGINX from source, you will have to manually upgrade NGINX or automate upgrades yourself. The default values for NGINX may also vary from this guide using this method.",
+        "solution": "Installation depends on the operating system platform. For a source build, consult the NGINX documentation 'Building nginx from Sources'.\n\nDefault Value:\n\nNGINX is not installed by default.",
+        "reference": "800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv8|2.2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2M",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -v",
+        "expect": "nginx[\\\\s]+version[\\\\s]*:"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "2.1.1 Ensure only required modules are installed",
+        "info": "This NGINX installation comes with several modules out of the box. These modules are not all always needed. Installations of NGINX should be hardened to ensure only the necessary modules are installed.\n\nRationale:\n\nMinimizing features and functionality built into NGINX can help to reduce the number of vulnerabilities your server has, which reduces the likelihood of a successful compromise by attackers.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Consult the NGINX module documentation to determine which modules are needed for your specific installation.\nModules may be removed using the configure command.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -V 2>&1",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "2.1.2 Ensure HTTP WebDAV module is not installed",
+        "info": "The http_dav_module enables HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) as defined by RFC 4918. This enables file-based operations on your web server, such as the ability to create, delete, change and move files on your server. Most modern architectures have replaced this functionality with cloud-based object storage, in which case the module should not be installed.\n\nRationale:\n\nWebDAV functionality opens up an unnecessary path for exploiting your web server. Through misconfigurations of WebDAV operations, an attacker may be able to access and manipulate files on the server.",
+        "solution": "To remove the http_dav_module, recompile nginx from source without the --with-http_dav_module flag.\n\nDefault Value:\n\nThe HTTP WebDAV module is not installed by default when installing from source. It does come by default when installed using dnf.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -V 2>&1 | grep arguments",
+        "expect": "^((?!http_dav_module).)*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "2.1.3 Ensure modules with gzip functionality are disabled",
+        "info": "gzip is used for compression. Compression functionality should be disabled to prevent certain types of attacks from being performed successfully.\n\nRationale:\n\nCompression has been linked with the Breach attack and others. While the Breach attack has been mitigated with modern usages of the HTTP protocol, disabling the use of compression is considered a defense-in-depth strategy to mitigate other attacks.",
+        "solution": "In order to disable the http_gzip_module and the http_gzip_static_module, NGINX must be recompiled from source. This can be accomplished using the below command in the folder you used during your original compilation. This must be done without the --with-http_gzip_static_module or --with-http_gzip_module configuration directives.\n\n./configure --without-http_gzip_module --without-http_gzip_static_module\n\nDefault Value:\n\nThe http_gzip_module is enabled by default in the source build, and the http_gzip_static_module is not. Only the http_gzip_static_module is enabled by default in the dnf package.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -V 2>&1 | grep arguments",
+        "expect": "^((?!http_gzip_module|http_gzip_static_module).)*$"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "3.5 Ensure error logs are sent to a remote syslog server",
+        "info": "Centralized log management helps ensure logs are forensically sound and are available at a central location for auditing and incident investigation.\n\nRationale:\n\nA centralized logging solution aggregates logs from multiple systems to ensure logs can be referenced in the event systems are thought to be compromised. Centralized log servers are also often used to correlate logs for potential patterns of attack. If a centralized logging solution is not used and systems (and their logs) are believed to be compromised, then logs may not be permitted to be used as evidence.",
+        "solution": "To enable central logging for your error logs, add the below line to your server block in your server configuration file. 192.168.2.1 should be replaced with the location of your central log server.\n\nerror_log syslog:server=192.168.2.1 info;\n\nDefault Value:\n\nSyslog is not configured by default.",
+        "reference": "800-171|3.3.1,800-171|3.3.5,800-53|AU-6(3),800-53r5|AU-6(3),CN-L3|7.1.3.3(d),CSCv7|6.5,CSCv8|8.9,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.CO-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6(3),LEVEL|2M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '^[ ]*error_log[ ]*'",
+        "expect": "^[\\\\s]*error_log[\\\\s]+syslog:server=.*[\\\\s]*info;"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "3.6 Ensure access logs are sent to a remote syslog server",
+        "info": "Centralized log management helps ensure logs are forensically sound and are available at a central location for auditing and incident investigation.\n\nRationale:\n\nA centralized logging solution aggregates logs from multiple systems to ensure logs can be referenced in the event systems are thought to be compromised. Centralized log servers are also often used to correlate logs for potential patterns of attack. If a centralized logging solution is not used and systems (and their logs) are believed to be compromised, then logs may not be permitted to be used as evidence.",
+        "solution": "To enable central logging for your access logs, add the below line to your server block in your server configuration file. 192.168.2.1 should be replaced with the location of your central log server. The local logging facility may be changed to any unconfigured facility on your server.\n\naccess_log syslog:server=192.168.2.1,facility=local7,tag=nginx,severity=info combined;\n\nDefault Value:\n\nSyslog is not set up by default.",
+        "reference": "800-171|3.3.1,800-171|3.3.5,800-53|AU-6(3),800-53r5|AU-6(3),CN-L3|7.1.3.3(d),CSCv7|6.5,CSCv8|8.9,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.CO-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6(3),LEVEL|2M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '^[ ]*access_log[ ]*'",
+        "expect": "^[\\\\s]*access_log[\\\\s]+syslog:server=.*"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "4.1.10 Ensure the upstream traffic server certificate is trusted",
+        "info": "The NGINX server should be configured to validate the identity of the upstream server it is sending information to.\n\nRationale:\n\nConfiguring NGINX to validate the identity of the upstream server helps mitigate the risk of a man in the middle attack occurring against your server.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Obtain the full certificate chain of the upstream server in .pem format. Then reference that file in the location block as part of the proxy_ssl_trusted_certificate directive. Implement the proxy_ssl_trusted_certificate and proxy_ssl_verify directives as shown below as part of the location block you are using to send traffic to your upstream server.\n\nproxy_ssl_trusted_certificate /etc/nginx/trusted_ca_cert.crt;\nproxy_ssl_verify        on;\n\nDefault Value:\n\nThis is not set up by default.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '[ ]*proxy_ssl_trusted_certificate\\\\|proxy_ssl_verify[ ]*'",
+        "expect": "Manual Review Required"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "4.1.12 Ensure session resumption is disabled to enable perfect forward security",
+        "info": "Session resumption for HTTPS sessions should be disabled so perfect forward secrecy can be achieved.\n\nRationale:\n\nPerfect forward secrecy is an encryption mechanism that enables past session keys to not be compromised even if the server's private key is compromised. If an attacker recorded all traffic to a server and stored it and then obtained the private key without perfect forward secrecy, all communications would be compromised. With perfect forward secrecy, session keys are generated using Diffie-Hellman for every session a user initiates, which isolates session compromise to only that communication session. Allowing session resumption breaks perfect forward secrecy; this expands the surface area for an attacker to compromise past sessions and communications with a server if they are able to compromise the session.",
+        "solution": "Turn off the ssl_session_tickets directive as part of any server block in your nginx configuration:\n\nssl_session_tickets off;\n\nDefault Value:\n\nPerfect forward security is not enabled by default.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '^[ ]*ssl_session_tickets[ ]*'",
+        "expect": "^[\\\\s]*ssl_session_tickets[\\\\s]+off[\\\\s]*;"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "4.1.14 Ensure only Perfect Forward Secrecy Ciphers are Leveraged - ssl_ciphers",
+        "info": "Perfect forward secrecy protects users of your website by ensuring that even if your private key is compromised that your user's sessions are not able to be compromised. This improves upon other ciphers where if your private key was compromised all user sessions can also be compromised retroactively.\n\nRationale:\n\nPerfect Forward Secrecy (PFS) helps to reduce the impact of a private key compromise.",
+        "solution": "Ensure that only ciphers that are compatible with perfect forward secrecy are used. ECDHE/EECDH ciphers and DHE/EDH ciphers support this capability. Its recommended to leverage ECDHE ciphers unless you need to support legacy clients because they are considered stronger and faster. An example configuration that may be used is: 'EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA'.\n\nThe below configuration will only enable ciphers compatible with perfect forward secrecy.\n\nWeb Server:\n\nssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;\n\nProxy:\n\nproxy_ssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;\n\nDefault Value:\n\nPerfect Forward Secrecy is not the only default negotiable cipher suite.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '^[ ]*ssl_ciphers[ ]*'",
+        "expect": "^[\\\\s]*ssl_ciphers[\\\\s]+EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA[\\\\s]*;"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "4.1.14 Ensure only Perfect Forward Secrecy Ciphers are Leveraged - proxy_ssl_ciphers",
+        "info": "Perfect forward secrecy protects users of your website by ensuring that even if your private key is compromised that your user's sessions are not able to be compromised. This improves upon other ciphers where if your private key was compromised all user sessions can also be compromised retroactively.\n\nRationale:\n\nPerfect Forward Secrecy (PFS) helps to reduce the impact of a private key compromise.",
+        "solution": "Ensure that only ciphers that are compatible with perfect forward secrecy are used. ECDHE/EECDH ciphers and DHE/EDH ciphers support this capability. Its recommended to leverage ECDHE ciphers unless you need to support legacy clients because they are considered stronger and faster. An example configuration that may be used is: 'EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA'.\n\nThe below configuration will only enable ciphers compatible with perfect forward secrecy.\n\nWeb Server:\n\nssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;\n\nProxy:\n\nproxy_ssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;\n\nDefault Value:\n\nPerfect Forward Secrecy is not the only default negotiable cipher suite.",
+        "reference": "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1",
+        "see_also": "https://workbench.cisecurity.org/files/4538",
+        "cmd": "nginx -T | grep '^[ ]*proxy_ssl_ciphers[ ]*'",
+        "expect": "^[\\\\s]*proxy_ssl_ciphers[\\\\s]+EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA[\\\\s]*;"
+    }
+}

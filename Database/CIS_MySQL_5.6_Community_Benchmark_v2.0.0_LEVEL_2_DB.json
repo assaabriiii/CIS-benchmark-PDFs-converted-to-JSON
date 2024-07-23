@@ -1,0 +1,92 @@
+{
+    "custom_item_1": {
+        "description": "MySQL 5.6 is installed",
+        "sql_request": "show variables like 'version' ;",
+        "sql_expect": "version",
+        "regex": "5\\.6"
+    },
+    "custom_item_2": {
+        "description": "MySQL 5.6 Community Edition is installed",
+        "sql_request": "show variables like 'license' ;",
+        "sql_expect": "license"
+    },
+    "custom_item_3": {
+        "description": "2.7 Ensure AES Encryption Mode for AES_ENCRYPT/AES_DECRYPT is Configured Correctly",
+        "info": "A block encryption mode with a Cipher Block Chaining (CBC) mode value and key length of 256 is recommended when using the AES_ENCRYPT() and AES_DECRYPT() functions for encryption.\n\nRationale:\n\nThe default for backward compatibility on upgraded MySQL databases is aes-128-ecb. Using 128-bit keys does not provide sufficient security. Regardless of whether breaking the lowest level is beyond existing technology, larger key sizes are needed to better protect data and satisfy regulations.\n\nImpact:\n\nConfiguring a key length of 256 may impact backwards compatibility.",
+        "solution": "Add the following lines to the MySQL server's /etc/my.cnf:\n\nFor example, if Block Encryption Mode for aes-256 CBC\n\nblock_encryption_mode=aes-256-cbc\n\nDefault Value:\n\naes-128-ecb",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "select @@block_encryption_mode;",
+        "regex": "aes-256-(ECB|CBC|CFB1|CFB8|CFB128|OFB)"
+    },
+    "custom_item_4": {
+        "description": "auth_socket enabled",
+        "sql_request": " SELECT PLUGIN_NAME, PLUGIN_STATUS FROM INFORMATION_SCHEMA.PLUGINS WHERE PLUGIN_NAME LIKE 'auth%';",
+        "sql_expect": "auth_socket"
+    },
+    "custom_item_5": {
+        "description": "2.8 Ensure Socket Peer-Credential Authentication is Used Appropriately",
+        "info": "The server-side auth_socket authentication plugin, authenticates clients that connect to the MySQL server from the local host through the Unix socket file. Users authenticated by the auth_socket need not specify a password when connecting to the server. However, users authenticated by the auth_socket plugin are restricted from connecting remotely; they can only connect from the local host through the Unix socket file. This method is only suitable in situations where the server administrator OS account access is restricted.\n\nRationale:\n\nThis method may be desirable in specific cases, including:\n\nThe Linux system where MySQL is running is dedicated to the MySQL server and only the MySQL DBA and OS Admin have access.\n\nWhen control over user authentication is centralized in the operating system.\n\nIt is desirable that audit trails in the database and operating system can use the same user names.\n\nFor certain other narrow installation use cases auth_socket may be desirable.\n\nOnly local connections for a user.\n\nImpact:\n\nThings to consider when using the operating system to authenticate users:\n\nThe user must have an operating system account on the computer which must be accessed.\n\nIf a user has logged in using this method and steps away from the terminal, another user could easily log in because this user does not need any passwords or credentials. This could pose a serious security problem.\n\nWhen an operating system is used to authenticate database users, managing distributed database environments and database links requires special care. Special care must also be taken not to leave such a terminal unlocked and unattended. Hence, we recommend that you carefully evaluate your requirements before opting for auth_socket.\n\nThis will not work where distributed connections are required.\n\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Add these options under the [mysqld] option group in the MySQL /etc/my.cnf:\n\nplugin-load-add=auth_socket.so\nauth_socket=FORCE_PLUS_PERMANENT\n\nFor example:\n\nFor an OS user which can login to MySQL using auth_socket:\n\nCREATE USER ''@'localhost' IDENTIFIED WITH auth_socket;\n\nThe user can then login using:\n\nmysql -u",
+        "reference": "800-171|3.4.1,800-53|CM-8,800-53r5|CM-8,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv8|6.6,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-8,LEVEL|2M,NESA|T1.2.1,NESA|T1.2.2",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "select user, host, plugin from mysql.user where plugin = 'auth_socket';",
+        "sql_expect": "ManualReviewRequired"
+    },
+    "custom_item_6": {
+        "description": "2.9 Ensure MySQL is Bound to an IP Address",
+        "info": "By default, the MySQL server accepts TCP/IP connections from MySQL user accounts on all server host IPv6 and IPv4 interfaces. You can make this configuration more restrictive by setting the bind_address configuration option to a specific IPv4 or IPv6 address so that the server only accepts TCP/IP connections on that address.\n\nRationale:\n\nLimiting the IP address provides additional controls and restrictions on how client applications can connect to MySQL. If not configured to a specific IP all IPs for this server can be used to connect to MySQL.",
+        "solution": "For example, to have the MySQL server only accept connections on a specific IPv4 address, add an entry similar to this under the [mysqld] option group in the MySQL /etc/my.cnf:\n\nbind_address=192.0.2.24\n\nIn this case, clients can connect to the server using --host=192.0.2.24. Connections on other server host addresses are not permitted.\n\nDefault Value:\n\n*",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME = 'bind_address';",
+        "sql_expect": "bind_address",
+        "regex": "^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$"
+    },
+    "custom_item_7": {
+        "description": "2.10 Ensure Only Approved Ciphers are Used",
+        "info": "MySQL supports multiple encryption ciphers. Ciphers can vary in strength, speed and overhead.\n\nRationale:\n\nRequiring clients attempting to connect to MySQL to use strong ciphers protects data in transit.\n\nImpact:\n\nConnections attempting to use an unsupported cipher will fail.",
+        "solution": "Set ssl_cipher in the my.cnf to an approved cipher suite:\n\nssl_cipher='ECDHE-ECDSA-AES128-GCM-SHA256'",
+        "reference": "800-53|SA-15,800-53r5|SA-15,CSCv7|18.5,CSCv8|16.11,CSF|PR.IP-2,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2A,NIAv2|SS5,NIAv2|SS6a,QCSC-v1|4.2",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM performance_schema.global_variables WHERE VARIABLE_NAME IN ('ssl_cipher');",
+        "sql_expect": "ssl_cipher"
+    },
+    "custom_item_8": {
+        "description": "4.9 Ensure 'sql_mode' Contains 'STRICT_ALL_TABLES'",
+        "info": "When data changing statements are made (i.e., INSERT, UPDATE), MySQL can handle invalid or missing values differently depending on whether strict SQL mode is enabled. When strict SQL mode is enabled, data may not be truncated or otherwise 'adjusted' to make the data changing statement work.\n\nRationale:\n\nWithout strict mode the server tries to proceed with the action when an error might have been a more secure choice. For example, by default MySQL will truncate data if it does not fit in a field, which can lead to unknown behavior, or be leveraged by an attacker to circumvent data validation.\n\nImpact:\n\nApplications relying on the MySQL database should be aware that STRICT_ALL_TABLES is in use, such that error conditions are handled appropriately.",
+        "solution": "Set STRICT_ALL_TABLES to the sql_mode in the server's global configuration, for example:\n\nSET GLOBAL sql_mode ='STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';\n\nDefault Value:\n\nNO_ENGINE_SUBSTITUTION",
+        "reference": "800-171|3.13.1,800-171|3.13.2,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SHOW VARIABLES LIKE 'sql_mode';",
+        "sql_expect": "sql_mode",
+        "regex": "STRICT_ALL_TABLES"
+    },
+    "custom_item_9": {
+        "description": "5.3 Ensure 'PROCESS' is Not Granted to Non-Administrative Users",
+        "info": "The PROCESS privilege found in the mysql.user table determines whether a given user can see statement execution information for all sessions.\n\nRationale:\n\nThe PROCESS privilege allows principals to view currently executing MySQL statements beyond their own, including statements used to manage passwords. This may be leveraged by an attacker to compromise MySQL or to gain access to potentially sensitive data.\n\nImpact:\n\nUsers denied the PROCESS privilege may also be denied use of SHOW ENGINE.",
+        "solution": "Perform the following steps to remediate this setting:\n\nEnumerate the non-administrative users found in the result set of the audit procedure\n\nFor each user, issue the following SQL statement (replacewith the non-administrative user):\n\nREVOKE PROCESS ON *.* FROM '';",
+        "reference": "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SELECT GRANTEE FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE PRIVILEGE_TYPE = 'PROCESS';",
+        "regex": "\\'@ADMIN_USER@\\'@.+"
+    },
+    "custom_item_10": {
+        "description": "6.3 Ensure 'log_warnings' is Set to '2'",
+        "info": "The log_warnings system variable, enabled by default, provides additional information to the MySQL log. A value of 1 enables logging of warning messages, and higher integer values tend to enable more logging.\n\nRationale:\n\nThis might help to detect malicious behavior by logging communication errors and aborted connections.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (my.cnf)\n\nEnsure the following line is found in the mysqld section\n\nlog-warnings = 2\n\nDefault Value:\n\nThe option is enabled (1) by default.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'log_warnings';",
+        "sql_expect": "log_warnings"
+    },
+    "custom_item_11": {
+        "description": "9.3 Ensure 'master_info_repository' Is Set to 'TABLE'",
+        "info": "The master_info_repository setting determines to where a SLAVE logs MASTER status and connection information. The options are FILE or TABLE. Note also that this setting is associated with the sync_master_info setting as well.\n\nRationale:\n\nThe password which the client uses is stored in the MASTER info repository, which by default is a plaintext file. The TABLE MASTER info repository is a bit safer, but with filesystem access it's still possible to gain access to the password the SLAVE is using.",
+        "solution": "Perform the following actions to remediate this setting:\n\nOpen the MySQL configuration file (my.cnf)\n\nLocate master_info_repository\n\nSet the master_info_repository value to TABLE\n\nNote: If master_info_repository does not exist, add it to the configuration file.\n\nDefault Value:\n\nFILE",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/3859",
+        "sql_request": "SHOW GLOBAL VARIABLES LIKE 'master_info_repository';",
+        "sql_expect": "master_info_repository"
+    }
+}

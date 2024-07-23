@@ -1,0 +1,374 @@
+{
+    "custom_item_1": {
+        "description": "EAM Tomcat config exists",
+        "file": "/usr/lib/vmware-eam/web/conf/server.xml"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "VCEM-67-000001 - ESX Agent Manager must limit the amount of time that each TCP connection is kept alive.",
+        "info": "Denial of service is one threat against web servers. Many DoS attacks attempt to consume web server resources in such a way that no more resources are available to satisfy legitimate requests.\n\nIn Tomcat, the 'connectionTimeout' attribute sets the number of milliseconds the server will wait after accepting a connection for the request URI line to be presented. This timeout will also be used when reading the request body (if any). This prevents idle sockets that are not sending HTTP requests from consuming system resources and potentially denying new connections.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nConfigure thenode with the value:\n\nconnectionTimeout='20000'",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-239372r879511_rule,STIG-ID|VCEM-67-000001,Vuln-ID|V-239372",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Connector/@connectionTimeout' /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*connectionTimeout[\\\\s]*=[\\\\s]*[\"']20000[\"'][\\\\s]*$"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "VCEM-67-000002 - ESX Agent Manager must limit the number of concurrent connections permitted.",
+        "info": "Resource exhaustion can occur when an unlimited number of concurrent requests are allowed on a website, facilitating a denial-of-service attack. Unless the number of requests is controlled, the web server can consume enough system resources to cause a system crash.\n\nMitigating this kind of attack will include limiting the number of concurrent HTTP/HTTPS requests. In Tomcat, each incoming request requires a thread for the duration of that request. If more simultaneous requests are received than can be handled by the currently available request processing threads, additional threads will be created up to the value of the maxThreads attribute.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nNavigate to themode with the name of tomcatThreadPool and configure with the value 'maxThreads='300''\n\nNote: Thenode should be configured as follows:",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-239373r879511_rule,STIG-ID|VCEM-67-000002,Vuln-ID|V-239373",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Executor[@name=\"tomcatThreadPool\"]/@maxThreads' /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*maxThreads[\\\\s]*=[\\\\s]*[\"']300[\"'][\\\\s]*$"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "VCEM-67-000003 - ESX Agent Manager must limit the maximum size of a POST request.",
+        "info": "The 'maxPostSize' value is the maximum size in bytes of the POST that will be handled by the container FORM URL parameter parsing. Limit its size to reduce exposure to a denial-of-service attack. If 'maxPostSize' is not set, the default value of 2097152 (2 MB) is used. ESX Agent Manager is configured in its shipping state to not set a value for 'maxPostSize'.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nRemove any configuration for 'maxPostSize' from thenode.",
+        "reference": "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-239374r879511_rule,STIG-ID|VCEM-67-000003,Vuln-ID|V-239374",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Connector[@port=\"${bio-custom.http.port}\"]/@maxPostSize' /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*XPath[\\\\s]+set[\\\\s]+is[\\\\s]+empty[\\\\s]*$"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "VCEM-67-000004 - ESX Agent Manager must protect cookies from XSS.",
+        "info": "Cookies are a common way to save session state over the HTTP(S) protocol. If attackers can compromise session data stored in a cookie, they are better able to launch an attack against the server and its applications. When a cookie is tagged with the 'HttpOnly' flag, it tells the browser that this particular cookie should only be accessed by the originating server. Any attempt to access the cookie from client script is strictly forbidden.\n\nSatisfies: SRG-APP-000001-WSR-000002, SRG-APP-000439-WSR-000154, SRG-APP-000439-WSR-000155",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nNavigate to thenode and configure it as follows.truetrue30",
+        "reference": "800-171|3.13.8,800-53|AC-10,800-53|SC-8,800-53r5|AC-10,800-53r5|SC-8,CAT|II,CCI|CCI-000054,CCI|CCI-002418,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|AC-10,ITSG-33|SC-8,ITSG-33|SC-8a.,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.5.1,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,Rule-ID|SV-239375r879511_rule,STIG-ID|VCEM-67-000004,Vuln-ID|V-239375",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/session-config/cookie-config/http-only' -",
+        "expect": "^[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "VCEM-67-000005 - ESX Agent Manager must record user access in a format that enables monitoring of remote access.",
+        "info": "Remote access can be exploited by an attacker to compromise the server. By recording all remote access activities, it will be possible to determine the attacker's location, intent, and degree of success.\n\nTomcat can be configured with an 'AccessLogValve', a component that can be inserted into the request processing pipeline to provide robust access logging. The AccessLogValve creates log files in the same format as those created by standard web servers. When AccessLogValve is properly configured, log files will contain all the forensic information necessary in the case of a security incident.\n\nSatisfies: SRG-APP-000016-WSR-000005, SRG-APP-000089-WSR-000047, SRG-APP-000092-WSR-000055, SRG-APP-000095-WSR-000056, SRG-APP-000096-WSR-000057, SRG-APP-000097-WSR-000058, SRG-APP-000098-WSR-000059, SRG-APP-000098-WSR-000060, SRG-APP-000099-WSR-000061, SRG-APP-000100-WSR-000064, SRG-APP-000374-WSR-000172, SRG-APP-000375-WSR-000171",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nAdd the following line at the very top of thenode.Inside thenode, remove the existing 'AccessLogValve'node entirely and replace it with the following line:",
+        "reference": "800-171|3.1.12,800-171|3.3.1,800-171|3.3.2,800-171|3.3.7,800-53|AC-17(1),800-53|AU-3,800-53|AU-8b.,800-53|AU-12a.,800-53|AU-14(1),800-53|AU-14(2),800-53r5|AC-17(1),800-53r5|AU-3,800-53r5|AU-8b.,800-53r5|AU-12a.,800-53r5|AU-14,800-53r5|AU-14(1),CAT|II,CCI|CCI-000067,CCI|CCI-000130,CCI|CCI-000131,CCI|CCI-000132,CCI|CCI-000133,CCI|CCI-000134,CCI|CCI-000169,CCI|CCI-001462,CCI|CCI-001464,CCI|CCI-001487,CCI|CCI-001889,CCI|CCI-001890,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.AC-3,CSF|PR.PT-1,CSF|PR.PT-4,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),ITSG-33|AU-3,ITSG-33|AU-8,ITSG-33|AU-12a.,ITSG-33|AU-14,ITSG-33|AU-14a.,NESA|T3.6.2,NESA|T3.6.7,NESA|T5.4.4,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239376r879521_rule,STIG-ID|VCEM-67-000005,SWIFT-CSCv1|2.6,SWIFT-CSCv1|6.4,TBA-FIISB|37.4,Vuln-ID|V-239376",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Engine/Host/Valve[@className=\"org.apache.catalina.valves.AccessLogValve\"]'/@pattern /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*pattern[\\\\s]*=[\\\\s]*[\"'][\\\\s]*%h[\\\\s]+%\\\\{X-Forwarded-For\\\\}i[\\\\s]+%l[\\\\s]+%u[\\\\s]+%t[\\\\s]+\\\\[%I\\\\][\\\\s]+(\"|'|"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "VCEM-67-000006 - ESX Agent Manager must generate log records for system startup and shutdown.",
+        "info": "Logging must be started as soon as possible when a service starts and as late as possible when a service is stopped. Many forms of suspicious actions can be detected by analyzing logs for unexpected service starts and stops. Also, by starting to log immediately after a service starts, it becomes more difficult for suspicious activity to go unlogged.",
+        "solution": "Navigate to and open:\n\n/etc/vmware/vmware-vmon/svcCfgfiles/eam.json\n\nBelow the last line of the 'PreStartCommandArg' block, add the following line:\n\n'StreamRedirectFile' : '%VMWARE_LOG_DIR%/vmware/eam/jvm.log',\n\nRestart the appliance for changes to take effect.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-12a.,800-53r5|AU-12a.,CAT|II,CCI|CCI-000169,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-12a.,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239377r879559_rule,STIG-ID|VCEM-67-000006,SWIFT-CSCv1|6.4,Vuln-ID|V-239377",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/vmware/vmware-vmon/svcCfgfiles/eam.json",
+        "regex": "^[\\\\s]*[\"']StreamRedirectFile[\"'][\\\\s]*:",
+        "expect": "^[\\\\s]*[\"']StreamRedirectFile[\"'][\\\\s]*:[\\\\s]*[\"']%VMWARE_LOG_DIR%/vmware/eam/jvm.log[\"'],[\\\\s]*$"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "VCEM-67-000007 - ESX Agent Manager log files must only be modifiable by privileged users.",
+        "info": "Log data is essential in the investigation of events. The accuracy of the information is always pertinent. One of the first steps an attacker will undertake is the modification or deletion of log records to cover tracks and prolong discovery. The web server must protect the log data from unauthorized modification. ESX Agent Manager restricts all modification of log files by default but this configuration must be verified.\n\nSatisfies: SRG-APP-000119-WSR-000069, SRG-APP-000120-WSR-000070",
+        "solution": "At the command prompt, execute the following commands:\n\n# chmod o-w# chown eam:usersNote: Substitutewith the listed file.",
+        "reference": "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,CAT|II,CCI|CCI-000163,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239378r879577_rule,STIG-ID|VCEM-67-000007,Vuln-ID|V-239378",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/find /var/log/vmware/eam/web/ -xdev -type f -a '(' -perm -o+w -o -not -user eam -o -not -group users ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "VCEM-67-000008 - ESX Agent Manager application files must be verified for their integrity.",
+        "info": "Verifying that ESX Agent Manager application code is unchanged from its shipping state is essential for file validation and non-repudiation of the ESX Agent Manager. There is no reason that the MD5 hash of the rpm original files should be changed after installation, excluding configuration files.\n\nSatisfies: SRG-APP-000131-WSR-000051, SRG-APP-000357-WSR-000150",
+        "solution": "Reinstall the VCSA or roll back to a snapshot. Modifying the EAM installation files manually is not supported by VMware.",
+        "reference": "800-171|3.4.5,800-53|AU-4,800-53|CM-5(3),800-53r5|AU-4,800-53r5|CM-14,CAT|II,CCI|CCI-001749,CCI|CCI-001849,CSF|PR.DS-4,CSF|PR.IP-1,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T3.3.1,NESA|T3.6.2,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239379r879584_rule,STIG-ID|VCEM-67-000008,Vuln-ID|V-239379",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/rpm -V vmware-eam | /usr/bin/grep '^..5......' | /usr/bin/grep -E '\\.war|\\.jar|\\.sh|\\.py' | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^[\\\\s]*pass[\\\\s]*$"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "VCEM-67-000009 - ESX Agent Manager must only run one webapp.",
+        "info": "VMware ships ESX Agent Managers on the VCSA with one webapp. Any other path is potentially malicious and must be removed.",
+        "solution": "For each unexpected directory returned in the check, run the following command:\n\n# rm /usr/lib/vmware-eam/web/webapps/Restart the service with the following command:\n\n# vmon-cli --restart eam",
+        "reference": "800-171|3.4.5,800-53|CM-5(3),800-53r5|CM-14,CAT|II,CCI|CCI-001749,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(3),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,QCSC-v1|7.2,Rule-ID|SV-239380r879584_rule,STIG-ID|VCEM-67-000009,Vuln-ID|V-239380",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/ls -A /usr/lib/vmware-eam/web/webapps)",
+        "expect": "^[\\\\s]*eam[\\\\s]*$"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "VCEM-67-000010 - ESX Agent Manager must not be configured with unsupported realms.",
+        "info": "ESX Agent Manager performs authentication at the application level and not through Tomcat. To eliminate unnecessary features and ensure that ESX Agent Manager remains in its shipping state, the lack of a UserDatabaseRealm configuration must be confirmed.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nRemove thenode returned in the check.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239381r879587_rule,STIG-ID|VCEM-67-000010,SWIFT-CSCv1|2.3,Vuln-ID|V-239381",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/usr/lib/vmware-eam/web/conf/server.xml",
+        "regex": "UserDatabaseRealm",
+        "expect": "UserDatabaseRealm"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "VCEM-67-000011 - ESX Agent Manager must be configured to limit access to internal packages.",
+        "info": "The 'package.access' entry in the 'catalina.properties' file implements access control at the package level. When properly configured, a security exception will be reported if there is an errant or malicious webapp attempt to access the listed internal classes directly or if a new class is defined under the protected packages. The ESX Agent Manager comes preconfigured with the appropriate packages defined in 'package.access', and this configuration must be maintained.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239382r879587_rule,STIG-ID|VCEM-67-000011,SWIFT-CSCv1|2.3,Vuln-ID|V-239382",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/grep 'package.access' -A 5 /etc/vmware-eam/catalina.properties)",
+        "expect": "^[\\\\s]*package.access=\\\\\\\\[\\\\s]+sun.,\\\\\\\\[\\\\s]+org.apache.catalina.,\\\\\\\\[\\\\s]+org.apache.coyote.,\\\\\\\\[\\\\s]+org.apache.tomcat.,\\\\\\\\[\\\\s]+org.apache.jasper.[\\\\s]*$"
+    },
+    "custom_item_13": {
+        "system": "Linux",
+        "description": "VCEM-67-000012 - ESX Agent Manager must have Multipurpose Internet Mail Extensions (MIMEs) that invoke operating system shell programs disabled.",
+        "info": "MIME mappings tell ESX Agent Manager what type of program various file types and extensions are and what external utilities or programs are needed to execute the file type. By ensuring that various shell script MIME types are not included in web.xml, the server is protected against malicious users tricking the server into executing shell command files.",
+        "solution": "Open /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml in a text editor. Remove the following nodes lines:application/x-cshapplication/x-sharapplication/x-shapplication/x-ksh",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239383r879587_rule,STIG-ID|VCEM-67-000012,SWIFT-CSCv1|2.3,Vuln-ID|V-239383",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml",
+        "regex": "(x-csh|x-sh|x-shar|x-ksh)<",
+        "expect": "(x-csh|x-sh|x-shar|x-ksh)<"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "VCEM-67-000013 - ESX Agent Manager must have mappings set for Java servlet pages.",
+        "info": "Resource mapping is the process of tying a particular file type to a process in the web server that can serve that type of file to a requesting client and identify which file types are not to be delivered to a client.\n\nBy not specifying which files can and cannot be served to a user, the web server could deliver to a user web server configuration files, log files, password files, etc.\n\nBecause Tomcat is a Java-based web server, the main file extension used is *.jsp. This check ensures that the *.jsp file type has been properly mapped to servlets.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nNavigate to and locate the mapping for the JSP servlet. Thenode containsJspServlet.\n\nConfigure thenode to look like the code snippet below:JspServlet*.jsp",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239384r879587_rule,STIG-ID|VCEM-67-000013,SWIFT-CSCv1|2.3,Vuln-ID|V-239384",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/servlet-mapping/servlet-name[text()=\"JspServlet\"]/parent::servlet-mapping' -)",
+        "expect": "^[\\\\s]*[\\\\s]*JspServlet[\\\\s]*\\\\*.jsp[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "VCEM-67-000014 - ESX Agent Manager must not have the Web Distributed Authoring (WebDAV) servlet installed.",
+        "info": "WebDAV is an extension to the HTTP protocol that, when developed, was meant to allow users to create, change, and move documents on a server, typically a web server or web share. WebDAV is not widely used and has serious security concerns because it may allow clients to modify unauthorized files on the web server and must therefore be disabled.\n\nTomcat uses the 'org.apache.catalina.servlets.WebdavServlet' servlet to provide WebDAV services. Because the WebDAV service has been found to have an excessive number of vulnerabilities, this servlet must not be installed. ESX Agent Manager does not configure WebDAV by default.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nFind thewebdavnode and remove the entire parentblock.\n\nFind thewebdavnode and remove the entire parentblock.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239385r879587_rule,STIG-ID|VCEM-67-000014,SWIFT-CSCv1|2.3,Vuln-ID|V-239385",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml",
+        "regex": "webdav",
+        "expect": "webdav"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "VCEM-67-000015 - ESX Agent Manager must be configured with memory leak protection.",
+        "info": "The Java Runtime environment can cause a memory leak or lock files under certain conditions. Without memory leak protection, ESX Agent Manager can continue to consume system resources, which will lead to 'OutOfMemoryErrors' when reloading web applications.\n\nMemory leaks occur when JRE code uses the context class loader to load a singleton, as this will cause a memory leak if a web application class loader happens to be the context class loader at the time. The 'JreMemoryLeakPreventionListener' class is designed to initialize these singletons when Tomcat's common class loader is the context class loader. Proper use of JRE memory leak protection will ensure that the hosted application does not consume system resources and cause an unstable environment.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nNavigate to thenode.\n\nAdd '' to thenode.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239386r879587_rule,STIG-ID|VCEM-67-000015,SWIFT-CSCv1|2.3,Vuln-ID|V-239386",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/usr/lib/vmware-eam/web/conf/server.xml",
+        "regex": "",
+        "expect": ""
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "VCEM-67-000016 - ESX Agent Manager must not have any symbolic links in the web content directory tree.",
+        "info": "A web server is designed to deliver content and execute scripts or applications at the request of a client or user. Containing user requests to files in the directory tree of the hosted web application and limiting the execution of scripts and applications guarantees that the user is not accessing information protected outside the application's realm. By checking that no symbolic links exist in the document root, the web server is protected from users jumping outside the hosted application directory tree and gaining access to the other directories, including the system root.",
+        "solution": "At the command prompt, execute the following commands:\n\nNote: Replacefor the name of any files that were returned.\n\nunlinkRepeat the commands for each file that was returned.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-239387r879587_rule,STIG-ID|VCEM-67-000016,SWIFT-CSCv1|2.3,Vuln-ID|V-239387",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/find /usr/lib/vmware-eam/web/webapps/ -type l -ls | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "VCEM-67-000017 - ESX Agent Manager directory tree must have permissions in an 'out-of-the box' state - out-of-the box state.",
+        "info": "As a rule, accounts on a web server are to be kept to a minimum. Only administrators, web managers, developers, auditors, and web authors require accounts on the machine hosting the web server. The resources to which these accounts have access must also be closely monitored and controlled. ESX Agent Manager files must be adequately protected with correct permissions as applied 'out of the box'.\n\nSatisfies: SRG-APP-000211-WSR-000030, SRG-APP-000380-WSR-000072",
+        "solution": "At the command prompt, execute the following command:\n\n# chown eam:cisRepeat the command for each file that was returned.\n\nNote: Replacefor the name of the file that was returned.",
+        "reference": "800-171|3.4.5,800-171|3.13.3,800-53|CM-5(1),800-53|SC-2,800-53r5|CM-5(1),800-53r5|SC-2,CAT|II,CCI|CCI-001082,CCI|CCI-001813,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),ITSG-33|SC-2,ITSG-33|SC-2a.,NESA|T3.4.1,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,NIAv2|SS15b,QCSC-v1|7.2,Rule-ID|SV-239388r879631_rule,STIG-ID|VCEM-67-000017,Vuln-ID|V-239388",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/find /usr/lib/vmware-eam/web/ -xdev -type f -a '(' -not -user eam -o -not -group cis ')' -exec ls -ld {} \\\\; | /usr/bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'",
+        "expect": "^pass$"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "VCEM-67-000018 - ESX Agent Manager must fail to a known safe state if system initialization fails, shutdown fails, or aborts fail.",
+        "info": "Determining a safe state for failure and weighing that against a potential denial of service for users depends on what type of application the web server is hosting. For the ESX Agent Manager, it is preferable that the service abort startup on any initialization failure rather than continuing in a degraded, and potentially insecure, state.",
+        "solution": "Navigate to and open:\n\n/etc/vmware-eam/catalina.properties\n\nAdd or change the following line:\n\norg.apache.catalina.startup.EXIT_ON_INIT_FAILURE=true",
+        "reference": "800-53|SC-24,800-53r5|SC-24,CAT|II,CCI|CCI-001190,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-24,ITSG-33|SC-24a.,QCSC-v1|5.2.1,Rule-ID|SV-239389r879640_rule,STIG-ID|VCEM-67-000018,Vuln-ID|V-239389",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/vmware-eam/catalina.properties",
+        "regex": "^[\\\\s]*org.apache.catalina.startup.EXIT_ON_INIT_FAILURE[\\\\s]*=",
+        "expect": "^[\\\\s]*org.apache.catalina.startup.EXIT_ON_INIT_FAILURE[\\\\s]*=[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_20": {
+        "system": "Linux",
+        "description": "VCEM-67-000019 - ESX Agent Manager must limit the number of allowed connections.",
+        "info": "Limiting the number of established connections to the ESX Agent Manager is a basic denial-of-service protection. Servers where the limit is too high or unlimited can potentially run out of system resources and negatively affect system availability.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nConfigure thenode with the following value:\n\nacceptCount='300'",
+        "reference": "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-239390r879650_rule,STIG-ID|VCEM-67-000019,Vuln-ID|V-239390",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Connector/@acceptCount' /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*acceptCount[\\\\s]*=[\\\\s]*[\"']300[\"'][\\\\s]*$"
+    },
+    "custom_item_21": {
+        "system": "Linux",
+        "description": "VCEM-67-000020 - ESX Agent Manager must set 'URIEncoding' to UTF-8 - URIEncoding to UTF-8.",
+        "info": "Invalid user input occurs when a user inserts data or characters into a hosted application's data entry field and the hosted application is unprepared to process that data. This results in unanticipated application behavior, potentially leading to an application compromise. Invalid user input is one of the primary methods employed when attempting to compromise an application.\n\nAn attacker can also enter Unicode characters into hosted applications in an effort to break out of the document home or root home directory or to bypass security checks. ESX Agent Manager must be configured to use a consistent character set via the 'URIEncoding' attribute on the Connector nodes.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nConfigure thenode with the following value:\n\nURIEncoding='UTF-8'",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-239391r879652_rule,STIG-ID|VCEM-67-000020,Vuln-ID|V-239391",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --xpath '/Server/Service/Connector/@URIEncoding' /usr/lib/vmware-eam/web/conf/server.xml",
+        "expect": "^[\\\\s]*URIEncoding[\\\\s]*=[\\\\s]*[\"']UTF-8[\"'][\\\\s]*$"
+    },
+    "custom_item_22": {
+        "system": "Linux",
+        "description": "VCEM-67-000021 - ESX Agent Manager must use the 'setCharacterEncodingFilter' filter - filter-mapping",
+        "info": "Invalid user input occurs when a user inserts data or characters into a hosted application's data entry field and the hosted application is unprepared to process that data. This results in unanticipated application behavior, potentially leading to an application compromise. Invalid user input is one of the primary methods employed when attempting to compromise an application.\n\nAn attacker can also enter Unicode characters into hosted applications in an effort to break out of the document home or root home directory or to bypass security checks. VMware uses the standard Tomcat 'SetCharacterEncodingFilter' to provide a layer of defense against character encoding attacks. Filters are Java objects that perform filtering tasks on the request to a resource (a servlet or static content), the response from a resource, or both.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nConfigure thenode with the child nodes listed below:setCharacterEncodingFilter/*setCharacterEncodingFilterorg.apache.catalina.filters.SetCharacterEncodingFilterencodingUTF-8ignoretruetrue",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-239392r879652_rule,STIG-ID|VCEM-67-000021,Vuln-ID|V-239392",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/filter-mapping/filter-name[text()=\"setCharacterEncodingFilter\"]/parent::filter-mapping' -)",
+        "expect": "^[\\\\s]*[\\\\s]*setCharacterEncodingFilter[\\\\s]*/\\\\*[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_23": {
+        "system": "Linux",
+        "description": "VCEM-67-000021 - ESX Agent Manager must use the 'setCharacterEncodingFilter' filter - filter",
+        "info": "Invalid user input occurs when a user inserts data or characters into a hosted application's data entry field and the hosted application is unprepared to process that data. This results in unanticipated application behavior, potentially leading to an application compromise. Invalid user input is one of the primary methods employed when attempting to compromise an application.\n\nAn attacker can also enter Unicode characters into hosted applications in an effort to break out of the document home or root home directory or to bypass security checks. VMware uses the standard Tomcat 'SetCharacterEncodingFilter' to provide a layer of defense against character encoding attacks. Filters are Java objects that perform filtering tasks on the request to a resource (a servlet or static content), the response from a resource, or both.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nConfigure thenode with the child nodes listed below:setCharacterEncodingFilter/*setCharacterEncodingFilterorg.apache.catalina.filters.SetCharacterEncodingFilterencodingUTF-8ignoretruetrue",
+        "reference": "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-239392r879652_rule,STIG-ID|VCEM-67-000021,Vuln-ID|V-239392",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/filter/filter-name[text()=\"setCharacterEncodingFilter\"]/parent::filter' -)",
+        "expect": "^[\\\\s]*[\\\\s]*setCharacterEncodingFilter[\\\\s]*org.apache.catalina.filters.SetCharacterEncodingFilter[\\\\s]*[\\\\s]*encoding[\\\\s]*UTF-8[\\\\s]*[\\\\s]*[\\\\s]*ignore[\\\\s]*true[\\\\s]*true[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_24": {
+        "system": "Linux",
+        "description": "VCEM-67-000022 - ESX Agent Manager must set the welcome-file node to a default web page.",
+        "info": "Enumeration techniques, such as URL parameter manipulation, rely on being able to obtain information about the web server's directory structure by locating directories without default pages. In this scenario, the web server will display to the user a listing of the files in the directory being accessed. By having a default hosted application web page, the anonymous web user will not obtain directory browsing information or an error message that reveals the server type and version. Ensuring that every document directory has an 'index.jsp' (or equivalent) file is one approach to mitigating the vulnerability.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nAdd the following section under thenode:index.jsp",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-239393r879655_rule,STIG-ID|VCEM-67-000022,Vuln-ID|V-239393",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/welcome-file-list' -)",
+        "expect": "^[\\\\s]*[\\\\s]*index.jsp[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_25": {
+        "system": "Linux",
+        "description": "VCEM-67-000023 - ESX Agent Manager must not show directory listings.",
+        "info": "Enumeration techniques, such as URL parameter manipulation, rely on being able to obtain information about the web server's directory structure by locating directories without default pages. In this scenario, the web server will display to the user a listing of the files in the directory being accessed. Ensuring that directory listing is disabled is one approach to mitigating the vulnerability.\n\nIn Tomcat, directory listing is disabled by default but can be enabled via the 'listings' parameter. Ensure that this node is not present in order to have the default effect.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nFind and remove the entire block returned in the check.\n\nExample:listingstrue",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-239394r879655_rule,STIG-ID|VCEM-67-000023,Vuln-ID|V-239394",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '//param-name[text()=\"listings\"]/parent::init-param' -",
+        "expect": "^[\\\\s]*XPath[\\\\s]+set[\\\\s]+is[\\\\s]+empty[\\\\s]*$"
+    },
+    "custom_item_26": {
+        "system": "Linux",
+        "description": "VCEM-67-000024 - ESX Agent Manager must be configured to show error pages with minimal information.",
+        "info": "Web servers will often display error messages to client users, including enough information to aid in the debugging of the error. The information given back in error messages may display the web server type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any backends being used for data storage.\n\nThis information could be used by an attacker to blueprint what type of attacks might be successful. Therefore, the Security Token Service must be configured with a catch-all error handler that redirects to a standard 'error.jsp'.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nAdd the following section under thenode:java.lang.Throwable/error.jsp",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-239395r879655_rule,STIG-ID|VCEM-67-000024,Vuln-ID|V-239395",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/error-page/exception-type[\"text()=java.lang.Throwable\"]/parent::error-page' -)",
+        "expect": "^[\\\\s]*[\\\\s]*java.lang.Throwable[\\\\s]*/error.jsp[\\\\s]*[\\\\s]*$"
+    },
+    "custom_item_27": {
+        "system": "Linux",
+        "description": "VCEM-67-000025 - ESX Agent Manager must not enable support for TRACE requests.",
+        "info": "'Trace' is a technique for a user to request internal information about Tomcat. This is useful during product development but should not be enabled in production. Allowing an attacker to conduct a Trace operation against ESX Agent Manager will expose information that would be useful to perform a more targeted attack. ESX Agent Manager provides the 'allowTrace' parameter to disable responding to Trace requests.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/conf/server.xml\n\nNavigate to and locate:\n\n'allowTrace='true''\n\nRemove the 'allowTrace='true'' setting.",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-239396r879655_rule,STIG-ID|VCEM-67-000025,Vuln-ID|V-239396",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/usr/lib/vmware-eam/web/conf/server.xml",
+        "regex": "^[\\\\s]*allowTrace[\\\\s]*=",
+        "expect": "^[\\\\s]*allowTrace[\\\\s]*=[\\\\s]*[\"']?true[\"']?[\\\\s]*$"
+    },
+    "custom_item_28": {
+        "system": "Linux",
+        "description": "VCEM-67-000026 - ESX Agent Manager must have the debug option turned off.",
+        "info": "Information needed by an attacker to begin looking for possible vulnerabilities in a web server includes any information about the web server and plug-ins or modules being used. When debugging or trace information is enabled in a production web server, information about the web server, such as web server type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any backends being used for data storage may be displayed.\n\nBecause this information may be placed in logs and general messages during normal operation of the web server, an attacker does not need to cause an error condition to gain this information.\n\nESX Agent Manager can be configured to set the debugging level. By setting the debugging level to zero (0), no debugging information will be provided to a malicious user.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nNavigate to allnodes that are not set to '0'.\n\nSet theto '0' in alldebugnodes.\n\nNote: The debug setting should look like the following:debug0",
+        "reference": "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-239397r879655_rule,STIG-ID|VCEM-67-000026,Vuln-ID|V-239397",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '//param-name[text()=\"debug\"]/parent::init-param' -)",
+        "expect": "^[\\\\s]*(XPath[\\\\s]+set[\\\\s]+is[\\\\s]+empty|[\\\\s]*debug[\\\\s]*0[\\\\s]*)[\\\\s]*$"
+    },
+    "custom_item_29": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - main",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/eam/eam.log\" Tag=\"eam-main\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_30": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - access",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/eam/web/localhost_access_log\\\\*.txt\" Tag=\"eam-access\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_31": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - stdout",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/eam/jvm.log.std\\\\*\" Tag=\"eam-stdout\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_32": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - catalina",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/eam/web/catalina\\\\*.log\" Tag=\"eam-catalina\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_33": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - localhost",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/eam/web/localhost.\\\\*.log\" Tag=\"eam-(catalina|localhost)\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_34": {
+        "system": "Linux",
+        "description": "VCEM-67-000027 - Rsyslog must be configured to monitor and ship ESX Agent Manager log files - firstboot",
+        "info": "ESX Agent Manager a number of logs that must be offloaded from the originating system. This information can then be used for diagnostic, forensic, or other purposes relevant to ensuring the availability and integrity of the hosted application.\n\nSatisfies: SRG-APP-000358-WSR-000163, SRG-APP-000125-WSR-000071",
+        "solution": "Navigate to and open:\n\n/etc/vmware-syslog/stig-services-eam.conf.\n\nCreate the file if it does not exist.\n\nSet the contents of the file as follows:\n\ninput(type='imfile'\n      File='/var/log/vmware/eam/eam.log'\n      Tag='eam-main'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost_access_log*.txt'\n      Tag='eam-access'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/jvm.log.std*'\n      Tag='eam-stdout'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/catalina*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/eam/web/localhost.*.log'\n      Tag='eam-catalina'\n      Severity='info'\n      Facility='local0')\ninput(type='imfile'\n      File='/var/log/vmware/firstboot/eam_firstboot.py*.log'\n      Tag='eam-firstboot'\n      Severity='info'\n      Facility='local0')",
+        "reference": "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-239398r879731_rule,STIG-ID|VCEM-67-000027,Vuln-ID|V-239398",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/cat /etc/vmware-syslog/stig-services-eam.conf)",
+        "expect": "input\\\\(type=\"imfile\" File=\"/var/log/vmware/firstboot/eam_firstboot.py\\\\*.log\" Tag=\"eam-firstboot\" Severity=\"info\" Facility=\"local0\"\\\\)"
+    },
+    "custom_item_35": {
+        "system": "Linux",
+        "description": "VCEM-67-000028 - ESX Agent Manager must set the secure flag for cookies.",
+        "info": "The secure flag is an option that can be set by the application server when sending a new cookie to the user within an HTTP Response. The purpose of the secure flag is to prevent cookies from being observed by unauthorized parties due to the transmission of a cookie in clear text. By setting the secure flag, the browser will prevent the transmission of a cookie over an unencrypted channel. The ESX Agent Manager is configured to only be accessible over a TLS tunnel, but this cookie flag is still a recommended best practice.",
+        "solution": "Navigate to and open:\n\n/usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml\n\nNavigate to the ///node and configure it as follows:truetrue",
+        "reference": "800-171|3.4.5,800-53|CM-5(1),800-53r5|CM-5(1),CAT|II,CCI|CCI-001813,CSF|PR.IP-1,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-5(1),NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.3,QCSC-v1|7.2,Rule-ID|SV-239399r879753_rule,STIG-ID|VCEM-67-000028,Vuln-ID|V-239399",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "cmd": "/usr/bin/echo $(/usr/bin/xmllint --format /usr/lib/vmware-eam/web/webapps/eam/WEB-INF/web.xml | /usr/bin/sed 's/xmlns=\".*\"//g' | /usr/bin/xmllint --xpath '/web-app/session-config/cookie-config/secure' -)",
+        "expect": "^[\\\\s]*true[\\\\s]*$"
+    },
+    "custom_item_36": {
+        "system": "Linux",
+        "description": "VCEM-67-000029 - ESX Agent Manager must be configured with the appropriate ports.",
+        "info": "Web servers provide numerous processes, features, and functionalities that use TCP/IP ports. Some of these processes may be deemed unnecessary or too unsecure to run on a production system. The ports that the ESX Agent Manager listens on are configured in the 'catalina.properties' file and must be verified as accurate to their shipping state.",
+        "solution": "Navigate to and open:\n\n/etc/vmware-eam/catalina.properties\n\nNavigate to the ports specification section.\n\nSet the ESX Agent Manager port specifications according to the following:\n\nbio.http.port=15005",
+        "reference": "800-171|3.4.7,800-53|CM-7(1)(b),800-53r5|CM-7(1)(b),CAT|II,CCI|CCI-001762,CSF|PR.IP-1,CSF|PR.PT-3,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7(1),NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,Rule-ID|SV-239400r879756_rule,STIG-ID|VCEM-67-000029,SWIFT-CSCv1|2.3,Vuln-ID|V-239400",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/vmware-eam/catalina.properties",
+        "regex": "^[\\\\s]*bio.http.port[\\\\s]*=",
+        "expect": "^[\\\\s]*bio.http.port[\\\\s]*=[\\\\s]*15005[\\\\s]*$"
+    },
+    "custom_item_37": {
+        "system": "Linux",
+        "description": "VCEM-67-000030 - ESX Agent Manager must disable the shutdown port.",
+        "info": "An attacker has at least two reasons to stop a web server. The first is to cause a denial of service, and the second is to put in place changes the attacker made to the web server configuration. If the Tomcat shutdown port feature is enabled, a shutdown signal can be sent to the ESX Agent Manager through this port. To ensure availability, the shutdown port must be disabled.",
+        "solution": "Open /etc/vmware-eam/catalina.properties in a text editor.\n\nAdd or modify the setting 'base.shutdown.port=-1' in the 'catalina.properties' file.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CAT|II,CCI|CCI-002385,CSF|DE.CM-1,CSF|PR.DS-4,DISA_Benchmark|VMW_vSphere_6-7_EAM_Tomcat_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-239401r879806_rule,STIG-ID|VCEM-67-000030,Vuln-ID|V-239401",
+        "see_also": "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_6-7_Y23M07_STIG.zip",
+        "file": "/etc/vmware-eam/catalina.properties",
+        "regex": "^[\\\\s]*base.shutdown.port[\\\\s]*=",
+        "expect": "^[\\\\s]*base.shutdown.port[\\\\s]*=[\\\\s]*-1[\\\\s]*$"
+    }
+}

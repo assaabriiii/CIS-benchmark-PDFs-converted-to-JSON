@@ -1,0 +1,984 @@
+{
+    "custom_item_1": {
+        "description": "4.3 Ensure unnecessary packages are not installed in the container",
+        "info": "Containers tend to be minimal and slim down versions of the Operating System. Do not install anything that does not justify the purpose of container.\nRationale:\nBloating containers with unnecessary software could possibly increase the attack surface of the container. This also voids the concept of minimal and slim down versions of container images. Hence, do not install anything else apart from what is truly needed for the purpose of the container.",
+        "solution": "At the outset, do not install anything on the container that does not justify the purpose. If the image had some packages that your container does not use, uninstall them.\nConsider using a minimal base image rather than the standard Redhat/Centos/Debian images if you can. Some of the options include BusyBox and Alpine.\nNot only does this trim your image size from >150Mb to ~20 Mb, there are also fewer tools and paths to escalate privileges. You can even remove the package installer as a final hardening measure for leaf/production containers.\nImpact:\nNone.\nDefault Value:\nNot Applicable.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSCv6|18,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "name": "list_docker_container_packages"
+    },
+    "custom_item_2": {
+        "description": "4.4 Ensure images are scanned and rebuilt to include security patches",
+        "info": "Images should be scanned \"frequently\" for any vulnerabilities. Rebuild the images to include patches and then instantiate new containers from it.\nRationale:\nVulnerabilities are loopholes/bugs that can be exploited and security patches are updates to resolve these vulnerabilities. We can use image vulnerability scanning tools to find any kind of vulnerabilities within the images and then check for available patches to mitigate these vulnerabilities. Patches update the system to the most recent code base. Being on the current code base is important because that's where vendors focus on fixing problems. Evaluate the security patches before applying and follow the patching best practices.\nAlso, it would be better if, image vulnerability scanning tools could perform binary level analysis or hash based verification instead of just version string matching.",
+        "solution": "Follow the below steps to rebuild the images with security patches:\nStep 1: Pull all the base images (i.e., given your set of Dockerfiles, extract all images declared in FROM instructions, and re-pull them to check for an updated/patched versions). Patch the packages within the images too.\ndocker pull\nStep 2: Force a rebuild of each image:\ndocker build --no-cache\nStep 3: Restart all containers with the updated images.\nYou could also use ONBUILD directive in the Dockerfile to trigger particular update instructions for images that you know are used as base images frequently.\nImpact:\nNone\nDefault Value:\nBy default, containers and images are not updated of their own.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSCv6|18.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "name": "list_docker_container_packages"
+    },
+    "custom_item_3": {
+        "description": "Check if this is a Docker Vessel/Host",
+        "cmd": "/usr/bin/docker info",
+        "expect": "Containers"
+    },
+    "custom_item_4": {
+        "description": "2.1 Ensure network traffic is restricted between containers on the default bridge",
+        "info": "By default, all network traffic is allowed between containers on the same host on the default network bridge. If not desired, restrict all the inter-container communication. Link specific containers together that require communication. Alternatively, you can create custom network and only join containers that need to communicate to that custom network.\nRationale:\nBy default, unrestricted network traffic is enabled between all containers on the same host on the default network bridge. Thus, each container has the potential of reading all packets across the container network on the same host. This might lead to an unintended and unwanted disclosure of information to other containers. Hence, restrict the inter-container communication on the default network bridge.",
+        "solution": "Run the docker in daemon mode and pass --icc=false as an argument.\nFor Example,\ndockerd --icc=false\nAlternatively, you can follow the Docker documentation and create a custom network and only join containers that need to communicate to that custom network. The --icc parameter only applies to the default docker bridge, if custom networks are used then the approach of segmenting networks should be adopted instead.\nImpact:\nThe inter-container communication would be disabled on the default network bridge. If any communication between containers on the same host is desired, then it needs to be explicitly defined using container linking or alternatively custom networks have to be defined.\nDefault Value:\nBy default, all inter-container communication is allowed on the default network bridge.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(13),800-53r5|SC-7(13),CN-L3|8.1.10.6(h),CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(13),LEVEL|1A,NESA|T4.5.4,NIAv2|GS7d,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|3.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker network ls --quiet | xargs docker network inspect --format '{{ .Name }}: {{ .Options }}'",
+        "expect": "com\\.docker\\.network\\.bridge\\.enable_icc:false"
+    },
+    "custom_item_5": {
+        "description": "2.2 Ensure the logging level is set to 'info'",
+        "info": "Set Docker daemon log level to info.\nRationale:\nSetting up an appropriate log level, configures the Docker daemon to log events that you would want to review later. A base log level of info and above would capture all logs except debug logs. Until and unless required, you should not run Docker daemon at debug log level.",
+        "solution": "Run the Docker daemon as below:\ndockerd --log-level=\"info\"\nImpact:\nNone.\nDefault Value:\nBy default, Docker daemon is set to log level of info.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53r5|AU-3,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv6|6.2,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,LEVEL|1A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [l]og-level",
+        "expect": "log-level=info"
+    },
+    "custom_item_6": {
+        "description": "2.3 Ensure Docker is allowed to make changes to iptables",
+        "info": "Iptables are used to set up, maintain, and inspect the tables of IP packet filter rules in the Linux kernel. Allow the Docker daemon to make changes to the iptables.\nRationale:\nDocker will never make changes to your system iptables rules if you choose to do so. Docker server would automatically make the needed changes to iptables based on how you choose your networking options for the containers if it is allowed to do so. It is recommended to let Docker server make changes to iptablesautomatically to avoid networking misconfiguration that might hamper the communication between containers and to the outside world. Additionally, it would save you hassles of updating iptablesevery time you choose to run the containers or modify networking options.",
+        "solution": "Do not run the Docker daemon with --iptables=false parameter. For example, do not start the Docker daemon as below:\ndockerd --iptables=false\nImpact:\nDocker daemon service start requires iptables rules to be enabled before it starts. Any restarts of iptables during docker daemon operation may result in losing docker-created rules. Adding iptables-persistent to your iptables install can assist with mitigating this impact.\nDefault Value:\nBy default, iptables is set to true.",
+        "reference": "800-171|3.13.1,800-53|SC-7(12),800-53r5|SC-7(12),CN-L3|8.1.10.6(j),CSCv6|5,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(12),LEVEL|1A,NESA|T4.5.4,NIAv2|AM38,NIAv2|SS13d,NIAv2|SS26,PCI-DSSv3.2.1|1.4,PCI-DSSv4.0|1.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [i]ptables=false | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "none"
+    },
+    "custom_item_7": {
+        "description": "2.4 Ensure insecure registries are not used",
+        "info": "Docker considers a private registry either secure or insecure. By default, registries are considered secure.\nRationale:\nA secure registry uses TLS. A copy of registry's CA certificate is placed on the Docker host at /etc/docker/certs.d// directory. An insecure registry is the one not having either valid registry certificate or is not using TLS. You should not be using any insecure registries in the production environment. Insecure registries can be tampered with leading to possible compromise to your production system.\nAdditionally, If a registry is marked as insecure then docker pull, docker push, and docker search commands will not result in an error message and the user might be indefinitely working with insecure registries without ever being notified of potential danger.",
+        "solution": "Do not use any insecure registries.\nFor example, do not start the Docker daemon as below:\ndockerd --insecure-registry 10.1.0.0/16\nImpact:\nNone.\nDefault Value:\nBy default, Docker assumes all, but local, registries are secure.",
+        "reference": "800-53|SI-7(6),800-53r5|SI-7(6),CSCv6|14.2,CSF|PR.DS-6,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|SI-7,ITSG-33|SI-7a.,LEVEL|1A,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [i]nsecure-registry | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "none"
+    },
+    "custom_item_8": {
+        "description": "2.5 Ensure aufs storage driver is not used",
+        "info": "Do not use aufs as storage driver for your Docker instance.\nRationale:\nThe aufs storage driver is the oldest storage driver. It is based on a Linux kernel patch-set that is unlikely to be merged into the main Linux kernel. aufs driver is also known to cause some serious kernel crashes. aufs just has legacy support from Docker. Most importantly, aufs is not a supported driver in many Linux distributions using latest Linux kernels.",
+        "solution": "Do not explicitly use aufs as storage driver.\nFor example, do not start Docker daemon as below:\ndockerd --storage-driver aufs\nImpact:\naufs is the only storage driver that allows containers to share executable and shared library memory. It might be useful if you are running thousands of containers with the same program or libraries.\nDefault Value:\nBy default, Docker uses devicemapper as the storage driver on most of the platforms. Default storage driver can vary based on your OS vendor. You should use the storage driver that is best supported by your preferred vendor.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|18,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker info | grep -ie \"^storage driver: aufs\" | /usr/bin/awk \\'{print} END {if (NR == 0) print \"none\"}\\'",
+        "expect": "none"
+    },
+    "custom_item_9": {
+        "description": "2.6 Ensure TLS authentication for Docker daemon is configured  --tlskey",
+        "info": "It is possible to make the Docker daemon to listen on a specific IP and port and any other Unix socket other than default Unix socket. Configure TLS authentication to restrict access to Docker daemon via IP and port.\nRationale:\nBy default, Docker daemon binds to a non-networked Unix socket and runs with root privileges. If you change the default docker daemon binding to a TCP port or any other Unix socket, anyone with access to that port or socket can have full access to Docker daemon and in turn to the host system. Hence, you should not bind the Docker daemon to another IP/port or a Unix socket.\nIf you must expose the Docker daemon via a network socket, configure TLS authentication for the daemon and Docker Swarm APIs (if using). This would restrict the connections to your Docker daemon over the network to a limited number of clients who could successfully authenticate over TLS.",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\nImpact:\nYou would need to manage and guard certificates and keys for Docker daemon and Docker clients.\n\n\nDefault Value:\nBy default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|9.1,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlskey",
+        "expect": "--tlskey"
+    },
+    "custom_item_10": {
+        "description": "2.6 Ensure TLS authentication for Docker daemon is configured  --tlscacert",
+        "info": "It is possible to make the Docker daemon to listen on a specific IP and port and any other Unix socket other than default Unix socket. Configure TLS authentication to restrict access to Docker daemon via IP and port.\nRationale:\nBy default, Docker daemon binds to a non-networked Unix socket and runs with root privileges. If you change the default docker daemon binding to a TCP port or any other Unix socket, anyone with access to that port or socket can have full access to Docker daemon and in turn to the host system. Hence, you should not bind the Docker daemon to another IP/port or a Unix socket.\nIf you must expose the Docker daemon via a network socket, configure TLS authentication for the daemon and Docker Swarm APIs (if using). This would restrict the connections to your Docker daemon over the network to a limited number of clients who could successfully authenticate over TLS.",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\nImpact:\nYou would need to manage and guard certificates and keys for Docker daemon and Docker clients.\n\n\nDefault Value:\nBy default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|9.1,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlscacert",
+        "expect": "--tlscacert"
+    },
+    "custom_item_11": {
+        "description": "2.6 Ensure TLS authentication for Docker daemon is configured  --tlscert",
+        "info": "It is possible to make the Docker daemon to listen on a specific IP and port and any other Unix socket other than default Unix socket. Configure TLS authentication to restrict access to Docker daemon via IP and port.\nRationale:\nBy default, Docker daemon binds to a non-networked Unix socket and runs with root privileges. If you change the default docker daemon binding to a TCP port or any other Unix socket, anyone with access to that port or socket can have full access to Docker daemon and in turn to the host system. Hence, you should not bind the Docker daemon to another IP/port or a Unix socket.\nIf you must expose the Docker daemon via a network socket, configure TLS authentication for the daemon and Docker Swarm APIs (if using). This would restrict the connections to your Docker daemon over the network to a limited number of clients who could successfully authenticate over TLS.",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\nImpact:\nYou would need to manage and guard certificates and keys for Docker daemon and Docker clients.\n\n\nDefault Value:\nBy default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|9.1,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlscert",
+        "expect": "--tlscert"
+    },
+    "custom_item_12": {
+        "description": "2.6 Ensure TLS authentication for Docker daemon is configured  --tlsverify",
+        "info": "It is possible to make the Docker daemon to listen on a specific IP and port and any other Unix socket other than default Unix socket. Configure TLS authentication to restrict access to Docker daemon via IP and port.\nRationale:\nBy default, Docker daemon binds to a non-networked Unix socket and runs with root privileges. If you change the default docker daemon binding to a TCP port or any other Unix socket, anyone with access to that port or socket can have full access to Docker daemon and in turn to the host system. Hence, you should not bind the Docker daemon to another IP/port or a Unix socket.\nIf you must expose the Docker daemon via a network socket, configure TLS authentication for the daemon and Docker Swarm APIs (if using). This would restrict the connections to your Docker daemon over the network to a limited number of clients who could successfully authenticate over TLS.",
+        "solution": "Follow the steps mentioned in the Docker documentation or other references.\nImpact:\nYou would need to manage and guard certificates and keys for Docker daemon and Docker clients.\n\n\nDefault Value:\nBy default, TLS authentication is not configured.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|9.1,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]tlsverify",
+        "expect": "--tlsverify"
+    },
+    "custom_item_13": {
+        "description": "2.7 Ensure the default ulimit is configured appropriately",
+        "info": "Set the default ulimit options as appropriate in your environment.\nRationale:\nulimit provides control over the resources available to the shell and to processes started by it. Setting system resource limits judiciously saves you from many disasters such as a fork bomb. Sometimes, even friendly users and legitimate processes can overuse system resources and in-turn can make the system unusable.\nSetting default ulimit for the Docker daemon would enforce the ulimit for all container instances. You would not need to setup ulimit for each container instance. However, the default ulimit can be overridden during container runtime, if needed. Hence, to control the system resources, define a default ulimit as needed in your environment.",
+        "solution": "Run the docker in daemon mode and pass --default-ulimit as argument with respective ulimits as appropriate in your environment.\nFor Example,\ndockerd --default-ulimit nproc=1024:2048 --default-ulimit nofile=100:200\nImpact:\nIf the ulimits are not set properly, the desired resource control might not be achieved and might even make the system unusable.\nDefault Value:\nBy default, no ulimit is set.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1M,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]default-ulimit",
+        "expect": "--default-ulimit @DEFAULT_ULIMIT@"
+    },
+    "custom_item_14": {
+        "description": "2.13 Ensure operations on legacy registry (v1) are Disabled",
+        "info": "The latest Docker registry is v2. All operations on the legacy registry version (v1) should be restricted.\nRationale:\nDocker registry v2 brings in many performance and security improvements over v1. It supports container image provenance and other security features such as image signing and verification. Hence, operations on Docker legacy registry should be restricted.",
+        "solution": "Start the docker daemon as below:\ndockerd --disable-legacy-registry\nImpact:\nLegacy registry operations would be restricted.\nDefault Value:\nBy default, legacy registry operations are allowed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|18,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]disable-legacy-registry",
+        "expect": "--disable-legacy-registry"
+    },
+    "custom_item_15": {
+        "description": "2.14 Ensure live restore is Enabled",
+        "info": "The --live-restore enables full support of daemon-less containers in docker. It ensures that docker does not stop containers on shutdown or restore and properly reconnects to the container when restarted.\nRationale:\nOne of the important security triads is availability. Setting --live-restore flag in the docker daemon ensures that container execution is not interrupted when the docker daemon is not available. This also means that it is now easier to update and patch the docker daemon without execution downtime.",
+        "solution": "Run the docker in daemon mode and pass --live-restore as an argument.\nFor Example,\ndockerd --live-restore\nImpact:\nNone.\nDefault Value:\nBy default, --live-restore is not enabled.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1A,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]live-restore",
+        "expect": "--live-restore"
+    },
+    "custom_item_16": {
+        "description": "2.15 Ensure Userland Proxy is Disabled",
+        "info": "The docker daemon starts a userland proxy service for port forwarding whenever a port is exposed. Where hairpin NAT is available, this service is generally superfluous to requirements and can be disabled.\nRationale:\nDocker engine provides two mechanisms for forwarding ports from the host to containers, hairpin NAT, and a userland proxy. In most circumstances, the hairpin NAT mode is preferred as it improves performance and makes use of native Linux iptables functionality instead of an additional component.\nWhere hairpin NAT is available, the userland proxy should be disabled on startup to reduce the attack surface of the installation.",
+        "solution": "Run the Docker daemon as below:\ndockerd --userland-proxy=false\nImpact:\nSome systems with older Linux kernels may not be able to support hairpin NAT and therefore require the userland proxy service. Also, some networking setups can be impacted by the removal of the userland proxy.\nDefault Value:\nBy default, the userland proxy is enabled.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]userland-proxy",
+        "expect": "--userland-proxy=false"
+    },
+    "custom_item_17": {
+        "description": "2.17 Ensure experimental features are avoided in production",
+        "info": "Avoid experimental features in production.\nRationale:\nExperimental is now a runtime docker daemon flag instead of a separate build. Passing --experimental as a runtime flag to the docker daemon, activates experimental features. Experimental is now considered a stable release, but with a couple of features which might not have tested and guaranteed API stability.",
+        "solution": "Do not pass --experimental as a runtime parameter to the docker daemon.\nImpact:\nNone\nDefault Value:\nBy default, experimental features are not activated on the docker daemon.",
+        "reference": "800-53|SC-43b.,800-53r5|SC-43b.,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,NIAv2|SU8,NIAv2|SU9,NIAv2|SU10,QCSC-v1|5.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker version --format '{{ .Server.Experimental }}'",
+        "expect": "false"
+    },
+    "custom_item_18": {
+        "description": "2.18 Ensure containers are restricted from acquiring new privileges",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]no-new-privileges",
+        "expect": "--no-new-privileges=false"
+    },
+    "custom_item_19": {
+        "description": "2.18 Ensure containers are restricted from acquiring new privileges",
+        "info": "Restrict containers from acquiring additional privileges via suid or sgid bits, by default.\nRationale:\nA process can set the no_new_priv bit in the kernel. It persists across fork, clone and execve. The no_new_priv bit ensures that the process or its children processes do not gain any additional privileges via suid or sgid bits. This way a lot of dangerous operations become a lot less dangerous because there is no possibility of subverting privileged binaries.\nSetting this at the daemon level ensures that by default all new containers are restricted from acquiring new privileges.",
+        "solution": "Run the Docker daemon as below:\ndockerd --no-new-privileges\nImpact:\nno_new_priv prevents LSMs like SELinux from transitioning to process labels that have access not allowed to the current process.\nDefault Value:\nBy default, containers are not restricted from acquiring new privileges.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]no-new-privileges",
+        "expect": ""
+    },
+    "custom_item_20": {
+        "description": "2.18 Ensure containers are restricted from acquiring new privileges",
+        "info": "Restrict containers from acquiring additional privileges via suid or sgid bits, by default.\nRationale:\nA process can set the no_new_priv bit in the kernel. It persists across fork, clone and execve. The no_new_priv bit ensures that the process or its children processes do not gain any additional privileges via suid or sgid bits. This way a lot of dangerous operations become a lot less dangerous because there is no possibility of subverting privileged binaries.\nSetting this at the daemon level ensures that by default all new containers are restricted from acquiring new privileges.",
+        "solution": "Run the Docker daemon as below:\ndockerd --no-new-privileges\nImpact:\nno_new_priv prevents LSMs like SELinux from transitioning to process labels that have access not allowed to the current process.\nDefault Value:\nBy default, containers are not restricted from acquiring new privileges.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ps -ef | grep docker | grep [\\-][\\-]no-new-privileges",
+        "expect": "--no-new-privileges"
+    },
+    "custom_item_21": {
+        "description": "3.1 Ensure that docker.service file ownership is set to root:root",
+        "info": "Verify that the docker.service file ownership and group-ownership are correctly set to root.\nRationale:\ndocker.service file contains sensitive parameters that may alter the behavior of Docker daemon. Hence, it should be owned and group-owned by root to maintain the integrity of the file.",
+        "solution": "Step 1: Find out the file location:\nsystemctl show -p FragmentPath docker.service\nStep 2: If the file does not exist, this recommendation is not applicable. If the file exists, execute the below command with the correct file path to set the ownership and group ownership for the file to root.\nFor example,\nchown root:root /usr/lib/systemd/system/docker.service\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable. By default, if the file is present, the ownership and group-ownership for this file is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_DOCKER_SERVICE_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_22": {
+        "description": "3.2 Ensure that docker.service file permissions are set to 644 or more restrictive",
+        "info": "Verify that the docker.service file permissions are correctly set to 644 or more restrictive.\nRationale:\ndocker.service file contains sensitive parameters that may alter the behavior of Docker daemon. Hence, it should not be writable by any other user other than root to maintain the integrity of the file.",
+        "solution": "Step 1: Find out the file location:\nsystemctl show -p FragmentPath docker.service\nStep 2: If the file does not exist, this recommendation is not applicable. If the file exists, execute the below command with the correct file path to set the file permissions to 644.\nFor example,\nchmod 644 /usr/lib/systemd/system/docker.service\n\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable. By default, if the file is present, the file permissions are correctly set to 644.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_DOCKER_SERVICE_FILE@",
+        "mask": "133"
+    },
+    "custom_item_23": {
+        "description": "3.3 Ensure that docker.socket file ownership is set to root:root",
+        "info": "Verify that the docker.socket file ownership and group ownership is correctly set to root.\nRationale:\ndocker.socket file contains sensitive parameters that may alter the behavior of Docker remote API. Hence, it should be owned and group-owned by root to maintain the integrity of the file.",
+        "solution": "Step 1: Find out the file location:\nsystemctl show -p FragmentPath docker.socket\nStep 2: If the file does not exist, this recommendation is not applicable. If the file exists, execute the below command with the correct file path to set the ownership and group ownership for the file to root.\nFor example,\nchown root:root /usr/lib/systemd/system/docker.socket\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable. By default, if the file is present, the ownership and group-ownership for this file is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_DOCKER_SOCKET_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_24": {
+        "description": "3.4 Ensure that docker.socket file permissions are set to 644 or more restrictive",
+        "info": "Verify that the docker.socket file permissions are correctly set to 644 or more restrictive.\nRationale:\ndocker.socket file contains sensitive parameters that may alter the behavior of Docker remote API. Hence, it should be writable only by root to maintain the integrity of the file.",
+        "solution": "Step 1: Find out the file location:\nsystemctl show -p FragmentPath docker.socket\nStep 2: If the file does not exist, this recommendation is not applicable. If the file exists, execute the below command with the correct file path to set the file permissions to 644.\nFor example,\nchmod 644 /usr/lib/systemd/system/docker.socket\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable. By default, if the file is present, the file permissions for this file are correctly set to 644.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_DOCKER_SOCKET_FILE@",
+        "mask": "133"
+    },
+    "custom_item_25": {
+        "description": "3.5 Ensure that /etc/docker directory ownership is set to root:root",
+        "info": "Verify that the /etc/docker directory ownership and group-ownership is correctly set to root.\nRationale:\n/etc/docker directory contains certificates and keys in addition to various sensitive files. Hence, it should be owned and group-owned by root to maintain the integrity of the directory.",
+        "solution": "chown root:root /etc/docker\nThis would set the ownership and group-ownership for the directory to root.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for this directory is correctly set to root.",
+        "reference": "CSCv6|5.1,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/docker",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_26": {
+        "description": "3.6 Ensure that /etc/docker directory permissions are set to 755 or more restrictive",
+        "info": "Verify that the /etc/docker directory permissions are correctly set to 755 or more restrictive.\nRationale:\n/etc/docker directory contains certificates and keys in addition to various sensitive files. Hence, it should only be writable by root to maintain the integrity of the directory.",
+        "solution": "chmod 755 /etc/docker\nThis would set the permissions for the directory to 755.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for this directory are correctly set to 755.",
+        "reference": "CSCv6|14.4,LEVEL|1A",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/docker",
+        "mask": "022"
+    },
+    "custom_item_27": {
+        "description": "3.7 Ensure that registry certificate file ownership is set to root:root",
+        "info": "Verify that all the registry certificate files (usually found under /etc/docker/certs.d/directory) are owned and group-owned by root.\nRationale:\n/etc/docker/certs.d/directory contains Docker registry certificates. These certificate files must be owned and group-owned by root to maintain the integrity of the certificates.",
+        "solution": "chown root:root /etc/docker/certs.d//*\nThis would set the ownership and group-ownership for the registry certificate files to root.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for registry certificate files is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@BASE_PATH_TO_CERTS@@REGISTRY_NAME@/*",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_28": {
+        "description": "3.8 Ensure that registry certificate file permissions are set to 444 or more restrictive",
+        "info": "Verify that all the registry certificate files (usually found under /etc/docker/certs.d/directory) have permissions of 444 or more restrictive.\nRationale:\n/etc/docker/certs.d/directory contains Docker registry certificates. These certificate files must have permissions of 444 to maintain the integrity of the certificates.",
+        "solution": "chmod 444 /etc/docker/certs.d//*\nThis would set the permissions for registry certificate files to 444.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for registry certificate files might not be 444. The default file permissions are governed by the system or user specific umaskvalues.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@BASE_PATH_TO_CERTS@@REGISTRY_NAME@/*",
+        "mask": "333"
+    },
+    "custom_item_29": {
+        "description": "3.9 Ensure that TLS CA certificate file ownership is set to root:root",
+        "info": "Verify that the TLS CA certificate file (the file that is passed alongwith --tlscacert parameter) is owned and group-owned by root.\nRationale:\nThe TLS CA certificate file should be protected from any tampering. It is used to authenticate Docker server based on given CA certificate. Hence, it must be owned and group-owned by root to maintain the integrity of the CA certificate.",
+        "solution": "chown root:rootThis would set the ownership and group-ownership for the TLS CA certificate file to root.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for TLS CA certificate file is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_TLS_CA_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_30": {
+        "description": "3.10 Ensure that TLS CA certificate file permissions are set to 444 or more restrictive",
+        "info": "Verify that the TLS CA certificate file (the file that is passed alongwith --tlscacert parameter) has permissions of 444 or more restrictive.\nRationale:\nThe TLS CA certificate file should be protected from any tampering. It is used to authenticate Docker server based on given CA certificate. Hence, it must have permissions of 444 to maintain the integrity of the CA certificate.",
+        "solution": "chmod 444This would set the file permissions of the TLS CA file to 444.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for TLS CA certificate file might not be 444. The default file permissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_TLS_CA_FILE@",
+        "mask": "333"
+    },
+    "custom_item_31": {
+        "description": "3.11 Ensure that Docker server certificate file ownership is set to root:root",
+        "info": "Verify that the Docker server certificate file (the file that is passed alongwith --tlscert parameter) is owned and group-owned by root.\nRationale:\nThe Docker server certificate file should be protected from any tampering. It is used to authenticate Docker server based on the given server certificate. Hence, it must be owned and group-owned by root to maintain the integrity of the certificate.",
+        "solution": "chown root:rootThis would set the ownership and group-ownership for the Docker server certificate file to root.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for Docker server certificate file is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_SERVER_CERT_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_32": {
+        "description": "3.12 Ensure that Docker server certificate file permissions are set to 444 or more restrictive",
+        "info": "Verify that the Docker server certificate file (the file that is passed alongwith --tlscert parameter) has permissions of 444 or more restrictive.\nRationale:\nThe Docker server certificate file should be protected from any tampering. It is used to authenticate Docker server based on the given server certificate. Hence, it must have permissions of 444 to maintain the integrity of the certificate.",
+        "solution": "chmod 444This would set the file permissions of the Docker server file to 444.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for Docker server certificate file might not be 444. The default file permissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_SERVER_CERT_FILE@",
+        "mask": "333"
+    },
+    "custom_item_33": {
+        "description": "3.13 Ensure that Docker server certificate key file ownership is set to root:root",
+        "info": "Verify that the Docker server certificate key file (the file that is passed alongwith --tlskey parameter) is owned and group-owned by root.\nRationale:\nThe Docker server certificate key file should be protected from any tampering or unneeded reads. It holds the private key for the Docker server certificate. Hence, it must be owned and group-owned by root to maintain the integrity of the Docker server certificate.",
+        "solution": "chown root:rootThis would set the ownership and group-ownership for the Docker server certificate key file to root.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for Docker server certificate key file is correctly set to root.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_SERVER_CERT_KEY_FILE@",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_34": {
+        "description": "3.14 Ensure that Docker server certificate key file permissions are set to 400",
+        "info": "Verify that the Docker server certificate key file (the file that is passed alongwith --tlskey parameter) has permissions of 400.\nRationale:\nThe Docker server certificate key file should be protected from any tampering or unneeded reads. It holds the private key for the Docker server certificate. Hence, it must have permissions of 400 to maintain the integrity of the Docker server certificate.",
+        "solution": "chmod 400This would set the Docker server certificate key file permissions to 400.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for Docker server certificate key file might not be 400. The default file permissions are governed by the system or user specific umask values.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "@PATH_TO_SERVER_CERT_KEY_FILE@",
+        "mask": "377"
+    },
+    "custom_item_35": {
+        "description": "3.15 Ensure that Docker socket file ownership is set to root:docker",
+        "info": "Verify that the Docker socket file is owned by root and group-owned by docker.\nRationale:\nDocker daemon runs as root. The default Unix socket hence must be owned by root. If any other user or process owns this socket, then it might be possible for that non-privileged user or process to interact with Docker daemon. Also, such a non-privileged user or process might interact with containers. This is neither secure nor desired behavior.\nAdditionally, the Docker installer creates a Unix group called docker. You can add users to this group, and then those users would be able to read and write to default Docker Unix socket. The membership to the docker group is tightly controlled by the system administrator. If any other group owns this socket, then it might be possible for members of that group to interact with Docker daemon. Also, such a group might not be as tightly controlled as the docker group. This is neither secure nor desired behavior.\nHence, the default Docker Unix socket file must be owned by root and group-owned by docker to maintain the integrity of the socket file.",
+        "solution": "chown root:docker /var/run/docker.sock\nThis would set the ownership to root and group-ownership to docker for default Docker socket file.\nImpact:\nNone.\nDefault Value:\nBy default, the ownership and group-ownership for Docker socket file is correctly set to root:docker.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/var/run/docker.sock",
+        "owner": "root",
+        "group": "docker"
+    },
+    "custom_item_36": {
+        "description": "3.16 Ensure that Docker socket file permissions are set to 660 or more restrictive",
+        "info": "Verify that the Docker socket file has permissions of 660 or more restrictive.\nRationale:\nOnly root and members of docker group should be allowed to read and write to default Docker Unix socket. Hence, the Docket socket file must have permissions of 660 or more restrictive.",
+        "solution": "chmod 660 /var/run/docker.sock\nThis would set the file permissions of the Docker socket file to 660.\nImpact:\nNone.\nDefault Value:\nBy default, the permissions for Docker socket file is correctly set to 660.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/var/run/docker.sock",
+        "mask": "117"
+    },
+    "custom_item_37": {
+        "description": "3.17 Ensure that daemon.json file ownership is set to root:root",
+        "info": "Verify that the daemon.json file ownership and group-ownership is correctly set to root.\nRationale:\ndaemon.json file contains sensitive parameters that may alter the behavior of docker daemon. Hence, it should be owned and group-owned by root to maintain the integrity of the file.",
+        "solution": "chown root:root /etc/docker/daemon.json\nThis would set the ownership and group-ownership for the file to root.\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/docker/daemon.json",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_38": {
+        "description": "3.18 Ensure that daemon.json file permissions are set to 644 or more restrictive",
+        "info": "Verify that the daemon.json file permissions are correctly set to 644 or more restrictive.\nRationale:\ndaemon.json file contains sensitive parameters that may alter the behavior of docker daemon. Hence, it should be writable only by root to maintain the integrity of the file.",
+        "solution": "chmod 644 /etc/docker/daemon.json\nThis would set the file permissions for this file to 644.\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/docker/daemon.json",
+        "mask": "133"
+    },
+    "custom_item_39": {
+        "description": "3.19 Ensure that /etc/default/docker file ownership is set to root:root",
+        "info": "Verify that the /etc/default/docker file ownership and group-ownership is correctly set to root.\nRationale:\n/etc/default/docker file contains sensitive parameters that may alter the behavior of docker daemon. Hence, it should be owned and group-owned by root to maintain the integrity of the file.",
+        "solution": "chown root:root /etc/default/docker\nThis would set the ownership and group-ownership for the file to root.\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|5.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/default/docker",
+        "owner": "root",
+        "group": "root"
+    },
+    "custom_item_40": {
+        "description": "3.20 Ensure that /etc/default/docker file permissions are set to 644 or more restrictive",
+        "info": "Verify that the /etc/default/docker file permissions are correctly set to 644 or more restrictive.\nRationale:\n/etc/default/docker file contains sensitive parameters that may alter the behavior of docker daemon. Hence, it should be writable only by root to maintain the integrity of the file.",
+        "solution": "chmod 644 /etc/default/docker\nThis would set the file permissions for this file to 644.\nImpact:\nNone.\nDefault Value:\nThis file may not be present on the system. In that case, this recommendation is not applicable.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|14.4,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "file": "/etc/default/docker",
+        "mask": "133"
+    },
+    "custom_item_41": {
+        "description": "4.1 Ensure a user for the container has been created",
+        "cmd": "/usr/bin/docker ps -q | xargs docker inspect --format \\'{{ .Id }}: User={{.Config.User}}\\'",
+        "expect": "User=$"
+    },
+    "custom_item_42": {
+        "description": "4.1 Ensure a user for the container has been created",
+        "info": "Create a non-root user for the container in the Dockerfile for the container image.\nRationale:\nIt is a good practice to run the container as a non-root user, if possible. Though user namespace mapping is now available, if a user is already defined in the container image, the container is run as that user by default and specific user namespace remapping is not required.",
+        "solution": "Ensure that the Dockerfile for the container image contains below instruction:\nUSERwhere username or ID refers to the user that could be found in the container base image. If there is no specific user created in the container base image, then add a useradd command to add the specific user before USER instruction.\nFor example, add the below lines in the Dockerfile to create a user in the container:\nRUN useradd -d /home/username -m -s /bin/bash username\nUSER username\nNote: If there are users in the image that the containers do not need, consider deleting them. After deleting those users, commit the image and then generate new instances of containers for use.\nImpact:\nNone.\nDefault Value:\nBy default, the containers are run with rootprivileges and as user rootinside the container.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs docker inspect --format \\'{{ .Id }}: User={{.Config.User}}\\'",
+        "expect": ""
+    },
+    "custom_item_43": {
+        "description": "4.1 Ensure a user for the container has been created",
+        "info": "Create a non-root user for the container in the Dockerfile for the container image.\nRationale:\nIt is a good practice to run the container as a non-root user, if possible. Though user namespace mapping is now available, if a user is already defined in the container image, the container is run as that user by default and specific user namespace remapping is not required.",
+        "solution": "Ensure that the Dockerfile for the container image contains below instruction:\nUSERwhere username or ID refers to the user that could be found in the container base image. If there is no specific user created in the container base image, then add a useradd command to add the specific user before USER instruction.\nFor example, add the below lines in the Dockerfile to create a user in the container:\nRUN useradd -d /home/username -m -s /bin/bash username\nUSER username\nNote: If there are users in the image that the containers do not need, consider deleting them. After deleting those users, commit the image and then generate new instances of containers for use.\nImpact:\nNone.\nDefault Value:\nBy default, the containers are run with rootprivileges and as user rootinside the container.",
+        "reference": "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,CSF|PR.DS-5,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs docker inspect --format \\'{{ .Id }}: User={{.Config.User}}\\'",
+        "expect": ".*"
+    },
+    "custom_item_44": {
+        "description": "4.2 Ensure that containers use trusted base images",
+        "info": "Ensure that the container image is written either from scratch or is based on another established and trusted base image downloaded over a secure channel.\nRationale:\nOfficial repositories are Docker images curated and optimized by the Docker community or the vendor. There could be other potentially unsafe public repositories. Caution should be exercised when obtaining container images from Docker and third parties to how they will be used for your organization's data.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": " Configure and use Docker Content trust.\n Inspect Docker image history to evaluate their risk to operate on your network.\n Scan Docker images for vulnerabilities in their dependencies and configurations they will impose upon your network.\nImpact:\nNone.\nDefault Value:\nNot Applicable.",
+        "reference": "800-171|3.4.8,800-53|CM-7(5),800-53r5|CM-7(5),CSCv6|3,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker images",
+        "expect": ""
+    },
+    "custom_item_45": {
+        "description": "4.6 Ensure HEALTHCHECK instructions have been added to the container image",
+        "info": "Add HEALTHCHECK instruction in your docker container images to perform the health check on running containers.\nRationale:\nOne of the important security triads is availability. Adding HEALTHCHECK instruction to your container image ensures that the docker engine periodically checks the running container instances against that instruction to ensure that the instances are still working.\nBased on the reported health status, the docker engine could then exit non-working containers and instantiate new ones.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Follow Docker documentation and rebuild your container image with HEALTHCHECK instruction.\nImpact:\nNone.\nDefault Value:\nBy default, HEALTHCHECK is not set.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|18,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{.Config.Healthcheck}}\\'",
+        "expect": ""
+    },
+    "custom_item_46": {
+        "description": "4.7 Ensure update instructions are not use alone in the Dockerfile",
+        "info": "Do not use update instructions such as apt-get update alone or in a single line in the Dockerfile.\nRationale:\nAdding the update instructions in a single line on the Dockerfile will cache the update layer. Thus, when you build any image later using the same instruction, previously cached update layer will be used. This could potentially deny any fresh updates to go in the later builds.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Use update instructions along with install instructions (or any other) and version pinning for packages while installing them. This would bust the cache and force to extract the required versions.\nAlternatively, you could use --no-cache flag during docker build process to avoid using cached layers.\nImpact:\nNone\nDefault Value:\nBy default, docker does not enforce any restrictions on using update instructions.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|18,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for image in $(docker images|awk {\\'print $3\\'}); do docker history $image 2>/dev/null|grep -i UPDATE;done",
+        "expect": ""
+    },
+    "custom_item_47": {
+        "description": "4.9 Ensure COPY is used instead of ADD in Dockerfile",
+        "info": "Use COPY instruction instead of ADD instruction in the Dockerfile.\nRationale:\nCOPY instruction just copies the files from the local host machine to the container file system. ADD instruction potentially could retrieve files from remote URLs and perform operations such as unpacking. Thus, ADD instruction introduces risks such as adding malicious files from URLs without scanning and unpacking procedure vulnerabilities.",
+        "solution": "Use COPY instructions in Dockerfiles.\nImpact:\nYou would need to take care of the functionalities provided by ADD instructions such as fetching files from remote URLs.\nDefault Value:\nNot Applicable",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|18,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for image in $(docker images|awk {\\'print $3\\'}); do docker history $image 2>/dev/null|grep ADD;done",
+        "expect": ""
+    },
+    "custom_item_48": {
+        "description": "4.10 Ensure secrets are not stored in Dockerfiles",
+        "info": "Do not store any secrets in Dockerfiles.\nRationale:\nDockerfiles could be backtracked easily by using native Docker commands such as docker history and various tools and utilities. Also, as a general practice, image publishers provide Dockerfiles to build the credibility for their images. Hence, the secrets within these Dockerfiles could be easily exposed and potentially be exploited.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Do not store any kind of secrets within Dockerfiles.\nImpact:\nYou would need to identify a way to handle secrets for your Docker images.\nDefault Value:\nBy default, there are no restrictions on storing config secrets in the Dockerfiles.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for image in $(docker images|awk {\\'print $3\\'}); do docker history $image;done",
+        "expect": ""
+    },
+    "custom_item_49": {
+        "description": "5.1 Ensure AppArmor Profile is Enabled",
+        "info": "AppArmor is an effective and easy-to-use Linux application security system. It is available on quite a few Linux distributions by default such as Debian and Ubuntu.\nRationale:\nAppArmor protects the Linux OS and applications from various threats by enforcing security policy which is also known as AppArmor profile. You can create your own AppArmor profile for containers or use the Docker's default AppArmor profile. This would enforce security policies on the containers as defined in the profile.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If AppArmor is applicable for your Linux OS, use it. You may have to follow below set of steps:\n1. Verify if AppArmor is installed. If not, install it.\n2. Create or import a AppArmor profile for Docker containers.\n3. Put this profile in enforcing mode.\n4. Start your Docker container using the customized AppArmor profile. For example,\ndocker run --interactive --tty --security-opt=\"apparmor:PROFILENAME\" centos /bin/bash\nAlternatively, you can keep the docker's default apparmor profile.\nImpact:\nThe container (process) would have set of restrictions as defined in AppArmor profile. If your AppArmor profile is mis-configured, then the container may not entirely work as expected.\nDefault Value:\nBy default, docker-default AppArmor profile is applied for running containers and this profile can be found at /etc/apparmor.d/docker.",
+        "reference": "800-171|3.1.1,800-171|3.1.2,800-53|AC-3(3),800-53r5|AC-3(3),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv6|14.4,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3(3),LEVEL|1A,NESA|T5.5.4,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,PCI-DSSv3.2.1|7.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format '{{ .Id }}: AppArmorProfile={{ .AppArmorProfile }}'",
+        "expect": ""
+    },
+    "custom_item_50": {
+        "description": "5.3 Ensure Linux Kernel Capabilities are restricted within containers",
+        "info": "By default, Docker starts containers with a restricted set of Linux Kernel Capabilities. It means that any process may be granted the required capabilities instead of root access. Using Linux Kernel Capabilities, the processes do not have to run as root for almost all the specific areas where root privileges are usually needed.\nRationale:\nDocker supports the addition and removal of capabilities, allowing the use of a non-default profile. This may make Docker more secure through capability removal, or less secure through the addition of capabilities. It is thus recommended to remove all capabilities except those explicitly required for your container process.\nFor example, capabilities such as below are usually not needed for container process:\nNET_ADMIN\nSYS_ADMIN\nSYS_MODULE\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Execute the below command to add needed capabilities:\n$> docker run --cap-add={\"Capability 1\",\"Capability 2\"}\nFor example,\ndocker run --interactive --tty --cap-add={\"NET_ADMIN\",\"SYS_ADMIN\"} centos:latest /bin/bash\nExecute the below command to drop unneeded capabilities:\n$> docker run --cap-drop={\"Capability 1\",\"Capability 2\"}\nFor example,\ndocker run --interactive --tty --cap-drop={\"SETUID\",\"SETGID\"} centos:latest /bin/bash\nAlternatively,\nYou may choose to drop all capabilities and add only add the needed ones:\n$> docker run --cap-drop=all --cap-add={\"Capability 1\",\"Capability 2\"}\nFor example,\ndocker run --interactive --tty --cap-drop=all --cap-add={\"NET_ADMIN\",\"SYS_ADMIN\"} centos:latest /bin/bash\nImpact:\nBased on what Linux Kernel Capabilities were added or dropped, restrictions within the container would apply.\nDefault Value:\nBy default, below capabilities are available for containers:\nAUDIT_WRITE\nCHOWN\nDAC_OVERRIDE\nFOWNER\nFSETID\nKILL\nMKNOD\nNET_BIND_SERVICE\nNET_RAW\nSETFCAP\nSETGID\nSETPCAP\nSETUID\nSYS_CHROOT",
+        "reference": "800-171|3.1.5,800-53|AC-6(4),800-53r5|AC-6(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(4),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: CapAdd={{json .HostConfig.CapAdd }} CapDrop={{json .HostConfig.CapDrop }}\\'",
+        "expect": ""
+    },
+    "custom_item_51": {
+        "description": "5.4 Ensure privileged containers are not used",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Privileged={{ .HostConfig.Privileged }}\\'",
+        "expect": "Privileged=true"
+    },
+    "custom_item_52": {
+        "description": "5.4 Ensure privileged containers are not used",
+        "info": "Using the --privileged flag gives all Linux Kernel Capabilities to the container thus overwriting the --cap-add and --cap-drop flags. Ensure that it is not used.\nRationale:\nThe --privileged flag gives all capabilities to the container, and it also lifts all the limitations enforced by the device cgroup controller. In other words, the container can then do almost everything that the host can do. This flag exists to allow special use-cases, like running Docker within Docker.",
+        "solution": "Do not run container with the --privileged flag.\nFor example, do not start a container as below:\ndocker run --interactive --tty --privileged centos /bin/bash\nImpact:\nLinux Kernel Capabilities other than defaults would not be available for use within container.\nDefault Value:\nFalse.",
+        "reference": "800-171|3.1.5,800-53|AC-6(4),800-53r5|AC-6(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(4),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Privileged={{ .HostConfig.Privileged }}\\'",
+        "expect": ""
+    },
+    "custom_item_53": {
+        "description": "5.4 Ensure privileged containers are not used",
+        "info": "Using the --privileged flag gives all Linux Kernel Capabilities to the container thus overwriting the --cap-add and --cap-drop flags. Ensure that it is not used.\nRationale:\nThe --privileged flag gives all capabilities to the container, and it also lifts all the limitations enforced by the device cgroup controller. In other words, the container can then do almost everything that the host can do. This flag exists to allow special use-cases, like running Docker within Docker.",
+        "solution": "Do not run container with the --privileged flag.\nFor example, do not start a container as below:\ndocker run --interactive --tty --privileged centos /bin/bash\nImpact:\nLinux Kernel Capabilities other than defaults would not be available for use within container.\nDefault Value:\nFalse.",
+        "reference": "800-171|3.1.5,800-53|AC-6(4),800-53r5|AC-6(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv6|5.1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6(4),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Privileged={{ .HostConfig.Privileged }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_54": {
+        "description": "5.5 Ensure sensitive host system directories are not mounted on containers",
+        "info": "Sensitive host system directories such as below should not be allowed to be mounted as container volumes especially in read-write mode.\n/\n/boot\n/dev\n/etc\n/lib\n/proc\n/sys\n/usr\nRationale:\nIf sensitive directories are mounted in read-write mode, it would be possible to make changes to files within those sensitive directories. The changes might bring down security implications or unwarranted changes that could put the Docker host in compromised state.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Do not mount host sensitive directories on containers especially in read-write mode.\nImpact:\nNone.\nDefault Value:\nDocker defaults to a read-write volume but you can also mount a directory read-only. By default, no sensitive host directories are mounted on containers.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs docker inspect --format \\'{{ .Id }}: Volumes={{ .Mounts }}\\'",
+        "expect": ""
+    },
+    "custom_item_55": {
+        "description": "5.6 Ensure ssh is not run within containers",
+        "info": "SSH server should not be running within the container. You should SSH into the Docker host, and use nsenter tool to enter a container from a remote host.\nRationale:\nRunning SSH within the container increases the complexity of security management by making it\n Difficult to manage access policies and security compliance for SSH server\n Difficult to manage keys and passwords across various containers\n Difficult to manage security upgrades for SSH server\nIt is possible to have shell access to a container without using SSH, the needlessly increasing the complexity of security management should be avoided.",
+        "solution": "Uninstall SSH server from the container and use nsenteror any other commands such as docker exec or docker attach to interact with the container instance.\ndocker exec --interactive --tty $INSTANCE_ID sh\nOR\ndocker attach $INSTANCE_ID\nImpact:\nNone.\nDefault Value:\nBy default, SSH server is not running inside the container. Only one process per container is allowed.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker exec $i ps -el|grep ssh; done",
+        "expect": ""
+    },
+    "custom_item_56": {
+        "description": "5.7 Ensure privileged ports are not mapped within containers",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do echo $i \\' : \\';/usr/bin/docker port $i; done",
+        "expect": ":([0-9]|[1-9][0-9]|[1-9][0-9][0-9]|10[0-2][0-3])$"
+    },
+    "custom_item_57": {
+        "description": "5.7 Ensure privileged ports are not mapped within containers",
+        "info": "The TCP/IP port numbers below 1024are considered privileged ports. Normal users and processes are not allowed to use them for various security reasons. Docker allows a container port to be mapped to a privileged port.\nRationale:\nBy default, if the user does not specifically declare the container port to host port mapping, Docker automatically and correctly maps the container port to one available in 49153-65535 block on the host. But, Docker allows a container port to be mapped to a privileged port on the host if the user explicitly declared it. This is so because containers are executed with NET_BIND_SERVICE Linux kernel capability that does not restrict the privileged port mapping. The privileged ports receive and transmit various sensitive and privileged data. Allowing containers to use them can bring serious implications.",
+        "solution": "Do not map the container ports to privileged host ports when starting a container. Also, ensure that there is no such container to host privileged port mapping declarations in the Dockerfile.\nImpact:\nNone.\n\n\nDefault Value:\nBy default, mapping a container port to a privileged port on the host is allowed.\nNote: There might be certain cases where you want to map privileged ports, because if you forbid it, then the corresponding application has to run outside of a container.\nFor example: HTTP and HTTPS load balancers have to bind 80/tcp and 443/tcp respectively. Forbidding to map privileged ports effectively forbids from running those in a container, and mandates using an external load balancer. In such cases, those containers instances should be marked as exceptions for this recommendation.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|9.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do echo $i \\' : \\';/usr/bin/docker port $i; done",
+        "expect": ""
+    },
+    "custom_item_58": {
+        "description": "5.7 Ensure privileged ports are not mapped within containers",
+        "info": "The TCP/IP port numbers below 1024are considered privileged ports. Normal users and processes are not allowed to use them for various security reasons. Docker allows a container port to be mapped to a privileged port.\nRationale:\nBy default, if the user does not specifically declare the container port to host port mapping, Docker automatically and correctly maps the container port to one available in 49153-65535 block on the host. But, Docker allows a container port to be mapped to a privileged port on the host if the user explicitly declared it. This is so because containers are executed with NET_BIND_SERVICE Linux kernel capability that does not restrict the privileged port mapping. The privileged ports receive and transmit various sensitive and privileged data. Allowing containers to use them can bring serious implications.",
+        "solution": "Do not map the container ports to privileged host ports when starting a container. Also, ensure that there is no such container to host privileged port mapping declarations in the Dockerfile.\nImpact:\nNone.\n\n\nDefault Value:\nBy default, mapping a container port to a privileged port on the host is allowed.\nNote: There might be certain cases where you want to map privileged ports, because if you forbid it, then the corresponding application has to run outside of a container.\nFor example: HTTP and HTTPS load balancers have to bind 80/tcp and 443/tcp respectively. Forbidding to map privileged ports effectively forbids from running those in a container, and mandates using an external load balancer. In such cases, those containers instances should be marked as exceptions for this recommendation.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|9.1,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do echo $i \\' : \\';/usr/bin/docker port $i; done",
+        "expect": ".*"
+    },
+    "custom_item_59": {
+        "description": "5.8 Ensure only needed ports are open on the container",
+        "info": "Dockerfile for a container image defines the ports to be opened by default on a container instance. The list of ports may or may not be relevant to the application you are running within the container.\nRationale:\nA container can be run just with the ports defined in the Dockerfile for its image or can be arbitrarily passed run time parameters to open a list of ports. Additionally, Overtime, Dockerfile may undergo various changes and the list of exposed ports may or may not be relevant to the application you are running within the container. Opening unneeded ports increase the attack surface of the container and the containerized application. As a recommended practice, do not open unneeded ports.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Fix the Dockerfile of the container image to expose only needed ports by your containerized application. You can also completely ignore the list of ports defined in the Dockerfile by NOT using -P (UPPERCASE) or --publish-all flag when starting the container. Use the -p (lowercase) or --publish flag to explicitly define the ports that you need for a particular container instance.\nFor example,\ndocker run --interactive --tty --publish 5000 --publish 5001 --publish 5002 centos /bin/bash\nImpact:\nNone.\nDefault Value:\nBy default, all the ports that are listed in the Dockerfile under EXPOSE instruction for an image are opened when a container is run with -P or --publish-all flag.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": ""
+    },
+    "custom_item_60": {
+        "description": "5.9 Ensure the host's network namespace is not shared",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: NetworkMode={{ .HostConfig.NetworkMode }}\\'",
+        "expect": "host"
+    },
+    "custom_item_61": {
+        "description": "5.9 Ensure the host's network namespace is not shared",
+        "info": "The networking mode on a container when set to --net=host, skips placing the container inside separate network stack. In essence, this choice tells Docker to not containerize the container's networking. This would network-wise mean that the container lives \"outside\" in the main Docker host and has full access to its network interfaces.\nRationale:\nThis is potentially dangerous. It allows the container process to open low-numbered ports like any other root process. It also allows the container to access network services like D-bus on the Docker host. Thus, a container process can potentially do unexpected things such as shutting down the Docker host. You should not use this option.",
+        "solution": "Do not pass --net=host option when starting the container.\nImpact:\nNone.\nDefault Value:\nBy default, container connects to Docker bridge.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|12,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: NetworkMode={{ .HostConfig.NetworkMode }}\\'",
+        "expect": ""
+    },
+    "custom_item_62": {
+        "description": "5.9 Ensure the host's network namespace is not shared",
+        "info": "The networking mode on a container when set to --net=host, skips placing the container inside separate network stack. In essence, this choice tells Docker to not containerize the container's networking. This would network-wise mean that the container lives \"outside\" in the main Docker host and has full access to its network interfaces.\nRationale:\nThis is potentially dangerous. It allows the container process to open low-numbered ports like any other root process. It also allows the container to access network services like D-bus on the Docker host. Thus, a container process can potentially do unexpected things such as shutting down the Docker host. You should not use this option.",
+        "solution": "Do not pass --net=host option when starting the container.\nImpact:\nNone.\nDefault Value:\nBy default, container connects to Docker bridge.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|12,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: NetworkMode={{ .HostConfig.NetworkMode }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_63": {
+        "description": "5.10 Ensure memory usage for container is limited",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Memory={{ .HostConfig.Memory }}\\'",
+        "expect": "Memory=0"
+    },
+    "custom_item_64": {
+        "description": "5.10 Ensure memory usage for container is limited",
+        "info": "By default, all containers on a Docker host share the resources equally. By using the resource management capabilities of Docker host, such as memory limit, you can control the amount of memory that a container may consume.\nRationale:\nBy default, container can use all of the memory on the host. You can use memory limit mechanism to prevent a denial of service arising from one container consuming all of the hosts resources such that other containers on the same host cannot perform their intended functions. Having no limit on memory can lead to issues where one container can easily make the whole system unstable and as a result unusable.",
+        "solution": "Run the container with only as much memory as required. Always run the container using the --memory argument.\nFor example, you could run a container as below:\ndocker run --interactive --tty --memory 256m centos /bin/bash\nIn the above example, the container is started with a memory limit of 256 MB.\nNote: Please note that the output of the below command would return values in scientific notation if memory limits are in place.\ndocker inspect --format='{{.Config.Memory}}' 7c5a2d4c7fe0\nFor example, if the memory limit is set to 256 MB for the above container instance, the output of the above command would be 2.68435456e+08 and NOT 256m. You should convert this value using a scientific calculator or programmatic methods.\nImpact:\nIf you do not set proper limits, the container process may have to starve.\nDefault Value:\nBy default, all containers on a Docker host share the resources equally. No memory limits are enforced.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1A,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Memory={{ .HostConfig.Memory }}\\'",
+        "expect": ""
+    },
+    "custom_item_65": {
+        "description": "5.10 Ensure memory usage for container is limited",
+        "info": "By default, all containers on a Docker host share the resources equally. By using the resource management capabilities of Docker host, such as memory limit, you can control the amount of memory that a container may consume.\nRationale:\nBy default, container can use all of the memory on the host. You can use memory limit mechanism to prevent a denial of service arising from one container consuming all of the hosts resources such that other containers on the same host cannot perform their intended functions. Having no limit on memory can lead to issues where one container can easily make the whole system unstable and as a result unusable.",
+        "solution": "Run the container with only as much memory as required. Always run the container using the --memory argument.\nFor example, you could run a container as below:\ndocker run --interactive --tty --memory 256m centos /bin/bash\nIn the above example, the container is started with a memory limit of 256 MB.\nNote: Please note that the output of the below command would return values in scientific notation if memory limits are in place.\ndocker inspect --format='{{.Config.Memory}}' 7c5a2d4c7fe0\nFor example, if the memory limit is set to 256 MB for the above container instance, the output of the above command would be 2.68435456e+08 and NOT 256m. You should convert this value using a scientific calculator or programmatic methods.\nImpact:\nIf you do not set proper limits, the container process may have to starve.\nDefault Value:\nBy default, all containers on a Docker host share the resources equally. No memory limits are enforced.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1A,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Memory={{ .HostConfig.Memory }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_66": {
+        "description": "5.11 Ensure CPU priority is set appropriately on the container",
+        "info": "By default, all containers on a Docker host share the resources equally. By using the resource management capabilities of Docker host, such as CPU shares, you can control the host CPU resources that a container may consume.\nRationale:\nBy default, CPU time is divided between containers equally. If it is desired, to control the CPU time amongst the container instances, you can use CPU sharing feature. CPU sharing allows to prioritize one container over the other and forbids the lower priority container to claim CPU resources more often. This ensures that the high priority containers are served better.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Manage the CPU shares between your containers. To do so start the container using the --cpu-shares argument.\nFor example, you could run a container as below:\ndocker run --interactive --tty --cpu-shares 512 centos /bin/bash\nIn the above example, the container is started with CPU shares of 50% of what the other containers use. So, if the other container has CPU shares of 80%, this container will have CPU shares of 40%.\nNote: Every new container will have 1024 shares of CPU by default. However, this value is shown as 0 if you run the command mentioned in the audit section.\nAlternatively,\n1. Navigate to /sys/fs/cgroup/cpu/system.slice/ directory.\n2. Check your container instance ID using docker ps.\n3. Now, inside the above directory (in step 1), you would have a directory by name docker-.scope. For example, docker-4acae729e8659c6be696ee35b2237cc1fe4edd2672e9186434c5116e1a6fbed6.scope. Navigate to this directory.\n4. You will find a file named cpu.shares. Execute cat cpu.shares. This will always give you the CPU share value based on the system. So, even if there is no CPU shares configured using -c or --cpu-shares argument in the docker run command, this file will have a value of 1024.\nIf we set one containers CPU shares to 512 it will receive half of the CPU time compared to the other container. So, take 1024 as 100% and then do quick math to derive the number that you should set for respective CPU shares. For example, use 512 if you want to set 50% and 256 if you want to set 25%.\nImpact:\nIf you do not set proper CPU shares, the container process may have to starve if the resources on the host are not available. If the CPU resources on the host are free, CPU shares do not place any restrictions on the CPU that the container may use.\nDefault Value:\nBy default, all containers on a Docker host share the resources equally. No CPU shares are enforced.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1A,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: CpuShares={{ .HostConfig.CpuShares }}\\'",
+        "expect": ""
+    },
+    "custom_item_67": {
+        "description": "5.12 Ensure the container's root filesystem is mounted as read only",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: ReadonlyRootfs={{ .HostConfig.ReadonlyRootfs }}\\'",
+        "expect": "ReadonlyRootfs=false"
+    },
+    "custom_item_68": {
+        "description": "5.12 Ensure the container's root filesystem is mounted as read only",
+        "info": "The container's root filesystem should be treated as a 'golden image' by using Docker run's --read-only option. This prevents any writes to the container's root filesystem at container runtime and enforces the principle of immutable infrastructure.\nRationale:\nEnabling this option forces containers at runtime to explicitly define their data writing strategy to persist or not persist their data.\nThis also reduces security attack vectors since the container instance's filesystem cannot be tampered with or written to unless it has explicit read-write permissions on its filesystem folder and directories.",
+        "solution": "Add a --read-only flag at a container's runtime to enforce the container's root filesystem to be mounted as read only.\ndocker run--read-onlyEnabling the --read-only option at a container's runtime should be used by administrators to force a container's executable processes to only write container data to explicit storage locations during the container's runtime.\nExamples of explicit storage locations during a container's runtime include, but not limited to:\n1. Use the --tmpfs option to mount a temporary file system for non-persistent data writes.\ndocker run --interactive --tty --read-only --tmpfs \"/run\" --tmpfs \"/tmp\" centos /bin/bash\n2. Enabling Docker rw mounts at a container's runtime to persist container data directly on the Docker host filesystem.\ndocker run --interactive --tty --read-only -v /opt/app/data:/run/app/data:rw centos /bin/bash\n3. Utilizing Docker shared-storage volume plugins for Docker data volume to persist container data.\ndocker volume create -d convoy --opt o=size=20GB my-named-volume\ndocker run --interactive --tty --read-only -v my-named-volume:/run/app/data centos /bin/bash\n3. Transmitting container data outside of the docker during the container's runtime for container data to persist container data. Examples include hosted databases, network file shares, and APIs.\nImpact:\nEnabling --read-only at container runtime may break some container OS packages if a data writing strategy is not defined.\nDefine what the container's data should and should not persist at runtime to determine which recommendation procedure to utilize.\nExample:\n Enable use --tmpfs for temporary file writes to /tmp\n Use Docker shared data volumes for persistent data writes\nDefault Value:\nBy default, a container will have its root filesystem writable allowing all container processes to write files owned by the container's runtime user.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: ReadonlyRootfs={{ .HostConfig.ReadonlyRootfs }}\\'",
+        "expect": ""
+    },
+    "custom_item_69": {
+        "description": "5.12 Ensure the container's root filesystem is mounted as read only",
+        "info": "The container's root filesystem should be treated as a 'golden image' by using Docker run's --read-only option. This prevents any writes to the container's root filesystem at container runtime and enforces the principle of immutable infrastructure.\nRationale:\nEnabling this option forces containers at runtime to explicitly define their data writing strategy to persist or not persist their data.\nThis also reduces security attack vectors since the container instance's filesystem cannot be tampered with or written to unless it has explicit read-write permissions on its filesystem folder and directories.",
+        "solution": "Add a --read-only flag at a container's runtime to enforce the container's root filesystem to be mounted as read only.\ndocker run--read-onlyEnabling the --read-only option at a container's runtime should be used by administrators to force a container's executable processes to only write container data to explicit storage locations during the container's runtime.\nExamples of explicit storage locations during a container's runtime include, but not limited to:\n1. Use the --tmpfs option to mount a temporary file system for non-persistent data writes.\ndocker run --interactive --tty --read-only --tmpfs \"/run\" --tmpfs \"/tmp\" centos /bin/bash\n2. Enabling Docker rw mounts at a container's runtime to persist container data directly on the Docker host filesystem.\ndocker run --interactive --tty --read-only -v /opt/app/data:/run/app/data:rw centos /bin/bash\n3. Utilizing Docker shared-storage volume plugins for Docker data volume to persist container data.\ndocker volume create -d convoy --opt o=size=20GB my-named-volume\ndocker run --interactive --tty --read-only -v my-named-volume:/run/app/data centos /bin/bash\n3. Transmitting container data outside of the docker during the container's runtime for container data to persist container data. Examples include hosted databases, network file shares, and APIs.\nImpact:\nEnabling --read-only at container runtime may break some container OS packages if a data writing strategy is not defined.\nDefine what the container's data should and should not persist at runtime to determine which recommendation procedure to utilize.\nExample:\n Enable use --tmpfs for temporary file writes to /tmp\n Use Docker shared data volumes for persistent data writes\nDefault Value:\nBy default, a container will have its root filesystem writable allowing all container processes to write files owned by the container's runtime user.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53r5|CM-7,CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: ReadonlyRootfs={{ .HostConfig.ReadonlyRootfs }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_70": {
+        "description": "5.13 Ensure incoming container traffic is binded to a specific host interface",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": "0\\.0\\.0\\.\\0:"
+    },
+    "custom_item_71": {
+        "description": "5.13 Ensure incoming container traffic is binded to a specific host interface",
+        "info": "By default, Docker containers can make connections to the outside world, but the outside world cannot connect to containers. Each outgoing connection will appear to originate from one of the host machine's own IP addresses. Only allow container services to be contacted through a specific external interface on the host machine.\nRationale:\nIf you have multiple network interfaces on your host machine, the container can accept connections on the exposed ports on any network interface. This might not be desired and may not be secured. Many a times a particular interface is exposed externally and services such as intrusion detection, intrusion prevention, firewall, load balancing, etc. are run on those interfaces to screen incoming public traffic. Hence, you should not accept incoming connections on any interface. You should only allow incoming connections from a particular external interface.",
+        "solution": "Bind the container port to a specific host interface on the desired host port.\nFor example,\ndocker run --detach --publish 10.2.3.4:49153:80 nginx\nIn the example above, the container port 80 is bound to the host port on 49153 and would accept incoming connection only from 10.2.3.4 external interface.\nImpact:\nNone.\nDefault Value:\nBy default, Docker exposes the container ports on 0.0.0.0, the wildcard IP address that will match any possible incoming network interface on the host machine.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": ""
+    },
+    "custom_item_72": {
+        "description": "5.13 Ensure incoming container traffic is binded to a specific host interface",
+        "info": "By default, Docker containers can make connections to the outside world, but the outside world cannot connect to containers. Each outgoing connection will appear to originate from one of the host machine's own IP addresses. Only allow container services to be contacted through a specific external interface on the host machine.\nRationale:\nIf you have multiple network interfaces on your host machine, the container can accept connections on the exposed ports on any network interface. This might not be desired and may not be secured. Many a times a particular interface is exposed externally and services such as intrusion detection, intrusion prevention, firewall, load balancing, etc. are run on those interfaces to screen incoming public traffic. Hence, you should not accept incoming connections on any interface. You should only allow incoming connections from a particular external interface.",
+        "solution": "Bind the container port to a specific host interface on the desired host port.\nFor example,\ndocker run --detach --publish 10.2.3.4:49153:80 nginx\nIn the example above, the container port 80 is bound to the host port on 49153 and would accept incoming connection only from 10.2.3.4 external interface.\nImpact:\nNone.\nDefault Value:\nBy default, Docker exposes the container ports on 0.0.0.0, the wildcard IP address that will match any possible incoming network interface on the host machine.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "for i in $(/usr/bin/docker ps -q); do /usr/bin/docker port $i; done",
+        "expect": ".*"
+    },
+    "custom_item_73": {
+        "description": "5.14 Ensure 'on-failure' container restart policy is set to '5' - RestartPolicyName",
+        "cmd": "docker ps -q | xargs docker inspect --format \\'{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}\\'",
+        "expect": "RestartPolicyName=always"
+    },
+    "custom_item_74": {
+        "description": "5.14 Ensure 'on-failure' container restart policy is set to '5' - RestartPolicyName",
+        "info": "Using the --restart flag in docker run command you can specify a restart policy for how a container should or should not be restarted on exit. You should choose the on-failure restart policy and limit the restart attempts to 5.\nRationale:\nIf you indefinitely keep trying to start the container, it could possibly lead to a denial of service on the host. It could be an easy way to do a distributed denial of service attack especially if you have many containers on the same host. Additionally, ignoring the exit status of the container and always attempting to restart the container leads to non-investigation of the root cause behind containers getting terminated. If a container gets terminated, you should investigate on the reason behind it instead of just attempting to restart it indefinitely. Thus, it is recommended to use on-failure restart policy and limit it to maximum of 5 restart attempts.",
+        "solution": "If a container is desired to be restarted of its own, then, for example, you could start the container as below:\ndocker run --detach --restart=on-failure:5 nginx\nImpact:\nThe container would attempt to restart only for 5 times.\nDefault Value:\nBy default, containers are not configured with restart policies. Hence, containers do not attempt to restart of their own.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSCv6|18,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1A,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps -q | xargs docker inspect --format \\'{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}\\'",
+        "expect": ""
+    },
+    "custom_item_75": {
+        "description": "5.14 Ensure 'on-failure' container restart policy is set to '5' - RestartPolicyName",
+        "info": "Using the --restart flag in docker run command you can specify a restart policy for how a container should or should not be restarted on exit. You should choose the on-failure restart policy and limit the restart attempts to 5.\nRationale:\nIf you indefinitely keep trying to start the container, it could possibly lead to a denial of service on the host. It could be an easy way to do a distributed denial of service attack especially if you have many containers on the same host. Additionally, ignoring the exit status of the container and always attempting to restart the container leads to non-investigation of the root cause behind containers getting terminated. If a container gets terminated, you should investigate on the reason behind it instead of just attempting to restart it indefinitely. Thus, it is recommended to use on-failure restart policy and limit it to maximum of 5 restart attempts.",
+        "solution": "If a container is desired to be restarted of its own, then, for example, you could start the container as below:\ndocker run --detach --restart=on-failure:5 nginx\nImpact:\nThe container would attempt to restart only for 5 times.\nDefault Value:\nBy default, containers are not configured with restart policies. Hence, containers do not attempt to restart of their own.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSCv6|18,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1A,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps -q | xargs docker inspect --format \\'{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_76": {
+        "description": "5.14 Ensure 'on-failure' container restart policy is set to '5' - 'MaximumRetryCount'",
+        "info": "Using the --restart flag in docker run command you can specify a restart policy for how a container should or should not be restarted on exit. You should choose the on-failure restart policy and limit the restart attempts to 5.\nRationale:\nIf you indefinitely keep trying to start the container, it could possibly lead to a denial of service on the host. It could be an easy way to do a distributed denial of service attack especially if you have many containers on the same host. Additionally, ignoring the exit status of the container and always attempting to restart the container leads to non-investigation of the root cause behind containers getting terminated. If a container gets terminated, you should investigate on the reason behind it instead of just attempting to restart it indefinitely. Thus, it is recommended to use on-failure restart policy and limit it to maximum of 5 restart attempts.",
+        "solution": "If a container is desired to be restarted of its own, then, for example, you could start the container as below:\ndocker run --detach --restart=on-failure:5 nginx\nImpact:\nThe container would attempt to restart only for 5 times.\nDefault Value:\nBy default, containers are not configured with restart policies. Hence, containers do not attempt to restart of their own.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSCv6|18,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1A,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps -q | xargs docker inspect --format \\'{{ .Id }}: RestartPolicyName={{ .HostConfig.RestartPolicy.Name }} MaximumRetryCount={{ .HostConfig.RestartPolicy.MaximumRetryCount }}\\'|grep RestartPolicyName=on-failure|egrep \\'MaximumRetryCount=([6-9]\\|[1-9][0-9]+)\\'",
+        "expect": ""
+    },
+    "custom_item_77": {
+        "description": "5.15 Ensure the host's process namespace is not shared",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: PidMode={{ .HostConfig.PidMode }}\\'",
+        "expect": "PidMode=host"
+    },
+    "custom_item_78": {
+        "description": "5.15 Ensure the host's process namespace is not shared",
+        "info": "Process ID (PID) namespaces isolate the process ID number space, meaning that processes in different PID namespaces can have the same PID. This is process level isolation between containers and the host.\nRationale:\nPID namespace provides separation of processes. The PID Namespace removes the view of the system processes, and allows process ids to be reused including PID 1. If the host's PID namespace is shared with the container, it would basically allow processes within the container to see all of the processes on the host system. This breaks the benefit of process level isolation between the host and the containers. Someone having access to the container can eventually know all the processes running on the host system and can even kill the host system processes from within the container. This can be catastrophic. Hence, do not share the host's process namespace with the containers.",
+        "solution": "Do not start a container with --pid=host argument.\nFor example, do not start a container as below:\ndocker run --interactive --tty --pid=host centos /bin/bash\nImpact:\nContainer processes cannot see the processes on the host system. In certain cases, you want your container to share the host's process namespace. For example, you could build a container with debugging tools like strace or gdb, but want to use these tools when debugging processes within the container. If this is desired, then share only one (or needed) host process by using the -p switch.\nFor example,\ndocker run --pid=host rhel7 strace -p 1234\nDefault Value:\nBy default, all containers have the PID namespace enabled and the host's process namespace is not shared with the containers.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: PidMode={{ .HostConfig.PidMode }}\\'",
+        "expect": ""
+    },
+    "custom_item_79": {
+        "description": "5.15 Ensure the host's process namespace is not shared",
+        "info": "Process ID (PID) namespaces isolate the process ID number space, meaning that processes in different PID namespaces can have the same PID. This is process level isolation between containers and the host.\nRationale:\nPID namespace provides separation of processes. The PID Namespace removes the view of the system processes, and allows process ids to be reused including PID 1. If the host's PID namespace is shared with the container, it would basically allow processes within the container to see all of the processes on the host system. This breaks the benefit of process level isolation between the host and the containers. Someone having access to the container can eventually know all the processes running on the host system and can even kill the host system processes from within the container. This can be catastrophic. Hence, do not share the host's process namespace with the containers.",
+        "solution": "Do not start a container with --pid=host argument.\nFor example, do not start a container as below:\ndocker run --interactive --tty --pid=host centos /bin/bash\nImpact:\nContainer processes cannot see the processes on the host system. In certain cases, you want your container to share the host's process namespace. For example, you could build a container with debugging tools like strace or gdb, but want to use these tools when debugging processes within the container. If this is desired, then share only one (or needed) host process by using the -p switch.\nFor example,\ndocker run --pid=host rhel7 strace -p 1234\nDefault Value:\nBy default, all containers have the PID namespace enabled and the host's process namespace is not shared with the containers.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: PidMode={{ .HostConfig.PidMode }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_80": {
+        "description": "5.16 Ensure the host's IPC namespace is not shared",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: IpcMode={{ .HostConfig.IpcMode }}\\'",
+        "expect": "IpcMode=host"
+    },
+    "custom_item_81": {
+        "description": "5.16 Ensure the host's IPC namespace is not shared",
+        "info": "IPC (POSIX/SysV IPC) namespace provides separation of named shared memory segments, semaphores and message queues. IPC namespace on the host thus should not be shared with the containers and should remain isolated.\nRationale:\nIPC namespace provides separation of IPC between the host and containers. If the host's IPC namespace is shared with the container, it would basically allow processes within the container to see all of the IPC on the host system. This breaks the benefit of IPC level isolation between the host and the containers. Someone having access to the container can eventually manipulate the host IPC. This can be catastrophic. Hence, do not share the host's IPC namespace with the containers.",
+        "solution": "Do not start a container with --ipc=host argument. For example, do not start a container as below:\ndocker run --interactive --tty --ipc=host centos /bin/bash\nImpact:\nShared memory segments are used to accelerate inter-process communication. It is commonly used by high-performance applications. If such applications are containerized into multiple containers, you might need to share the IPC namespace of the containers to achieve high performance. In such cases, you should still be sharing container specific IPC namespaces only and not the host IPC namespace. You may share the container's IPC namespace with another container as below:\nFor example,\ndocker run --interactive --tty --ipc=container:e3a7a1a97c58 centos /bin/bash\nDefault Value:\nBy default, all containers have the IPC namespace enabled and host IPC namespace is not shared with any container.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: IpcMode={{ .HostConfig.IpcMode }}\\'",
+        "expect": ""
+    },
+    "custom_item_82": {
+        "description": "5.16 Ensure the host's IPC namespace is not shared",
+        "info": "IPC (POSIX/SysV IPC) namespace provides separation of named shared memory segments, semaphores and message queues. IPC namespace on the host thus should not be shared with the containers and should remain isolated.\nRationale:\nIPC namespace provides separation of IPC between the host and containers. If the host's IPC namespace is shared with the container, it would basically allow processes within the container to see all of the IPC on the host system. This breaks the benefit of IPC level isolation between the host and the containers. Someone having access to the container can eventually manipulate the host IPC. This can be catastrophic. Hence, do not share the host's IPC namespace with the containers.",
+        "solution": "Do not start a container with --ipc=host argument. For example, do not start a container as below:\ndocker run --interactive --tty --ipc=host centos /bin/bash\nImpact:\nShared memory segments are used to accelerate inter-process communication. It is commonly used by high-performance applications. If such applications are containerized into multiple containers, you might need to share the IPC namespace of the containers to achieve high performance. In such cases, you should still be sharing container specific IPC namespaces only and not the host IPC namespace. You may share the container's IPC namespace with another container as below:\nFor example,\ndocker run --interactive --tty --ipc=container:e3a7a1a97c58 centos /bin/bash\nDefault Value:\nBy default, all containers have the IPC namespace enabled and host IPC namespace is not shared with any container.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: IpcMode={{ .HostConfig.IpcMode }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_83": {
+        "description": "5.17 Ensure host devices are not directly exposed to container",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Devices={{ .HostConfig.Devices }}\\'",
+        "expect": "Devices=\\\\[.+\\\\]"
+    },
+    "custom_item_84": {
+        "description": "5.17 Ensure host devices are not directly exposed to containers",
+        "info": "Host devices can be directly exposed to containers at runtime. Do not directly expose host devices to containers especially for containers that are not trusted.\nRationale:\nThe --device option exposes the host devices to the containers and consequently, the containers can directly access such host devices. You would not require the container to run in privileged mode to access and manipulate the host devices. By default, the container will be able to read, write and mknod these devices. Additionally, it is possible for containers to remove block devices from the host. Hence, do not expose host devices to containers directly.\nIf at all, you would want to expose the host device to a container, use the sharing permissions appropriately:\n r - read only\n w - writable\n m - mknod allowed",
+        "solution": "Do not directly expose the host devices to containers. If at all, you need to expose the host devices to containers, use the correct set of permissions:\nFor example, do not start a container as below:\ndocker run --interactive --tty --device=/dev/tty0:/dev/tty0:rwm --device=/dev/temp_sda:/dev/temp_sda:rwm centos bash\nFor example, share the host device with correct permissions:\ndocker run --interactive --tty --device=/dev/tty0:/dev/tty0:rw --device=/dev/temp_sda:/dev/temp_sda:r centos bash\nImpact:\nYou would not be able to use the host devices directly within the containers.\nDefault Value:\nBy default, no host devices are exposed to containers. If you do not provide sharing permissions and choose to expose a host device to a container, the host device would be exposed with read, write and mknod permissions.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CSCv6|14,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1M",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Devices={{ .HostConfig.Devices }}\\'",
+        "expect": ""
+    },
+    "custom_item_85": {
+        "description": "5.17 Ensure host devices are not directly exposed to containers",
+        "info": "Host devices can be directly exposed to containers at runtime. Do not directly expose host devices to containers especially for containers that are not trusted.\nRationale:\nThe --device option exposes the host devices to the containers and consequently, the containers can directly access such host devices. You would not require the container to run in privileged mode to access and manipulate the host devices. By default, the container will be able to read, write and mknod these devices. Additionally, it is possible for containers to remove block devices from the host. Hence, do not expose host devices to containers directly.\nIf at all, you would want to expose the host device to a container, use the sharing permissions appropriately:\n r - read only\n w - writable\n m - mknod allowed",
+        "solution": "Do not directly expose the host devices to containers. If at all, you need to expose the host devices to containers, use the correct set of permissions:\nFor example, do not start a container as below:\ndocker run --interactive --tty --device=/dev/tty0:/dev/tty0:rwm --device=/dev/temp_sda:/dev/temp_sda:rwm centos bash\nFor example, share the host device with correct permissions:\ndocker run --interactive --tty --device=/dev/tty0:/dev/tty0:rw --device=/dev/temp_sda:/dev/temp_sda:r centos bash\nImpact:\nYou would not be able to use the host devices directly within the containers.\nDefault Value:\nBy default, no host devices are exposed to containers. If you do not provide sharing permissions and choose to expose a host device to a container, the host device would be exposed with read, write and mknod permissions.",
+        "reference": "800-171|3.13.4,800-53|SC-4,800-53r5|SC-4,CSCv6|14,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-4,ITSG-33|SC-4a.,LEVEL|1M",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Devices={{ .HostConfig.Devices }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_86": {
+        "description": "5.18 Ensure the default ulimit is overwritten at runtime, only if needed",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Ulimits={{json .HostConfig.Ulimits }}\\'",
+        "expect": "Ulimits=\\\\[.*\\\\]"
+    },
+    "custom_item_87": {
+        "description": "5.18 Ensure the default ulimit is overwritten at runtime, only if needed",
+        "info": "The default ulimit is set at the Docker daemon level. However, you may override the default ulimit setting, if needed, during container runtime.\nRationale:\nulimit provides control over the resources available to the shell and to processes started by it. Setting system resource limits judiciously saves you from many disasters such as a fork bomb. Sometimes, even friendly users and legitimate processes can overuse system resources and in-turn can make the system unusable.\nThe default ulimit set at the Docker daemon level should be honored. If the default ulimit settings are not appropriate for a particular container instance, you may override them as an exception. But, do not make this a practice. If most of the container instances are overriding default ulimit settings, consider changing the default ulimit settings to something that is appropriate for your needs.",
+        "solution": "Only override the default ulimit settings if needed.\nFor example, to override default ulimit settings start a container as below:\ndocker run --ulimit nofile=1024:1024 --interactive --tty centos /bin/bash\nImpact:\nIf the ulimits are not set properly, the desired resource control might not be achieved and might even make the system unusable.\nDefault Value:\nContainer instances inherit the default ulimit settings set at the Docker daemon level.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1M,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Ulimits={{json .HostConfig.Ulimits }}\\'",
+        "expect": ""
+    },
+    "custom_item_88": {
+        "description": "5.18 Ensure the default ulimit is overwritten at runtime, only if needed",
+        "info": "The default ulimit is set at the Docker daemon level. However, you may override the default ulimit setting, if needed, during container runtime.\nRationale:\nulimit provides control over the resources available to the shell and to processes started by it. Setting system resource limits judiciously saves you from many disasters such as a fork bomb. Sometimes, even friendly users and legitimate processes can overuse system resources and in-turn can make the system unusable.\nThe default ulimit set at the Docker daemon level should be honored. If the default ulimit settings are not appropriate for a particular container instance, you may override them as an exception. But, do not make this a practice. If most of the container instances are overriding default ulimit settings, consider changing the default ulimit settings to something that is appropriate for your needs.",
+        "solution": "Only override the default ulimit settings if needed.\nFor example, to override default ulimit settings start a container as below:\ndocker run --ulimit nofile=1024:1024 --interactive --tty centos /bin/bash\nImpact:\nIf the ulimits are not set properly, the desired resource control might not be achieved and might even make the system unusable.\nDefault Value:\nContainer instances inherit the default ulimit settings set at the Docker daemon level.",
+        "reference": "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|1M,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker ps -q | xargs /usr/bin/docker inspect --format \\'{{ .Id }}: Ulimits={{json .HostConfig.Ulimits }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_89": {
+        "description": "5.19 Ensure mount propagation mode is not set to shared",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: Propagation={{range $mnt := .Mounts}} {{json $mnt.Propagation}} {{end}}\\'",
+        "expect": "shared"
+    },
+    "custom_item_90": {
+        "description": "5.19 Ensure mount propagation mode is not set to shared",
+        "info": "Mount propagation mode allows mounting volumes in shared, slave or private mode on a container. Do not use shared mount propagation mode until needed.\nRationale:\nA shared mount is replicated at all mounts and the changes made at any mount point are propagated to all mounts. Mounting a volume in shared mode does not restrict any other container to mount and make changes to that volume. This might be catastrophic if the mounted volume is sensitive to changes. Do not set mount propagation mode to shared until needed.",
+        "solution": "Do not mount volumes in shared mode propagation.\nFor example, do not start container as below:\ndocker run--volume=/hostPath:/containerPath:sharedImpact:\nNone.\nDefault Value:\nBy default, the container mounts are private.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: Propagation={{range $mnt := .Mounts}} {{json $mnt.Propagation}} {{end}}\\'",
+        "expect": ""
+    },
+    "custom_item_91": {
+        "description": "5.19 Ensure mount propagation mode is not set to shared",
+        "info": "Mount propagation mode allows mounting volumes in shared, slave or private mode on a container. Do not use shared mount propagation mode until needed.\nRationale:\nA shared mount is replicated at all mounts and the changes made at any mount point are propagated to all mounts. Mounting a volume in shared mode does not restrict any other container to mount and make changes to that volume. This might be catastrophic if the mounted volume is sensitive to changes. Do not set mount propagation mode to shared until needed.",
+        "solution": "Do not mount volumes in shared mode propagation.\nFor example, do not start container as below:\ndocker run--volume=/hostPath:/containerPath:sharedImpact:\nNone.\nDefault Value:\nBy default, the container mounts are private.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|14,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: Propagation={{range $mnt := .Mounts}} {{json $mnt.Propagation}} {{end}}\\'",
+        "expect": ".*"
+    },
+    "custom_item_92": {
+        "description": "5.20 Do not share the host's UTS namespace",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UTSMode={{ .HostConfig.UTSMode }}\\'",
+        "expect": "host"
+    },
+    "custom_item_93": {
+        "description": "5.20 Ensure the host's UTS namespace is not shared",
+        "info": "UTS namespaces provide isolation of two system identifiers: the hostname and the NIS domain name. It is used for setting the hostname and the domain that is visible to running processes in that namespace. Processes running within containers do not typically require to know hostname and domain name. Hence, the namespace should not be shared with the host.\nRationale:\nSharing the UTS namespace with the host provides full permission to the container to change the hostname of the host. This is insecure and should not be allowed.",
+        "solution": "Do not start a container with --uts=host argument.\nFor example, do not start a container as below:\ndocker run --rm --interactive --tty --uts=host rhel7.2\nImpact:\nNone.\nDefault Value:\nBy default, all containers have the UTS namespace enabled and host UTS namespace is not shared with any container.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UTSMode={{ .HostConfig.UTSMode }}\\'",
+        "expect": ""
+    },
+    "custom_item_94": {
+        "description": "5.20 Ensure the host's UTS namespace is not shared",
+        "info": "UTS namespaces provide isolation of two system identifiers: the hostname and the NIS domain name. It is used for setting the hostname and the domain that is visible to running processes in that namespace. Processes running within containers do not typically require to know hostname and domain name. Hence, the namespace should not be shared with the host.\nRationale:\nSharing the UTS namespace with the host provides full permission to the container to change the hostname of the host. This is insecure and should not be allowed.",
+        "solution": "Do not start a container with --uts=host argument.\nFor example, do not start a container as below:\ndocker run --rm --interactive --tty --uts=host rhel7.2\nImpact:\nNone.\nDefault Value:\nBy default, all containers have the UTS namespace enabled and host UTS namespace is not shared with any container.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UTSMode={{ .HostConfig.UTSMode }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_95": {
+        "description": "5.21 Ensure the default seccomp profile is not Disabled",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: SecurityOpt={{ .HostConfig.SecurityOpt }}\\'",
+        "expect": "seccomp:unconfined"
+    },
+    "custom_item_96": {
+        "description": "5.21 Ensure the default seccomp profile is not Disabled",
+        "info": "Seccomp filtering provides a means for a process to specify a filter for incoming system calls. The default Docker seccomp profile works on whitelist basis and allows 311 system calls blocking all others. It should not be disabled unless it hinders your container application usage.\nRationale:\nA large number of system calls are exposed to every userland process with many of them going unused for the entire lifetime of the process. Most of the applications do not need all the system calls and thus benefit by having a reduced set of available system calls. The reduced set of system calls reduces the total kernel surface exposed to the application and thus improvises application security.",
+        "solution": "By default, seccomp profiles are enabled. You do not need to do anything unless you want to modify and use the modified seccomp profile.\nImpact:\nWith Docker 1.10 and greater, the default seccomp profile blocks syscalls, regardless of --cap-add passed to the container. You should create your own custom seccomp profile in such cases. You may also disable the default seccomp profile by passing --security-opt=seccomp:unconfined on docker run.\n\n\nDefault Value:\nWhen you run a container, it uses the default profile unless you override it with the --security-opt option.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: SecurityOpt={{ .HostConfig.SecurityOpt }}\\'",
+        "expect": ""
+    },
+    "custom_item_97": {
+        "description": "5.21 Ensure the default seccomp profile is not Disabled",
+        "info": "Seccomp filtering provides a means for a process to specify a filter for incoming system calls. The default Docker seccomp profile works on whitelist basis and allows 311 system calls blocking all others. It should not be disabled unless it hinders your container application usage.\nRationale:\nA large number of system calls are exposed to every userland process with many of them going unused for the entire lifetime of the process. Most of the applications do not need all the system calls and thus benefit by having a reduced set of available system calls. The reduced set of system calls reduces the total kernel surface exposed to the application and thus improvises application security.",
+        "solution": "By default, seccomp profiles are enabled. You do not need to do anything unless you want to modify and use the modified seccomp profile.\nImpact:\nWith Docker 1.10 and greater, the default seccomp profile blocks syscalls, regardless of --cap-add passed to the container. You should create your own custom seccomp profile in such cases. You may also disable the default seccomp profile by passing --security-opt=seccomp:unconfined on docker run.\n\n\nDefault Value:\nWhen you run a container, it uses the default profile unless you override it with the --security-opt option.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: SecurityOpt={{ .HostConfig.SecurityOpt }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_98": {
+        "description": "5.24 Ensure cgroup usage is confirmed",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: CgroupParent={{ .HostConfig.CgroupParent }}\\'",
+        "expect": "CgroupParent=.+"
+    },
+    "custom_item_99": {
+        "description": "5.24 Ensure cgroup usage is confirmed",
+        "info": "It is possible to attach to a particular cgroup on container run. Confirming cgroup usage would ensure that containers are running under defined cgroups.\nRationale:\nSystem administrators typically define cgroups under which containers are supposed to run. Even if cgroups are not explicitly defined by the system administrators, containers run under docker cgroup by default.\nAt run-time, it is possible to attach to a different cgroup other than the one that was expected to be used. This usage should be monitored and confirmed. By attaching to a different cgroup than the one that is expected, excess permissions and resources might be granted to the container and thus, can prove to be unsafe.",
+        "solution": "Do not use --cgroup-parent option in docker run command unless needed.\nImpact:\nNone.\nDefault Value:\nBy default, containers run under docker cgroup.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: CgroupParent={{ .HostConfig.CgroupParent }}\\'",
+        "expect": ""
+    },
+    "custom_item_100": {
+        "description": "5.24 Ensure cgroup usage is confirmed",
+        "info": "It is possible to attach to a particular cgroup on container run. Confirming cgroup usage would ensure that containers are running under defined cgroups.\nRationale:\nSystem administrators typically define cgroups under which containers are supposed to run. Even if cgroups are not explicitly defined by the system administrators, containers run under docker cgroup by default.\nAt run-time, it is possible to attach to a different cgroup other than the one that was expected to be used. This usage should be monitored and confirmed. By attaching to a different cgroup than the one that is expected, excess permissions and resources might be granted to the container and thus, can prove to be unsafe.",
+        "solution": "Do not use --cgroup-parent option in docker run command unless needed.\nImpact:\nNone.\nDefault Value:\nBy default, containers run under docker cgroup.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|18,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: CgroupParent={{ .HostConfig.CgroupParent }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_101": {
+        "description": "5.25 Ensure the container is restricted from acquiring additional privileges",
+        "info": "Restrict the container from acquiring additional privileges via suid or sgid bits.\nRationale:\nA process can set the no_new_priv bit in the kernel. It persists across fork, clone and execve. The no_new_priv bit ensures that the process or its children processes do not gain any additional privileges via suid or sgid bits. This way a lot of dangerous operations become a lot less dangerous because there is no possibility of subverting privileged binaries.",
+        "solution": "For example, you should start your container as below:\ndocker run --rm -it --security-opt=no-new-privileges ubuntu bash\nImpact:\nno_new_priv prevents LSMs like SELinux from transitioning to process labels that have access not allowed to the current process.\nDefault Value:\nBy default, new privileges are not restricted.",
+        "reference": "800-53|SC-39,800-53r5|SC-39,CSCv6|5,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A,QCSC-v1|5.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: SecurityOpt={{ .HostConfig.SecurityOpt }}\\'|grep -v no-new-privileges",
+        "expect": ""
+    },
+    "custom_item_102": {
+        "description": "5.26 Ensure container health is checked at runtime",
+        "info": "If the container image does not have an HEALTHCHECK instruction defined, use --health-cmd parameter at container runtime for checking container health.\nRationale:\nOne of the important security triads is availability. If the container image you are using does not have a pre-defined HEALTHCHECK instruction, use the --health-cmd parameter to check container health at runtime.\nBased on the reported health status, you could take necessary actions.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Run the container using --health-cmd and the other parameters.\nFor example,\ndocker run -d --health-cmd='stat /etc/passwd || exit 1' nginx\nImpact:\nNone.\nDefault Value:\nBy default, health checks are not done at container runtime.",
+        "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSCv6|18,CSF|PR.IP-1,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: Health={{ .State.Health.Status }}\\'",
+        "expect": "Health="
+    },
+    "custom_item_103": {
+        "description": "5.28 Ensure PIDs cgroup limit is used",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: PidsLimit={{ .HostConfig.PidsLimit }}\\'",
+        "expect": "PidsLimit=(0|-1)$"
+    },
+    "custom_item_104": {
+        "description": "5.28 Ensure PIDs cgroup limit is used",
+        "info": "Use --pids-limit flag at container runtime.\nRationale:\nAttackers could launch a fork bomb with a single command inside the container. This fork bomb can crash the entire system and requires a restart of the host to make the system functional again. PIDs cgroup --pids-limit will prevent this kind of attacks by restricting the number of forks that can happen inside a container at a given time.",
+        "solution": "Use --pids-limit flag while launching the container with an appropriate value.\nFor example,\ndocker run -it --pids-limit 100In the above example, the number of processes allowed to run at any given time is set to 100. After a limit of 100 concurrently running processes is reached, docker would restrict any new process creation.\nImpact:\nSet the PIDs limit value as appropriate. Incorrect values might leave the containers unusable.\nDefault Value:\nThe Default value for --pids-limit is 0 which means there is no restriction on the number of forks. Also, note that PIDs cgroup limit works only for the kernel versions 4.3+.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSCv6|18,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1A,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: PidsLimit={{ .HostConfig.PidsLimit }}\\'",
+        "expect": ""
+    },
+    "custom_item_105": {
+        "description": "5.28 Ensure PIDs cgroup limit is used",
+        "info": "Use --pids-limit flag at container runtime.\nRationale:\nAttackers could launch a fork bomb with a single command inside the container. This fork bomb can crash the entire system and requires a restart of the host to make the system functional again. PIDs cgroup --pids-limit will prevent this kind of attacks by restricting the number of forks that can happen inside a container at a given time.",
+        "solution": "Use --pids-limit flag while launching the container with an appropriate value.\nFor example,\ndocker run -it --pids-limit 100In the above example, the number of processes allowed to run at any given time is set to 100. After a limit of 100 concurrently running processes is reached, docker would restrict any new process creation.\nImpact:\nSet the PIDs limit value as appropriate. Incorrect values might leave the containers unusable.\nDefault Value:\nThe Default value for --pids-limit is 0 which means there is no restriction on the number of forks. Also, note that PIDs cgroup limit works only for the kernel versions 4.3+.",
+        "reference": "800-53|SC-5,800-53r5|SC-5,CSCv6|18,CSF|DE.CM-1,CSF|PR.DS-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5,ITSG-33|SC-5a.,LEVEL|1A,NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: PidsLimit={{ .HostConfig.PidsLimit }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_106": {
+        "description": "5.30 Ensure the host's user namespaces is not shared",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UsernsMode={{ .HostConfig.UsernsMode }}\\'",
+        "expect": "UsernsMode=.+"
+    },
+    "custom_item_107": {
+        "description": "5.30 Ensure the host's user namespaces is not shared",
+        "info": "Do not share the host's user namespaces with the containers.\nRationale:\nUser namespaces ensure that a root process inside the container will be mapped to a non-root process outside the container. Sharing the user namespaces of the host with the container thus does not isolate users on the host with users on the containers.",
+        "solution": "Do not share user namespaces between host and containers.\nFor example, do not run a container as below:\ndocker run --rm -it --userns=host ubuntu bash\nImpact:\nNone\nDefault Value:\nBy default, the host user namespace is shared with the containers until user namespace support is enabled.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7a.,800-53r5|SC-7a.,CN-L3|8.1.10.6(j),CSCv6|12,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7a.,LEVEL|1A,NESA|T3.4.1,NESA|T3.6.3,NESA|T4.2.1,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UsernsMode={{ .HostConfig.UsernsMode }}\\'",
+        "expect": ""
+    },
+    "custom_item_108": {
+        "description": "5.30 Ensure the host's user namespaces is not shared",
+        "info": "Do not share the host's user namespaces with the containers.\nRationale:\nUser namespaces ensure that a root process inside the container will be mapped to a non-root process outside the container. Sharing the user namespaces of the host with the container thus does not isolate users on the host with users on the containers.",
+        "solution": "Do not share user namespaces between host and containers.\nFor example, do not run a container as below:\ndocker run --rm -it --userns=host ubuntu bash\nImpact:\nNone\nDefault Value:\nBy default, the host user namespace is shared with the containers until user namespace support is enabled.",
+        "reference": "800-171|3.13.1,800-171|3.13.5,800-53|SC-7a.,800-53r5|SC-7a.,CN-L3|8.1.10.6(j),CSCv6|12,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7a.,LEVEL|1A,NESA|T3.4.1,NESA|T3.6.3,NESA|T4.2.1,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: UsernsMode={{ .HostConfig.UsernsMode }}\\'",
+        "expect": ".*"
+    },
+    "custom_item_109": {
+        "description": "5.31 Ensure the Docker socket is not mounted inside any containers",
+        "info": "The docker socket docker.sock should not be mounted inside a container.\nRationale:\nIf the docker socket is mounted inside a container it would allow processes running within the container to execute docker commands which effectively allows for full control of the host.",
+        "solution": "Ensure that no containers mount docker.sock as a volume.\nImpact:\nNone\nDefault Value:\nBy default, docker.sock is not mounted inside containers.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker ps --quiet | xargs docker inspect --format \\'{{ .Id }}: Volumes={{ .Mounts }}\\' | grep docker\\\\.sock",
+        "expect": ""
+    },
+    "custom_item_110": {
+        "description": "7.1 Ensure swarm mode is not Enabled, if not needed",
+        "info": "Do not enable swarm mode on a docker engine instance unless needed.\nRationale:\nBy default, a Docker engine instance will not listen on any network ports, with all communications with the client coming over the Unix socket. When Docker swarm mode is enabled on a docker engine instance, multiple network ports are opened on the system and made available to other systems on the network for the purposes of cluster management and node communications.\nOpening network ports on a system increase its attack surface and this should be avoided unless required.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If swarm mode has been enabled on a system in error, run\ndocker swarm leave\nImpact:\nNone.\n\n\nDefault Value:\nBy default, docker swarm mode is not enabled.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|9.1,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker info | grep Swarm",
+        "expect": "Swarm:"
+    },
+    "custom_item_111": {
+        "description": "7.2 Ensure the minimum number of manager nodes have been created in a swarm",
+        "info": "Ensure that the minimum number of required manager nodes is created in a swarm.\nRationale:\nManager nodes within a swarm have control over the swarm and change its configuration modifying security parameters. Having excessive manager nodes could render the swarm more susceptible to compromise.\nIf fault tolerance is not required in the manager nodes, a single node should be elected as a manger. If fault tolerance is required then the smallest practical odd number to achieve the appropriate level of tolerance should be configured.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "If an excessive number of managers is configured, the excess can be demoted as worker using the following command:\ndocker node demoteWhere is the node ID value of the manager to be demoted.\nImpact:\nNone\n\n\nDefault Value:\nA single manager is all that is required to start a given cluster.",
+        "reference": "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|5,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "/usr/bin/docker node ls | grep Leader",
+        "expect": ".*"
+    },
+    "custom_item_112": {
+        "description": "Ubuntu is installed",
+        "cmd": "/usr/bin/lsb_release -a",
+        "expect": "Description:[\\\\s]+Ubuntu[\\\\s]"
+    },
+    "custom_item_113": {
+        "description": "7.3 Ensure swarm services are binded to a specific host interface",
+        "info": "By default, the docker swarm services will listen to all interfaces on the host, which may not be necessary for the operation of the swarm where the host has multiple network interfaces.\nRationale:\nWhen a swarm is initialized the default value for the --listen-addr flag is 0.0.0.0:2377 which means that the swarm services will listen on all interfaces on the host. If a host has multiple network interfaces this may be undesirable as it may expose the docker swarm services to networks which are not involved in the operation of the swarm.\nBy passing a specific IP address to the --listen-addr, a specific network interface can be specified limiting this exposure.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remediation of this requires re-initialization of the swarm specifying a specific interface for the --listen-addr parameter.\nImpact:\nNone\nDefault Value:\nBy default, docker swarm services listen on all available host interfaces.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(13),800-53r5|SC-7(13),CN-L3|8.1.10.6(h),CSCv6|9,CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(13),LEVEL|1A,NESA|T4.5.4,NIAv2|GS7d,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|3.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "netstat -lt | grep -i 2377",
+        "expect": ""
+    },
+    "custom_item_114": {
+        "description": "7.3 Ensure swarm services are binded to a specific host interface",
+        "info": "By default, the docker swarm services will listen to all interfaces on the host, which may not be necessary for the operation of the swarm where the host has multiple network interfaces.\nRationale:\nWhen a swarm is initialized the default value for the --listen-addr flag is 0.0.0.0:2377 which means that the swarm services will listen on all interfaces on the host. If a host has multiple network interfaces this may be undesirable as it may expose the docker swarm services to networks which are not involved in the operation of the swarm.\nBy passing a specific IP address to the --listen-addr, a specific network interface can be specified limiting this exposure.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Remediation of this requires re-initialization of the swarm specifying a specific interface for the --listen-addr parameter.\nImpact:\nNone\nDefault Value:\nBy default, docker swarm services listen on all available host interfaces.",
+        "reference": "800-171|3.13.2,800-171|3.13.5,800-53|SC-7(13),800-53r5|SC-7(13),CN-L3|8.1.10.6(h),CSCv6|9,CSF|PR.AC-5,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(13),LEVEL|1A,NESA|T4.5.4,NIAv2|GS7d,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|3.1,TBA-FIISB|43.1",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "ss -nlp|grep dockerd",
+        "expect": ""
+    },
+    "custom_item_115": {
+        "description": "7.4 Ensure data exchanged between containers are encrypted on different nodes on the overlay network",
+        "info": "Encrypt data exchanged between containers on different nodes on the overlay network.\nRationale:\nBy default, data exchanged between containers on different nodes on the overlay network is not encrypted. This could potentially expose traffic between the container nodes.\nNOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Create overlay network with --opt encrypted flag.\nImpact:\nNone\nDefault Value:\nBy default, data exchanged between containers on different nodes on the overlay network are not encrypted in the Docker swarm mode.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|14.2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker network ls --filter driver=overlay --quiet | xargs docker network inspect --format \\'{{.Name}} {{ .Options }}\\'",
+        "expect": ""
+    },
+    "custom_item_116": {
+        "description": "7.6 Ensure swarm manager is run in auto-lock mode",
+        "cmd": "docker swarm unlock-key",
+        "expect": "no unlock key is set"
+    },
+    "custom_item_117": {
+        "description": "7.6 Ensure swarm manager is run in auto-lock mode",
+        "info": "Run Docker swarm manager in auto-lock mode.\nRationale:\nWhen Docker restarts, both the TLS key used to encrypt communication among swarm nodes, and the key used to encrypt and decrypt Raft logs on disk, are loaded into each manager node's memory. You should protect the mutual TLS encryption key and the key used to encrypt and decrypt Raft logs at rest. This protection could be enabled by initializing swarm with --autolock flag.\nWith --autolockenabled, when Docker restarts, you must unlock the swarm first, using a key encryption key generated by Docker when the swarm was initialized.",
+        "solution": "If you are initializing swarm, use the below command.\ndocker swarm init --autolock\nIf you want to set --autolock on an existing swarm manager node, use the below command.\ndocker swarm update --autolock\n\nImpact:\nA swarm in auto-lock mode won't recover from a re-start without manual intervention from a user to enter the unlock key. In some deployments, this might not be good for availability.\nDefault Value:\nBy default, swarm manager does not run in auto-lock mode.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|14.2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker swarm unlock-key",
+        "expect": ""
+    },
+    "custom_item_118": {
+        "description": "7.6 Ensure swarm manager is run in auto-lock mode",
+        "info": "Run Docker swarm manager in auto-lock mode.\nRationale:\nWhen Docker restarts, both the TLS key used to encrypt communication among swarm nodes, and the key used to encrypt and decrypt Raft logs on disk, are loaded into each manager node's memory. You should protect the mutual TLS encryption key and the key used to encrypt and decrypt Raft logs at rest. This protection could be enabled by initializing swarm with --autolock flag.\nWith --autolockenabled, when Docker restarts, you must unlock the swarm first, using a key encryption key generated by Docker when the swarm was initialized.",
+        "solution": "If you are initializing swarm, use the below command.\ndocker swarm init --autolock\nIf you want to set --autolock on an existing swarm manager node, use the below command.\ndocker swarm update --autolock\n\nImpact:\nA swarm in auto-lock mode won't recover from a re-start without manual intervention from a user to enter the unlock key. In some deployments, this might not be good for availability.\nDefault Value:\nBy default, swarm manager does not run in auto-lock mode.",
+        "reference": "800-171|3.13.11,800-53|SC-13,800-53r5|SC-13,CSCv6|14.2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,LEVEL|1A,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2",
+        "see_also": "https://workbench.cisecurity.org/files/1726",
+        "cmd": "docker swarm unlock-key",
+        "expect": ".*"
+    }
+}

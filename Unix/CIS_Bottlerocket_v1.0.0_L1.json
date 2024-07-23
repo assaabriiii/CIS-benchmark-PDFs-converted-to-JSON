@@ -1,0 +1,177 @@
+{
+    "custom_item_1": {
+        "description": "Bottlerocket is installed",
+        "file": "/.bottlerocket/rootfs/etc/os-release",
+        "regex": "^PRETTY_NAME=\"Bottlerocket[\\\\s]+OS",
+        "expect": "^PRETTY_NAME=\"Bottlerocket[\\\\s]+OS"
+    },
+    "custom_item_2": {
+        "system": "Linux",
+        "description": "1.2.1 Ensure software update repositories are configured",
+        "info": "Systems need to have software update repositories configured to ensure they receive the latest updates.\n\n      Rationale:\n\n      If a system's software update repositories are misconfigured, important updates may not be identified.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure your software update repositories according to site policy.",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.4,CSCv7|3.5,CSCv8|7.3,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1M,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "cmd": "/usr/local/bin/apiclient update check | /bin/jq '.available_updates'",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_3": {
+        "system": "Linux",
+        "description": "Ensure dm-verity is configured - dm-mod.create",
+        "file": "/proc/cmdline",
+        "regex": "[\\\\s]*dm-mod.create=root,,,ro,0[\\\\s]*",
+        "expect": "[\\\\s]*dm-mod.create=root,,,ro,0[\\\\s]*"
+    },
+    "custom_item_4": {
+        "system": "Linux",
+        "description": "Ensure dm-verity is configured - /dev/dm-0",
+        "file": "/proc/cmdline",
+        "regex": "[\\\\s]*root=/dev/dm-0[\\\\s]*",
+        "expect": "[\\\\s]*root=/dev/dm-0[\\\\s]*"
+    },
+    "custom_item_5": {
+        "system": "Linux",
+        "description": "Ensure dm-verity is configured - restart_on_corruption",
+        "file": "/proc/cmdline",
+        "regex": "[\\\\s]*restart_on_corruption[\\\\s]*",
+        "expect": "[\\\\s]*restart_on_corruption[\\\\s]*"
+    },
+    "custom_item_6": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "cmd": "/bin/sheltie systemctl is-active chronyd",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "YESsystem": "Linux",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "mask": "037"
+    },
+    "custom_item_7": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "cmd": "/bin/sheltie systemctl is-active chronyd",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "YESsystem": "Linux",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "mask": "037"
+    },
+    "custom_item_8": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "cmd": "/bin/sheltie systemctl is-active chronyd",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "YESsystem": "Linux",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "mask": "037"
+    },
+    "custom_item_9": {
+        "system": "Linux",
+        "description": "Ensure SELinux is configured - enforcing",
+        "cmd": "/bin/sheltie sestatus",
+        "expect": "^[\\\\s]*Current[\\\\s]+mode:[\\\\s]+(?i)enforcing(?-i)"
+    },
+    "custom_item_10": {
+        "system": "Linux",
+        "description": "Ensure SELinux is configured - enabled",
+        "cmd": "/bin/sheltie sestatus",
+        "expect": "^[\\\\s]*SELinux[\\\\s]+status:[\\\\s]+(?i)enabled(?-i)"
+    },
+    "custom_item_11": {
+        "system": "Linux",
+        "description": "Ensure SELinux is configured - policy",
+        "cmd": "/bin/sheltie sestatus",
+        "expect": "^[\\\\s]*Loaded[\\\\s]+policy[\\\\s]+name:[\\\\s]+(?i)@SELINUX_POLICY@(?-i)"
+    },
+    "custom_item_12": {
+        "system": "Linux",
+        "description": "1.6 Ensure updates, patches, and additional security software are installed",
+        "info": "Periodically updates are released for included software either due to security flaws or to include additional functionality.\n\nRationale:\n\nIt is recommended that the latest software updates be used to take advantage of the latest functionality and security enhancements. As with any software installation, organizations need to determine if a given update meets their requirements and verify the compatibility and supportability of any additional software against the update revision that is selected.\n\n      NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.",
+        "solution": "Configure your software update repositories according to site policy.",
+        "reference": "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.4,CSCv7|3.5,CSCv8|7.3,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1M,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "cmd": "/usr/local/bin/apiclient update check",
+        "expect": "^Manual Review Required$"
+    },
+    "custom_item_13": {
+        "description": "Ensure chrony is configured - time-servers",
+        "cmd": "/usr/local/bin/apiclient get settings.ntp.time-servers | /bin/jq '.settings.ntp.\"time-servers\" | join(\", \")'",
+        "expect": "@NTP_SERVERS@"
+    },
+    "custom_item_14": {
+        "system": "Linux",
+        "description": "Ensure chrony is configured - systemctl",
+        "cmd": "/bin/sheltie systemctl is-active chronyd",
+        "expect": "^active$"
+    },
+    "custom_item_15": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "mask": "037"
+    },
+    "custom_item_16": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "mask": "037"
+    },
+    "custom_item_17": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$",
+        "mask": "037"
+    },
+    "custom_item_18": {
+        "system": "Linux",
+        "description": "4.1.1.1 Ensure journald is configured to write logfiles to persistent disk",
+        "info": "Data from journald may be stored in volatile memory or persisted locally on the server. Logs in memory will be lost upon a system reboot. By persisting logs to local disk on the server they are protected from loss.\n\nNote: The main configuration file /etc/systemd/journald.conf is read before any of the custom *.conf files. If there are custom configs present, they override the main configuration parameters\n\nRationale:\n\nWriting log data to disk will provide the ability to forensically reconstruct events which may have impacted the operations or security of a system even after a system crash or reboot.",
+        "solution": "Update to a version of the OS with the correct journald configuration.",
+        "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/usr/lib/systemd/journald.conf.d/journald.conf",
+        "regex": "^[\\\\s]*Storage[\\\\s]*=",
+        "expect": "^[\\\\s]*Storage[\\\\s]*=[\\\\s]*persistent[\\\\s]*$"
+    },
+    "custom_item_19": {
+        "system": "Linux",
+        "description": "4.1.2 Ensure permissions on journal files are configured",
+        "info": "The journal is stored in /var/log/journal, and contains logged information from all services on the system.\n\nRationale:\n\nIt is important to ensure that log files have the correct permissions to ensure that sensitive data is archived and protected.",
+        "solution": "Run the following commands to set permissions on all existing log files:\n\n# find /var/log/journal -type f -perm /g+wx,o+rwx -exec chmod g-wx,o-rwx \"{}\" +",
+        "reference": "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3",
+        "see_also": "https://workbench.cisecurity.org/benchmarks/6709",
+        "file": "/.bottlerocket/rootfs/var/log/journal/*/*",
+        "mask": "037"
+    }
+}
